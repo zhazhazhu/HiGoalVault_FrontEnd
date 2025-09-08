@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const title = ref('Hello1')
+const avatarUrl = ref('')
 
-async function getPhoneNumber(e) {
-  const { data } = await uni.request({
-    url: `http://localhost:3000/login-phone?code=${e.detail.code}`,
-    method: 'GET',
-  })
-  console.log(data)
+function onChooseAvatar(e) {
+  avatarUrl.value = e.detail.avatarUrl
+  uni.setStorageSync('avatarUrl', e.detail.avatarUrl)
 }
+
+onMounted(() => {
+})
 </script>
 
 <template>
@@ -21,9 +22,10 @@ async function getPhoneNumber(e) {
       </text>
     </view>
     <!-- #ifdef MP-WEIXIN -->
-    <button type="primary" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">
-      手机号一键登录
+    <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
+      <image class="avatar" :src="avatarUrl" />
     </button>
+    <input type="nickname" class="weui-input" placeholder="请输入昵称">
     <!-- #endif -->
   </view>
 </template>
