@@ -7,6 +7,6 @@ export default antfu({
   },
   rules: {
     'ts/no-empty-object-type': 'off',
-    'no-console': 'warn',
+    'no-console': 'off',
   },
 })
