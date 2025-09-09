@@ -1,7 +1,15 @@
+import type { LoginResult } from './index.d'
+
+export * from './index.d'
+
+export enum Code {
+  SUCCESS = 200,
+}
+
 export interface RequestResult<T> {
-  code: number
-  msg: string
-  data: T
+  code: Code
+  message: string
+  result: T
 }
 
 export type Key = 'uni' | 'test'
@@ -21,14 +29,17 @@ export type Launcher = <K extends Key = 'uni'>(url: string, options?: Options[K]
   put: <T>(data: any) => Promise<RequestResult<T>>
   delete: <T>(data: any) => Promise<RequestResult<T>>
 }
-
 export class Api {
   private launcher: Launcher
   constructor(launcher: Launcher) {
     this.launcher = launcher
   }
 
-  public login(data: { code: string, phoneCode: string }) {
-    return this.launcher<'uni'>('/buyer/passport/connect/miniProgram/phone/once').post<{ accessToken: string, refreshToken: string }>(data)
+  public autoLoginByPhone(data: { code: string, phoneCode: string }) {
+    return this.launcher<'uni'>('/buyer/passport/connect/miniProgram/phone/once/auto-login', { header: { ClientType: 'WECHAT_MP' } }).post<LoginResult>(data)
+  }
+
+  public refreshToken(refreshToken: string) {
+    return this.launcher<'uni'>(`/buyer/passport/member/refresh/${refreshToken}`).get<LoginResult>()
   }
 }

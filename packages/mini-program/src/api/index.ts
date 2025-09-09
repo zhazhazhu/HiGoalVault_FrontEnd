@@ -3,7 +3,7 @@ import { Api } from '@higoal/api'
 
 export interface LauncherOptions extends Partial<UniApp.RequestOptions> {}
 
-const baseUrl = 'http://192.168.1.106:8888'
+const baseUrl = 'http://192.168.1.103:8888'
 
 const defaultOptions: LauncherOptions = {
   header: {
@@ -28,7 +28,7 @@ function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: La
   })
 }
 
-const launcher: Launcher = (url, options) => {
+const launcherWx: Launcher = (url, options) => {
   const _options = { ...defaultOptions, ...options } as any
 
   function get<T>() {
@@ -51,5 +51,33 @@ const launcher: Launcher = (url, options) => {
     delete: deleteRequest,
   }
 }
+
+const launcherWeb: Launcher = (url, options) => {
+  const _options = { ...defaultOptions, ...options } as any
+  return {
+    get() {
+      return fetch(url, { ..._options, method: 'GET' }).then(res => res.json())
+    },
+    post(data) {
+      return fetch(url, { ..._options, method: 'POST', body: JSON.stringify(data) }).then(res => res.json())
+    },
+    put() {
+      return fetch(url, _options).then(res => res.json())
+    },
+    delete() {
+      return fetch(url, _options).then(res => res.json())
+    },
+  }
+}
+
+let launcher: Launcher
+
+// #ifdef MP-WEIXIN
+launcher = launcherWx
+// #endif
+
+// #ifdef WEB
+launcher = launcherWeb
+// #endif
 
 export const api = new Api(launcher)

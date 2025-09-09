@@ -8,6 +8,10 @@
   "license": "ISC",
   "keywords": [],
   "scripts": {
+    "dev:mp-weixin": "pnpm --filter @higoal/mini-grogram dev:mp-weixin",
+    "dev:h5": "pnpm --filter @higoal/mini-grogram dev:h5",
+    "build:mp-weixin": "pnpm --filter @higoal/mini-grogram build:mp-weixin",
+    "build:h5": "pnpm --filter @higoal/mini-grogram build:h5",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -22,7 +26,6 @@
     "lint-staged": "^16.1.6",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^4.9.5",
-    "vite": "^7.1.4",
     "vitest": "^3.2.4"
   },
   "simple-git-hooks": {

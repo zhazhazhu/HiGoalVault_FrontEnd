@@ -2,18 +2,19 @@
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 
 onLaunch(() => {
-  console.log('App Launch')
 })
-onShow(async () => {
-  const res = await uni.login()
-  const { data } = await uni.request({
-    url: `http://localhost:3000/login?code=${res.code}`,
-  })
-  console.log(data)
+onShow(() => {
 })
 onHide(() => {
-  console.log('App Hide')
 })
 </script>
 
-<style></style>
+<style>
+view,
+:before,
+:after {
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+</style>
