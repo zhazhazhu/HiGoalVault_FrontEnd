@@ -13,8 +13,7 @@ declare module 'vue' {
     WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']
     WdConfigProvider: typeof import('wot-design-uni/components/wd-config-provider/wd-config-provider.vue')['default']
     WdImg: typeof import('wot-design-uni/components/wd-img/wd-img.vue')['default']
-    WdRadio: typeof import('wot-design-uni/components/wd-radio/wd-radio.vue')['default']
-    WdRadioGroup: typeof import('wot-design-uni/components/wd-radio-group/wd-radio-group.vue')['default']
+    WdNavbar: typeof import('wot-design-uni/components/wd-navbar/wd-navbar.vue')['default']
     WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']
   }

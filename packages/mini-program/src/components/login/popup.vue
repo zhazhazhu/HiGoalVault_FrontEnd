@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useToast } from 'wot-design-uni'
 import { api } from '@/api'
 import { useUserStore } from '~/store'
@@ -9,11 +9,11 @@ const toast = useToast()
 const model = defineModel({ type: Boolean, default: false })
 const isAgreed = ref(false)
 
+const { auth } = useUserStore()
+
 function close() {
   model.value = false
 }
-
-const { auth } = useUserStore()
 
 async function onGetPhoneNumber(e) {
   const res = await uni.login()
@@ -39,6 +39,7 @@ function handleChange({ value }) {
 
 <template>
   <wd-action-sheet v-model="model" title="请阅读并勾选下方协议" custom-class="login_model" custom-header-class="login_model_header" @close="close">
+    <uni-nav-bar title="导航栏组件" dark />
     <wd-toast />
 
     <view class="flex flex-col items-center gap-32rpx p-28rpx h-750rpx">

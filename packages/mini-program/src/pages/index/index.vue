@@ -10,6 +10,7 @@ function handleClick() {
 
 <template>
   <view>
+    <wd-navbar />
     <wd-button @click="handleClick">
       Login
     </wd-button>

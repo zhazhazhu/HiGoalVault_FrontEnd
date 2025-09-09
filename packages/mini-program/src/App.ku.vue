@@ -7,6 +7,7 @@ const { theme, themeVars } = useTheme({
   buttonMediumRadius: '4px',
   buttonLargeRadius: '4px',
   actionSheetRadius: '20px',
+  overlayBg: '#00000087',
 })
 </script>
 
