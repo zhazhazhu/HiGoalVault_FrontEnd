@@ -42,6 +42,7 @@
     "yaml",
     "toml",
     "gql",
-    "graphql"
+    "graphql",
+    "scss"
   ]
 }

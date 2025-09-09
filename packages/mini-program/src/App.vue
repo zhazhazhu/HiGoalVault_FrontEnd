@@ -9,12 +9,6 @@ onHide(() => {
 })
 </script>
 
-<style>
-view,
-:before,
-:after {
-  border-width: 0;
-  border-style: solid;
-  border-color: #e5e7eb;
-}
+<style lang="scss">
+@import './styles/global.scss';
 </style>

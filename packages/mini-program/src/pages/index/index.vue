@@ -10,13 +10,13 @@ function handleClick() {
 
 <template>
   <view>
-    <wd-button :round="false" @click="handleClick">
+    <wd-button @click="handleClick">
       Login
     </wd-button>
 
-    <login-model v-model="show" />
+    <login-popup v-model="show" />
   </view>
 </template>
 
-<style lang="css">
+<style lang="scss">
 </style>

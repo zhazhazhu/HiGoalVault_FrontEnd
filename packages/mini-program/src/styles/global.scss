@@ -1,0 +1,18 @@
+view,
+:before,
+:after {
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
+// 登录弹窗
+.login_model_header {
+  background: linear-gradient(180deg, #ffefee 0%, #ffffff 100%);
+  --wot-action-sheet-title-fs: 38rpx;
+}
+
+.login_model {
+  --wot-button-large-height: 100%;
+  --wot-button-large-radius: 15rpx;
+}

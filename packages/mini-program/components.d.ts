@@ -7,8 +7,15 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    LoginModel: typeof import('./src/components/login/model.vue')['default']
+    LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     WdActionSheet: typeof import('wot-design-uni/components/wd-action-sheet/wd-action-sheet.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
+    WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']
+    WdConfigProvider: typeof import('wot-design-uni/components/wd-config-provider/wd-config-provider.vue')['default']
+    WdImg: typeof import('wot-design-uni/components/wd-img/wd-img.vue')['default']
+    WdRadio: typeof import('wot-design-uni/components/wd-radio/wd-radio.vue')['default']
+    WdRadioGroup: typeof import('wot-design-uni/components/wd-radio-group/wd-radio-group.vue')['default']
+    WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
+    WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']
   }
 }

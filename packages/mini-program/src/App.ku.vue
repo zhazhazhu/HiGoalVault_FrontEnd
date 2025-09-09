@@ -1,0 +1,18 @@
+<script setup lang="ts">
+import { useTheme } from './composables'
+
+const { theme, themeVars } = useTheme({
+  colorTheme: '#FF3B30',
+  buttonSmallRadius: '4px',
+  buttonMediumRadius: '4px',
+  buttonLargeRadius: '4px',
+  actionSheetRadius: '20px',
+})
+</script>
+
+<template>
+  <!-- 需要确保已注册 WdConfigProvider 组件 -->
+  <wd-config-provider :theme="theme" :theme-vars="themeVars">
+    <KuRootView />
+  </wd-config-provider>
+</template>
