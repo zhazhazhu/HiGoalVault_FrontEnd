@@ -3,16 +3,14 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
-      },
-      "anonymous": true
+        "navigationBarTitleText": ""
+      }
     },
     {
       "path": "pages/user/index",
       "style": {
-        "navigationBarTitleText": "个人中心"
-      },
-      "anonymous": false
+        "navigationBarTitleText": ""
+      }
     }
   ],
   "globalStyle": {

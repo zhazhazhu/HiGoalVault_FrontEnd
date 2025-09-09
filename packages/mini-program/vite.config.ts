@@ -13,6 +13,13 @@ export default defineConfig(async () => {
     plugins: [
       // make sure put it before `Uni()`
       Components({
+        extensions: ['vue', 'tsx'],
+        include: [
+          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+          /\.vue$/,
+          /\.vue\?vue/, // .vue
+        ],
+        directoryAsNamespace: true,
         resolvers: [WotResolver()],
       }),
       uni(),

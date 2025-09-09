@@ -2,6 +2,12 @@
 import { api } from '@/api'
 import { useUserStore } from '~/store'
 
+const model = defineModel({ type: Boolean, default: false })
+
+function close() {
+  model.value = false
+}
+
 const { auth } = useUserStore()
 
 async function getPhoneNumber(e) {
@@ -26,13 +32,17 @@ async function handleRefresh() {
 </script>
 
 <template>
-  <button open-type="getPhoneNumber" class="bg-amber" @getphonenumber="getPhoneNumber">
-    手机号一键登录
-  </button>
+  <wd-action-sheet v-model="model" title="请阅读并勾选下方协议" @close="close">
+    <view class="flex flex-col gap-4 h-800rpx">
+      <wd-button open-type="getPhoneNumber" class="bg-amber" @getphonenumber="getPhoneNumber">
+        手机号一键登录
+      </wd-button>
 
-  <button @click="handleRefresh">
-    刷新Token
-  </button>
+      <wd-button @click="handleRefresh">
+        刷新Token
+      </wd-button>
+    </view>
+  </wd-action-sheet>
 </template>
 
 <style lang='css' scoped></style>
