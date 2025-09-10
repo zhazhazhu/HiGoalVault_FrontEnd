@@ -1,6 +1,7 @@
 <script lang='ts' setup>
 import { ref } from 'vue'
 import { api } from '@/api'
+import { getTokenExpireDateTime } from '@/utils'
 import { useUserStore } from '~/store'
 
 const model = defineModel({ type: Boolean, default: false })
@@ -18,7 +19,11 @@ async function onGetPhoneNumber(e) {
   const res = await uni.login()
   const data = await api.autoLoginByPhone({ code: res.code, phoneCode: e.detail.code })
   if (data.code === 200) {
-    auth.value = data.result
+    auth.value = {
+      ...data.result,
+      accessTokenExpireDateTime: getTokenExpireDateTime(data.result.accessTokenExpireTime),
+      refreshTokenExpireDateTime: getTokenExpireDateTime(data.result.refreshTokenExpireTime),
+    }
   }
 }
 

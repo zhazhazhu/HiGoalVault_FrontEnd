@@ -1,5 +1,6 @@
 export interface LoginResult {
   accessToken: string
   refreshToken: string
-  expiresIn: number
+  accessTokenExpireTime: number
+  refreshTokenExpireTime: number
 }

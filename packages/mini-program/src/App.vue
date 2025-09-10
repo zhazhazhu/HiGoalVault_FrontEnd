@@ -2,9 +2,9 @@
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 import { useUserStore } from './store'
 
-const { privacySettings } = useUserStore()
+const { privacySettings, accessTokenExpired, refreshAccessToken } = useUserStore()
 
-onLaunch(() => {
+onLaunch(async () => {
   uni.getPrivacySetting({
     success: (res) => {
       console.log('getPrivacySetting success', res)
@@ -17,6 +17,9 @@ onLaunch(() => {
       console.log('getPrivacySetting fail', err)
     },
   })
+
+  if (accessTokenExpired.value)
+    await refreshAccessToken()
 })
 onShow(() => {
 })
