@@ -16,7 +16,8 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@higoal/api": "workspace:*"
+    "@higoal/api": "workspace:*",
+    "@higoal/hooks": "workspace:*"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.2.2",

@@ -23,6 +23,8 @@ function handleClick() {
 
 <template>
   <view>
+    <login-popup v-model="show" />
+
     <navbar ref="navbarInstance">
       <template #left>
         <view v-if="isLogin" class="i-uil-list-ul text-50rpx" />
@@ -35,7 +37,16 @@ function handleClick() {
       </template>
     </navbar>
 
-    <login-popup v-model="show" />
+    <container>
+      <tabs>
+        <tabs-item :name="0" label="发现">
+          发现
+        </tabs-item>
+        <tabs-item :name="1" label="关注">
+          关注
+        </tabs-item>
+      </tabs>
+    </container>
   </view>
 </template>
 

@@ -7,8 +7,11 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Container: typeof import('./src/components/container/index.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']
+    Tabs: typeof import('./src/components/tabs/index.vue')['default']
+    TabsItem: typeof import('./src/components/tabs/item.vue')['default']
     WdActionSheet: typeof import('wot-design-uni/components/wd-action-sheet/wd-action-sheet.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
     WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']

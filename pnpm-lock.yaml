@@ -11,6 +11,9 @@ importers:
       '@higoal/api':
         specifier: workspace:*
         version: link:packages/api
+      '@higoal/hooks':
+        specifier: workspace:*
+        version: link:packages/hooks
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^5.2.2
@@ -42,6 +45,8 @@ importers:
       '@dcloudio/types':
         specifier: ^3.4.19
         version: 3.4.19
+
+  packages/hooks: {}
 
   packages/mini-program:
     dependencies:

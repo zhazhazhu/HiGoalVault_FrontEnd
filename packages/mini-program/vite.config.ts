@@ -20,6 +20,7 @@ export default defineConfig(async () => {
           /\.vue$/,
           /\.vue\?vue/, // .vue
         ],
+        excludeNames: ['NOT'],
         directoryAsNamespace: true,
         resolvers: [WotResolver()],
       }),
