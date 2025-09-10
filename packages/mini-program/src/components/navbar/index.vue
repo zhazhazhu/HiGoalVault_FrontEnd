@@ -52,6 +52,7 @@ defineExpose({
 <style lang='scss' scoped>
 .navbar__container {
   background: var(--bg-color);
+  padding: 0 34rpx;
 }
 .navbar__container .navbar__content {
   height: var(--navbar-height, 100rpx);
@@ -63,7 +64,8 @@ defineExpose({
 .navbar__content__right {
   flex: 1;
   height: 80rpx;
-  line-height: 80rpx;
+  display: flex;
+  align-items: center;
 }
 .navbar__content__right {
   text-align: right;
