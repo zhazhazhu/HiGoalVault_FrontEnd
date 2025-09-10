@@ -1,30 +1,24 @@
 <script lang='ts' setup>
-import { ref, watch } from 'vue'
-import { useToast } from 'wot-design-uni'
+import { ref } from 'vue'
 import { api } from '@/api'
 import { useUserStore } from '~/store'
 
-const toast = useToast()
-
 const model = defineModel({ type: Boolean, default: false })
 const isAgreed = ref(false)
-
-const { auth } = useUserStore()
+const { auth, privacySettings } = useUserStore()
 
 function close() {
   model.value = false
 }
 
 async function onGetPhoneNumber(e) {
+  if (!e?.code)
+    return
+
   const res = await uni.login()
   const data = await api.autoLoginByPhone({ code: res.code, phoneCode: e.detail.code })
   if (data.code === 200) {
     auth.value = data.result
-  }
-}
-function goToUserAgreementPrivacy() {
-  if (isAgreed.value === false) {
-    toast.show('请勾选同意协议')
   }
 }
 
@@ -35,6 +29,22 @@ function handleCancel() {
 function handleChange({ value }) {
   isAgreed.value = value
 }
+
+function goToReadPrivacy() {
+  uni.openPrivacyContract({
+    success: (res) => {
+      console.log('openPrivacyContract success', res)
+    },
+    fail: (err) => {
+      console.log('openPrivacyContract fail', err)
+    },
+  })
+}
+
+function handleAgreePrivacyAuthorization(e) {
+  console.log('handleAgreePrivacyAuthorization', e)
+  isAgreed.value = true
+}
 </script>
 
 <template>
@@ -43,18 +53,16 @@ function handleChange({ value }) {
     <wd-toast />
 
     <view class="flex flex-col items-center gap-32rpx p-28rpx h-750rpx">
-      <wd-img :width="100" :height="100" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
+      <view class="my-30rpx flex items-center flex-col gap-20px">
+        <wd-img :width="100" :height="100" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
 
-      <wd-text text="LOGO" />
+        <wd-text text="LOGO" />
+      </view>
 
-      <view class="flex flex-col gap-32rpx">
+      <view class="flex flex-col items-center gap-32rpx">
         <view class="w-560rpx h-112rpx">
-          <wd-button v-if="!isAgreed" :round="false" block size="large" @click="goToUserAgreementPrivacy">
-            手机号一键登录
-          </wd-button>
-
-          <wd-button v-else open-type="getPhoneNumber" :round="false" block size="large" @getphonenumber="onGetPhoneNumber">
-            手机号一键登录
+          <wd-button :open-type="'getPhoneNumber|agreePrivacyAuthorization' as any" :round="false" block size="large" @getphonenumber="onGetPhoneNumber" @agreeprivacyauthorization="handleAgreePrivacyAuthorization">
+            同意协议并手机号一键登录
           </wd-button>
         </view>
 
@@ -66,7 +74,14 @@ function handleChange({ value }) {
 
         <view class="w-full">
           <wd-checkbox v-model="isAgreed" @change="handleChange">
-            我已经阅读并熟知《xxxxxxxxxxxxxxxxx协议》
+            <view class="flex flex-wrap items-center text-24rpx">
+              <text>
+                我已经阅读并熟知
+              </text>
+              <text @click.stop="goToReadPrivacy">
+                <wd-text type="primary" :text="privacySettings.privacyContractName" />
+              </text>
+            </view>
           </wd-checkbox>
         </view>
       </view>
