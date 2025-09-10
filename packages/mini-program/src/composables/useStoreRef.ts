@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
 
-export function useStoreRef<T>(key: string, value: T) {
-  const state = ref<T>(value)
+export function useStoreRef<T>(key: string, defaultValue: T) {
+  const state = ref<T>(uni.getStorageSync(key) || defaultValue)
 
   watch(state, (value) => {
     value !== undefined
