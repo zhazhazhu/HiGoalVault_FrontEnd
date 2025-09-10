@@ -4,9 +4,19 @@ import { useStoreRef } from '@/composables'
 
 export type Auth = LoginResult
 
+export interface PrivacySetting {
+  needAuthorization: boolean
+  privacyContractName: string
+}
+
 export function useUserStore() {
   // state
   const auth = useStoreRef<Auth | null>('AUTH', null)
+  const needAuthorization = useStoreRef<boolean>('NEED_AUTHORIZATION', false)
+  const privacySettings = useStoreRef<PrivacySetting>('PRIVACY_SETTINGS', {
+    needAuthorization: false,
+    privacyContractName: '',
+  })
 
   // getter
   const isLogin = computed(() => !!auth.value)
@@ -18,5 +28,7 @@ export function useUserStore() {
     isLogin,
     accessToken,
     refreshToken,
+    needAuthorization,
+    privacySettings,
   }
 }
