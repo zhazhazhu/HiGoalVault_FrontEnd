@@ -24,6 +24,10 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
     <view v-for="item in navs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
       {{ item.label }}
     </view>
+
+    <view class="flex-1 flex justify-end">
+      <slot name="right" />
+    </view>
   </view>
 </template>
 
