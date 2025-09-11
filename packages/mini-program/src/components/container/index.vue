@@ -23,9 +23,9 @@ const containerHeight = computed(() => {
 </script>
 
 <template>
-  <view class="container" :style="{ height: containerHeight }">
+  <div class="container flex flex-col" :style="{ height: containerHeight }">
     <slot />
-  </view>
+  </div>
 </template>
 
 <style lang='scss' scoped>

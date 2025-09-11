@@ -10,6 +10,7 @@ declare module 'vue' {
     Container: typeof import('./src/components/container/index.vue')['default']
     Converse: typeof import('./src/components/converse/index.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
+    Messages: typeof import('./src/components/messages/index.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
     TabsItem: typeof import('./src/components/tabs/item.vue')['default']
@@ -19,8 +20,8 @@ declare module 'vue' {
     WdConfigProvider: typeof import('wot-design-uni/components/wd-config-provider/wd-config-provider.vue')['default']
     WdIcon: typeof import('wot-design-uni/components/wd-icon/wd-icon.vue')['default']
     WdImg: typeof import('wot-design-uni/components/wd-img/wd-img.vue')['default']
-    WdInput: typeof import('wot-design-uni/components/wd-input/wd-input.vue')['default']
     WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
+    WdTextarea: typeof import('wot-design-uni/components/wd-textarea/wd-textarea.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']
   }
 }

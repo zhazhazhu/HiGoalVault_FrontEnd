@@ -20,3 +20,8 @@ view,
 .container {
   --hi-bg-color: #f3f3f3;
 }
+
+.hi-converse__textarea {
+  max-height: 100px;
+  --wot-textarea-fs: 15px;
+}

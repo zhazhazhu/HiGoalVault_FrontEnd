@@ -36,7 +36,12 @@ function handleClick() {
     </navbar>
 
     <container>
-      <converse />
+      <view class="flex-1">
+        <messages />
+      </view>
+      <view>
+        <converse />
+      </view>
     </container>
   </view>
 </template>
