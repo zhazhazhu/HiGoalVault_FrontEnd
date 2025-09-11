@@ -35,7 +35,9 @@ function handleClick() {
       </template>
     </navbar>
 
-    <container />
+    <container>
+      <converse />
+    </container>
   </view>
 </template>
 

@@ -8,7 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Container: typeof import('./src/components/container/index.vue')['default']
-    Convserse: typeof import('./src/components/convserse/index.vue')['default']
+    Converse: typeof import('./src/components/converse/index.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
