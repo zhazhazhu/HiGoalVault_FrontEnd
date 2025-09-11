@@ -14,6 +14,8 @@ function handleClick() {
 
 <template>
   <view>
+    <login-popup v-model="show" />
+
     <navbar ref="navbarInstance" bg-color="#F3F3F3">
       <template #left>
         <view v-if="isLogin" class="i-uil-list-ul text-50rpx" />

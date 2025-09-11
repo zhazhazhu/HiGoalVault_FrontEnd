@@ -17,7 +17,6 @@ const statusBarHeight = computed(() => uni.getSystemInfoSync().statusBarHeight |
 
 const navbarStyle = computed<CSSProperties>(() => ({
   '--bg-color': bgColor,
-  '--navbar-height': '100rpx',
 }))
 
 function changeBgColor(color: string) {
@@ -55,7 +54,7 @@ defineExpose({
   padding: 0 32rpx;
 }
 .navbar__container .navbar__content {
-  height: var(--navbar-height, 100rpx);
+  height: 100rpx;
   display: flex;
   align-items: flex-start;
   justify-content: center;
