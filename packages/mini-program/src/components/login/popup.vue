@@ -13,11 +13,12 @@ function close() {
 }
 
 async function onGetPhoneNumber(e) {
-  if (!e?.code)
+  const phoneCode = e?.code
+  if (!phoneCode)
     return
 
   const res = await uni.login()
-  const data = await api.autoLoginByPhone({ code: res.code, phoneCode: e.detail.code })
+  const data = await api.autoLoginByPhone({ code: res.code, phoneCode })
   if (data.code === 200) {
     auth.value = {
       ...data.result,
@@ -46,8 +47,7 @@ function goToReadPrivacy() {
   })
 }
 
-function handleAgreePrivacyAuthorization(e) {
-  console.log('handleAgreePrivacyAuthorization', e)
+function handleAgreePrivacyAuthorization() {
   isAgreed.value = true
 }
 </script>

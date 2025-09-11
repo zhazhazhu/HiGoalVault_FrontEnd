@@ -1,4 +1,4 @@
-const namespaced = 'hg'
+const namespaced = 'hi'
 
 const isPrefix = 'is-'
 

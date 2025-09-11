@@ -55,6 +55,7 @@
       "urlCheck": false
     },
     "usingComponents": true,
+    // TODO
     "__usePrivacyCheck__": true
   },
   "mp-alipay": {

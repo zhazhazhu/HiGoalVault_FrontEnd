@@ -5,13 +5,14 @@ import { useTabs } from './tabs'
 
 const props = defineProps<{
   modelValue?: string | number
+  customNavClass?: string
 }>()
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string | number): void
   (e: 'tabChange', val: string | number): void
 }>()
 defineSlots<{
-  right: () => void
+  navRight: () => void
 }>()
 const cs = useClassesName('tabs')
 const { navs } = useTabs(props, emit)
@@ -19,9 +20,9 @@ const { navs } = useTabs(props, emit)
 
 <template>
   <view :class="[cs.s()]">
-    <TabNav :navs="navs">
+    <TabNav :navs="navs" :custom-nav-class="customNavClass">
       <template #right>
-        <slot name="right" />
+        <slot name="navRight" />
       </template>
     </TabNav>
 
@@ -31,4 +32,8 @@ const { navs } = useTabs(props, emit)
   </view>
 </template>
 
-<style lang='css' scoped></style>
+<style lang='scss' scoped>
+.hi-tabs {
+  --tab-nav-bg: white;
+}
+</style>

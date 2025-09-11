@@ -6,6 +6,7 @@ import { TABS_INJECTION_KEY } from '../tabs'
 
 const { navs } = defineProps<{
   navs: Navs[]
+  customNavClass?: string
 }>()
 const emit = defineEmits<{
   (e: 'tabClick', tab: TabChildrenProps, ev: Event): void
@@ -20,7 +21,7 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
 </script>
 
 <template>
-  <view :class="cs.m('container')">
+  <view :class="[cs.m('container'), customNavClass]">
     <view v-for="item in navs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
       {{ item.label }}
     </view>
@@ -32,20 +33,21 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
 </template>
 
 <style lang='scss' scoped>
-.hg-tab-nav--container {
+.hi-tab-nav--container {
   display: flex;
-  gap: 40rpx;
-  padding-bottom: 40rpx;
+  align-items: center;
+  gap: 46rpx;
+  padding: 0 20rpx 40rpx 20rpx;
 }
 
-.hg-tab-nav--item {
+.hi-tab-nav--item {
   text-align: center;
   font-size: 32rpx;
   color: #666666;
   position: relative;
 }
 
-.hg-tab-nav--item.is-active {
+.hi-tab-nav--item.is-active {
   color: #333333;
   font-weight: 500;
   &::after {
