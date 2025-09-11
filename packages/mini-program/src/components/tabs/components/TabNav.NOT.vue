@@ -37,7 +37,7 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
   display: flex;
   align-items: center;
   gap: 46rpx;
-  padding: 0 20rpx 40rpx 20rpx;
+  padding: 0 20rpx 40rpx 32rpx;
 }
 
 .hi-tab-nav--item {

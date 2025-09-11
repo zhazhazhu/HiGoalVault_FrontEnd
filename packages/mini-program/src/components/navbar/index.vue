@@ -52,7 +52,7 @@ defineExpose({
 <style lang='scss' scoped>
 .navbar__container {
   background: var(--bg-color);
-  padding: 0 20rpx;
+  padding: 0 32rpx;
 }
 .navbar__container .navbar__content {
   height: var(--navbar-height, 100rpx);
