@@ -3,7 +3,7 @@ import { Api } from '@higoal/api'
 
 export interface LauncherOptions extends Partial<UniApp.RequestOptions> {}
 
-const baseUrl = 'http://192.168.1.103:8888'
+const baseUrl = 'http://218.108.203.90:8888'
 
 const defaultOptions: LauncherOptions = {
   header: {
