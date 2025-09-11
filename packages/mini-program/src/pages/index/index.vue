@@ -41,16 +41,13 @@ function handleClick() {
     </navbar>
 
     <tabs :custom-nav-class="cs.m('tab-nav')">
-      <template #navRight>
-        <wd-input type="text" placeholder="A股又崩了" prefix-icon="search" no-border custom-class="w-420rpx rounded-42px px-10px py-4px" />
-      </template>
-
       <tabs-item :name="0" label="发现">
         <ViewList />
       </tabs-item>
       <tabs-item :name="1" label="关注">
         关注
       </tabs-item>
+      <tabs-item right icon="search" />
     </tabs>
   </view>
 </template>

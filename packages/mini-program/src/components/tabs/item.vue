@@ -9,6 +9,7 @@ defineOptions({
 const props = defineProps<{
   name?: string | number
   label?: string | number
+  right?: boolean
 }>()
 
 const instance = getCurrentInstance()!

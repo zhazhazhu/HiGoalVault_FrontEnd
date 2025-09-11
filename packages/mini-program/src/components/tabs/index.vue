@@ -11,20 +11,13 @@ const emit = defineEmits<{
   (e: 'update:modelValue', val: string | number): void
   (e: 'tabChange', val: string | number): void
 }>()
-defineSlots<{
-  navRight: () => void
-}>()
 const cs = useClassesName('tabs')
 const { navs } = useTabs(props, emit)
 </script>
 
 <template>
   <view :class="[cs.s()]">
-    <TabNav :navs="navs" :custom-nav-class="customNavClass">
-      <template #right>
-        <slot name="navRight" />
-      </template>
-    </TabNav>
+    <TabNav :navs="navs" :custom-nav-class="customNavClass" />
 
     <view :class="[cs.m('content')]">
       <slot />

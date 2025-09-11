@@ -9,6 +9,8 @@ type TabChildrenProps = InstanceType<typeof TabItem>['$props']
 interface Navs {
   name: string | number
   label?: string | number
+  right?: boolean
+  icon?: string
 }
 type UseTabChildren = ReturnType<typeof useTabChild>
 interface InjectTabsContext extends UseTabChildren {
@@ -31,9 +33,11 @@ export function useTabs(props: TabsProps, emit: TabsEmits) {
 
   const tabPanes = useTabChild(instance, 'TabItem')
 
-  const navs = computed(() => tabPanes.children.value.map((item, index) => ({
+  const navs = computed(() => tabPanes.children.value.map(item => ({
     label: item.slots.label?.() || item.props?.label,
-    name: item.props.name || index,
+    name: item.props.name,
+    right: item.props?.right,
+    icon: item.props?.icon,
   }) as Navs))
 
   provide(TABS_INJECTION_KEY, {

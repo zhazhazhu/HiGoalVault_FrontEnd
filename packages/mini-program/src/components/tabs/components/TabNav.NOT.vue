@@ -1,10 +1,10 @@
 <script lang='ts' setup>
 import type { Navs, TabChildrenProps } from '../tabs'
 import { useClassesName } from '@higoal/hooks'
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 import { TABS_INJECTION_KEY } from '../tabs'
 
-const { navs } = defineProps<{
+const props = defineProps<{
   navs: Navs[]
   customNavClass?: string
 }>()
@@ -13,21 +13,31 @@ const emit = defineEmits<{
 }>()
 const { activeName } = inject(TABS_INJECTION_KEY)!
 const cs = useClassesName('tab-nav')
+const leftNavs = computed(() => props.navs.filter(item => !item.right))
+const rightNavs = computed(() => props.navs.filter(item => item.right))
 
 function handleTabClick(tab: TabChildrenProps, ev: Event) {
-  activeName.value = tab.name || 0
+  if (tab.name !== undefined) {
+    activeName.value = tab.name || 0
+  }
   emit('tabClick', tab, ev)
 }
 </script>
 
 <template>
   <view :class="[cs.m('container'), customNavClass]">
-    <view v-for="item in navs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
-      {{ item.label }}
+    <view :class="cs.m('left')">
+      <view v-for="item in leftNavs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
+        <text>{{ item.label }}</text>
+        <wd-icon v-if="item.icon" :name="item.icon" />
+      </view>
     </view>
 
-    <view class="flex-1 flex justify-end">
-      <slot name="right" />
+    <view :class="cs.m('right')">
+      <view v-for="item in rightNavs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
+        <text>{{ item.label }}</text>
+        <wd-icon v-if="item.icon" :name="item.icon" />
+      </view>
     </view>
   </view>
 </template>
@@ -35,9 +45,14 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
 <style lang='scss' scoped>
 .hi-tab-nav--container {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+}
+
+.hi-tab-nav--left,
+.hi-tab-nav--right {
   gap: 46rpx;
-  padding: 0 20rpx 40rpx 32rpx;
+  display: flex;
+  align-items: center;
 }
 
 .hi-tab-nav--item {
@@ -45,6 +60,7 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
   font-size: 32rpx;
   color: #666666;
   position: relative;
+  line-height: 46rpx;
 }
 
 .hi-tab-nav--item.is-active {
