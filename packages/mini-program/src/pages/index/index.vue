@@ -3,6 +3,7 @@ import type { NavbarInstance } from '@/components/navbar'
 import { useClassesName } from '@higoal/hooks'
 import { ref, watch } from 'vue'
 import { useUserStore } from '@/store'
+import ViewList from './components/ViewList.vue'
 
 const show = ref(false)
 const navbarInstance = ref<NavbarInstance>()
@@ -45,7 +46,7 @@ function handleClick() {
       </template>
 
       <tabs-item :name="0" label="发现">
-        发现
+        <ViewList />
       </tabs-item>
       <tabs-item :name="1" label="关注">
         关注
