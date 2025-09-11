@@ -3,16 +3,23 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "首页"
       }
     },
     {
       "path": "pages/user/index",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "个人中心"
+      }
+    },
+    {
+      "path": "pages/chat/index",
+      "style": {
+        "navigationBarTitleText": "对话"
       }
     }
   ],
+  "entryPagePath": "pages/chat/index",
   "globalStyle": {
     "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#F8F8F8",

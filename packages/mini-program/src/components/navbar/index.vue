@@ -73,7 +73,10 @@ defineExpose({
 .navbar__title {
   text-align: center;
   line-height: 80rpx;
+  height: 80rpx;
   font-size: 32rpx;
-  max-width: 200rpx;
+  max-width: 300rpx;
+  display: flex;
+  align-items: center;
 }
 </style>
