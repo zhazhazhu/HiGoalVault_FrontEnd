@@ -1,9 +1,10 @@
 import type { Launcher, Options, RequestResult } from '@higoal/api'
 import { Api } from '@higoal/api'
+import { useSse } from '@/api/wx'
 
 export interface LauncherOptions extends Partial<UniApp.RequestOptions> {}
 
-const baseUrl = 'http://218.108.203.90:8888'
+export const baseUrl = 'http://218.108.203.90:8888'
 
 const defaultOptions: LauncherOptions = {
   header: {
@@ -19,7 +20,7 @@ function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: La
       data,
       ...options,
       success(res) {
-        resolve(res.data as RequestResult<T>)
+        resolve(res.data as any)
       },
       fail(err) {
         reject(err)
@@ -81,3 +82,5 @@ launcher = launcherWeb
 // #endif
 
 export const api = new Api(launcher)
+
+export { useSse }
