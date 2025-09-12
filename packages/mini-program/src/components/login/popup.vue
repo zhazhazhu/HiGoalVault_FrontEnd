@@ -17,14 +17,29 @@ async function onGetPhoneNumber(e) {
   if (!phoneCode)
     return
 
-  const res = await uni.login()
-  const data = await api.autoLoginByPhone({ code: res.code, phoneCode })
-  if (data.code === 200) {
-    auth.value = {
-      ...data.result,
-      accessTokenExpireDateTime: getTokenExpireDateTime(data.result.accessTokenExpireTime),
-      refreshTokenExpireDateTime: getTokenExpireDateTime(data.result.refreshTokenExpireTime),
+  try {
+    const res = await uni.login()
+    const data = await api.autoLoginByPhone({ code: res.code, phoneCode })
+    if (data.code === 200) {
+      auth.value = {
+        ...data.result,
+        accessTokenExpireDateTime: getTokenExpireDateTime(data.result.accessTokenExpireTime),
+        refreshTokenExpireDateTime: getTokenExpireDateTime(data.result.refreshTokenExpireTime),
+      }
+      model.value = false // 登录成功后关闭弹窗
+    } else {
+      console.error('登录失败:', data.message)
+      uni.showToast({
+        title: data.message || '登录失败',
+        icon: 'none'
+      })
     }
+  } catch (error) {
+    console.error('登录请求失败:', error)
+    uni.showToast({
+      title: '网络请求失败，请检查网络连接',
+      icon: 'none'
+    })
   }
 }
 
