@@ -7,7 +7,7 @@ export function requestInterceptor() {
     invoke: (options) => {
       options.header = {
         ...options.header,
-        Authorization: `Bearer ${accessToken.value}`,
+        AccessToken: `${accessToken.value}`,
       }
     },
   })
