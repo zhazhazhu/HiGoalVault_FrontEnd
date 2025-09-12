@@ -43,16 +43,4 @@ export class Api {
   public refreshToken(refreshToken: string) {
     return this.launcher<'uni'>(`${API.REFRESH_TOKEN}/${refreshToken}`).get<LoginResult>()
   }
-
-  public sseConnect() {
-    return this.launcher<'uni'>(API.SSE_CONNECT).get()
-  }
-
-  public sseStop() {
-    return this.launcher<'uni'>(API.SSE_STOP).post()
-  }
-
-  public sseQuery(data: { query: string }) {
-    return this.launcher<'uni'>(API.SSE_QUERY).post(data)
-  }
 }
