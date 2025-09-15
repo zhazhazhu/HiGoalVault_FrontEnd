@@ -2,8 +2,7 @@
 import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
-import { useSse } from '@/api'
-import { ClientType } from '@/api/wx'
+import SourceAction from './components/SourceAction.Not.vue'
 
 withDefaults(defineProps<{
   placeholder?: string
@@ -14,10 +13,11 @@ withDefaults(defineProps<{
 const model = defineModel({ type: String, default: '' })
 const cs = useClassesName('converse')
 const cursorPosition = ref(0)
-const cursorSpacing = ref(36)
+const cursorSpacing = ref(40)
 const converseContainerStyle = ref<CSSProperties>({
   paddingBottom: '40px',
 })
+const sourceActionShow = ref(false)
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
 }
@@ -27,21 +27,18 @@ function onKeyboardHeightChange(e) {
 }
 
 async function onConfirmMessage() {
-  const _model = model.value.trim()
-  model.value = ''
-  const { onChunkReceived } = useSse({
-    chatId: '123',
-    clientType: ClientType.WECHAT_MP,
-    query: _model,
-  })
-  onChunkReceived((data) => {
-    console.log(data)
-  })
+
+}
+
+function onAddSource() {
+  sourceActionShow.value = true
 }
 </script>
 
 <template>
   <view :class="cs.m('wrapper')" :style="converseContainerStyle">
+    <SourceAction v-model="sourceActionShow" />
+
     <view :class="cs.m('container')">
       <view :class="cs.e('left')">
         <view class="i-weui-voice-outlined" :class="cs.e('icon')" />
@@ -53,12 +50,13 @@ async function onConfirmMessage() {
           no-border
           auto-height
           confirm-type="send"
-          placeholder-style="color: #666; line-height: 24px"
+          placeholder-style="color: #666; line-height: 28px"
           :placeholder="placeholder"
           :show-confirm-bar="false"
           :adjust-position="false"
           :custom-textarea-class="cs.e('textarea')"
           :cursor="cursorPosition"
+          :disable-default-padding="true"
           @focus="() => {
             cursorPosition = model.length
           }"
@@ -69,7 +67,7 @@ async function onConfirmMessage() {
       </view>
 
       <view :class="cs.e('right')">
-        <view class="i-weui-add2-outlined" :class="cs.e('icon')" />
+        <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" />
         <view v-if="model.trim().length > 0" class="i-fluent-color-send-16" :class="cs.e('icon')" />
       </view>
     </view>

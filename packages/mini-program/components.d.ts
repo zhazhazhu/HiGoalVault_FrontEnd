@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Container: typeof import('./src/components/container/index.vue')['default']
     Converse: typeof import('./src/components/converse/index.vue')['default']
+    'ConverseComponentsSourceAction.Not': typeof import('./src/components/converse/components/SourceAction.Not.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     Messages: typeof import('./src/components/messages/index.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']
@@ -18,6 +19,7 @@ declare module 'vue' {
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
     WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']
     WdConfigProvider: typeof import('wot-design-uni/components/wd-config-provider/wd-config-provider.vue')['default']
+    WdDivider: typeof import('wot-design-uni/components/wd-divider/wd-divider.vue')['default']
     WdIcon: typeof import('wot-design-uni/components/wd-icon/wd-icon.vue')['default']
     WdImg: typeof import('wot-design-uni/components/wd-img/wd-img.vue')['default']
     WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
