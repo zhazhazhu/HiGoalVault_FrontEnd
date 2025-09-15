@@ -44,5 +44,14 @@ export const useUserStore = defineStore('user', {
         this.auth = null
       }
     },
+    async getUserInfo() {
+      if (!this.accessToken || this.accessTokenExpired)
+        return
+
+      const res = await api.getUserInfo()
+      if (res.code === 200) {
+        this.userInfo = res.result
+      }
+    },
   },
 })
