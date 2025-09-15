@@ -41,7 +41,7 @@ function onMessageTypeChange() {
 </script>
 
 <template>
-  <view :class="cs.m('wrapper')" :style="converseContainerStyle">
+  <view class="mt-20px" :class="cs.m('wrapper')" :style="converseContainerStyle">
     <SourceAction v-model="sourceActionShow" />
 
     <view :class="cs.m('container')">

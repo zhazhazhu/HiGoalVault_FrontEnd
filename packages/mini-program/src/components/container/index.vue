@@ -30,7 +30,6 @@ const containerHeight = computed(() => {
 
 <style lang='scss' scoped>
 .container {
-  padding: 0 32rpx;
   background-color: var(--hi-bg-color);
 }
 </style>

@@ -1,12 +1,14 @@
 <script lang='ts' setup>
 import type { ChatMessage } from '@higoal/api'
 import type { NavbarInstance } from '@/components/navbar'
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useUserStore } from '@/store'
 
 const show = ref(false)
 const navbarInstance = ref<NavbarInstance>()
+const scrollViewRef = ref()
+const scrollTop = ref(0)
 const userStore = useUserStore()
 const chatMessages = ref<ChatMessage[]>([])
 
@@ -14,11 +16,27 @@ function handleClick() {
   show.value = !show.value
 }
 
+// 滚动到底部的函数
+function scrollToBottom() {
+  nextTick(() => {
+    // 设置一个很大的值确保滚动到最底部
+    scrollTop.value = 999999
+  })
+}
+
 onMounted(async () => {
   const data = await api.getChatHistory({ userId: userStore.userInfo!.id })
   if (data.code === 200) {
-    chatMessages.value = data.result
+    chatMessages.value = data.result.records
+    // 数据加载完成后滚动到底部
+    await nextTick()
+    scrollToBottom()
   }
+})
+
+// 暴露scrollToBottom函数供外部调用
+defineExpose({
+  scrollToBottom,
 })
 </script>
 
@@ -46,10 +64,15 @@ onMounted(async () => {
     </navbar>
 
     <container>
-      <view class="flex-1">
+      <scroll-view
+        ref="scrollViewRef"
+        class="flex-1 h-full overflow-y-auto"
+        :scroll-y="true"
+        :scroll-top="scrollTop"
+      >
         <messages :messages="chatMessages" />
-      </view>
-      <view>
+      </scroll-view>
+      <view class="px-32rpx">
         <converse />
       </view>
     </container>

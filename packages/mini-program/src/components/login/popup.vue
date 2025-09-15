@@ -1,7 +1,6 @@
 <script lang='ts' setup>
 import { ref } from 'vue'
 import { api } from '@/api'
-import { requestInterceptor } from '@/intercepter'
 import { getTokenExpireDateTime } from '@/utils'
 import { useUserStore } from '~/store'
 
@@ -28,9 +27,6 @@ async function onGetPhoneNumber(e) {
         refreshTokenExpireDateTime: getTokenExpireDateTime(data.result.refreshTokenExpireTime),
       }
       model.value = false // 登录成功后关闭弹窗
-      requestInterceptor()
-      const userInfoData = await api.getUserInfo()
-      console.log('userInfoData', userInfoData)
     }
     else {
       console.error('登录失败:', data.message)

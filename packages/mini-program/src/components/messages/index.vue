@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { ChatMessage } from '@higoal/api'
 import { useClassesName } from '@higoal/hooks'
-import MessageCard from './components/MessageCard.NOT.vue'
+import MessageCard from './components/MessageCard.vue'
 
 withDefaults(defineProps<{
   messages?: ChatMessage[]
@@ -13,8 +13,8 @@ const cs = useClassesName('messages')
 </script>
 
 <template>
-  <view :class="cs.m('wrapper')">
-    <MessageCard v-for="item in messages" :key="item.chatId" :message="item" />
+  <view :class="cs.m('wrapper')" class="px-32rpx">
+    <MessageCard v-for="item, i in messages" :key="i" :message="item" />
   </view>
 </template>
 
