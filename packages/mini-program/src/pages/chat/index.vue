@@ -1,15 +1,25 @@
 <script lang='ts' setup>
+import type { ChatMessage } from '@higoal/api'
 import type { NavbarInstance } from '@/components/navbar'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { api } from '@/api'
 import { useUserStore } from '@/store'
 
 const show = ref(false)
 const navbarInstance = ref<NavbarInstance>()
 const userStore = useUserStore()
+const chatMessages = ref<ChatMessage[]>([])
 
 function handleClick() {
   show.value = !show.value
 }
+
+onMounted(async () => {
+  const data = await api.getChatHistory({ userId: userStore.userInfo!.id })
+  if (data.code === 200) {
+    chatMessages.value = data.result
+  }
+})
 </script>
 
 <template>
@@ -37,7 +47,7 @@ function handleClick() {
 
     <container>
       <view class="flex-1">
-        <messages />
+        <messages :messages="chatMessages" />
       </view>
       <view>
         <converse />

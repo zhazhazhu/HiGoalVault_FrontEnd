@@ -1,4 +1,4 @@
-import type { LoginResult } from './index.d'
+import type { ChatHistoryRequestQuery, ChatMessage, LoginResult, UserInfo } from './index.d'
 import { API } from './url'
 
 export * from './index.d'
@@ -42,5 +42,13 @@ export class Api {
 
   public refreshToken(refreshToken: string) {
     return this.launcher<'uni'>(`${API.REFRESH_TOKEN}/${refreshToken}`).get<LoginResult>()
+  }
+
+  public getUserInfo() {
+    return this.launcher<'uni'>(API.USER_INFO).get<UserInfo>()
+  }
+
+  public getChatHistory(query: ChatHistoryRequestQuery) {
+    return this.launcher<'uni'>(`${API.GET_CHAT_HISTORY}?userId=${query.userId}`).get<ChatMessage[]>()
   }
 }

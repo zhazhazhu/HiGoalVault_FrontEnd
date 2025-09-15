@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
+import { watch } from 'vue'
 import { useUserStore } from './store/user'
 
 const userStore = useUserStore()
+
+watch(() => userStore.accessToken, async (val) => {
+  if (val) {
+    await userStore.getUserInfo()
+  }
+})
 
 onLaunch(async () => {
   uni.getPrivacySetting({
