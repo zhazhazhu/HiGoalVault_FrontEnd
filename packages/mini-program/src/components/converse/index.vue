@@ -18,6 +18,8 @@ const converseContainerStyle = ref<CSSProperties>({
   paddingBottom: '40px',
 })
 const sourceActionShow = ref(false)
+const messageType = ref<'text' | 'voice'>('text')
+
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
 }
@@ -33,6 +35,9 @@ async function onConfirmMessage() {
 function onAddSource() {
   sourceActionShow.value = true
 }
+function onMessageTypeChange() {
+  messageType.value = messageType.value === 'text' ? 'voice' : 'text'
+}
 </script>
 
 <template>
@@ -41,16 +46,16 @@ function onAddSource() {
 
     <view :class="cs.m('container')">
       <view :class="cs.e('left')">
-        <view class="i-weui-voice-outlined" :class="cs.e('icon')" />
+        <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" />
       </view>
 
-      <view :class="cs.e('input')">
+      <view v-show="messageType === 'text'" :class="cs.e('input')">
         <wd-textarea
           v-model="model"
           no-border
           auto-height
           confirm-type="send"
-          placeholder-style="color: #666; line-height: 28px"
+          placeholder-style="color: #666; line-height: 28px;"
           :placeholder="placeholder"
           :show-confirm-bar="false"
           :adjust-position="false"
@@ -64,6 +69,10 @@ function onAddSource() {
           @keyboardheightchange="onKeyboardHeightChange"
           @confirm="onConfirmMessage"
         />
+      </view>
+
+      <view v-show="messageType === 'voice'" :class="cs.m('voice')">
+        按住 说话
       </view>
 
       <view :class="cs.e('right')">
@@ -81,13 +90,14 @@ function onAddSource() {
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
   border-radius: 20px;
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
 }
 .hi-converse__right {
   display: flex;
   align-items: center;
 }
-.hi-converse__input {
+.hi-converse__input,
+.hi-converse--voice {
   flex: 1;
   padding: 0 10px;
 }
@@ -99,5 +109,11 @@ function onAddSource() {
   & + & {
     margin-left: 10px;
   }
+}
+.hi-converse--voice {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 36px;
 }
 </style>
