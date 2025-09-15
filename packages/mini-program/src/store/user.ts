@@ -1,5 +1,5 @@
-import type { LoginResult } from '@higoal/api'
-import { computed } from 'vue'
+import type { LoginResult, UserInfo } from '@higoal/api'
+import { defineStore } from 'pinia'
 import { api } from '@/api'
 import { useStoreRef } from '@/composables'
 import { getTokenExpireDateTime, isTokenExpired } from '@/utils'
@@ -14,49 +14,35 @@ export interface PrivacySetting {
   privacyContractName: string
 }
 
-export function useUserStore() {
-  // state
-  const auth = useStoreRef<Auth | null>('AUTH', null)
-  const needAuthorization = useStoreRef<boolean>('NEED_AUTHORIZATION', false)
-  const privacySettings = useStoreRef<PrivacySetting>('PRIVACY_SETTINGS', {
-    needAuthorization: false,
-    privacyContractName: '',
-  })
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    auth: useStoreRef<Auth | null>('AUTH', null),
+    privacySettings: useStoreRef<PrivacySetting | null>('PRIVACY_SETTINGS', null),
+    userInfo: useStoreRef<UserInfo | null>('USER_INFO', null),
+  }),
+  getters: {
+    isLogin: state => !!state.auth,
+    accessToken: state => state.auth?.accessToken,
+    refreshToken: state => state.auth?.refreshToken,
+    accessTokenExpired: state => isTokenExpired(state.auth?.accessTokenExpireDateTime),
+    refreshTokenExpired: state => isTokenExpired(state.auth?.refreshTokenExpireDateTime),
+  },
+  actions: {
+    async refreshAccessToken() {
+      if (!this.refreshToken || !this.refreshTokenExpired)
+        return
 
-  // getter
-  const isLogin = computed(() => !!auth.value)
-  const accessToken = computed(() => auth.value?.accessToken)
-  const refreshToken = computed(() => auth.value?.refreshToken)
-  const accessTokenExpired = computed(() => isTokenExpired(auth.value?.accessTokenExpireDateTime))
-  const refreshTokenExpired = computed(() => isTokenExpired(auth.value?.refreshTokenExpireDateTime))
-
-  // action
-  async function refreshAccessToken() {
-    if (!refreshToken.value || !refreshTokenExpired.value)
-      return
-
-    const res = await api.refreshToken(refreshToken.value)
-    if (res.code === 200) {
-      auth.value = {
-        ...res.result,
-        accessTokenExpireDateTime: getTokenExpireDateTime(res.result.accessTokenExpireTime),
-        refreshTokenExpireDateTime: getTokenExpireDateTime(res.result.refreshTokenExpireTime),
+      const res = await api.refreshToken(this.refreshToken)
+      if (res.code === 200) {
+        this.auth = {
+          ...res.result,
+          accessTokenExpireDateTime: getTokenExpireDateTime(res.result.accessTokenExpireTime),
+          refreshTokenExpireDateTime: getTokenExpireDateTime(res.result.refreshTokenExpireTime),
+        }
       }
-    }
-    else {
-      auth.value = null
-    }
-  }
-
-  return {
-    auth,
-    isLogin,
-    accessToken,
-    refreshToken,
-    needAuthorization,
-    privacySettings,
-    accessTokenExpired,
-    refreshTokenExpired,
-    refreshAccessToken,
-  }
-}
+      else {
+        this.auth = null
+      }
+    },
+  },
+})

@@ -5,7 +5,7 @@ import { useUserStore } from '@/store'
 
 const show = ref(false)
 const navbarInstance = ref<NavbarInstance>()
-const { isLogin } = useUserStore()
+const userStore = useUserStore()
 
 function handleClick() {
   show.value = !show.value
@@ -18,7 +18,7 @@ function handleClick() {
 
     <navbar ref="navbarInstance" bg-color="#F3F3F3">
       <template #left>
-        <view v-if="isLogin" class="i-uil-list-ul text-50rpx" />
+        <view v-if="userStore.isLogin" class="i-uil-list-ul text-50rpx" />
         <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
           <view class="i-uil-user text-46rpx mr-6rpx" />
           <text class="text-24rpx" user-select="false">

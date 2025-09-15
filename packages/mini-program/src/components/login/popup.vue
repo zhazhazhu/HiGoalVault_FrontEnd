@@ -1,12 +1,13 @@
 <script lang='ts' setup>
 import { ref } from 'vue'
 import { api } from '@/api'
+import { requestInterceptor } from '@/intercepter'
 import { getTokenExpireDateTime } from '@/utils'
 import { useUserStore } from '~/store'
 
 const model = defineModel({ type: Boolean, default: false })
 const isAgreed = ref(false)
-const { auth, privacySettings } = useUserStore()
+const userStore = useUserStore()
 
 function close() {
   model.value = false
@@ -21,24 +22,29 @@ async function onGetPhoneNumber(e) {
     const res = await uni.login()
     const data = await api.autoLoginByPhone({ code: res.code, phoneCode })
     if (data.code === 200) {
-      auth.value = {
+      userStore.auth = {
         ...data.result,
         accessTokenExpireDateTime: getTokenExpireDateTime(data.result.accessTokenExpireTime),
         refreshTokenExpireDateTime: getTokenExpireDateTime(data.result.refreshTokenExpireTime),
       }
       model.value = false // 登录成功后关闭弹窗
-    } else {
+      requestInterceptor()
+      const userInfoData = await api.getUserInfo()
+      console.log('userInfoData', userInfoData)
+    }
+    else {
       console.error('登录失败:', data.message)
       uni.showToast({
         title: data.message || '登录失败',
-        icon: 'none'
+        icon: 'none',
       })
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('登录请求失败:', error)
     uni.showToast({
       title: '网络请求失败，请检查网络连接',
-      icon: 'none'
+      icon: 'none',
     })
   }
 }
@@ -99,7 +105,7 @@ function handleAgreePrivacyAuthorization() {
                 我已经阅读并熟知
               </text>
               <text @click.stop="goToReadPrivacy">
-                <wd-text type="primary" :text="privacySettings.privacyContractName" />
+                <wd-text type="primary" :text="userStore.privacySettings?.privacyContractName" />
               </text>
             </view>
           </wd-checkbox>
