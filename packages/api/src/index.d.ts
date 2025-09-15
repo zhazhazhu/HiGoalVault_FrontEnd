@@ -38,6 +38,15 @@ export interface ChatMessage {
   query: string // 用户问题
   queryId: string // 问题id
   reference: ChatMessageReference[]
+  response: string // 回答问题
+}
+
+export interface ChatMessageWithPage {
+  current: number
+  pages: number
+  size: number
+  total: number
+  records: ChatMessage[]
 }
 
 export interface ChatMessageStockData {

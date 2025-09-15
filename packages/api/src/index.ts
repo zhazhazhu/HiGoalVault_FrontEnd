@@ -1,4 +1,4 @@
-import type { ChatHistoryRequestQuery, ChatMessage, LoginResult, UserInfo } from './index.d'
+import type { ChatHistoryRequestQuery, ChatMessageWithPage, LoginResult, UserInfo } from './index.d'
 import { API } from './url'
 
 export * from './index.d'
@@ -49,6 +49,6 @@ export class Api {
   }
 
   public getChatHistory(query: ChatHistoryRequestQuery) {
-    return this.launcher<'uni'>(`${API.GET_CHAT_HISTORY}?userId=${query.userId}`).get<ChatMessage[]>()
+    return this.launcher<'uni'>(API.GET_CHAT_HISTORY).post<ChatMessageWithPage>(query)
   }
 }
