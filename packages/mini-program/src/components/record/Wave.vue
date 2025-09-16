@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const cs = useClassesName('wave')
 
-const canvasContext = ref<any>(null)
+const canvasContext = ref<UniNamespace.CanvasContext | null>(null)
 const animationTimer = ref<number | null>(null)
 
 const canvasWidth = 300
@@ -99,7 +99,7 @@ watch(() => props.isRecording, (newValue) => {
     startAnimation()
   }
   else {
-    // 动画自然结束
+    canvasContext.value?.clearRect(0, 0, canvasWidth, canvasHeight)
   }
 }, { immediate: true }) // 立即执行一次，确保在组件加载时显示基础波形
 
@@ -133,10 +133,5 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-}
-
-.wave-canvas {
-  // 确保背景透明
 }
 </style>

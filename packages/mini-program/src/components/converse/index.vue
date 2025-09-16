@@ -39,8 +39,13 @@ function onAddSource() {
 function onMessageTypeChange() {
   messageType.value = messageType.value === 'text' ? 'voice' : 'text'
 }
-function onRecord() {
-  isRecording.value = !isRecording.value
+
+function onTouchStart() {
+  isRecording.value = true
+}
+
+function onTouchEnd() {
+  isRecording.value = false
 }
 </script>
 
@@ -76,7 +81,7 @@ function onRecord() {
         />
       </view>
 
-      <view v-show="messageType === 'voice'" :class="cs.m('voice')" @click="onRecord">
+      <view v-show="messageType === 'voice'" :class="cs.m('voice')" @touchstart="onTouchStart" @touchend="onTouchEnd">
         按住 说话
       </view>
 
