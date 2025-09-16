@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { ChatMessage } from '@higoal/api'
+import type { ChatMessageAfter, ChatMessageReference } from '@higoal/api'
 import { useClassesName } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
@@ -8,7 +8,7 @@ import { computed, ref } from 'vue'
 import 'highlight.js/styles/github.css'
 
 const props = defineProps<{
-  message: ChatMessage
+  message: ChatMessageAfter
 }>()
 const cs = useClassesName('message-card')
 const md = new MarkdownIt({
@@ -26,6 +26,13 @@ const viewDeepThink = ref(true)
 const htmlContent = computed(() => {
   return md.render(props.message.response)
 })
+
+function onReference(item: ChatMessageReference) {
+  uni.setClipboardData({
+    data: item.url,
+    showToast: true,
+  })
+}
 </script>
 
 <template>
@@ -36,19 +43,27 @@ const htmlContent = computed(() => {
 
     <view :class="cs.m('model')">
       <view :class="cs.e('deep-think')">
-        <view :class="cs.e('deep-think-title')" @click="viewDeepThink = !viewDeepThink">
+        <view :class="cs.e('deep-think-title')" @click="() => { viewDeepThink = !viewDeepThink }">
           <text class="mr-10px">
             已深度思考 (用时x秒)
           </text>
           <view :class="viewDeepThink ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
         </view>
-        <view v-show="viewDeepThink" :class="cs.e('deep-think-content')" align="left">
+        <view v-if="viewDeepThink" :class="cs.e('deep-think-content')" align="left">
           {{ message.message }}
         </view>
       </view>
+
       <view :class="cs.m('response')">
         <!-- 使用自定义组件渲染markdown内容，避免XSS攻击风险 -->
         <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
+      </view>
+    </view>
+
+    <view :class="cs.m('reference')">
+      <view v-for="item, index in message.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
+        <view class="i-material-symbols-subdirectory-arrow-right-rounded text-20px mr-10px" />
+        <text>{{ item.name }}</text>
       </view>
     </view>
   </view>
@@ -100,5 +115,20 @@ const htmlContent = computed(() => {
 .hi-message-card__rich-text {
   color: #333333;
   line-height: 24px;
+}
+.hi-message-card--reference {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.hi-message-card__reference-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(102, 102, 102, 0.08);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
 }
 </style>

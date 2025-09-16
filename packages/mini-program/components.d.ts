@@ -12,6 +12,7 @@ declare module 'vue' {
     'ConverseComponentsSourceAction.Not': typeof import('./src/components/converse/components/SourceAction.Not.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     Messages: typeof import('./src/components/messages/index.vue')['default']
+    MessagesMessageCard: typeof import('./src/components/messages/MessageCard.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
     TabsItem: typeof import('./src/components/tabs/item.vue')['default']

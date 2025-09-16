@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { ChatMessage } from '@higoal/api'
+import type { ChatMessageAfter } from '@higoal/api'
 import type { NavbarInstance } from '@/components/navbar'
 import { nextTick, onMounted, ref } from 'vue'
 import { api } from '@/api'
@@ -10,7 +10,7 @@ const navbarInstance = ref<NavbarInstance>()
 const scrollViewRef = ref()
 const scrollTop = ref(0)
 const userStore = useUserStore()
-const chatMessages = ref<ChatMessage[]>([])
+const chatMessages = ref<ChatMessageAfter[]>([])
 
 function handleClick() {
   show.value = !show.value
@@ -27,7 +27,20 @@ function scrollToBottom() {
 onMounted(async () => {
   const data = await api.getChatHistory({ userId: userStore.userInfo!.id })
   if (data.code === 200) {
-    chatMessages.value = data.result.records
+    chatMessages.value = data.result.records.map((item) => {
+      let reference
+      try {
+        reference = JSON.parse(item.reference)
+      }
+      catch {
+        reference = []
+      }
+
+      return {
+        ...item,
+        reference,
+      }
+    })
     // 数据加载完成后滚动到底部
     await nextTick()
     scrollToBottom()

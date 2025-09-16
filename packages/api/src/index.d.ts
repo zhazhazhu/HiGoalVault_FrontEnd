@@ -31,14 +31,18 @@ export interface ChatHistoryRequestQuery extends Page {
   userId: string
 }
 
-export interface ChatMessage {
+export interface ChatMessageBefore {
   chatId: string
   data: ChatMessageStockData[] // 股票图数据
   message: string // 深度思考内容
   query: string // 用户问题
   queryId: string // 问题id
-  reference: ChatMessageReference[]
+  reference: string // 引用
   response: string // 回答问题
+}
+
+export interface ChatMessageAfter extends Omit<ChatMessageBefore, 'reference'> {
+  reference: ChatMessageReference[]
 }
 
 export interface ChatMessageWithPage {
@@ -46,7 +50,7 @@ export interface ChatMessageWithPage {
   pages: number
   size: number
   total: number
-  records: ChatMessage[]
+  records: ChatMessageBefore[]
 }
 
 export interface ChatMessageStockData {
@@ -54,5 +58,6 @@ export interface ChatMessageStockData {
 }
 
 export interface ChatMessageReference {
-
+  name: string
+  url: string
 }

@@ -1,10 +1,10 @@
 <script lang='ts' setup>
-import type { ChatMessage } from '@higoal/api'
+import type { ChatMessageAfter } from '@higoal/api'
 import { useClassesName } from '@higoal/hooks'
 import MessageCard from './components/MessageCard.vue'
 
 withDefaults(defineProps<{
-  messages?: ChatMessage[]
+  messages?: ChatMessageAfter[]
 }>(), {
   messages: () => [],
 })

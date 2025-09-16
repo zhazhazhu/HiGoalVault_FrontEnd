@@ -14,15 +14,21 @@ function onChooseImage(sourceType: 'album' | 'camera') {
     success(res) {
       console.log(res)
     },
+    fail(res) {
+      console.log(res)
+    },
   })
 }
 function onChooseFile() {
-  uni.chooseFile({
+  // #ifdef MP-WEIXIN
+  uni.chooseMessageFile({
     count: 10,
+    type: 'file',
     success(res) {
       console.log(res)
     },
   })
+  // #endif
 }
 </script>
 
@@ -61,7 +67,7 @@ function onChooseFile() {
       <view class="w-full h-1px bg-#F3F3F3 my-20px" />
 
       <view class="text-center mb-20px">
-        <wd-text text="取消" size="18px" color="#121212" bold @click="close" />
+        <wd-text text="取消" size="18px" color="#121212" bold @click.stop="close" />
       </view>
     </view>
   </wd-action-sheet>
