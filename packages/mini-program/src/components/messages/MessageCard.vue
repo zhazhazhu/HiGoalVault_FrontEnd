@@ -10,6 +10,7 @@ import 'highlight.js/styles/github.css'
 const props = defineProps<{
   message: ChatMessageAfter
 }>()
+
 const cs = useClassesName('message-card')
 const md = new MarkdownIt({
   html: true,

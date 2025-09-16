@@ -19,6 +19,7 @@ const converseContainerStyle = ref<CSSProperties>({
 })
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
+const isRecording = ref(false)
 
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
@@ -38,11 +39,15 @@ function onAddSource() {
 function onMessageTypeChange() {
   messageType.value = messageType.value === 'text' ? 'voice' : 'text'
 }
+function onRecord() {
+  isRecording.value = !isRecording.value
+}
 </script>
 
 <template>
   <view class="mt-20px" :class="cs.m('wrapper')" :style="converseContainerStyle">
     <SourceAction v-model="sourceActionShow" />
+    <RecordPopup v-model="isRecording" />
 
     <view :class="cs.m('container')">
       <view :class="cs.e('left')">
@@ -71,7 +76,7 @@ function onMessageTypeChange() {
         />
       </view>
 
-      <view v-show="messageType === 'voice'" :class="cs.m('voice')">
+      <view v-show="messageType === 'voice'" :class="cs.m('voice')" @click="onRecord">
         按住 说话
       </view>
 
