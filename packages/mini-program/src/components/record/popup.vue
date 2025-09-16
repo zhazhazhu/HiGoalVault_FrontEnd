@@ -3,15 +3,16 @@ import { useClassesName } from '@higoal/hooks'
 import { getCurrentInstance, ref, watch } from 'vue'
 import Wave from './Wave.vue'
 
+defineProps<{
+  focusedButton: 'cancel' | 'microphone' | 'text' | null
+}>()
 const model = defineModel({ type: Boolean, default: false })
-
 const cs = useClassesName('record')
 const record = uni.getRecorderManager()
 const currentDecibel = ref(0)
-const focusedButton = ref<'cancel' | 'microphone' | 'text' | null>(null)
 const instance = getCurrentInstance()
-
-const query = uni.createSelectorQuery().in(instance?.proxy)
+const query = uni.createSelectorQuery().in(instance)
+const buttonGroup = query.select('#button-group')
 
 record.onFrameRecorded((res) => {
   const { frameBuffer } = res
@@ -84,76 +85,25 @@ function stopRecording() {
 watch(() => model.value, (value) => {
   if (value) {
     startRecording()
-    focusedButton.value = 'microphone'
   }
   else {
     stopRecording()
-    focusedButton.value = null
   }
 })
 
-function onTouchStart() {
-  focusedButton.value = 'microphone'
-}
-
-function onTouchMove(event) {
-  const touch = event.touches[0]
-  if (!touch) {
-    return
-  }
-
-  const buttonGroup = query.select('.hi-record__button-group')
-
-  // 使用小程序的方式获取按钮组元素信息
-  buttonGroup.boundingClientRect((data) => {
-    if (data && !Array.isArray(data)) {
-      const buttonGroupRect = data as UniApp.NodeInfo
-      const centerX = (buttonGroupRect.left || 0) + (buttonGroupRect.width || 0) / 2
-      const touchX = touch.clientX
-
-      // 检查触摸点是否还在按钮组范围内
-      const isInButtonGroup = touchX >= (buttonGroupRect.left || 0)
-        && touchX <= (buttonGroupRect.right || 0)
-        && touch.clientY >= (buttonGroupRect.top || 0)
-        && touch.clientY <= (buttonGroupRect.bottom || 0)
-
-      if (isInButtonGroup) {
-        // 根据触摸位置判断聚焦哪个按钮
-        const leftThreshold = centerX - 50 // 左侧阈值
-        const rightThreshold = centerX + 50 // 右侧阈值
-
-        if (touchX < leftThreshold) {
-          focusedButton.value = 'cancel'
-        }
-        else if (touchX > rightThreshold) {
-          focusedButton.value = 'text'
-        }
-        else {
-          focusedButton.value = 'microphone'
-        }
-      }
-      else {
-        // 如果滑出按钮组范围，取消所有聚焦
-        focusedButton.value = null
-        model.value = false
-      }
-    }
-  }).exec()
-}
-
-function onTouchEnd() {
-  focusedButton.value = null
-}
+defineExpose({
+  buttonGroup,
+})
 </script>
 
 <template>
   <wd-popup
     v-model="model"
     position="bottom"
-    custom-style="border-radius: 16px; margin: 20px; margin-bottom: 30px;"
-    :lazy-render="true"
-    :lock-scroll="true"
-    :root-portal="true"
+    custom-style="height: 220px; border-radius: 16px; margin: 20px;"
+    lazy-render
+    lock-scroll
+    safe-area-inset-bottom
     transition="zoom-in"
     @close="handleClose"
   >
@@ -166,21 +116,19 @@ function onTouchEnd() {
         松开发送
       </text>
 
-      <view :class="cs.e('button-group')">
-        <view :class="[cs.e('cancel'), cs.e('secund-button'), { focus: focusedButton === 'cancel' }]">
+      <view id="button-group" :class="cs.e('button-group')">
+        <view class="transition-all" :class="[cs.e('cancel'), cs.e('secund-button'), { focus: focusedButton === 'cancel' }]">
           <view class="i-weui-close-filled icon text-28px" />
         </view>
 
         <view
+          class="transition-all"
           :class="[cs.e('microphone'), { focus: focusedButton === 'microphone' }]"
-          @touchstart="onTouchStart"
-          @touchmove="onTouchMove"
-          @touchend="onTouchEnd"
         >
-          <view class="i-iconamoon-microphone icon text-40px color-#333" />
+          <view class="i-iconamoon-microphone text-40px color-#333" />
         </view>
 
-        <view :class="[cs.e('text'), cs.e('secund-button'), { focus: focusedButton === 'text' }]">
+        <view class="transition-all" :class="[cs.e('text'), cs.e('secund-button'), { focus: focusedButton === 'text' }]">
           <text class="icon text-20px">
             文
           </text>
@@ -211,7 +159,7 @@ function onTouchEnd() {
   color: #666666;
   line-height: 18px;
   text-align: center;
-  padding: 20px 0;
+  margin: 20px 0;
 }
 
 .hi-record__button-group {
@@ -219,8 +167,6 @@ function onTouchEnd() {
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  touch-action: manipulation;
-  user-select: none;
 }
 .hi-record__microphone {
   width: 72px;

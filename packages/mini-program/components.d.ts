@@ -10,6 +10,7 @@ declare module 'vue' {
     Container: typeof import('./src/components/container/index.vue')['default']
     Converse: typeof import('./src/components/converse/index.vue')['default']
     'ConverseComponentsSourceAction.Not': typeof import('./src/components/converse/components/SourceAction.Not.vue')['default']
+    'ConverseComponentsVoice.Not': typeof import('./src/components/converse/components/Voice.Not.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     Messages: typeof import('./src/components/messages/index.vue')['default']
     MessagesMessageCard: typeof import('./src/components/messages/MessageCard.vue')['default']

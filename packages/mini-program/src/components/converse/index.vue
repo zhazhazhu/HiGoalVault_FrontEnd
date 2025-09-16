@@ -3,6 +3,7 @@ import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
 import SourceAction from './components/SourceAction.Not.vue'
+import Voice from './components/Voice.Not.vue'
 
 withDefaults(defineProps<{
   placeholder?: string
@@ -19,7 +20,6 @@ const converseContainerStyle = ref<CSSProperties>({
 })
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
-const isRecording = ref(false)
 
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
@@ -39,20 +39,11 @@ function onAddSource() {
 function onMessageTypeChange() {
   messageType.value = messageType.value === 'text' ? 'voice' : 'text'
 }
-
-function onTouchStart() {
-  isRecording.value = true
-}
-
-function onTouchEnd() {
-  isRecording.value = false
-}
 </script>
 
 <template>
   <view class="mt-20px" :class="cs.m('wrapper')" :style="converseContainerStyle">
     <SourceAction v-model="sourceActionShow" />
-    <RecordPopup v-model="isRecording" />
 
     <view :class="cs.m('container')">
       <view :class="cs.e('left')">
@@ -81,8 +72,8 @@ function onTouchEnd() {
         />
       </view>
 
-      <view v-show="messageType === 'voice'" :class="cs.m('voice')" @touchstart="onTouchStart" @touchend="onTouchEnd">
-        按住 说话
+      <view v-show="messageType === 'voice'" :class="cs.m('voice')">
+        <Voice />
       </view>
 
       <view :class="cs.e('right')">
@@ -119,11 +110,5 @@ function onTouchEnd() {
   & + & {
     margin-left: 10px;
   }
-}
-.hi-converse--voice {
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 36px;
 }
 </style>
