@@ -63,7 +63,6 @@ function onShareToMall() {}
 <template>
   <view :class="cs.m('wrapper')">
     <wd-toast />
-    <share-popup v-model="share.isChecked" />
     <view ref="userInstance" :class="cs.m('user')">
       {{ message.query }}
     </view>

@@ -94,6 +94,7 @@ defineExpose({
 <template>
   <view>
     <login-popup v-model="show" />
+    <share-popup v-model="share.isChecked" />
 
     <navbar ref="navbarInstance" bg-color="#F3F3F3">
       <template #left>
@@ -130,4 +131,4 @@ defineExpose({
   </view>
 </template>
 
-<style lang='css' scoped></style>
+<style lang='scss' scoped></style>
