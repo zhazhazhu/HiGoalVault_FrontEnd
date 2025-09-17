@@ -61,7 +61,7 @@ function onTouchMove(event) {
 <template>
   <RecordPopup ref="recordPopupRef" v-model="isRecording" :focused-button="recordPopupFocusedButton" />
 
-  <view :class="cs.m('wrapper')" @longpress="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
+  <view :class="cs.m('wrapper')" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
     按住 说话
   </view>
 </template>

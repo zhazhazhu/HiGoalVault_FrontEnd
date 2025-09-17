@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, ref, watch } from 'vue'
+import { computed, getCurrentInstance, ref, watch } from 'vue'
 import Wave from './Wave.vue'
 
-defineProps<{
+const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null
 }>()
 const model = defineModel({ type: Boolean, default: false })
@@ -13,6 +13,15 @@ const currentDecibel = ref(0)
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
 const buttonGroup = query.select('#button-group')
+const text = computed(() => {
+  if (props.focusedButton === 'cancel') {
+    return '松手取消'
+  }
+  else if (props.focusedButton === 'microphone') {
+    return '松开发送'
+  }
+  return '松开编辑文字'
+})
 
 record.onFrameRecorded((res) => {
   const { frameBuffer } = res
@@ -42,19 +51,17 @@ record.onFrameRecorded((res) => {
   // 更新 ref，触发 Canvas 重新绘制
   currentDecibel.value = mappedAmplitude
 })
-// 监听录音开始事件
+
 record.onStart(() => {
   console.log('录音开始')
 })
 
-// 监听录音停止事件
 record.onStop((res) => {
   console.log('录音停止', res)
   model.value = false
   currentDecibel.value = 0
 })
 
-// 监听录音错误事件
 record.onError((err) => {
   console.error('录音错误', err)
   model.value = false
@@ -113,7 +120,7 @@ defineExpose({
       </view>
 
       <text :class="cs.e('description')">
-        松开发送
+        {{ text }}
       </text>
 
       <view id="button-group" :class="cs.e('button-group')">
