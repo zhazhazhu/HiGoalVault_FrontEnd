@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>对话-ICON</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="16" height="16"></rect>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1对话-默认模式1" transform="translate(-28, -202)">
+            <rect fill="#F3F3F3" x="0" y="0" width="375" height="812"></rect>
+            <g id="编组-6" transform="translate(16, 154)">
+                <g id="标签组" fill="#FFFFFF">
+                    <rect id="矩形" x="0" y="0" width="343" height="90" rx="8"></rect>
+                </g>
+                <g id="编组-2" transform="translate(12, 48)">
+                    <g id="刷新" transform="translate(7, 7)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="路径"></g>
+                        <g id="编组" mask="url(#mask-2)" stroke="#666666" stroke-dasharray="0,0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.57894739">
+                            <g transform="translate(1, 1)">
+                                <line x1="14.2105263" y1="0.777777778" x2="14.2105263" y2="7" id="路径" fill-rule="nonzero"></line>
+                                <line x1="5.36056177e-09" y1="7" x2="5.36056177e-09" y2="13.2222222" id="路径" fill-rule="nonzero"></line>
+                                <path d="M0,7 C0,10.8659833 3.18114478,14 7.10526324,14 C9.02194748,14 10.7613949,13.2523222 12.0394738,12.03685 M14.2105265,7 C14.2105265,3.13401667 11.0293817,0 7.10526324,0 C5.09782901,0 3.28484215,0.820151111 1.99267108,2.13888889" id="路径-3"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

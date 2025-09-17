@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>添加</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="351" height="64" rx="12"></rect>
+        <filter x="-5.1%" y="-15.6%" width="108.0%" height="143.8%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="-4" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.08 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-3" x="0" y="0" width="351" height="64" rx="12"></rect>
+        <filter x="-5.1%" y="-15.6%" width="108.0%" height="143.8%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="-4" dy="4" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.08 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1对话-默认模式1" transform="translate(-321, -718)">
+            <rect fill="#F3F3F3" x="0" y="0" width="375" height="812"></rect>
+            <g id="输入框-语音+添加" transform="translate(12, 702)">
+                <g id="矩形">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <g id="语音-" transform="translate(14, 16)">
+                    <g id="语音" transform="translate(4, 4)">
+                        <rect id="矩形" stroke="#000000" stroke-width="1.5" fill="#FFFFFF" x="-0.75" y="-0.75" width="25.5" height="25.5" rx="12"></rect>
+                        <g id="icon/语音输入" transform="translate(5.7015, 4)" fill="#000000" fill-rule="nonzero">
+                            <path d="M8.87923588,0.245529843 C8.72763463,0.0886147265 8.51880434,0 8.30061797,0 C8.0824316,0 7.87360131,0.0886147265 7.72200006,0.245529843 C7.43086336,0.555228254 7.43086336,1.03796495 7.72200006,1.34766336 C11.2688267,4.90141732 11.2688267,10.6558469 7.72200006,14.2096009 C7.39967398,14.5323269 7.39967398,15.0551451 7.72200006,15.3778712 C8.04472609,15.7001973 8.5675443,15.7001973 8.89027033,15.3778712 C13.0408676,11.1858283 13.0359502,4.4315247 8.87925337,0.245529843 L8.87923588,0.245529843 Z M5.25320349,3.14414537 C4.93942459,2.86349567 4.46484886,2.86349567 4.15106997,3.14414537 C3.86528355,3.45595099 3.86528355,3.93449077 4.15106997,4.24629638 C6.18267553,6.2885219 6.18267553,9.58837419 4.15106997,11.6305997 C3.87040983,11.9443813 3.87040983,12.4189691 4.15106997,12.7327507 C4.46287303,13.0185265 4.94140043,13.0185265 5.25320349,12.7327507 C7.84284575,10.0610971 7.84284575,5.815799 5.25320349,3.14414537 L5.25320349,3.14414537 Z M0.403815996,6.90243379 C0.145358843,7.15901047 0,7.50813369 0,7.87232004 C0,8.23650638 0.145358843,8.5856296 0.403815996,8.84220628 C0.796872464,9.2387247 1.39038171,9.3588113 1.90666849,9.14628315 C2.42295526,8.933755 2.75992481,8.43063916 2.75992481,7.87232004 C2.75992481,7.31400091 2.42295526,6.81088507 1.90666849,6.59835692 C1.39038171,6.38582878 0.796872464,6.50591537 0.403815996,6.90243379 Z" id="形状"></path>
+                        </g>
+                    </g>
+                </g>
+                <g id="添加-2" transform="translate(309, 16)">
+                    <g id="添加" transform="translate(4, 4)">
+                        <rect id="矩形" stroke="#000000" stroke-width="1.5" fill="#FFFFFF" x="-0.75" y="-0.75" width="25.5" height="25.5" rx="12"></rect>
+                        <g transform="translate(2, 2)" fill="#000000" fill-rule="nonzero">
+                            <rect id="矩形" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                            <path d="M16.575,9.0625 L10.95,9.0625 L10.95,3.4375 C10.95,2.91973305 10.530267,2.5 10.0125,2.5 C9.49473305,2.5 9.075,2.91973305 9.075,3.4375 L9.075,9.0625 L3.45,9.0625 C2.93223305,9.0625 2.5125,9.48223305 2.5125,10 C2.5125,10.517767 2.93223305,10.9375 3.45,10.9375 L9.075,10.9375 L9.075,16.5625 C9.075,17.080267 9.49473305,17.5 10.0125,17.5 C10.530267,17.5 10.95,17.080267 10.95,16.5625 L10.95,10.9375 L16.575,10.9375 C17.092767,10.9375 17.5125,10.517767 17.5125,10 C17.5125,9.48223305 17.092767,9.0625 16.575,9.0625 Z" id="路径"></path>
+                        </g>
+                    </g>
+                </g>
+                <text id="你的金融助理，随便…" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" line-spacing="32" fill="#666666">
+                    <tspan x="52" y="33">你的金融助理，随便…</tspan>
+                </text>
+            </g>
+            <g id="输入框-语音+添加" transform="translate(12, 702)">
+                <g id="矩形">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                </g>
+                <g id="添加-2" transform="translate(309, 16)">
+                    <g id="添加" transform="translate(4, 4)">
+                        <rect id="矩形" stroke="#000000" stroke-width="1.5" fill="#FFFFFF" x="-0.75" y="-0.75" width="25.5" height="25.5" rx="12"></rect>
+                        <g transform="translate(2, 2)" fill="#000000" fill-rule="nonzero">
+                            <rect id="矩形" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                            <path d="M16.575,9.0625 L10.95,9.0625 L10.95,3.4375 C10.95,2.91973305 10.530267,2.5 10.0125,2.5 C9.49473305,2.5 9.075,2.91973305 9.075,3.4375 L9.075,9.0625 L3.45,9.0625 C2.93223305,9.0625 2.5125,9.48223305 2.5125,10 C2.5125,10.517767 2.93223305,10.9375 3.45,10.9375 L9.075,10.9375 L9.075,16.5625 C9.075,17.080267 9.49473305,17.5 10.0125,17.5 C10.530267,17.5 10.95,17.080267 10.95,16.5625 L10.95,10.9375 L16.575,10.9375 C17.092767,10.9375 17.5125,10.517767 17.5125,10 C17.5125,9.48223305 17.092767,9.0625 16.575,9.0625 Z" id="路径"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

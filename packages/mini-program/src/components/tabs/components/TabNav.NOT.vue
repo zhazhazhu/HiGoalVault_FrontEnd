@@ -71,11 +71,12 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
     display: block;
     position: absolute;
     left: 50%;
-    background-color: #ff4d4f; /* 小图标的颜色 */
-    transform: translateX(-50%); /* 水平居中 */
-    height: 4px; /* 确保高度设置 */
-    width: 30px; /* 确保宽度设置 */
-    border-radius: 9999px;
+    transform: translateX(-50%);
+    background-image: url(/static/navbar/svg/路径.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 10px;
   }
 }
 </style>

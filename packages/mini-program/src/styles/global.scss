@@ -1,4 +1,5 @@
-@use '@/static/chat/index.scss';
+@use '@/static/chat/index.scss' as *;
+@use '@/static/navbar/index.scss' as *;
 
 view,
 :before,

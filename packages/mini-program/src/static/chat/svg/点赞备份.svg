@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon/点赞备份</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1对话-默认模式1" transform="translate(-271, -202)">
+            <rect fill="#F3F3F3" x="0" y="0" width="375" height="812"></rect>
+            <g id="编组-6" transform="translate(16, 154)">
+                <g id="标签组" fill="#FFFFFF">
+                    <rect id="矩形" x="0" y="0" width="343" height="90" rx="8"></rect>
+                </g>
+                <g id="编组-2" transform="translate(12, 48)" stroke="#666666" stroke-dasharray="0,0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                    <g id="icon/点赞备份" transform="translate(243, 0)">
+                        <g id="分享2" transform="translate(7, 7)">
+                            <path d="M8.42105263,0 L16,7.38461538 L8.42105263,14.3589744 L8.42105263,9.84615385 C4.49122807,9.84615385 1.68421053,11.8974359 0,16 C0,9.02564103 2.10526316,4.51282051 8.42105263,4.51282051 L8.42105263,0 Z" id="路径-1"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

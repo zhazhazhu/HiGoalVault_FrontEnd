@@ -85,18 +85,19 @@ function onShareToMall() {}
         <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
       </view>
 
-      <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px">
-        <view class="i-material-symbols-light-refresh-rounded text-24px" @click="onRefresh" />
-        <view class="i-material-symbols-content-copy-outline-rounded text-24px" @click="onCopy" />
+      <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
+        <view class="chat-icon size-30px" @click="onRefresh" />
+        <view class="copy-icon size-30px" @click="onCopy" />
         <view class="flex-1" />
-        <view class="i-ic-baseline-share text-24px" @click="onShareToMall" />
-        <view class="i-ri-wechat-fill text-24px" @click="openSharePopup" />
+        <view class="like-backup size-30px" />
+        <view class="favorite-icon size-30px" @click="onShareToMall" />
+        <view class="wechat-icon size-30px" @click="openSharePopup" />
       </view>
     </view>
 
     <view :class="cs.m('reference')">
       <view v-for="item, index in message.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
-        <view class="i-material-symbols-subdirectory-arrow-right-rounded text-20px mr-10px" />
+        <view class="next-level size-16px mr-6px" />
         <text>{{ item.name }}</text>
       </view>
     </view>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="8px" viewBox="0 0 24 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>路径</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-dasharray="0,0" stroke-linecap="round">
+        <g id="1对话-默认模式（已暂停生成）备份" transform="translate(-203, -74)" fill-rule="nonzero" stroke="#FF3B30" stroke-width="3">
+            <g id="容器-372" transform="translate(0, 44)">
+                <g id="画板-7" transform="translate(141, 6)">
+                    <g id="画板-8" transform="translate(56, 0)">
+                        <g id="选中" transform="translate(6, 24)">
+                            <path d="M2,2 C4.06897568,4.66666667 7.40230901,6 12,6 C16.597691,6 19.9310243,4.66666667 22,2" id="路径"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
