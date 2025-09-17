@@ -121,6 +121,7 @@ onUnmounted(() => {
 <template>
   <view :class="cs.m('wrapper')" class="wave-wrapper">
     <canvas
+      type="2d"
       canvas-id="waveCanvas"
       class="wave-canvas"
       :style="{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }"

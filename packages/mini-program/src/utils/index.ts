@@ -14,3 +14,7 @@ export function isTokenExpired(expireDateTime?: number) {
   const now = dayjs().unix()
   return now > (expireDateTime - EXPIRE_TIME)
 }
+
+export function markdownToText(markdown: string) {
+  return markdown.replace(/\n/g, ' ')
+}

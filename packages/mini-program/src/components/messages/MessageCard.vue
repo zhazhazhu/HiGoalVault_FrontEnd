@@ -4,13 +4,17 @@ import { useClassesName } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref } from 'vue'
+import { useToast } from 'wot-design-uni'
 
+import { useChatInject } from '@/composables/inject'
+import { markdownToText } from '@/utils'
 import 'highlight.js/styles/github.css'
 
 const props = defineProps<{
   message: ChatMessageAfter
 }>()
 
+const { share } = useChatInject()!
 const cs = useClassesName('message-card')
 const md = new MarkdownIt({
   html: true,
@@ -23,6 +27,8 @@ const md = new MarkdownIt({
   },
 })
 const viewDeepThink = ref(true)
+const toast = useToast()
+const userInstance = ref<Element>()
 
 const htmlContent = computed(() => {
   return md.render(props.message.response)
@@ -34,11 +40,31 @@ function onReference(item: ChatMessageReference) {
     showToast: true,
   })
 }
+
+function onRefresh() {}
+function onCopy() {
+  const response = markdownToText(props.message.response)
+  uni.setClipboardData({
+    data: `${props.message.message}\n${response}`,
+    success() {
+      toast.show('复制成功')
+    },
+  })
+}
+
+function openSharePopup() {
+  share.value.isChecked = true
+  share.value.ids.push(props.message.id)
+}
+
+function onShareToMall() {}
 </script>
 
 <template>
   <view :class="cs.m('wrapper')">
-    <view :class="cs.m('user')">
+    <wd-toast />
+    <share-popup v-model="share.isChecked" />
+    <view ref="userInstance" :class="cs.m('user')">
       {{ message.query }}
     </view>
 
@@ -58,6 +84,14 @@ function onReference(item: ChatMessageReference) {
       <view :class="cs.m('response')">
         <!-- 使用自定义组件渲染markdown内容，避免XSS攻击风险 -->
         <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
+      </view>
+
+      <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px">
+        <view class="i-material-symbols-light-refresh-rounded text-24px" @click="onRefresh" />
+        <view class="i-material-symbols-content-copy-outline-rounded text-24px" @click="onCopy" />
+        <view class="flex-1" />
+        <view class="i-ic-baseline-share text-24px" @click="onShareToMall" />
+        <view class="i-ri-wechat-fill text-24px" @click="openSharePopup" />
       </view>
     </view>
 

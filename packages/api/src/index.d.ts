@@ -32,6 +32,7 @@ export interface ChatHistoryRequestQuery extends Page {
 }
 
 export interface ChatMessageBefore {
+  id: string
   chatId: string
   data: ChatMessageStockData[] // 股票图数据
   message: string // 深度思考内容

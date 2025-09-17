@@ -1,26 +1,55 @@
 <script lang='ts' setup>
 import type { ChatMessageAfter } from '@higoal/api'
 import type { NavbarInstance } from '@/components/navbar'
-import { nextTick, onMounted, ref } from 'vue'
+import type { Share } from '@/composables/inject'
+import { onShareAppMessage } from '@dcloudio/uni-app'
+import { getCurrentInstance, nextTick, onMounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
+import { chatInjectKey } from '@/composables/inject'
 import { useUserStore } from '@/store'
 
 const show = ref(false)
 const navbarInstance = ref<NavbarInstance>()
-const scrollViewRef = ref()
 const scrollTop = ref(0)
 const userStore = useUserStore()
 const chatMessages = ref<ChatMessageAfter[]>([])
+const share = ref<Share>({
+  ids: [],
+  isChecked: false,
+})
+const query = uni.createSelectorQuery().in(getCurrentInstance())
+const scrollViewInstance = query.select('#scroll-view')
+
+watch(() => share.value.isChecked, (newVal) => {
+  if (!newVal) {
+    share.value.ids = []
+  }
+})
+
+/**
+ * 当第一次分享时，组件Messages会切换，导致重新渲染
+ * 当组件重新渲染时，滚动到上一次的位置
+ */
+watch(() => share.value.ids, (newVal) => {
+  if (newVal.length === 1) {
+    scrollViewInstance.scrollOffset((res) => {
+      scrollView((res as unknown as UniApp.NodeInfo).scrollTop || 0)
+    }).exec()
+  }
+}, { deep: true })
+
+provide(chatInjectKey, {
+  share,
+})
 
 function handleClick() {
   show.value = !show.value
 }
 
 // 滚动到底部的函数
-function scrollToBottom() {
+function scrollView(value?: number) {
   nextTick(() => {
-    // 设置一个很大的值确保滚动到最底部
-    scrollTop.value = 999999
+    scrollTop.value = value || 999999
   })
 }
 
@@ -41,15 +70,24 @@ onMounted(async () => {
         reference,
       }
     })
-    // 数据加载完成后滚动到底部
-    await nextTick()
-    scrollToBottom()
+    scrollView()
   }
 })
 
-// 暴露scrollToBottom函数供外部调用
+onShareAppMessage(({ from, target }) => {
+  const result = {
+    title: '快来看看我聊了啥～',
+    path: '/pages/chat/index',
+  }
+  if (from === 'button') {
+    result.path = `/pages/share_chat/index?ids=${target.dataset.ids}`
+    share.value.ids = []
+  }
+  return result
+})
+
 defineExpose({
-  scrollToBottom,
+  scrollView,
 })
 </script>
 
@@ -78,7 +116,7 @@ defineExpose({
 
     <container>
       <scroll-view
-        ref="scrollViewRef"
+        id="scroll-view"
         class="flex-1 h-full overflow-y-auto"
         :scroll-y="true"
         :scroll-top="scrollTop"
