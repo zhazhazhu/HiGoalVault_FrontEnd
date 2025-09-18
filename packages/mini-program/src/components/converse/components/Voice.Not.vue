@@ -21,7 +21,7 @@ function onTouchMove(event) {
   const touch = event.touches[0]
 
   // 使用小程序的方式获取按钮组元素信息
-  recordPopupRef.value?.buttonGroup.boundingClientRect((data) => {
+  recordPopupRef.value?.recordContainer.boundingClientRect((data) => {
     if (data && !Array.isArray(data)) {
       const buttonGroupRect = data as UniApp.NodeInfo
       const centerX = (buttonGroupRect.left || 0) + (buttonGroupRect.width || 0) / 2

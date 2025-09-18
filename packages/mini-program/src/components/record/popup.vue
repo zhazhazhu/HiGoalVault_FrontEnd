@@ -12,7 +12,7 @@ const record = uni.getRecorderManager()
 const currentDecibel = ref(0)
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
-const buttonGroup = query.select('#button-group')
+const recordContainer = query.select('.hi-record--container')
 const text = computed(() => {
   if (props.focusedButton === 'cancel') {
     return '松手取消'
@@ -99,7 +99,7 @@ watch(() => model.value, (value) => {
 })
 
 defineExpose({
-  buttonGroup,
+  recordContainer,
 })
 </script>
 
@@ -107,10 +107,9 @@ defineExpose({
   <wd-popup
     v-model="model"
     position="bottom"
-    custom-style="height: 220px; border-radius: 16px; margin: 20px;"
+    custom-style="height: 250px; border-radius: 16px; margin: 20px;"
     lazy-render
     lock-scroll
-    safe-area-inset-bottom
     transition="zoom-in"
     @close="handleClose"
   >
