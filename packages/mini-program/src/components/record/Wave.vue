@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, onMounted, onUnmounted, ref, watch } from 'vue'
+import { getCurrentInstance, onUnmounted, ref, watch } from 'vue'
 
 interface Props {
   decibel?: number
@@ -12,8 +12,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const cs = useClassesName('wave')
-
-const canvasContext = ref<UniNamespace.CanvasContext | null>(null)
+const instance = getCurrentInstance()
+const canvasContext = uni.createCanvasContext('waveCanvas', instance)
 const animationTimer = ref<number | null>(null)
 
 const canvasWidth = 300
@@ -32,7 +32,7 @@ function drawRoundedRect(context: any, x: number, y: number, width: number, heig
 }
 
 function drawWave(decibel: number) {
-  const context = canvasContext.value
+  const context = canvasContext
   if (!context)
     return
 
@@ -99,16 +99,9 @@ watch(() => props.isRecording, (newValue) => {
     startAnimation()
   }
   else {
-    canvasContext.value?.clearRect(0, 0, canvasWidth, canvasHeight)
+    canvasContext?.clearRect(0, 0, canvasWidth, canvasHeight)
   }
 }, { immediate: true }) // 立即执行一次，确保在组件加载时显示基础波形
-
-onMounted(() => {
-  const instance = getCurrentInstance()
-  if (instance) {
-    canvasContext.value = uni.createCanvasContext('waveCanvas', instance)
-  }
-})
 
 onUnmounted(() => {
   if (animationTimer.value !== null) {
@@ -121,9 +114,10 @@ onUnmounted(() => {
 <template>
   <view :class="cs.m('wrapper')" class="wave-wrapper">
     <canvas
-      type="2d"
+      id="waveCanvas"
       canvas-id="waveCanvas"
       class="wave-canvas"
+      disable-scroll
       :style="{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }"
     />
   </view>
