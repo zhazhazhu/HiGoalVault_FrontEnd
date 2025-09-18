@@ -1,6 +1,5 @@
 import type { Launcher, Options, RequestResult } from '@higoal/api'
 import { Api } from '@higoal/api'
-import { useSse } from '@/api/wx'
 
 export interface LauncherOptions extends Partial<UniApp.RequestOptions> {}
 
@@ -82,5 +81,3 @@ launcher = launcherWeb
 // #endif
 
 export const api = new Api(launcher)
-
-export { useSse }

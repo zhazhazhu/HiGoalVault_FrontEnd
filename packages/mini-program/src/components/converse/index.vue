@@ -1,7 +1,8 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useWs } from '@/api/wx'
 import SourceAction from './components/SourceAction.Not.vue'
 import Voice from './components/Voice.Not.vue'
 
@@ -20,6 +21,11 @@ const converseContainerStyle = ref<CSSProperties>({
 })
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
+const ws = useWs()
+
+ws.onMessage((data) => {
+  console.log('onMessage', data)
+})
 
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
@@ -30,8 +36,18 @@ function onKeyboardHeightChange(e) {
 }
 
 async function onConfirmMessage() {
+  if (!model.value.trim().length)
+    return
 
+  ws.send({
+    chatId: '123',
+    query: model.value,
+  })
 }
+
+// ws.onMessage((data) => {
+//   console.log('onMessage', data)
+// })
 
 function onAddSource() {
   sourceActionShow.value = true
@@ -39,6 +55,14 @@ function onAddSource() {
 function onMessageTypeChange() {
   messageType.value = messageType.value === 'text' ? 'voice' : 'text'
 }
+
+onMounted(() => {
+  ws.connect()
+})
+
+onUnmounted(() => {
+  ws.close()
+})
 </script>
 
 <template>
