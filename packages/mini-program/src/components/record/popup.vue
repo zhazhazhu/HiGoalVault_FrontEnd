@@ -110,6 +110,7 @@ defineExpose({
     custom-style="height: 250px; border-radius: 16px; margin: 20px;"
     lazy-render
     lock-scroll
+    root-portal
     transition="zoom-in"
     @close="handleClose"
   >
