@@ -9,8 +9,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     Container: typeof import('./src/components/container/index.vue')['default']
     Converse: typeof import('./src/components/converse/index.vue')['default']
-    'ConverseComponentsSourceAction.Not': typeof import('./src/components/converse/components/SourceAction.Not.vue')['default']
-    'ConverseComponentsVoice.Not': typeof import('./src/components/converse/components/Voice.Not.vue')['default']
+    ConverseSourceAction: typeof import('./src/components/converse/SourceAction.vue')['default']
+    ConverseVoice: typeof import('./src/components/converse/Voice.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     MessageCard: typeof import('./src/components/message/card.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']

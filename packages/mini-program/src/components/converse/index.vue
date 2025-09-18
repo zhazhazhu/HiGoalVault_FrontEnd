@@ -5,8 +5,6 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
-import SourceAction from './components/SourceAction.Not.vue'
-import Voice from './components/Voice.Not.vue'
 
 withDefaults(defineProps<{
   placeholder?: string
@@ -79,7 +77,7 @@ onUnmounted(() => {
 
 <template>
   <view class="mt-20px" :class="cs.m('wrapper')" :style="converseContainerStyle">
-    <SourceAction v-model="sourceActionShow" />
+    <ConverseSourceAction v-model="sourceActionShow" />
 
     <view :class="cs.m('container')">
       <view :class="cs.e('left')">
@@ -109,7 +107,7 @@ onUnmounted(() => {
       </view>
 
       <view v-show="messageType === 'voice'" :class="cs.m('voice')">
-        <Voice />
+        <ConverseVoice />
       </view>
 
       <view :class="cs.e('right')">
