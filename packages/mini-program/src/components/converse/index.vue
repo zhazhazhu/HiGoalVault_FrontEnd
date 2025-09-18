@@ -25,7 +25,7 @@ const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
 const chatStore = useChatStore()
-const { scrollHeight } = useMessageInject()!
+const { scrollToButton } = useMessageInject()!
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
@@ -35,7 +35,7 @@ ws.onMessage((data) => {
     data.data?.response && (chatStore.currentTemporaryMessage.response += data.data?.response)
     data.data?.message && (chatStore.currentTemporaryMessage.message += data.data?.message)
     data.data?.reference && (chatStore.currentTemporaryMessage.reference = data.data?.reference)
-    scrollHeight()
+    scrollToButton()
   }
 })
 
@@ -60,10 +60,6 @@ async function onConfirmMessage() {
     })
   })
 }
-
-// ws.onMessage((data) => {
-//   console.log('onMessage', data)
-// })
 
 function onAddSource() {
   sourceActionShow.value = true

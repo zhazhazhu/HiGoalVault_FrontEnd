@@ -25,15 +25,7 @@ const [page] = useResetRef<Page>({
   pageSize: 3,
   sort: 'createTime',
 })
-const scrollMessageId = ref('')
 const scrollTop = ref(0)
-
-provide(messageInjectKey, {
-  share,
-  scrollHeight,
-  scrollIntoView,
-  refreshMessage,
-})
 
 watch(() => share.value.isChecked, (newVal) => {
   if (!newVal) {
@@ -41,42 +33,43 @@ watch(() => share.value.isChecked, (newVal) => {
   }
 })
 
-/**
- * 当第一次分享时，组件Messages会切换，导致重新渲染
- * 当组件重新渲染时，滚动到上一次的位置
- */
-watch(() => share.value.ids, (newVal) => {
-  if (newVal.length === 1) {
-    scrollIntoView(newVal[0])
-  }
-}, { deep: true })
-
-// 滚动到指定消息的位置
-function scrollIntoView(messageId?: string) {
-  scrollMessageId.value = messageId || scrollMessageId.value
-}
-function scrollHeight() {
+function scrollToButton() {
   const messageWrapper = query.select('.hi-messages--wrapper')
   messageWrapper.boundingClientRect((res) => {
     scrollTop.value = (res as UniApp.NodeInfo).height || 0
   }).exec()
 }
+const loading = ref(false)
 
 async function getMessage() {
   const data = await api.getMessageList({ userId: userStore.userInfo!.id, ...page.value })
   if (data.code === 200) {
     const _messages = data.result.records.map(chatStore.transformMessage).reverse()
     chatStore.messages.unshift(..._messages)
+    loading.value = false
   }
 }
 function refreshMessage() {
   chatStore.messages = []
   getMessage()
 }
+async function loadMessage() {
+  if (loading.value)
+    return
+  loading.value = true
+  page.value.pageNumber!++
+  await getMessage()
+}
+
+provide(messageInjectKey, {
+  share,
+  scrollToButton,
+  refreshMessage,
+})
 
 onMounted(async () => {
   await getMessage()
-  scrollMessageId.value = chatStore.messages[chatStore.messages.length - 1]?.id
+  scrollToButton()
 })
 
 onShareAppMessage(({ from, target }) => {
@@ -89,10 +82,6 @@ onShareAppMessage(({ from, target }) => {
     share.value.ids = []
   }
   return result
-})
-
-defineExpose({
-  scrollIntoView,
 })
 </script>
 
@@ -113,16 +102,24 @@ defineExpose({
       <scroll-view
         id="scroll-view"
         class="flex-1 h-full overflow-y-auto"
-        :scroll-y="true"
-        :scroll-into-view="share.isChecked ? `message-check-${scrollMessageId}` : `message-${scrollMessageId}`"
         scroll-into-view-alignment="end"
         enhanced
         enable-passive
+        :scroll-y="true"
+        :scroll-into-view-offset="20"
         :show-scrollbar="false"
         :scroll-top="scrollTop"
+        @scrolltoupper="loadMessage"
       >
         <view :class="cs.m('wrapper')" class="px-32rpx">
-          <view v-if="share.isChecked">
+          <view v-show="loading" class="flex items-center justify-center py-20rpx">
+            <wd-loading color="#FC6146FF" :size="20" />
+            <text class="ml-20rpx text-24rpx">
+              加载中...
+            </text>
+          </view>
+
+          <view v-show="share.isChecked">
             <wd-checkbox-group v-model="share.ids">
               <wd-checkbox
                 v-for="item in chatStore.messages"
@@ -139,7 +136,7 @@ defineExpose({
             </wd-checkbox-group>
           </view>
 
-          <view v-else>
+          <view v-show="!share.isChecked">
             <MessageCard v-for="item, index in chatStore.messages" :id="`message-${item.id}`" :key="index" :message="item" />
           </view>
         </view>

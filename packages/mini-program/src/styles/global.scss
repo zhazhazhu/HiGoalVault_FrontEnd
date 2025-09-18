@@ -9,10 +9,25 @@ view,
   border-color: #e5e7eb;
 }
 
+page,
 view,
+text,
+image,
+button,
+video,
+map,
+scroll-view,
+swiper,
+input,
 textarea,
-text {
+navigator {
+  position: relative;
+  background-origin: border-box;
+  isolation: isolate;
   font-family: 'PingFangSC', 'PingFang SC';
+}
+page {
+  height: 100%;
 }
 
 // 登录弹窗
