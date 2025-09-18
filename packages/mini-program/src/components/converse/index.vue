@@ -23,7 +23,7 @@ const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
 const chatStore = useChatStore()
-const { scrollToButton } = useMessageInject()!
+const { scrollToTop } = useMessageInject()!
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
@@ -33,7 +33,7 @@ ws.onMessage((data) => {
     data.data?.response && (chatStore.currentTemporaryMessage.response += data.data?.response)
     data.data?.message && (chatStore.currentTemporaryMessage.message += data.data?.message)
     data.data?.reference && (chatStore.currentTemporaryMessage.reference = data.data?.reference)
-    scrollToButton()
+    scrollToTop()
   }
 })
 
@@ -56,6 +56,7 @@ async function onConfirmMessage() {
       query: text,
       chatId: '123',
     })
+    scrollToTop()
   })
 }
 

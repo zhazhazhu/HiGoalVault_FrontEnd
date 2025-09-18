@@ -51,18 +51,29 @@ page {
   --wot-cell-line-height: 28px;
 }
 
-.hi-messages--checkbox-text .wd-checkbox__txt {
+.hi-message-card--checkbox-text .wd-checkbox__txt {
   white-space: normal !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-end;
 }
-.hi-messages--checkbox-text {
+.hi-message-card--checkbox-text {
   --wot-checkbox-label-margin: 20px;
 }
 
-.hi-messages--checkbox-message {
+.hi-message-card--checkbox-message {
   background-color: #f3f3f3;
   --wot-checkbox-margin: 0;
 }
+.hi-message-card--checkbox-message.is-hidden {
+  .hi-message-card--checkbox-shape {
+    display: none !important;
+  }
+  .hi-message-card--checkbox-text {
+    --wot-checkbox-label-margin: 0;
+  }
+}
 
-.hi-messages--checkbox-shape {
+.hi-message-card--checkbox-shape {
   transform: translateY(30px);
 }

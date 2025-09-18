@@ -9,7 +9,7 @@ export interface Share {
 
 export interface ChatInject {
   share: Ref<Share>
-  scrollToButton: () => void
+  scrollToTop: () => void
   refreshMessage: () => void
 }
 

@@ -29,10 +29,18 @@ const md = new MarkdownIt({
 const viewDeepThink = ref(true)
 const toast = useToast()
 const userInstance = ref<Element>()
+const check = ref(false)
 
 const htmlContent = computed(() => {
   return md.render(props.message.response)
 })
+
+function changeCheckbox({ value }: { value: boolean }) {
+  if (value)
+    share.value.ids.push(props.message.id)
+  else
+    share.value.ids = share.value.ids.filter(item => item !== props.message.id)
+}
 
 function onReference(item: ChatMessageReference) {
   uni.setClipboardData({
@@ -63,44 +71,55 @@ function onShareToMall() {}
 <template>
   <view :class="cs.m('wrapper')">
     <wd-toast />
-    <view ref="userInstance" :class="cs.m('user')">
-      {{ message.query }}
-    </view>
 
-    <view :class="cs.m('model')">
-      <view :class="cs.e('deep-think')">
-        <view :class="cs.e('deep-think-title')" @click="() => { viewDeepThink = !viewDeepThink }">
-          <text class="mr-10px">
-            已深度思考 (用时x秒)
-          </text>
-          <view :class="viewDeepThink ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
+    <wd-checkbox
+      v-model="check"
+      shape="square"
+      :disabled="!share.isChecked"
+      size="20px" :custom-class="[cs.m('checkbox-message'), cs.is('hidden', !share.isChecked)].join(' ')"
+      :custom-label-class="cs.m('checkbox-text')"
+      :custom-shape-class="cs.m('checkbox-shape')"
+      @change="changeCheckbox"
+    >
+      <view ref="userInstance" :class="cs.m('user')">
+        {{ message.query }}
+      </view>
+
+      <view :class="cs.m('model')">
+        <view :class="cs.e('deep-think')">
+          <view :class="cs.e('deep-think-title')" @click="() => { viewDeepThink = !viewDeepThink }">
+            <text class="mr-10px">
+              已深度思考 (用时x秒)
+            </text>
+            <view :class="viewDeepThink ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
+          </view>
+          <view v-if="viewDeepThink" :class="cs.e('deep-think-content')" align="left">
+            {{ message.message }}
+          </view>
         </view>
-        <view v-if="viewDeepThink" :class="cs.e('deep-think-content')" align="left">
-          {{ message.message }}
+
+        <view :class="cs.m('response')">
+          <!-- 使用自定义组件渲染markdown内容，避免XSS攻击风险 -->
+          <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
+        </view>
+
+        <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
+          <view class="chat-icon size-30px" @click="onRefresh" />
+          <view class="copy-icon size-30px" @click="onCopy" />
+          <view class="flex-1" />
+          <view class="like-backup size-30px" />
+          <view class="favorite-icon size-30px" @click="onShareToMall" />
+          <view class="wechat-icon size-30px" @click="openSharePopup" />
         </view>
       </view>
 
-      <view :class="cs.m('response')">
-        <!-- 使用自定义组件渲染markdown内容，避免XSS攻击风险 -->
-        <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
+      <view :class="cs.m('reference')">
+        <view v-for="item, index in message.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
+          <view class="next-level size-16px mr-6px" />
+          <text>{{ item.name }}</text>
+        </view>
       </view>
-
-      <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
-        <view class="chat-icon size-30px" @click="onRefresh" />
-        <view class="copy-icon size-30px" @click="onCopy" />
-        <view class="flex-1" />
-        <view class="like-backup size-30px" />
-        <view class="favorite-icon size-30px" @click="onShareToMall" />
-        <view class="wechat-icon size-30px" @click="openSharePopup" />
-      </view>
-    </view>
-
-    <view :class="cs.m('reference')">
-      <view v-for="item, index in message.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
-        <view class="next-level size-16px mr-6px" />
-        <text>{{ item.name }}</text>
-      </view>
-    </view>
+    </wd-checkbox>
   </view>
 </template>
 
@@ -109,6 +128,8 @@ function onShareToMall() {}
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  transform: scaleY(-1);
+  -webkit-transform: scaleY(-1);
 }
 .hi-message-card--user {
   background: linear-gradient(270deg, #ff3b30 0%, #fc6146 100%);

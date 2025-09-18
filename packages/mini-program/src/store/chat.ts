@@ -52,7 +52,7 @@ export const useChatStore = defineStore('chat', {
         reference: [],
         ...message,
       } satisfies ChatMessageAfter
-      this.messages.push(temp)
+      this.messages.unshift(temp)
       this.currentTemporaryMessageId = temp.id
       return temp
     },

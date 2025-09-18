@@ -4,7 +4,7 @@ import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, onMounted, provide, ref, watch } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { messageInjectKey } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
@@ -12,7 +12,6 @@ import { useUserStore } from '@/store'
 import { useChatStore } from '@/store/chat'
 
 const navbarInstance = ref<NavbarInstance>()
-const query = uni.createSelectorQuery().in(getCurrentInstance())
 const cs = useClassesName('messages')
 const userStore = useUserStore()
 const share = ref<Share>({
@@ -22,7 +21,7 @@ const share = ref<Share>({
 const chatStore = useChatStore()
 const [page] = useResetRef<Page>({
   pageNumber: 1,
-  pageSize: 3,
+  pageSize: 20,
   sort: 'createTime',
 })
 const scrollTop = ref(0)
@@ -33,19 +32,16 @@ watch(() => share.value.isChecked, (newVal) => {
   }
 })
 
-function scrollToButton() {
-  const messageWrapper = query.select('.hi-messages--wrapper')
-  messageWrapper.boundingClientRect((res) => {
-    scrollTop.value = (res as UniApp.NodeInfo).height || 0
-  }).exec()
+function scrollToTop() {
+  scrollTop.value = 0
 }
 const loading = ref(false)
 
 async function getMessage() {
   const data = await api.getMessageList({ userId: userStore.userInfo!.id, ...page.value })
   if (data.code === 200) {
-    const _messages = data.result.records.map(chatStore.transformMessage).reverse()
-    chatStore.messages.unshift(..._messages)
+    const _messages = data.result.records.map(chatStore.transformMessage)
+    chatStore.messages.push(..._messages)
     loading.value = false
   }
 }
@@ -63,13 +59,12 @@ async function loadMessage() {
 
 provide(messageInjectKey, {
   share,
-  scrollToButton,
+  scrollToTop,
   refreshMessage,
 })
 
 onMounted(async () => {
   await getMessage()
-  scrollToButton()
 })
 
 onShareAppMessage(({ from, target }) => {
@@ -101,46 +96,29 @@ onShareAppMessage(({ from, target }) => {
     <container>
       <scroll-view
         id="scroll-view"
-        class="flex-1 h-full overflow-y-auto"
+        class="flex flex-1 h-full overflow-y-auto transform"
         scroll-into-view-alignment="end"
         enhanced
         enable-passive
         :scroll-y="true"
-        :scroll-into-view-offset="20"
         :show-scrollbar="false"
+        :lower-threshold="50"
         :scroll-top="scrollTop"
-        @scrolltoupper="loadMessage"
+        :class="cs.m('scroll-view')"
+        @scrolltolower="loadMessage"
       >
         <view :class="cs.m('wrapper')" class="px-32rpx">
-          <view v-show="loading" class="flex items-center justify-center py-20rpx">
+          <MessageCard v-for="item in chatStore.messages" :id="`message-${item.id}`" :key="item.id" :message="item" />
+
+          <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
             <wd-loading color="#FC6146FF" :size="20" />
             <text class="ml-20rpx text-24rpx">
               加载中...
             </text>
           </view>
-
-          <view v-show="share.isChecked">
-            <wd-checkbox-group v-model="share.ids">
-              <wd-checkbox
-                v-for="item in chatStore.messages"
-                :key="item.id"
-                shape="square"
-                size="20px"
-                :model-value="item.id"
-                :custom-label-class="cs.m('checkbox-text')"
-                :custom-class="cs.m('checkbox-message')"
-                :custom-shape-class="cs.m('checkbox-shape')"
-              >
-                <MessageCard :id="`message-check-${item.id}`" :message="item" />
-              </wd-checkbox>
-            </wd-checkbox-group>
-          </view>
-
-          <view v-show="!share.isChecked">
-            <MessageCard v-for="item, index in chatStore.messages" :id="`message-${item.id}`" :key="index" :message="item" />
-          </view>
         </view>
       </scroll-view>
+
       <view class="px-32rpx">
         <converse />
       </view>
@@ -148,4 +126,19 @@ onShareAppMessage(({ from, target }) => {
   </view>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.hi-messages--scroll-view {
+  transform: scaleY(-1);
+  -webkit-transform: scaleY(-1);
+}
+.hi-message-card--wrapper {
+  display: flex;
+  flex-direction: column;
+  transform: scaleY(-1);
+  -webkit-transform: scaleY(-1);
+}
+.hi-messages--loading {
+  transform: scaleY(-1);
+  -webkit-transform: scaleY(-1);
+}
+</style>
