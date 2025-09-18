@@ -3,5 +3,6 @@ export enum API {
   REFRESH_TOKEN = '/buyer/passport/member/refresh',
   SSE = '/buyer/chat/sse/ai-proxy/send-query-combined',
   USER_INFO = '/buyer/passport/member/getImUser',
-  GET_CHAT_HISTORY = '/buyer/chatQuery/getByPage',
+  GET_MESSAGE_LIST = '/buyer/chatQuery/getByPage',
+  GET_CHAT_LIST = '/buyer/chat/chat/getByPage',
 }

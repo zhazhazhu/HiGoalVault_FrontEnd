@@ -1,4 +1,4 @@
-import type { ChatHistoryRequestQuery, ChatMessageWithPage, LoginResult, UserInfo } from './index.d'
+import type { ChatHistoryRequestQuery, ChatMessageWithPage, ChatRequestQuery, ChatWithPage, LoginResult, UserInfo } from './index.d'
 import { API } from './url'
 
 export * from './index.d'
@@ -48,7 +48,11 @@ export class Api {
     return this.launcher<'uni'>(API.USER_INFO).get<UserInfo>()
   }
 
-  public getChatHistory(query: ChatHistoryRequestQuery) {
-    return this.launcher<'uni'>(API.GET_CHAT_HISTORY).post<ChatMessageWithPage>(query)
+  public getMessageList(query: ChatHistoryRequestQuery) {
+    return this.launcher<'uni'>(API.GET_MESSAGE_LIST).post<ChatMessageWithPage>(query)
+  }
+
+  public getChatList(query: ChatRequestQuery) {
+    return this.launcher<'uni'>(API.GET_CHAT_LIST).post<ChatWithPage>(query)
   }
 }

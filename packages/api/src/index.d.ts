@@ -27,8 +27,16 @@ export interface Page {
   order?: 'asc' | 'desc'
 }
 
+export interface PageResult {
+  current: number
+  pages: number
+  size: number
+  total: number
+}
+
 export interface ChatHistoryRequestQuery extends Page {
   userId: string
+  chatId?: string
 }
 
 export interface ChatMessageBefore {
@@ -46,11 +54,7 @@ export interface ChatMessageAfter extends Omit<ChatMessageBefore, 'reference'> {
   reference: ChatMessageReference[]
 }
 
-export interface ChatMessageWithPage {
-  current: number
-  pages: number
-  size: number
-  total: number
+export interface ChatMessageWithPage extends PageResult {
   records: ChatMessageBefore[]
 }
 
@@ -61,4 +65,18 @@ export interface ChatMessageStockData {
 export interface ChatMessageReference {
   name: string
   url: string
+}
+
+export interface ChatRequestQuery extends Page {
+  userId: string
+}
+
+export interface ChatWithPage extends PageResult {
+  records: Chat[]
+}
+
+export interface Chat {
+  chatId: string
+  title: string
+  userId: string
 }
