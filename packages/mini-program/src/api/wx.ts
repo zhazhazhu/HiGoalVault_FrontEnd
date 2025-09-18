@@ -1,4 +1,4 @@
-import type { ChatMessageBefore } from '@higoal/api'
+import type { ChatMessageAfter } from '@higoal/api'
 import { useUserStore } from '@/store'
 import { createUUID } from '@/utils'
 
@@ -38,7 +38,7 @@ export interface WsMessageResponse {
   id: string
   code: '200'
   type: 'message' | 'stream-end'
-  data: ChatMessageBefore | null
+  data: ChatMessageAfter | null
 }
 
 export interface WsMessageResponseBefore {
@@ -83,7 +83,7 @@ export function useWs() {
     socketTask?.onMessage((res) => {
       try {
         const data = JSON.parse(res.data) as WsMessageResponseBefore
-        const messageData = (data.body.data.sseMsgType === 'stream-end' ? null : JSON.parse(data.body.data.data!) as ChatMessageBefore)
+        const messageData = (data.body.data.sseMsgType === 'stream-end' ? null : JSON.parse(data.body.data.data!) as ChatMessageAfter)
         messageCallback?.({
           id: data.id,
           code: data.code,
@@ -97,7 +97,7 @@ export function useWs() {
     })
   }
 
-  function send(data: WsMessageData) {
+  function send(data: WsMessageData, options?: UniApp.SendSocketMessageOptions) {
     const userStore = useUserStore()
     const message: WsMessage = {
       type: 'buyer',
@@ -114,8 +114,18 @@ export function useWs() {
         },
       },
     }
-    socketTask?.send({
-      data: JSON.stringify(message),
+
+    return new Promise((resolve, reject) => {
+      socketTask?.send({
+        data: JSON.stringify(message),
+        ...options,
+        success(res) {
+          resolve(res)
+        },
+        fail(err) {
+          reject(err)
+        },
+      })
     })
   }
 
