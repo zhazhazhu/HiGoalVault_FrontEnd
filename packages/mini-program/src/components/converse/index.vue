@@ -3,6 +3,8 @@ import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useWs } from '@/api/wx'
+import { useMessageInject } from '@/composables/inject'
+import { useChatStore } from '@/store/chat'
 import SourceAction from './components/SourceAction.Not.vue'
 import Voice from './components/Voice.Not.vue'
 
@@ -22,9 +24,19 @@ const converseContainerStyle = ref<CSSProperties>({
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
+const chatStore = useChatStore()
+const { scrollHeight } = useMessageInject()!
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
+  if (!chatStore.currentTemporaryMessage)
+    return
+  if (data.code === '200') {
+    data.data?.response && (chatStore.currentTemporaryMessage.response += data.data?.response)
+    data.data?.message && (chatStore.currentTemporaryMessage.message += data.data?.message)
+    data.data?.reference && (chatStore.currentTemporaryMessage.reference = data.data?.reference)
+    scrollHeight()
+  }
 })
 
 function onLineChange(e) {
@@ -38,10 +50,14 @@ function onKeyboardHeightChange(e) {
 async function onConfirmMessage() {
   if (!model.value.trim().length)
     return
+  const text = model.value.trim()
+  model.value = ''
 
-  ws.send({
-    chatId: '123',
-    query: model.value,
+  ws.send({ chatId: '123', query: text }).then(() => {
+    chatStore.createTemporaryMessage({
+      query: text,
+      chatId: '123',
+    })
   })
 }
 

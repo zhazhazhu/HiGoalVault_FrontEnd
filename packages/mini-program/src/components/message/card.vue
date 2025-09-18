@@ -6,7 +6,7 @@ import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref } from 'vue'
 import { useToast } from 'wot-design-uni'
 
-import { useChatInject } from '@/composables/inject'
+import { useMessageInject } from '@/composables/inject'
 import { markdownToText } from '@/utils'
 import 'highlight.js/styles/github.css'
 
@@ -14,7 +14,7 @@ const props = defineProps<{
   message: ChatMessageAfter
 }>()
 
-const { share } = useChatInject()!
+const { share } = useMessageInject()!
 const cs = useClassesName('message-card')
 const md = new MarkdownIt({
   html: true,
