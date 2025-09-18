@@ -1,12 +1,19 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useUserStore } from '@/store'
 
 interface Props {
   title?: string
   bgColor?: string
+  leftText?: string | boolean
 }
-const { title, bgColor = '#FFFFFF' } = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  bgColor: '#F3F3F3',
+})
+const emits = defineEmits<{
+  (e: 'leftClick'): void
+}>()
 const slots = defineSlots<{
   left?: () => any
   title?: () => any
@@ -14,14 +21,28 @@ const slots = defineSlots<{
 }>()
 
 const statusBarHeight = computed(() => uni.getSystemInfoSync().statusBarHeight || 0)
+const show = ref(false)
+const userStore = useUserStore()
 
 const navbarStyle = computed<CSSProperties>(() => ({
-  '--bg-color': bgColor,
+  '--bg-color': props.bgColor,
 }))
 
 function changeBgColor(color: string) {
   navbarStyle.value['--bg-color'] = color
 }
+function handleClick() {
+  show.value = !show.value
+}
+
+watch(show, (show) => {
+  if (show) {
+    changeBgColor('#FF3B30')
+  }
+  else {
+    changeBgColor('#FFFFFF')
+  }
+})
 
 defineExpose({
   changeBgColor,
@@ -30,10 +51,23 @@ defineExpose({
 
 <template>
   <view class="navbar__container" :style="navbarStyle">
+    <login-popup v-model="show" />
     <view class="navbar__status" :style="{ height: `${statusBarHeight}px` }" />
     <view class="navbar__content">
       <view class="navbar__content__left">
-        <slot name="left" />
+        <view v-if="leftText" @click="emits('leftClick')">
+          {{ leftText }}
+        </view>
+
+        <view v-else>
+          <view v-if="userStore.isLogin" class="i-uil-list-ul text-50rpx" />
+          <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
+            <view class="i-uil-user text-46rpx mr-6rpx" />
+            <text class="text-24rpx" user-select="false">
+              未登录
+            </text>
+          </view>
+        </view>
       </view>
       <view class="navbar__title">
         <slot v-if="slots.title" name="title" />

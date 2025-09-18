@@ -1,44 +1,13 @@
 <script setup lang="ts">
-import type { NavbarInstance } from '@/components/navbar'
 import { useClassesName } from '@higoal/hooks'
-import { ref, watch } from 'vue'
-import { useUserStore } from '@/store'
 import ViewList from './components/ViewList.vue'
 
-const show = ref(false)
-const navbarInstance = ref<NavbarInstance>()
-const { isLogin } = useUserStore()
 const cs = useClassesName('home')
-
-watch(show, (show) => {
-  if (show) {
-    navbarInstance.value?.changeBgColor('#FF3B30')
-  }
-  else {
-    navbarInstance.value?.changeBgColor('#FFFFFF')
-  }
-})
-
-function handleClick() {
-  show.value = !show.value
-}
 </script>
 
 <template>
   <view>
-    <login-popup v-model="show" />
-
-    <navbar ref="navbarInstance" bg-color="#F3F3F3">
-      <template #left>
-        <view v-if="isLogin" class="i-uil-list-ul text-50rpx" />
-        <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
-          <view class="i-uil-user text-46rpx mr-6rpx" />
-          <text class="text-24rpx" user-select="false">
-            未登录
-          </text>
-        </view>
-      </template>
-    </navbar>
+    <navbar />
 
     <tabs :custom-nav-class="cs.m('tab-nav')">
       <tabs-item :name="0" label="发现">

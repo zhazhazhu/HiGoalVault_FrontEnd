@@ -8,7 +8,6 @@ import { api } from '@/api'
 import { chatInjectKey } from '@/composables/inject'
 import { useUserStore } from '@/store'
 
-const show = ref(false)
 const navbarInstance = ref<NavbarInstance>()
 const scrollTop = ref(0)
 const userStore = useUserStore()
@@ -41,10 +40,6 @@ watch(() => share.value.ids, (newVal) => {
 provide(chatInjectKey, {
   share,
 })
-
-function handleClick() {
-  show.value = !show.value
-}
 
 // 滚动到底部的函数
 function scrollView(value?: number) {
@@ -93,20 +88,9 @@ defineExpose({
 
 <template>
   <view>
-    <login-popup v-model="show" />
     <share-popup v-model="share.isChecked" />
 
-    <navbar ref="navbarInstance" bg-color="#F3F3F3">
-      <template #left>
-        <view v-if="userStore.isLogin" class="i-uil-list-ul text-50rpx" />
-        <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
-          <view class="i-uil-user text-46rpx mr-6rpx" />
-          <text class="text-24rpx" user-select="false">
-            未登录
-          </text>
-        </view>
-      </template>
-
+    <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="share.isChecked = false">
       <template #title>
         <tabs>
           <tabs-item :name="0" label="黑狗" />
