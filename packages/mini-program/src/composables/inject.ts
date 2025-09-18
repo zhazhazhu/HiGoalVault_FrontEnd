@@ -1,4 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
+import type { api } from '@/api'
 import { inject } from 'vue'
 
 export interface Share {
@@ -8,14 +9,30 @@ export interface Share {
 
 export interface ChatInject {
   share: Ref<Share>
+  scrollIntoView: (messageId?: string) => void
+  scrollHeight: () => void
+  refreshMessage: () => void
 }
 
-export const chatInjectKey = Symbol('chat') as InjectionKey<ChatInject>
+export interface AppInject {
+  api: typeof api
+}
 
-export function useChatInject() {
-  const context = inject(chatInjectKey)
+export const messageInjectKey = Symbol('message') as InjectionKey<ChatInject>
+export const appInjectKey = Symbol('app') as InjectionKey<AppInject>
+
+export function useMessageInject() {
+  const context = inject(messageInjectKey)
   if (!context) {
-    throw new Error('useChatInject must be used within a ChatProvider')
+    throw new Error('useMessageInject must be used within a MessageProvider')
+  }
+  return context
+}
+
+export function useAppInject() {
+  const context = inject(appInjectKey)
+  if (!context) {
+    throw new Error('useAppInject must be used within an AppProvider')
   }
   return context
 }
