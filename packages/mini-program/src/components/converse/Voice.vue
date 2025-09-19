@@ -27,31 +27,18 @@ function onTouchMove(event) {
       const centerX = (buttonGroupRect.left || 0) + (buttonGroupRect.width || 0) / 2
       const touchX = touch.clientX
 
-      // 检查触摸点是否还在按钮组范围内
-      const isInButtonGroup = touchX >= (buttonGroupRect.left || 0)
-        && touchX <= (buttonGroupRect.right || 0)
-        && touch.clientY >= (buttonGroupRect.top || 0)
-        && touch.clientY <= (buttonGroupRect.bottom || 0)
+      // 根据触摸位置判断聚焦哪个按钮
+      const leftThreshold = centerX - 50 // 左侧阈值
+      const rightThreshold = centerX + 50 // 右侧阈值
 
-      if (isInButtonGroup) {
-        // 根据触摸位置判断聚焦哪个按钮
-        const leftThreshold = centerX - 50 // 左侧阈值
-        const rightThreshold = centerX + 50 // 右侧阈值
-
-        if (touchX < leftThreshold) {
-          recordPopupFocusedButton.value = 'cancel'
-        }
-        else if (touchX > rightThreshold) {
-          recordPopupFocusedButton.value = 'text'
-        }
-        else {
-          recordPopupFocusedButton.value = 'microphone'
-        }
+      if (touchX < leftThreshold) {
+        recordPopupFocusedButton.value = 'cancel'
+      }
+      else if (touchX > rightThreshold) {
+        recordPopupFocusedButton.value = 'text'
       }
       else {
-        // 如果滑出按钮组范围，取消所有聚焦
-        recordPopupFocusedButton.value = null
-        isRecording.value = false
+        recordPopupFocusedButton.value = 'microphone'
       }
     }
   }).exec()
