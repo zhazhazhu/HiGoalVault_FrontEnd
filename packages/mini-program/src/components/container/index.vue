@@ -1,6 +1,8 @@
 <script lang='ts' setup>
+import { useClassesName } from '@higoal/hooks'
 import { computed, onMounted, ref } from 'vue'
 
+const cs = useClassesName('container')
 // 获取系统信息和导航栏高度
 const navbarHeight = ref(0)
 
@@ -23,13 +25,13 @@ const containerHeight = computed(() => {
 </script>
 
 <template>
-  <div class="container flex flex-col" :style="{ height: containerHeight }">
+  <div :class="cs.s()" class="flex flex-col" :style="{ height: containerHeight }">
     <slot />
   </div>
 </template>
 
 <style lang='scss' scoped>
-.container {
+.hi-container {
   background-color: var(--hi-bg-color);
 }
 </style>

@@ -52,7 +52,7 @@ defineExpose({
 <template>
   <view class="navbar__container" :style="navbarStyle">
     <login-popup v-model="show" />
-    <view class="navbar__status" :style="{ height: `${statusBarHeight}px` }" />
+    <view class="navbar__status" :style="{ '--status-bar-height': `${statusBarHeight}px` }" />
     <view class="navbar__content">
       <view class="navbar__content__left">
         <view v-if="leftText" @click="emits('leftClick')">
@@ -60,7 +60,7 @@ defineExpose({
         </view>
 
         <view v-else>
-          <view v-if="userStore.isLogin" class="i-uil-list-ul text-50rpx" />
+          <view v-if="userStore.isLogin" class="i-uil-list-ul text-50rpx" @click="emits('leftClick')" />
           <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
             <view class="i-uil-user text-46rpx mr-6rpx" />
             <text class="text-24rpx" user-select="false">
@@ -111,5 +111,8 @@ defineExpose({
   max-width: 300rpx;
   display: flex;
   align-items: center;
+}
+.navbar__status {
+  height: var(--status-bar-height);
 }
 </style>

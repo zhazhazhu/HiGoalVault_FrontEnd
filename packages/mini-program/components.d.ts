@@ -17,6 +17,7 @@ declare module 'vue' {
     RecordPopup: typeof import('./src/components/record/popup.vue')['default']
     RecordWave: typeof import('./src/components/record/Wave.vue')['default']
     SharePopup: typeof import('./src/components/share/popup.vue')['default']
+    Sidebar: typeof import('./src/components/sidebar/index.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
     TabsItem: typeof import('./src/components/tabs/item.vue')['default']
     WdActionSheet: typeof import('wot-design-uni/components/wd-action-sheet/wd-action-sheet.vue')['default']
