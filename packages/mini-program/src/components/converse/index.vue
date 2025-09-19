@@ -24,6 +24,7 @@ const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
 const chatStore = useChatStore()
 const { scrollToTop } = useMessageInject()!
+const isReplying = ref(false)
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
@@ -35,6 +36,13 @@ ws.onMessage((data) => {
     data.data?.reference && (chatStore.currentTemporaryMessage.reference = data.data?.reference)
     scrollToTop()
   }
+  if (data.type === 'stream-end') {
+    isReplying.value = false
+  }
+})
+
+ws.onClose(() => {
+  isReplying.value = false
 })
 
 function onLineChange(e) {
@@ -50,6 +58,7 @@ async function onConfirmMessage() {
     return
   const text = model.value.trim()
   model.value = ''
+  isReplying.value = true
 
   ws.send({ chatId: '123', query: text }).then(() => {
     chatStore.createTemporaryMessage({
@@ -65,6 +74,9 @@ function onAddSource() {
 }
 function onMessageTypeChange() {
   messageType.value = messageType.value === 'text' ? 'voice' : 'text'
+}
+
+function onStopSend() {
 }
 
 onMounted(() => {
@@ -113,7 +125,8 @@ onUnmounted(() => {
 
       <view :class="cs.e('right')">
         <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" />
-        <view v-if="model.trim().length > 0" class="i-fluent-color-send-16" :class="cs.e('icon')" />
+        <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage" />
+        <view class="i-material-symbols-stop-circle-outline-rounded" :class="cs.e('icon')" @click="onStopSend" />
       </view>
     </view>
   </view>

@@ -30,6 +30,7 @@ export interface WsMessageData {
   chatId: string
   query: string
   runId?: string
+  messageId?: string
   clientType?: ClientType
   accessToken?: string
 }
@@ -58,6 +59,17 @@ export interface WsMessageResponseBefore {
 
 let socketTask: UniApp.SocketTask | null = null
 let messageCallback: ((data: WsMessageResponse) => void) | null = null
+let closeCallback: (() => void) | null = null
+let errorCallback: (() => void) | null = null
+let openCallback: (() => void) | null = null
+
+function clearSocketTask() {
+  socketTask = null
+  messageCallback = null
+  closeCallback = null
+  errorCallback = null
+  openCallback = null
+}
 
 export function useWs() {
   function connect(clientType: ClientType = ClientType.WECHAT_MP) {
@@ -95,6 +107,19 @@ export function useWs() {
         console.log('error', error)
       }
     })
+
+    socketTask?.onOpen(() => {
+      openCallback?.()
+    })
+
+    socketTask?.onClose(() => {
+      closeCallback?.()
+      clearSocketTask()
+    })
+
+    socketTask?.onError(() => {
+      errorCallback?.()
+    })
   }
 
   function send(data: WsMessageData, options?: UniApp.SendSocketMessageOptions) {
@@ -107,6 +132,7 @@ export function useWs() {
           code: '100007',
           data: {
             ...data,
+            messageId: data.messageId || createUUID(32),
             runId: createUUID(),
             clientType: data.clientType || ClientType.WECHAT_MP,
             accessToken: data.accessToken || userStore.accessToken,
@@ -132,11 +158,18 @@ export function useWs() {
   function onMessage(callback: (data: WsMessageResponse) => void) {
     messageCallback = callback
   }
+  function onOpen(callback: () => void) {
+    openCallback = callback
+  }
+  function onClose(callback: () => void) {
+    closeCallback = callback
+  }
+  function onError(callback: () => void) {
+    errorCallback = callback
+  }
 
   function close(options?: UniNamespace.CloseSocketOptions) {
     socketTask?.close(options || {})
-    socketTask = null
-    messageCallback = null
   }
 
   return {
@@ -145,8 +178,8 @@ export function useWs() {
     close,
     connect,
     onMessage,
-    onOpen: socketTask?.onOpen,
-    onClose: socketTask?.onClose,
-    onError: socketTask?.onError,
+    onOpen,
+    onClose,
+    onError,
   }
 }
