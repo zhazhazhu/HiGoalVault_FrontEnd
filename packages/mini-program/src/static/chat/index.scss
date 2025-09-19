@@ -1,72 +1,165 @@
 // Chat SVG Icons
-.share-wechat {
-  background-image: url(/static/chat/svg/分享微信.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
+.share-wechat-icon {
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/分享微信.svg');
+  mask-image: url('/static/chat/svg/分享微信.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
-.next-level {
-  background-image: url(/static/chat/svg/下一级.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
+.refresh-icon {
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-刷薪.svg');
+  mask-image: url('/static/chat/svg/icon-刷薪.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
 .copy-icon {
-  background-image: url(/static/chat/svg/复制.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-复制.svg');
+  mask-image: url('/static/chat/svg/icon-复制.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
-.chat-icon {
-  background-image: url(/static/chat/svg/对话.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
+.copy-alt-icon {
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-复制(1).svg');
+  mask-image: url('/static/chat/svg/icon-复制(1).svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
-.favorite-icon {
-  background-image: url(/static/chat/svg/收藏.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
+.record-send-icon {
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-录发送.svg');
+  mask-image: url('/static/chat/svg/icon-录发送.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
-.add-icon {
-  background-image: url(/static/chat/svg/添加.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
+.record-icon {
   width: 24px;
   height: 24px;
-}
-
-.like-backup {
-  background-image: url(/static/chat/svg/点赞备份.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 24px;
-  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-录音.svg');
+  mask-image: url('/static/chat/svg/icon-录音.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
 .wechat-icon {
-  background-image: url(/static/chat/svg/微信.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-微信.svg');
+  mask-image: url('/static/chat/svg/icon-微信.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.favorite-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-收藏.svg');
+  mask-image: url('/static/chat/svg/icon-收藏.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.add-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-添加.svg');
+  mask-image: url('/static/chat/svg/icon-添加.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.like-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-点赞.svg');
+  mask-image: url('/static/chat/svg/icon-点赞.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }
 
 .voice-icon {
-  background-image: url(/static/chat/svg/语音.svg);
-  background-size: cover;
-  background-repeat: no-repeat;
   width: 24px;
   height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-语音.svg');
+  mask-image: url('/static/chat/svg/icon-语音.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.expand-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/展开.svg');
+  mask-image: url('/static/chat/svg/展开.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.collapse-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/未展开.svg');
+  mask-image: url('/static/chat/svg/未展开.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.share-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-分享.svg');
+  mask-image: url('/static/chat/svg/icon-分享.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.next-level-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-下一级.svg');
+  mask-image: url('/static/chat/svg/icon-下一级.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
 }

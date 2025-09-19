@@ -126,7 +126,7 @@ onUnmounted(() => {
       <view :class="cs.e('right')">
         <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" />
         <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage" />
-        <view v-if="isReplying" class="i-material-symbols-stop-circle-outline-rounded" :class="cs.e('icon')" @click="onStopSend" />
+        <view v-if="isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
       </view>
     </view>
     <text :class="cs.e('tip')">

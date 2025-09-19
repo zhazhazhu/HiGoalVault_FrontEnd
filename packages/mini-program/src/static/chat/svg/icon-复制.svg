@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-复制</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-dasharray="0,0" stroke-linejoin="round">
+        <g id="icon-切图" transform="translate(-143, -85)" stroke="#666666" stroke-width="1.5">
+            <g id="icon-复制" transform="translate(143, 85)">
+                <path d="M11.6666667,11.4772 L11.6666667,9.9375 C11.6666667,9.41973333 12.0864,9 12.6041667,9 L20.7291667,9 C21.2469333,9 21.6666667,9.41973333 21.6666667,9.9375 L21.6666667,18.0625 C21.6666667,18.5802667 21.2469333,19 20.7291667,19 L19.1721,19" id="路径" stroke-linecap="round" fill-rule="nonzero"></path>
+                <path d="M18.0625,11.6666667 L9.9375,11.6666667 C9.41973333,11.6666667 9,12.0864 9,12.6041667 L9,20.7291667 C9,21.2469333 9.41973333,21.6666667 9.9375,21.6666667 L18.0625,21.6666667 C18.5802667,21.6666667 19,21.2469333 19,20.7291667 L19,12.6041667 C19,12.0864 18.5802667,11.6666667 18.0625,11.6666667 Z" id="路径-2"></path>
+            </g>
+        </g>
+    </g>
+</svg>

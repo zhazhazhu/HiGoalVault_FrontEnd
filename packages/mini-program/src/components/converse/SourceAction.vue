@@ -46,7 +46,7 @@ function onChooseFile() {
       <view class="p-20px pb-0 flex flex-wrap gap-20px">
         <button :class="cs.e('button')" @click="onChooseImage('album')">
           <view class="flex flex-col items-center" :class="cs.e('button-wrapper')">
-            <view class="i-proicons-photo" :class="cs.e('icon')" />
+            <view class="converse-picture-icon" :class="cs.e('icon')" />
             <text :class="cs.e('text')">
               图片
             </text>
@@ -55,7 +55,7 @@ function onChooseFile() {
 
         <button :class="cs.e('button')" @click="onChooseImage('camera')">
           <view class="flex flex-col items-center" :class="cs.e('button-wrapper')">
-            <view class="i-proicons-camera" :class="cs.e('icon')" />
+            <view class="converse-camera-icon" :class="cs.e('icon')" />
             <text :class="cs.e('text')">
               拍摄
             </text>
@@ -64,7 +64,7 @@ function onChooseFile() {
 
         <button :class="cs.e('button')" @click="onChooseFile">
           <view class="flex flex-col items-center" :class="cs.e('button-wrapper')">
-            <view class="i-proicons-document" :class="cs.e('icon')" />
+            <view class="converse-file-icon" :class="cs.e('icon')" />
             <text :class="cs.e('text')">
               文件
             </text>
