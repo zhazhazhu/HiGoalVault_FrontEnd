@@ -28,3 +28,15 @@ export function createUUID(len: number = 16) {
   }
   return uuid
 }
+
+export function isToday(date: string) {
+  return dayjs().format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD')
+}
+
+export function isThisWeek(date: string) {
+  return dayjs().isSame(dayjs(date), 'week')
+}
+
+export function isThisMonth(date: string) {
+  return dayjs().isSame(dayjs(date), 'month')
+}

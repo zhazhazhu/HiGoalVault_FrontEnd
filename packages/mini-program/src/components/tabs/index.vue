@@ -6,6 +6,8 @@ import { useTabs } from './tabs'
 const props = defineProps<{
   modelValue?: string | number
   customNavClass?: string
+  customClass?: string
+  customContentClass?: string
 }>()
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string | number): void
@@ -16,17 +18,18 @@ const { navs } = useTabs(props, emit)
 </script>
 
 <template>
-  <view :class="[cs.s()]">
+  <view :class="[cs.s(), customClass]">
     <TabNav :navs="navs" :custom-nav-class="customNavClass" />
 
-    <view :class="[cs.m('content')]">
+    <view :class="[cs.m('content'), customContentClass]">
       <slot />
     </view>
   </view>
 </template>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .hi-tabs {
   --tab-nav-bg: white;
+  --tab-nav-font-size: 32rpx;
 }
 </style>

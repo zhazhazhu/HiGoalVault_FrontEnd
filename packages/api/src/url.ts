@@ -5,4 +5,5 @@ export enum API {
   USER_INFO = '/buyer/passport/member/getImUser',
   GET_MESSAGE_LIST = '/buyer/chatQuery/getByPage',
   GET_CHAT_LIST = '/buyer/chat/chat/getByPage',
+  ADD_CHAT = '/buyer/chat/chat/add',
 }

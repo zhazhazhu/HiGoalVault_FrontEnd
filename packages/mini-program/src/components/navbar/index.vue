@@ -104,13 +104,8 @@ defineExpose({
   text-align: right;
 }
 .navbar__title {
-  text-align: center;
-  line-height: 80rpx;
-  height: 80rpx;
-  font-size: 32rpx;
   max-width: 300rpx;
-  display: flex;
-  align-items: center;
+  margin-top: 10px;
 }
 .navbar__status {
   height: var(--status-bar-height);

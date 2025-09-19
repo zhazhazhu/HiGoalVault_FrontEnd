@@ -1,4 +1,4 @@
-import type { ChatHistoryRequestQuery, ChatMessageWithPage, ChatRequestQuery, ChatWithPage, LoginResult, UserInfo } from './index.d'
+import type { Chat, ChatHistoryRequestQuery, ChatMessageWithPage, ChatRequestQuery, ChatWithPage, LoginResult, UserInfo } from './index.d'
 import { API } from './url'
 
 export * from './index.d'
@@ -54,5 +54,9 @@ export class Api {
 
   public getChatList(query: ChatRequestQuery) {
     return this.launcher<'uni'>(API.GET_CHAT_LIST).post<ChatWithPage>(query)
+  }
+
+  public addChat(title?: string) {
+    return this.launcher<'uni'>(API.ADD_CHAT).post<Chat>({ title })
   }
 }

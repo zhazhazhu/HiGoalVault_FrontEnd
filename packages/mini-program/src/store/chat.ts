@@ -1,27 +1,58 @@
 import type { Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '@higoal/api'
 import { defineStore } from 'pinia'
-import { createUUID } from '@/utils'
+import { createUUID, isThisMonth, isThisWeek, isToday } from '@/utils'
 
 interface State {
-  chat: Chat[]
+  chats: Chat[]
   currentChatId: string
   messages: ChatMessageAfter[]
   currentTemporaryMessageId: string
 }
 
+export interface ChatWithType {
+  today: Chat[]
+  thisWeek: Chat[]
+  thisMonth: Chat[]
+  furthermore: Chat[]
+}
+
 export const useChatStore = defineStore('chat', {
   state: (): State => ({
-    chat: [],
+    chats: [],
     currentChatId: '',
     messages: [],
     currentTemporaryMessageId: '',
   }),
   getters: {
     currentChat: (state) => {
-      return state.chat.find(item => item.chatId === state.currentChatId)
+      return state.chats.find(item => item.chatId === state.currentChatId)
     },
     currentTemporaryMessage: (state) => {
       return state.messages.find(item => item.id === state.currentTemporaryMessageId)
+    },
+    chatWithType: (state) => {
+      const result: ChatWithType = {
+        today: [],
+        thisWeek: [],
+        thisMonth: [],
+        furthermore: [],
+      }
+      state.chats.forEach((item) => {
+        const date = item.updateTime || item.createTime
+        if (isToday(date)) {
+          result.today.push(item)
+        }
+        else if (isThisWeek(date)) {
+          result.thisWeek.push(item)
+        }
+        else if (isThisMonth(date)) {
+          result.thisMonth.push(item)
+        }
+        else {
+          result.furthermore.push(item)
+        }
+      })
+      return result
     },
   },
   actions: {
@@ -56,5 +87,6 @@ export const useChatStore = defineStore('chat', {
       this.currentTemporaryMessageId = temp.id
       return temp
     },
+
   },
 })

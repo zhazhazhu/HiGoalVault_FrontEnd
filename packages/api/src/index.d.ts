@@ -79,4 +79,6 @@ export interface Chat {
   chatId: string
   title: string
   userId: string
+  createTime: string
+  updateTime: string
 }
