@@ -17,7 +17,7 @@ const cs = useClassesName('converse')
 const cursorPosition = ref(0)
 const cursorSpacing = ref(40)
 const converseContainerStyle = ref<CSSProperties>({
-  paddingBottom: '40px',
+  paddingBottom: '20px',
 })
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
@@ -126,9 +126,12 @@ onUnmounted(() => {
       <view :class="cs.e('right')">
         <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" />
         <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage" />
-        <view class="i-material-symbols-stop-circle-outline-rounded" :class="cs.e('icon')" @click="onStopSend" />
+        <view v-if="isReplying" class="i-material-symbols-stop-circle-outline-rounded" :class="cs.e('icon')" @click="onStopSend" />
       </view>
     </view>
+    <text :class="cs.e('tip')">
+      内容由AI生成，仅供参考
+    </text>
   </view>
 </template>
 
@@ -158,5 +161,13 @@ onUnmounted(() => {
   & + & {
     margin-left: 10px;
   }
+}
+.hi-converse__tip {
+  font-size: 10px;
+  color: #666666;
+  line-height: 10px;
+  display: block;
+  margin: 10px auto;
+  text-align: center;
 }
 </style>
