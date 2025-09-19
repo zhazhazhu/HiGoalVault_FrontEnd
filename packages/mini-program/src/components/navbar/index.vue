@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import { computed, ref, watch } from 'vue'
-import { useUserStore } from '@/store'
+import { useGlobalStore, useUserStore } from '@/store'
 
 interface Props {
   title?: string
@@ -20,9 +20,9 @@ const slots = defineSlots<{
   right?: () => any
 }>()
 
-const statusBarHeight = computed(() => uni.getSystemInfoSync().statusBarHeight || 0)
 const show = ref(false)
 const userStore = useUserStore()
+const globalStore = useGlobalStore()
 
 const navbarStyle = computed<CSSProperties>(() => ({
   '--bg-color': props.bgColor,
@@ -52,7 +52,7 @@ defineExpose({
 <template>
   <view class="navbar__container" :style="navbarStyle">
     <login-popup v-model="show" />
-    <view class="navbar__status" :style="{ '--status-bar-height': `${statusBarHeight}px` }" />
+    <view class="navbar__status" :style="{ '--status-bar-height': `${globalStore.windowInfo?.statusBarHeight}px` }" />
     <view class="navbar__content">
       <view class="navbar__content__left">
         <view v-if="leftText" @click="emits('leftClick')">

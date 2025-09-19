@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 import { watch } from 'vue'
-import { useUserStore } from './store/user'
+import { useGlobalStore, useUserStore } from './store'
 
 const userStore = useUserStore()
+const globalStore = useGlobalStore()
 
 watch(() => userStore.accessToken, async (val) => {
   if (val) {
@@ -12,6 +13,8 @@ watch(() => userStore.accessToken, async (val) => {
 })
 
 onLaunch(async () => {
+  globalStore.syncStatusBarHeight()
+
   uni.getPrivacySetting({
     success: (res) => {
       console.log('getPrivacySetting success', res)
