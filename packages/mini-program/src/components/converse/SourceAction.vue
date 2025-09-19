@@ -33,7 +33,15 @@ function onChooseFile() {
 </script>
 
 <template>
-  <wd-action-sheet v-model="model" :custom-class="cs.m('model')" :custom-header-class="cs.m('header')" @close="close">
+  <wd-popup
+    v-model="model"
+    :custom-class="cs.m('model')"
+    :custom-header-class="cs.m('header')"
+    position="bottom"
+    root-portal
+    safe-area-inset-bottom
+    @close="close"
+  >
     <view>
       <view class="p-20px pb-0 flex flex-wrap gap-20px">
         <button :class="cs.e('button')" @click="onChooseImage('album')">
@@ -70,7 +78,7 @@ function onChooseFile() {
         <wd-text text="取消" size="18px" color="#121212" bold @click.stop="close" />
       </view>
     </view>
-  </wd-action-sheet>
+  </wd-popup>
 </template>
 
 <style lang='scss' scoped>
