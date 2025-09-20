@@ -56,7 +56,7 @@ async function loadMessage() {
   page.value.pageNumber!++
   await getMessage()
 }
-const showSidebar = ref(false)
+const showSidebar = ref(true)
 function onNavbarLeftClick() {
   if (share.value.isChecked) {
     share.value.isChecked = false
@@ -89,7 +89,7 @@ onShareAppMessage(({ from, target }) => {
 </script>
 
 <template>
-  <sidebar v-model="showSidebar">
+  <Layout v-model="showSidebar">
     <share-popup v-model="share.isChecked" />
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">
@@ -131,7 +131,7 @@ onShareAppMessage(({ from, target }) => {
         <converse />
       </view>
     </container>
-  </sidebar>
+  </Layout>
 </template>
 
 <style lang='scss' scoped>

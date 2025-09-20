@@ -1,12 +1,14 @@
 import type { Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '@higoal/api'
+import type { Ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useStoreRef } from '@/composables'
 import { createUUID, isThisMonth, isThisWeek, isToday } from '@/utils'
 
 interface State {
   chats: Chat[]
-  currentChatId: string
+  currentChatId: Ref<string>
   messages: ChatMessageAfter[]
-  currentTemporaryMessageId: string
+  currentTemporaryMessageId: Ref<string>
 }
 
 export interface ChatWithType {
@@ -19,9 +21,9 @@ export interface ChatWithType {
 export const useChatStore = defineStore('chat', {
   state: (): State => ({
     chats: [],
-    currentChatId: '',
+    currentChatId: useStoreRef<string>('CURRENT_CHAT_ID', ''),
     messages: [],
-    currentTemporaryMessageId: '',
+    currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
   }),
   getters: {
     currentChat: (state) => {

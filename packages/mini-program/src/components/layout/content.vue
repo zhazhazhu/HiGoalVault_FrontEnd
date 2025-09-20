@@ -7,13 +7,13 @@ const active = ref('chat')
 </script>
 
 <template>
-  <view class="mt-220rpx w-80% px-16px">
+  <view class="mt-220rpx w-85% px-16px box-border">
     <tabs v-model="active" :custom-nav-class="cs.m('tab-nav')">
       <tabs-item name="browse" label="发现">
         TODO
       </tabs-item>
       <tabs-item name="chat" label="对话">
-        <SidebarChatList />
+        <LayoutChatList />
       </tabs-item>
     </tabs>
   </view>

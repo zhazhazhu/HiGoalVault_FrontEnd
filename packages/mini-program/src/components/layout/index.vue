@@ -14,7 +14,7 @@ function onClose() {
 <template>
   <view :class="[cs.m('container'), cs.is('open', model)]" class="h-screen overflow-hidden">
     <view :class="cs.m('wrapper')">
-      <SidebarContent />
+      <LayoutContent />
     </view>
     <view :class="cs.m('content')">
       <view :class="cs.e('content-mask')" @click.stop="onClose" />
@@ -76,7 +76,7 @@ function onClose() {
 
 /* 主内容区打开时的动画效果 */
 .hi-side--container.is-open .hi-side--content {
-  transform: translateX(70%) scale(0.8) translateY(260rpx);
+  transform: translateX(75%) scale(0.8) translateY(260rpx);
   border-radius: 20px;
   box-shadow: 0 0 70px rgb(0 0 0 / 21%);
 }
