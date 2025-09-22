@@ -5,11 +5,12 @@ import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref, watch } from 'vue'
 import { useToast } from 'wot-design-uni'
+import { api } from '@/api'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
-
 import { useChatStore } from '@/store'
 import { createUUID, markdownToText } from '@/utils'
+
 import 'highlight.js/styles/github.css'
 
 const props = defineProps<{
@@ -83,7 +84,13 @@ function openSharePopup() {
   share.value.ids.push(props.message.chatQueryAnswerList[currentAnswerIndex.value - 1].queryId)
 }
 
-function onFavorite() {}
+function onFavorite() {
+  api.addCollect({
+    chatId: props.message.chatId,
+    queryId: currentAnswer.value.queryId,
+    msgId: props.message.msgId,
+  })
+}
 </script>
 
 <template>

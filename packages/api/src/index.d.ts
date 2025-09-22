@@ -94,3 +94,9 @@ export interface Chat {
   createTime: string
   updateTime: string
 }
+
+export interface AddCollectRequest {
+  chatId: string
+  msgId: string
+  queryId: string
+}
