@@ -3,8 +3,9 @@ import type { Page } from '@higoal/api'
 import type { ChatWithType } from '@/store'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { api } from '@/api'
+import { useMessageInject } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
 import { useChatStore, useUserStore } from '@/store'
@@ -13,6 +14,7 @@ defineProps<{
   isEdit: boolean
 }>()
 const cs = useClassesName('chat-list')
+const { refreshMessage, toggleSidebar } = useMessageInject()!
 const chatStore = useChatStore()
 const userStore = useUserStore()
 const [page] = useResetRef<Page>({
@@ -38,8 +40,15 @@ async function onCreateNewChat() {
   if (data.code === 200) {
     chatStore.currentChatId = data.result.chatId
   }
+  toggleSidebar()
   await getChatList()
 }
+
+// 当前聊天切换时，关闭侧边栏，刷新消息
+watch(() => chatStore.currentChatId, () => {
+  toggleSidebar()
+  refreshMessage()
+})
 
 onMounted(() => {
   getChatList()

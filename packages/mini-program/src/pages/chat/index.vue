@@ -19,12 +19,14 @@ const share = ref<Share>({
   isChecked: false,
 })
 const chatStore = useChatStore()
-const [page] = useResetRef<Page>({
+const [page, resetPage] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 20,
   sort: 'createTime',
 })
 const scrollTop = ref(0)
+const showSidebar = ref(false)
+const isFinish = ref(false)
 
 watch(() => share.value.isChecked, (newVal) => {
   if (!newVal) {
@@ -42,21 +44,22 @@ async function getMessage() {
   if (data.code === 200) {
     const _messages = data.result.records.map(chatStore.transformMessage)
     chatStore.messages.push(..._messages)
+    isFinish.value = data.result.total <= chatStore.messages.length
     loading.value = false
   }
 }
 function refreshMessage() {
   chatStore.messages = []
+  resetPage()
   getMessage()
 }
 async function loadMessage() {
-  if (loading.value)
+  if (loading.value || isFinish.value)
     return
   loading.value = true
   page.value.pageNumber!++
   await getMessage()
 }
-const showSidebar = ref(true)
 function onNavbarLeftClick() {
   if (share.value.isChecked) {
     share.value.isChecked = false
@@ -64,15 +67,23 @@ function onNavbarLeftClick() {
   }
   showSidebar.value = !showSidebar.value
 }
+function toggleSidebar() {
+  showSidebar.value = !showSidebar.value
+}
 
 provide(messageInjectKey, {
   share,
   scrollToTop,
   refreshMessage,
+  toggleSidebar,
 })
 
 onMounted(() => {
   getMessage()
+})
+
+watch(() => chatStore.messages, () => {
+  console.log(chatStore.messages)
 })
 
 onShareAppMessage(({ from, target }) => {
@@ -119,10 +130,10 @@ onShareAppMessage(({ from, target }) => {
         <view :class="cs.m('wrapper')" class="px-32rpx">
           <MessageCard v-for="item in chatStore.messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
 
-          <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
-            <wd-loading color="#FC6146FF" :size="20" />
+          <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
+            <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
             <text class="ml-20rpx text-24rpx">
-              加载中...
+              {{ isFinish ? '没有更多了' : '加载中...' }}
             </text>
           </view>
         </view>
