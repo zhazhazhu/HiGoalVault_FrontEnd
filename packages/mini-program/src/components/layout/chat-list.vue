@@ -1,9 +1,10 @@
 <script lang='ts' setup>
-import type { Page } from '@higoal/api'
+import type { Chat, Page } from '@higoal/api'
 import type { ChatWithType } from '@/store'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
-import { onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
@@ -13,6 +14,7 @@ import { useChatStore, useUserStore } from '@/store'
 defineProps<{
   isEdit: boolean
 }>()
+
 const cs = useClassesName('chat-list')
 const { refreshMessage, toggleSidebar } = useMessageInject()!
 const chatStore = useChatStore()
@@ -22,6 +24,7 @@ const [page] = useResetRef<Page>({
   pageSize: 20,
   sort: 'createTime',
 })
+const message = useMessage()
 
 async function getChatList() {
   const data = await api.getChatList({
@@ -43,6 +46,28 @@ async function onCreateNewChat() {
   toggleSidebar()
   await getChatList()
 }
+function onEditChat(item: Chat) {
+  const input = ref(item.title)
+  message.prompt({
+    title: '编辑名称',
+    inputValue: input.value,
+  }).then(async ({ value }) => {
+    await api.updateChat({
+      chatId: item.chatId,
+      title: value?.toString() || '',
+    })
+    getChatList()
+  })
+}
+function onDeleteChat(item: Chat) {
+  message.confirm({
+    msg: '确认删除吗?',
+    title: '提示',
+  }).then(async () => {
+    await api.deleteChat(item.chatId)
+    getChatList()
+  })
+}
 
 // 当前聊天切换时，关闭侧边栏，刷新消息
 watch(() => chatStore.currentChatId, () => {
@@ -57,6 +82,8 @@ onMounted(() => {
 
 <template>
   <view :class="cs.m('container')" class="mt-10px">
+    <wd-message-box />
+
     <wd-button icon="add" plain block @click="onCreateNewChat">
       新对话
     </wd-button>
@@ -88,8 +115,8 @@ onMounted(() => {
               {{ formatTime(item.updateTime || item.createTime, key) }}
             </view>
             <view v-else :class="cs.m('edit')">
-              <view class="edit-chat-icon size-20px" />
-              <view class="delete-chat-icon size-20px bg-primary" />
+              <view class="edit-chat-icon size-20px" @click.stop="onEditChat(item)" />
+              <view class="delete-chat-icon size-20px bg-primary" @click.stop="onDeleteChat(item)" />
             </view>
           </view>
         </view>

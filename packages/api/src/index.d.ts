@@ -100,3 +100,8 @@ export interface AddCollectRequest {
   msgId: string
   queryId: string
 }
+
+export interface UpdateChat {
+  chatId: string
+  title: string
+}

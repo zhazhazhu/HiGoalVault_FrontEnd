@@ -25,7 +25,7 @@ const [page, resetPage] = useResetRef<Page>({
   sort: 'createTime',
 })
 const scrollTop = ref(0)
-const showSidebar = ref(false)
+const showSidebar = ref(true)
 const isFinish = ref(false)
 
 watch(() => share.value.isChecked, (newVal) => {
@@ -127,7 +127,7 @@ onShareAppMessage(({ from, target }) => {
         :class="cs.m('scroll-view')"
         @scrolltolower="loadMessage"
       >
-        <view :class="cs.m('wrapper')" class="px-32rpx">
+        <view :class="cs.m('wrapper')" class="px-32rpx w-full">
           <MessageCard v-for="item in chatStore.messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
 
           <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">

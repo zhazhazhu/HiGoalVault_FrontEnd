@@ -39,7 +39,7 @@ function onClose() {
   width: 100%;
   height: 100%;
   background-color: #fff;
-  z-index: 1000;
+  z-index: 2;
   transform: translateX(0); /* 默认保持在0，等待父级控制 */
   transition: transform 0.3s ease-in-out;
 }
@@ -61,7 +61,7 @@ function onClose() {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1001;
+  z-index: 3;
   background-color: #fff;
   transition:
     transform 0.3s ease-in-out,
