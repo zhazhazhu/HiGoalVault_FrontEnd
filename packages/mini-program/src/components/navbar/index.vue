@@ -60,7 +60,7 @@ defineExpose({
         </view>
 
         <view v-else>
-          <view v-if="userStore.isLogin" class="i-uil-list-ul text-50rpx" @click="emits('leftClick')" />
+          <view v-if="userStore.isLogin" class="i-uil-list-ul text-54rpx" @click="emits('leftClick')" />
           <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
             <view class="i-uil-user text-46rpx mr-6rpx" />
             <text class="text-24rpx" user-select="false">
@@ -105,7 +105,7 @@ defineExpose({
 }
 .navbar__title {
   max-width: 300rpx;
-  margin-top: 10px;
+  margin-top: 20rpx;
 }
 .navbar__status {
   height: var(--status-bar-height);

@@ -93,7 +93,7 @@ export function useWs() {
 
     const userStore = useUserStore()
     socketTask = uni.connectSocket({
-      url: `${Protocol.WS}://218.108.203.90:8888/buyer/ai-chat-ws`,
+      url: `ws://218.108.203.90:8888/buyer/ai-chat-ws`,
       header: {
         'AccessToken': userStore.accessToken,
         'Content-type': 'application/json', // 默认值

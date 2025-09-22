@@ -202,7 +202,7 @@ function onFavorite() {
 }
 .hi-message-card__rich-text {
   color: #333333;
-  line-height: 24px;
+  line-height: 48rpx;
 }
 .hi-message-card--reference {
   display: flex;

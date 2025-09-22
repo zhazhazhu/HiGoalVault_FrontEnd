@@ -147,10 +147,10 @@ onUnmounted(() => {
 
 <style lang='scss' scoped>
 .hi-converse--container {
-  padding: 20px;
+  padding: 40rpx;
   background-color: white;
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.08);
-  border-radius: 20px;
+  box-shadow: 0px 4rpx 16rpx 0px rgba(0, 0, 0, 0.08);
+  border-radius: 40rpx;
   display: flex;
   align-items: flex-end;
 }
@@ -161,23 +161,23 @@ onUnmounted(() => {
 .hi-converse__input,
 .hi-converse--voice {
   flex: 1;
-  padding: 0 10px;
+  padding: 0 20rpx;
 }
 .hi-converse__icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+  font-size: 56rpx;
+  width: 56rpx;
+  height: 56rpx;
   padding: 5px 0;
   & + & {
-    margin-left: 10px;
+    margin-left: 20rpx;
   }
 }
 .hi-converse__tip {
-  font-size: 10px;
+  font-size: 20rpx;
   color: #666666;
-  line-height: 10px;
+  line-height: 20rpx;
   display: block;
-  margin: 10px auto;
+  margin: 20rpx auto;
   text-align: center;
 }
 </style>

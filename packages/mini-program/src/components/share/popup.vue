@@ -39,7 +39,7 @@ const { share } = inject(messageInjectKey)!
   text {
     font-size: 12px;
     color: #666666;
-    line-height: 24px;
+    line-height: 48rpx;
   }
 }
 </style>

@@ -1,12 +1,14 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
+import { useMessageInject } from '@/composables/inject'
 import { useUserStore } from '@/store'
 
 const cs = useClassesName('sidebar-content')
 const active = ref('chat')
 const userStore = useUserStore()
 const isEdit = ref(false)
+const { toggleSidebar } = useMessageInject()
 
 function onEditChatList() {
   isEdit.value = !isEdit.value
@@ -14,7 +16,8 @@ function onEditChatList() {
 </script>
 
 <template>
-  <view class="pt-110px w-85% px-16px box-border h-full flex flex-col justify-between">
+  <view class="pt-110px w-85% px-16px box-border h-full flex flex-col justify-between relative">
+    <view class="i-material-symbols-light-close-rounded size-30px absolute top-60px left-14px" @click="toggleSidebar" />
     <tabs v-model="active" custom-class="flex-1" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
       <template #edit>
         <wd-button v-if="!isEdit" type="text">
@@ -40,7 +43,7 @@ function onEditChatList() {
         </text>
       </view>
 
-      <view class="flex gap-10px text-24px text-h3-color w-80px justify-end">
+      <view class="flex gap-10px text-48rpx text-h3-color w-80px justify-end">
         <view class="i-tabler-settings" />
         <view class="i-material-symbols-lightbulb-2-outline-sharp" />
       </view>

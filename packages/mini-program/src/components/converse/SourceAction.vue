@@ -97,7 +97,7 @@ function onChooseFile() {
   }
   .hi-source-action__text {
     font-size: 14px;
-    line-height: 24px;
+    line-height: 48rpx;
   }
   &::after {
     display: none;
