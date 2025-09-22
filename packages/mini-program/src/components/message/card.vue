@@ -80,10 +80,10 @@ function onCopy() {
 
 function openSharePopup() {
   share.value.isChecked = true
-  share.value.ids.push(props.message.msgId)
+  share.value.ids.push(props.message.chatQueryAnswerList[currentAnswerIndex.value - 1].queryId)
 }
 
-function onShareToMall() {}
+function onFavorite() {}
 </script>
 
 <template>
@@ -132,7 +132,7 @@ function onShareToMall() {}
             <view class="i-material-symbols-arrow-forward-ios-rounded" :class="[{ 'opacity-50': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
           </view>
           <view class="flex-1" />
-          <view class="favorite-icon size-30px" @click="onShareToMall" />
+          <view class="favorite-icon size-30px" @click="onFavorite" />
           <view class="share-icon size-30px" />
           <view class="wechat-icon size-30px" @click="openSharePopup" />
         </view>

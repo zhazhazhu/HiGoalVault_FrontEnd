@@ -49,8 +49,8 @@ export interface ChatMessageBefore {
 export interface AnswerBefore {
   data: string // 股票图数据
   message: string // 深度思考内容
-  query?: string // 用户问题
-  queryId?: string // 问题id
+  query: string // 用户问题
+  queryId: string // 问题id
   reference: string // 引用
   response: string // 回答问题
   ts: string // 时间
