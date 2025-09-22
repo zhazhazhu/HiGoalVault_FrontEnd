@@ -5,6 +5,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
+import { createUUID } from '@/utils'
 
 withDefaults(defineProps<{
   placeholder?: string
@@ -28,15 +29,21 @@ const isReplying = ref(false)
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
-  if (!chatStore.currentTemporaryMessage)
+  if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
     return
+  const currentMessage = chatStore.currentTemporaryMessage.chatQueryAnswerList.find(item => item.runId === chatStore.currentRunId)
+  if (!currentMessage)
+    return
+
   if (data.code === '200') {
-    data.data?.response && (chatStore.currentTemporaryMessage.response += data.data?.response)
-    data.data?.message && (chatStore.currentTemporaryMessage.message += data.data?.message)
-    data.data?.reference && (chatStore.currentTemporaryMessage.reference = data.data?.reference)
+    data.data?.response && (currentMessage.response += data.data?.response)
+    data.data?.message && (currentMessage.message += data.data?.message)
+    data.data?.reference && (currentMessage.reference = data.data?.reference)
     scrollToTop()
   }
   if (data.type === 'stream-end') {
+    // 清空当前runId
+    chatStore.currentRunId = ''
     isReplying.value = false
   }
 })
@@ -59,11 +66,13 @@ async function onConfirmMessage() {
   const text = model.value.trim()
   model.value = ''
   isReplying.value = true
+  // 创建并保存当前消息的runId
+  chatStore.currentRunId = createUUID(32)
 
-  ws.send({ chatId: '123', query: text }).then(() => {
+  ws.send({ chatId: chatStore.currentChatId, query: text, runId: chatStore.currentRunId }).then(() => {
     chatStore.createTemporaryMessage({
       query: text,
-      chatId: '123',
+      chatId: chatStore.currentChatId,
     })
     scrollToTop()
   })
@@ -77,6 +86,7 @@ function onMessageTypeChange() {
 }
 
 function onStopSend() {
+  ws.stop({ runId: chatStore.currentRunId })
 }
 
 onMounted(() => {

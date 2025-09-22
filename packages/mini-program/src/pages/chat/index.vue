@@ -38,7 +38,7 @@ function scrollToTop() {
 const loading = ref(false)
 
 async function getMessage() {
-  const data = await api.getMessageList({ userId: userStore.userInfo!.id, ...page.value })
+  const data = await api.getMessageList({ userId: userStore.userInfo!.id, chatId: chatStore.currentChatId, ...page.value })
   if (data.code === 200) {
     const _messages = data.result.records.map(chatStore.transformMessage)
     chatStore.messages.push(..._messages)
@@ -56,7 +56,7 @@ async function loadMessage() {
   page.value.pageNumber!++
   await getMessage()
 }
-const showSidebar = ref(true)
+const showSidebar = ref(false)
 function onNavbarLeftClick() {
   if (share.value.isChecked) {
     share.value.isChecked = false
@@ -71,8 +71,8 @@ provide(messageInjectKey, {
   refreshMessage,
 })
 
-onMounted(async () => {
-  await getMessage()
+onMounted(() => {
+  getMessage()
 })
 
 onShareAppMessage(({ from, target }) => {
@@ -116,7 +116,7 @@ onShareAppMessage(({ from, target }) => {
         @scrolltolower="loadMessage"
       >
         <view :class="cs.m('wrapper')" class="px-32rpx">
-          <MessageCard v-for="item in chatStore.messages" :id="`message-${item.id}`" :key="item.id" :message="item" />
+          <MessageCard v-for="item in chatStore.messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
 
           <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
             <wd-loading color="#FC6146FF" :size="20" />

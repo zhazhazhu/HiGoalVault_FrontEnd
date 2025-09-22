@@ -1,4 +1,4 @@
-import type { ChatMessageAfter } from '@higoal/api'
+import type { AnswerAfter } from '@higoal/api'
 import { useUserStore } from '@/store'
 import { createUUID } from '@/utils'
 
@@ -26,20 +26,35 @@ export interface WsMessage {
   }
 }
 
+export interface StopWsMessage {
+  type: 'buyer'
+  content: {
+    body: {
+      type: 'heater' | 'login' | 'auth' | 'chat'
+      code: string
+      data: StopWsMessageData
+    }
+  }
+}
+
 export interface WsMessageData {
   chatId: string
-  query: string
+  query?: string
   runId?: string
-  messageId?: string
+  msgId?: string
   clientType?: ClientType
   accessToken?: string
+}
+
+export interface StopWsMessageData extends Partial<Omit<WsMessageData, 'runId'>> {
+  runId: string
 }
 
 export interface WsMessageResponse {
   id: string
   code: '200'
   type: 'message' | 'stream-end'
-  data: ChatMessageAfter | null
+  data: AnswerAfter | null
 }
 
 export interface WsMessageResponseBefore {
@@ -95,7 +110,7 @@ export function useWs() {
     socketTask?.onMessage((res) => {
       try {
         const data = JSON.parse(res.data) as WsMessageResponseBefore
-        const messageData = (data.body.data.sseMsgType === 'stream-end' ? null : JSON.parse(data.body.data.data!) as ChatMessageAfter)
+        const messageData = (data.body.data.sseMsgType === 'stream-end' ? null : JSON.parse(data.body.data.data!) as AnswerAfter)
         messageCallback?.({
           id: data.id,
           code: data.code,
@@ -132,8 +147,8 @@ export function useWs() {
           code: '100007',
           data: {
             ...data,
-            messageId: data.messageId || createUUID(32),
-            runId: createUUID(),
+            msgId: data.msgId || createUUID(32),
+            runId: data.runId || createUUID(32),
             clientType: data.clientType || ClientType.WECHAT_MP,
             accessToken: data.accessToken || userStore.accessToken,
           },
@@ -145,6 +160,66 @@ export function useWs() {
       socketTask?.send({
         data: JSON.stringify(message),
         ...options,
+        success(res) {
+          resolve(res)
+        },
+        fail(err) {
+          reject(err)
+        },
+      })
+    })
+  }
+
+  function stop(data: StopWsMessageData) {
+    const userStore = useUserStore()
+    const message: StopWsMessage = {
+      type: 'buyer',
+      content: {
+        body: {
+          type: 'chat',
+          code: '100009',
+          data: {
+            ...data,
+            clientType: data.clientType || ClientType.WECHAT_MP,
+            accessToken: data.accessToken || userStore.accessToken,
+          },
+        },
+      },
+    }
+
+    return new Promise((resolve, reject) => {
+      socketTask?.send({
+        data: JSON.stringify(message),
+        success(res) {
+          resolve(res)
+        },
+        fail(err) {
+          reject(err)
+        },
+      })
+    })
+  }
+
+  function refresh(data: StopWsMessageData) {
+    const userStore = useUserStore()
+    const message: StopWsMessage = {
+      type: 'buyer',
+      content: {
+        body: {
+          type: 'chat',
+          code: '100009',
+          data: {
+            ...data,
+            clientType: ClientType.WECHAT_MP,
+            accessToken: userStore.accessToken,
+          },
+        },
+      },
+    }
+
+    return new Promise((resolve, reject) => {
+      socketTask?.send({
+        data: JSON.stringify(message),
         success(res) {
           resolve(res)
         },
@@ -175,6 +250,8 @@ export function useWs() {
   return {
     socketTask,
     send,
+    stop,
+    refresh,
     close,
     connect,
     onMessage,

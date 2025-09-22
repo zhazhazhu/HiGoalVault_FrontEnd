@@ -32,17 +32,12 @@ export default {
     transformerClass(),
   ],
   theme: {
-    color: {
-      blue: 'rgba(22, 33, 255, 1)',
-      red: '#e74c3c',
-      sun: '#f1c40f',
-      green: '#16a085',
-    },
-    border: {
-      blue: 'rgba(22, 33, 255, 1)',
-      red: '#e74c3c',
-      sun: '#f1c40f',
-      green: '#16a085',
+    colors: {
+      primary: 'var(--hi-primary-color)',
+      secondary: 'var(--hi-secondary-color)',
+      h1Color: 'var(--hi-h1-color)',
+      h2Color: 'var(--hi-h2-color)',
+      h3Color: 'var(--hi-h3-color)',
     },
   },
 }

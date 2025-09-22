@@ -2,7 +2,7 @@
 import { useClassesName } from '@higoal/hooks'
 
 const model = defineModel({ type: Boolean, default: false })
-const cs = useClassesName('side')
+const cs = useClassesName('layout')
 
 function onClose() {
   if (model.value) {
@@ -25,14 +25,14 @@ function onClose() {
 
 <style lang='scss' scoped>
 /* 容器 */
-.hi-side--container {
+.hi-layout--container {
   height: 100vh;
   overflow: hidden;
   position: relative;
 }
 
 /* 侧边栏包装器 */
-.hi-side--wrapper {
+.hi-layout--wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -45,17 +45,17 @@ function onClose() {
 }
 
 /* 侧边栏打开时的状态 */
-.hi-side--container.is-open .hi-side--wrapper {
+.hi-layout--container.is-open .hi-layout--wrapper {
   transform: translateX(0);
 }
 
 /* 侧边栏关闭时的状态 */
-.hi-side--container:not(.is-open) .hi-side--wrapper {
+.hi-layout--container:not(.is-open) .hi-layout--wrapper {
   transform: translateX(-100%);
 }
 
 /* 主内容区 */
-.hi-side--content {
+.hi-layout--content {
   position: fixed;
   top: 0;
   left: 0;
@@ -75,18 +75,18 @@ function onClose() {
 }
 
 /* 主内容区打开时的动画效果 */
-.hi-side--container.is-open .hi-side--content {
-  transform: translateX(75%) scale(0.8) translateY(260rpx);
+.hi-layout--container.is-open .hi-layout--content {
+  transform: translateX(75%) scale(0.75) translateY(260rpx);
   border-radius: 20px;
   box-shadow: 0 0 70px rgb(0 0 0 / 21%);
 }
 
 /* 遮罩层 */
-.hi-side__content-mask {
+.hi-layout__content-mask {
   display: none;
 }
 
-.hi-side--container.is-open .hi-side__content-mask {
+.hi-layout--container.is-open .hi-layout__content-mask {
   display: block;
   position: absolute;
   top: 0;

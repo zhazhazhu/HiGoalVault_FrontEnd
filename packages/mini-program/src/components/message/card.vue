@@ -5,9 +5,11 @@ import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref } from 'vue'
 import { useToast } from 'wot-design-uni'
-
+import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
-import { markdownToText } from '@/utils'
+
+import { useChatStore } from '@/store'
+import { createUUID, markdownToText } from '@/utils'
 import 'highlight.js/styles/github.css'
 
 const props = defineProps<{
@@ -16,6 +18,7 @@ const props = defineProps<{
 
 const { share } = useMessageInject()!
 const cs = useClassesName('message-card')
+const currentAnswer = computed(() => props.message.chatQueryAnswerList[props.message.chatQueryAnswerList.length - 1])
 const md = new MarkdownIt({
   html: true,
   linkify: true,
@@ -30,16 +33,18 @@ const viewDeepThink = ref(true)
 const toast = useToast()
 const userInstance = ref<Element>()
 const check = ref(false)
+const chatStore = useChatStore()
+const ws = useWs()
 
 const htmlContent = computed(() => {
-  return md.render(props.message.response)
+  return md.render(currentAnswer.value.response || '')
 })
 
 function changeCheckbox({ value }: { value: boolean }) {
   if (value)
-    share.value.ids.push(props.message.id)
+    share.value.ids.push(props.message.msgId)
   else
-    share.value.ids = share.value.ids.filter(item => item !== props.message.id)
+    share.value.ids = share.value.ids.filter(item => item !== props.message.msgId)
 }
 
 function onReference(item: ChatMessageReference) {
@@ -49,11 +54,16 @@ function onReference(item: ChatMessageReference) {
   })
 }
 
-function onRefresh() {}
+function onRefresh() {
+  chatStore.currentRunId = createUUID(32)
+  ws.send({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId }).then(() => {
+    chatStore.pushTemporaryMessage()
+  })
+}
 function onCopy() {
-  const response = markdownToText(props.message.response)
+  const response = markdownToText(currentAnswer.value.response || '')
   uni.setClipboardData({
-    data: `${props.message.message}\n${response}`,
+    data: `${currentAnswer.value.message}\n${response}`,
     success() {
       toast.show('复制成功')
     },
@@ -62,7 +72,7 @@ function onCopy() {
 
 function openSharePopup() {
   share.value.isChecked = true
-  share.value.ids.push(props.message.id)
+  share.value.ids.push(props.message.msgId)
 }
 
 function onShareToMall() {}
@@ -94,7 +104,7 @@ function onShareToMall() {}
             <view :class="viewDeepThink ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
           </view>
           <view v-if="viewDeepThink" :class="cs.e('deep-think-content')" align="left">
-            {{ message.message }}
+            {{ currentAnswer.message }}
           </view>
         </view>
 
@@ -114,7 +124,7 @@ function onShareToMall() {}
       </view>
 
       <view :class="cs.m('reference')">
-        <view v-for="item, index in message.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
+        <view v-for="item, index in currentAnswer.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
           <view class="next-level-icon size-16px mr-6px" />
           <text>{{ item.name }}</text>
         </view>

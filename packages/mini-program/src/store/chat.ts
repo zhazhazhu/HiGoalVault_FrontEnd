@@ -1,4 +1,4 @@
-import type { Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '@higoal/api'
+import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '@higoal/api'
 import type { Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useStoreRef } from '@/composables'
@@ -7,6 +7,7 @@ import { createUUID, isThisMonth, isThisWeek, isToday } from '@/utils'
 interface State {
   chats: Chat[]
   currentChatId: Ref<string>
+  currentRunId: Ref<string>
   messages: ChatMessageAfter[]
   currentTemporaryMessageId: Ref<string>
 }
@@ -22,6 +23,7 @@ export const useChatStore = defineStore('chat', {
   state: (): State => ({
     chats: [],
     currentChatId: useStoreRef<string>('CURRENT_CHAT_ID', ''),
+    currentRunId: useStoreRef<string>('CURRENT_RUN_ID', ''),
     messages: [],
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
   }),
@@ -30,7 +32,7 @@ export const useChatStore = defineStore('chat', {
       return state.chats.find(item => item.chatId === state.currentChatId)
     },
     currentTemporaryMessage: (state) => {
-      return state.messages.find(item => item.id === state.currentTemporaryMessageId)
+      return state.messages.find(item => item.msgId === state.currentTemporaryMessageId)
     },
     chatWithType: (state) => {
       const result: ChatWithType = {
@@ -59,36 +61,63 @@ export const useChatStore = defineStore('chat', {
   },
   actions: {
     transformMessage(message: ChatMessageBefore): ChatMessageAfter {
-      let reference: ChatMessageReference[] = []
-      if (message.reference) {
-        try {
-          reference = JSON.parse(message.reference)
+      const answerAfter = message.chatQueryAnswerList.map((item) => {
+        let reference: ChatMessageReference[] = []
+        let data: any = null
+        if (item.reference) {
+          try {
+            reference = JSON.parse(item.reference)
+            data = JSON.parse(item.data)
+          }
+          catch (error) {
+            console.log('transformMessage error', error)
+          }
         }
-        catch (error) {
-          console.log('transformMessage error', error)
+        return {
+          ...item,
+          reference,
+          data,
         }
-      }
+      })
+
       return {
         ...message,
-        reference,
+        chatQueryAnswerList: answerAfter,
       }
     },
     createTemporaryMessage(message?: Partial<ChatMessageAfter>): ChatMessageAfter {
+      const id = createUUID(32)
       const temp = {
-        id: createUUID(),
         chatId: this.currentChatId || '',
-        data: [],
-        message: '',
         query: '',
-        queryId: createUUID(),
-        response: '',
-        reference: [],
+        msgId: id,
+        chatQueryAnswerList: [
+          {
+            data: [],
+            message: '',
+            reference: [],
+            response: '',
+            ts: '',
+            runId: this.currentRunId,
+          },
+        ],
         ...message,
       } satisfies ChatMessageAfter
       this.messages.unshift(temp)
-      this.currentTemporaryMessageId = temp.id
+      this.currentTemporaryMessageId = temp.msgId
       return temp
     },
+    pushTemporaryMessage() {
+      const answer: AnswerAfter = {
+        data: [],
+        message: '',
+        reference: [],
+        response: '',
+        ts: '',
+        runId: this.currentRunId,
+      }
 
+      this.messages.find(item => item.msgId === this.currentTemporaryMessageId)?.chatQueryAnswerList.push(answer)
+    },
   },
 })

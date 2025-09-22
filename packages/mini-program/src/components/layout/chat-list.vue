@@ -3,7 +3,7 @@ import type { Page } from '@higoal/api'
 import type { ChatWithType } from '@/store'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
-import { onMounted, watchEffect } from 'vue'
+import { onMounted } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
@@ -29,6 +29,9 @@ async function getChatList() {
 function formatTime(time: string, type: keyof ChatWithType) {
   return type === 'today' ? dayjs(time).format('HH:mm') : dayjs(time).format('YYYY/MM/DD')
 }
+async function onCreateNewChat() {
+  await api.addChat()
+}
 
 onMounted(() => {
   getChatList()
@@ -36,7 +39,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <view :class="cs.m('container')">
+  <view :class="cs.m('container')" class="mt-20px">
+    <wd-button icon="add" plain block @click="onCreateNewChat">
+      新对话
+    </wd-button>
     <view v-for="chats, key of chatStore.chatWithType" :key="key" :class="cs.m('chat-type')">
       <view v-if="chats.length">
         <view :class="cs.m('key')">
@@ -65,7 +71,7 @@ onMounted(() => {
   font-size: 11px;
   color: #666666;
   line-height: 18px;
-  margin-bottom: 8px;
+  margin: 6px 0;
 }
 .hi-chat-list--item-container {
   display: flex;
