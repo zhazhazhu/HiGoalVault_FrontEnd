@@ -6,16 +6,29 @@ import { useUserStore } from '@/store'
 const cs = useClassesName('sidebar-content')
 const active = ref('chat')
 const userStore = useUserStore()
+const isEdit = ref(false)
+
+function onEditChatList() {
+  isEdit.value = !isEdit.value
+}
 </script>
 
 <template>
   <view class="pt-110px w-85% px-16px box-border h-full flex flex-col justify-between">
-    <tabs v-model="active" custom-class="flex-1" :custom-nav-class="cs.m('tab-nav')">
+    <tabs v-model="active" custom-class="flex-1" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
+      <template #edit>
+        <wd-button v-if="!isEdit" type="text">
+          编辑
+        </wd-button>
+        <wd-button v-else type="primary" :round="false" size="small">
+          完成
+        </wd-button>
+      </template>
       <tabs-item name="browse" label="发现">
         TODO
       </tabs-item>
       <tabs-item name="chat" label="对话">
-        <LayoutChatList />
+        <LayoutChatList :is-edit="isEdit" />
       </tabs-item>
     </tabs>
 

@@ -2,6 +2,7 @@ import type { Component, ComponentInternalInstance, InjectionKey, Ref, VNode, VN
 import type Tabs from './index.vue'
 import type TabItem from './item.vue'
 import { computed, getCurrentInstance, provide, ref, watch } from 'vue'
+import { createUUID } from '@/utils'
 
 type TabsProps = InstanceType<typeof Tabs>['$props']
 type TabsEmits = InstanceType<typeof Tabs>['$emit']
@@ -9,8 +10,8 @@ type TabChildrenProps = InstanceType<typeof TabItem>['$props']
 interface Navs {
   name: string | number
   label?: string | number
-  right?: boolean
   icon?: string
+  right?: boolean
 }
 type UseTabChildren = ReturnType<typeof useTabChild>
 interface InjectTabsContext extends UseTabChildren {
@@ -20,7 +21,7 @@ interface InjectTabsContext extends UseTabChildren {
 export type { InjectTabsContext, Navs, TabChildrenProps, UseTabChildren }
 
 export const TABS_INJECTION_KEY: InjectionKey<InjectTabsContext>
-  = Symbol('tabs')
+  = Symbol(createUUID())
 
 export function useTabs(props: TabsProps, emit: TabsEmits) {
   const instance = getCurrentInstance()!
@@ -33,12 +34,14 @@ export function useTabs(props: TabsProps, emit: TabsEmits) {
 
   const tabPanes = useTabChild(instance, 'TabItem')
 
-  const navs = computed(() => tabPanes.children.value.map(item => ({
-    label: item.slots.label?.() || item.props?.label,
-    name: item.props.name,
-    right: item.props?.right,
-    icon: item.props?.icon,
-  }) as Navs))
+  const navs = computed<Navs[]>(() => {
+    const array = tabPanes.children.value.map(item => ({
+      label: item.slots.label?.() || item.props?.label,
+      name: item.props.name,
+      icon: item.props?.icon,
+    }) as Navs)
+    return array
+  })
 
   provide(TABS_INJECTION_KEY, {
     ...tabPanes,
@@ -54,7 +57,7 @@ export function useTabChild(vm: ComponentInternalInstance, name: string) {
     // 如果vm.subTree为空，直接添加子组件到children中
     if (!vm.subTree) {
       // 当vm.subTree为空时，直接添加子组件
-      children.value.push(child)
+      children.value.push(child as any)
       return
     }
 
@@ -68,13 +71,13 @@ export function useTabChild(vm: ComponentInternalInstance, name: string) {
 
     // 如果找不到子组件，也直接添加
     if (_uidList.length === 0) {
-      children.value.push(child)
+      children.value.push(child as any)
       return
     }
 
     _uidList.forEach((uid) => {
       if (uid === child.uid)
-        children.value.push(child)
+        children.value.push(child as any)
     })
   }
   function unRegisterChild(child: ComponentInternalInstance) {

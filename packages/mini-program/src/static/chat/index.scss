@@ -163,3 +163,25 @@
   mask-size: contain;
   mask-position: center;
 }
+
+.edit-chat-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-编辑对话列表.svg');
+  mask-image: url('/static/chat/svg/icon-编辑对话列表.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.delete-chat-icon {
+  width: 24px;
+  height: 24px;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-删除对话列表.svg');
+  mask-image: url('/static/chat/svg/icon-删除对话列表.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}

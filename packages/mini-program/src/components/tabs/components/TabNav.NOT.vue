@@ -1,21 +1,20 @@
 <script lang='ts' setup>
 import type { Navs, TabChildrenProps } from '../tabs'
 import { useClassesName } from '@higoal/hooks'
-import { computed, inject } from 'vue'
+import { inject } from 'vue'
 import { TABS_INJECTION_KEY } from '../tabs'
 
-const props = defineProps<{
+defineProps<{
   navs: Navs[]
   customNavClass?: string
+  editable?: boolean
 }>()
 const emit = defineEmits<{
   (e: 'tabClick', tab: TabChildrenProps, ev: Event): void
+  (e: 'edit', ev: Event): void
 }>()
 const { activeName } = inject(TABS_INJECTION_KEY)!
 const cs = useClassesName('tab-nav')
-const navs = computed(() => props.navs.filter(item => !item.right))
-const rightNavs = computed(() => props.navs.filter(item => item.right))
-
 function handleTabClick(tab: TabChildrenProps, ev: Event) {
   if (tab.name !== undefined) {
     activeName.value = tab.name || 0
@@ -38,10 +37,9 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
       </view>
     </view>
 
-    <view :class="cs.m('right')">
-      <view v-for="item in rightNavs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
-        <text>{{ item.label }}</text>
-        <wd-icon v-if="item.icon" :name="item.icon" />
+    <view v-if="editable" :class="cs.m('right')">
+      <view @click="emit('edit', $event)">
+        <slot name="edit" />
       </view>
     </view>
   </view>

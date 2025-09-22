@@ -56,7 +56,7 @@ async function loadMessage() {
   page.value.pageNumber!++
   await getMessage()
 }
-const showSidebar = ref(false)
+const showSidebar = ref(true)
 function onNavbarLeftClick() {
   if (share.value.isChecked) {
     share.value.isChecked = false
@@ -108,6 +108,7 @@ onShareAppMessage(({ from, target }) => {
         scroll-into-view-alignment="end"
         enhanced
         enable-passive
+        enable-flex
         :scroll-y="true"
         :show-scrollbar="false"
         :lower-threshold="50"

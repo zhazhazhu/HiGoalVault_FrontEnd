@@ -9,12 +9,16 @@ import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
 import { useChatStore, useUserStore } from '@/store'
 
+defineProps<{
+  isEdit: boolean
+}>()
 const cs = useClassesName('chat-list')
 const chatStore = useChatStore()
 const userStore = useUserStore()
 const [page] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 20,
+  sort: 'createTime',
 })
 
 async function getChatList() {
@@ -27,10 +31,14 @@ async function getChatList() {
   }
 }
 function formatTime(time: string, type: keyof ChatWithType) {
-  return type === 'today' ? dayjs(time).format('HH:mm') : dayjs(time).format('YYYY/MM/DD')
+  return type === 'today' ? dayjs(time).format('HH:mm') : dayjs(time).format('YY/MM/DD')
 }
 async function onCreateNewChat() {
-  await api.addChat()
+  const data = await api.addChat()
+  if (data.code === 200) {
+    chatStore.currentChatId = data.result.chatId
+  }
+  await getChatList()
 }
 
 onMounted(() => {
@@ -39,43 +47,57 @@ onMounted(() => {
 </script>
 
 <template>
-  <view :class="cs.m('container')" class="mt-20px">
+  <view :class="cs.m('container')" class="mt-10px">
     <wd-button icon="add" plain block @click="onCreateNewChat">
       新对话
     </wd-button>
-    <view v-for="chats, key of chatStore.chatWithType" :key="key" :class="cs.m('chat-type')">
-      <view v-if="chats.length">
-        <view :class="cs.m('key')">
-          {{ DateZhCN[key] }}
-        </view>
-        <view v-for="item in chats" :key="item.chatId" :class="[cs.m('item-container'), cs.is('active', item.chatId === chatStore.currentChatId)]" @click="chatStore.currentChatId = item.chatId">
-          <view :class="cs.m('title')">
-            {{ item.title }}
+    <scroll-view
+      id="scroll-view-chat-list"
+      scroll-into-view-alignment="end"
+      enhanced
+      enable-passive
+      enable-flex
+      :scroll-y="true"
+      :show-scrollbar="false"
+      class="h-[calc(100vh-300px)] overflow-y-auto py-10px"
+    >
+      <view v-for="chats, key of chatStore.chatWithType" :key="key" :class="cs.m('chat-type')">
+        <view v-if="chats.length">
+          <view :class="cs.m('key')">
+            {{ DateZhCN[key] }}
           </view>
-          <view :class="cs.m('username-time')">
-            <view :class="cs.m('username')">
-              {{ userStore.userInfo?.username }}
+          <view v-for="item in chats" :key="item.chatId" :class="[cs.m('item-container'), cs.is('active', item.chatId === chatStore.currentChatId)]" @click="chatStore.currentChatId = item.chatId">
+            <view :class="cs.m('left')">
+              <view :class="cs.m('title')">
+                {{ item.title }}
+              </view>
+              <view :class="cs.m('username')">
+                {{ userStore.userInfo?.username }}
+              </view>
             </view>
-            <view :class="cs.m('time')">
+            <view v-if="!isEdit" :class="cs.m('time')">
               {{ formatTime(item.updateTime || item.createTime, key) }}
+            </view>
+            <view v-else :class="cs.m('edit')">
+              <view class="edit-chat-icon size-20px" />
+              <view class="delete-chat-icon size-20px bg-primary" />
             </view>
           </view>
         </view>
       </view>
-    </view>
+    </scroll-view>
   </view>
 </template>
 
 <style lang='scss' scoped>
 .hi-chat-list--key {
   font-size: 11px;
-  color: #666666;
+  color: var(--hi-h3-color);
   line-height: 18px;
   margin: 6px 0;
 }
 .hi-chat-list--item-container {
   display: flex;
-  flex-direction: column;
   width: 100%;
   padding: 13px 16px;
   box-sizing: border-box;
@@ -84,6 +106,11 @@ onMounted(() => {
     border: 1px solid var(--hi-primary-color);
     background-color: #fff4f3;
   }
+  .hi-chat-list--left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
   .hi-chat-list--title {
     font-size: 14px;
     color: #333333;
@@ -91,12 +118,21 @@ onMounted(() => {
     font-weight: bold;
     margin-bottom: 4px;
   }
-  .hi-chat-list--username-time {
+  .hi-chat-list--time {
     font-size: 12px;
-    color: #666666;
+    color: var(--hi-h3-color);
     line-height: 18px;
     display: flex;
-    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .hi-chat-list--username {
+    font-size: 12px;
+    color: var(--hi-h3-color);
+  }
+  .hi-chat-list--edit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 }
 </style>

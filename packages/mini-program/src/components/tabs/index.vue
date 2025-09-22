@@ -8,10 +8,12 @@ const props = defineProps<{
   customNavClass?: string
   customClass?: string
   customContentClass?: string
+  editable?: boolean
 }>()
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string | number): void
-  (e: 'tabChange', val: string | number): void
+  (e: 'tabChange', val?: string | number): void
+  (e: 'edit', ev: Event): void
 }>()
 const cs = useClassesName('tabs')
 const { navs } = useTabs(props, emit)
@@ -19,7 +21,11 @@ const { navs } = useTabs(props, emit)
 
 <template>
   <view :class="[cs.s(), customClass]">
-    <TabNav :navs="navs" :custom-nav-class="customNavClass" />
+    <TabNav :navs="navs" :editable="editable" :custom-nav-class="customNavClass" @tab-click="$emit('tabChange', $event.name)" @edit="$emit('edit', $event)">
+      <template #edit>
+        <slot name="edit" />
+      </template>
+    </TabNav>
 
     <view :class="[cs.m('content'), customContentClass]">
       <slot />
