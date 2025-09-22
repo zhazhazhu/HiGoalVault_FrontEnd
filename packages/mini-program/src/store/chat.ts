@@ -10,6 +10,7 @@ interface State {
   currentRunId: Ref<string>
   messages: ChatMessageAfter[]
   currentTemporaryMessageId: Ref<string>
+  isReplying: boolean
 }
 
 export interface ChatWithType {
@@ -26,6 +27,7 @@ export const useChatStore = defineStore('chat', {
     currentRunId: useStoreRef<string>('CURRENT_RUN_ID', ''),
     messages: [],
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
+    isReplying: false,
   }),
   getters: {
     currentChat: (state) => {
@@ -107,7 +109,7 @@ export const useChatStore = defineStore('chat', {
       this.currentTemporaryMessageId = temp.msgId
       return temp
     },
-    pushTemporaryMessage() {
+    pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
         data: [],
         message: '',
@@ -117,7 +119,7 @@ export const useChatStore = defineStore('chat', {
         runId: this.currentRunId,
       }
 
-      this.messages.find(item => item.msgId === this.currentTemporaryMessageId)?.chatQueryAnswerList.push(answer)
+      this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)
     },
   },
 })

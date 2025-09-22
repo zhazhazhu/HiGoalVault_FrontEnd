@@ -25,7 +25,6 @@ const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
 const chatStore = useChatStore()
 const { scrollToTop } = useMessageInject()!
-const isReplying = ref(false)
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
@@ -44,12 +43,12 @@ ws.onMessage((data) => {
   if (data.type === 'stream-end') {
     // 清空当前runId
     chatStore.currentRunId = ''
-    isReplying.value = false
+    chatStore.isReplying = false
   }
 })
 
 ws.onClose(() => {
-  isReplying.value = false
+  chatStore.isReplying = false
 })
 
 function onLineChange(e) {
@@ -65,7 +64,7 @@ async function onConfirmMessage() {
     return
   const text = model.value.trim()
   model.value = ''
-  isReplying.value = true
+  chatStore.isReplying = true
   // 创建并保存当前消息的runId
   chatStore.currentRunId = createUUID(32)
 
@@ -114,6 +113,7 @@ onUnmounted(() => {
           auto-height
           confirm-type="send"
           placeholder-style="color: #666; line-height: 28px;"
+          :disabled="chatStore.isReplying"
           :placeholder="placeholder"
           :show-confirm-bar="false"
           :adjust-position="false"
@@ -136,7 +136,7 @@ onUnmounted(() => {
       <view :class="cs.e('right')">
         <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" />
         <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage" />
-        <view v-if="isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
+        <view v-if="chatStore.isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
       </view>
     </view>
     <text :class="cs.e('tip')">

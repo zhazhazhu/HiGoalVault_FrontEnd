@@ -3,7 +3,7 @@ import type { ChatMessageAfter, ChatMessageReference } from '@higoal/api'
 import { useClassesName } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useToast } from 'wot-design-uni'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
@@ -18,7 +18,13 @@ const props = defineProps<{
 
 const { share } = useMessageInject()!
 const cs = useClassesName('message-card')
-const currentAnswer = computed(() => props.message.chatQueryAnswerList[props.message.chatQueryAnswerList.length - 1])
+const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
+const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
+
+watch(() => props.message.chatQueryAnswerList.length, (val) => {
+  currentAnswerIndex.value = val
+})
+
 const md = new MarkdownIt({
   html: true,
   linkify: true,
@@ -56,8 +62,10 @@ function onReference(item: ChatMessageReference) {
 
 function onRefresh() {
   chatStore.currentRunId = createUUID(32)
-  ws.send({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId }).then(() => {
-    chatStore.pushTemporaryMessage()
+  chatStore.currentTemporaryMessageId = props.message.msgId
+  chatStore.isReplying = true
+  ws.send({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId, query: props.message.query }).then(() => {
+    chatStore.pushTemporaryMessage(props.message.msgId)
   })
 }
 function onCopy() {
@@ -116,6 +124,13 @@ function onShareToMall() {}
         <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
           <view class="refresh-icon size-30px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
+          <view class="flex items-center text-13px gap-4px">
+            <view class="i-material-symbols-arrow-back-ios-rounded" :class="[{ 'opacity-50': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex - 1 : 1" />
+            <view>
+              {{ currentAnswerIndex }}/{{ props.message.chatQueryAnswerList.length }}
+            </view>
+            <view class="i-material-symbols-arrow-forward-ios-rounded" :class="[{ 'opacity-50': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
+          </view>
           <view class="flex-1" />
           <view class="favorite-icon size-30px" @click="onShareToMall" />
           <view class="share-icon size-30px" />
