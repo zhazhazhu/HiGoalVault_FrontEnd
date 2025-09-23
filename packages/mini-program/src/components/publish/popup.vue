@@ -5,6 +5,7 @@ import { useClassesName } from '@higoal/hooks'
 import { useToast } from 'wot-design-uni'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
+import { useGlobalStore } from '@/store'
 
 const props = defineProps<{
   message: AnswerAfter
@@ -12,6 +13,7 @@ const props = defineProps<{
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('publish-popup')
 const toast = useToast()
+const globalStore = useGlobalStore()
 
 const [form, reset] = useResetRef<PublishMessageRequest>({
   queryId: props.message.queryId,
@@ -38,13 +40,28 @@ async function onPublish() {
     console.error(e)
   }
 }
+
+function handleClose() {
+  console.log('hasKeyboard', globalStore.hasKeyboard)
+
+  if (globalStore.hasKeyboard) {
+    console.log('hideKeyboard')
+
+    uni.hideKeyboard()
+  }
+  else {
+    console.log('close')
+    model.value = false
+    reset()
+  }
+}
 </script>
 
 <template>
   <root-portal>
     <wd-toast />
   </root-portal>
-  <wd-popup v-model="model" position="bottom" root-portal custom-style="border-radius: 20px;">
+  <wd-popup v-model="model" position="bottom" :close-on-click-modal="false" root-portal custom-style="border-radius: 20px;" @click-modal="handleClose">
     <view class="p-20px pb-40px">
       <view class="rounded-12px overflow-hidden mb-20px">
         <wd-textarea
@@ -52,7 +69,9 @@ async function onPublish() {
           clearable
           no-border
           show-word-limit
+          hold-keyboard
           placeholder="说些什么..."
+          :cursor-spacing="120"
           :maxlength="100"
           :custom-textarea-class="cs.m('textarea')"
           :custom-class="cs.m('textarea-container')"
