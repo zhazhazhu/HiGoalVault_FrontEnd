@@ -3,6 +3,9 @@ import { useClassesName } from '@higoal/hooks'
 import { computed } from 'vue'
 import { useGlobalStore } from '@/store'
 
+const props = defineProps<{
+  customClass?: string
+}>()
 const cs = useClassesName('container')
 // 获取系统信息和导航栏高度
 const globalStore = useGlobalStore()
@@ -19,7 +22,7 @@ const containerHeight = computed(() => {
 </script>
 
 <template>
-  <div :class="cs.s()" class="flex flex-col" :style="{ height: containerHeight }">
+  <div :class="[cs.s(), props.customClass]" class="flex flex-col" :style="{ height: containerHeight }">
     <slot />
   </div>
 </template>

@@ -35,6 +35,8 @@ const cs = useClassesName('view')
 
 <style lang='scss' scoped>
 .hi-view--card {
+  background: white;
+  border-radius: 20rpx;
   padding: 32rpx;
 }
 </style>

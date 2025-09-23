@@ -18,6 +18,13 @@
         "navigationBarTitleText": "对话",
         "disableScroll": true
       }
+    },
+    {
+      "path": "pages/search/index",
+      "style": {
+        "navigationBarTitleText": "搜索",
+        "disableScroll": true
+      }
     }
   ],
   "entryPagePath": "pages/index/index",

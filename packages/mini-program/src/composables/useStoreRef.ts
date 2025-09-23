@@ -7,7 +7,7 @@ export function useStoreRef<T>(key: string, defaultValue: T) {
     value !== undefined
       ? uni.setStorageSync(key, value)
       : uni.removeStorageSync(key)
-  }, { immediate: true })
+  }, { immediate: true, deep: true })
 
   return state
 }

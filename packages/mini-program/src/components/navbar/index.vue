@@ -35,14 +35,14 @@ function handleClick() {
   show.value = !show.value
 }
 
-watch(show, (show) => {
-  if (show) {
-    changeBgColor('#FF3B30')
-  }
-  else {
-    changeBgColor('#FFFFFF')
-  }
-})
+// watch(show, (show) => {
+//   if (show) {
+//     changeBgColor('#FF3B30')
+//   }
+//   else {
+//     changeBgColor('#FFFFFF')
+//   }
+// })
 
 defineExpose({
   changeBgColor,
