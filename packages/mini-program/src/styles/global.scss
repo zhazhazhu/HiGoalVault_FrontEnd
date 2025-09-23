@@ -1,6 +1,7 @@
 @use '@/static/chat/index.scss' as *;
 @use '@/static/converse/index.scss' as *;
 @use '@/static/navbar/index.scss' as *;
+@use '@/static/home/index.scss' as *;
 
 view,
 :before,
@@ -105,5 +106,6 @@ page {
 }
 
 .hi-home--tab-nav {
-  --tab-nav-font-size: 28rpx;
+  // --tab-nav-font-size: 28rpx;
+  padding: 0 10rpx;
 }

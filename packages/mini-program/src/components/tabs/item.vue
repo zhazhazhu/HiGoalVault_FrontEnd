@@ -26,7 +26,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <view v-show="show">
+  <view v-show="show" class="h-full">
     <slot />
   </view>
 </template>

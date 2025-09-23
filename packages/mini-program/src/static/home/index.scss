@@ -1,0 +1,22 @@
+// Home SVG Icons
+.thumb-up-icon {
+  background-color: #333;
+  -webkit-mask-image: url('/static/home/svg/icon-点赞.svg');
+  mask-image: url('/static/home/svg/icon-点赞.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.comment-icon {
+  background-color: #333;
+  -webkit-mask-image: url('/static/home/svg/icon-评论.svg');
+  mask-image: url('/static/home/svg/icon-评论.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}

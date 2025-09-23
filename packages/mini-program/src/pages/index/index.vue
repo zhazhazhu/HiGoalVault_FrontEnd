@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import type Converse from '@/components/converse/index.vue'
 import { useClassesName } from '@higoal/hooks'
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import ViewList from './components/ViewList.vue'
 
 const cs = useClassesName('home')
 const showSidebar = ref(false)
 const active = ref('view')
+const converseInstance = useTemplateRef<InstanceType<typeof Converse>>('converseInstance')
 
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
@@ -22,8 +24,15 @@ function onClickSearch() {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <navbar @left-click="onNavbarLeftClick" />
 
-    <Container custom-class="px-32rpx">
-      <tabs v-model="active" custom-content-class="mt-10px" :custom-nav-class="cs.m('tab-nav')" editable @edit="onClickSearch">
+    <Container custom-class="px-24rpx">
+      <tabs
+        v-model="active"
+        class="h-full"
+        editable
+        custom-content-class="mt-10px"
+        :custom-nav-class="cs.m('tab-nav')"
+        @edit="onClickSearch"
+      >
         <template #edit>
           <wd-icon name="search" />
         </template>
@@ -34,6 +43,8 @@ function onClickSearch() {
           关注
         </tabs-item>
       </tabs>
+
+      <Converse ref="converseInstance" />
     </Container>
   </Layout>
 </template>

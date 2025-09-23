@@ -132,3 +132,27 @@ export interface PublishMessageListRequest {
   tagId?: string
   pageVO?: Page
 }
+
+export interface PublishMessageListResponse {
+  id: string
+  attachments: null
+  commentCount: number // 评论数量
+  contentType: PublishContentType // 内容类型
+  content: string // 内容
+  createTime: string // 发布时间
+  id: string // id
+  likeCount: number // 点赞数量
+  privacy: Truth // 是否公开
+  queryId: string // 问题id
+  isLiked: Truth // 是否点赞
+  title: string // 标题
+  shareCount: number // 分享数量
+  viewCount: number // 阅读数量
+  nickName: string // 发布人昵称
+  userId: string // 发布人id
+  face: string // 发布人头像
+}
+
+export interface PublishMessageListResponseWithPage extends PageResult {
+  records: PublishMessageListResponse[]
+}

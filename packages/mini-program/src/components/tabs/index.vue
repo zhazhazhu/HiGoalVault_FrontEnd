@@ -27,7 +27,7 @@ const { navs } = useTabs(props, emit)
       </template>
     </TabNav>
 
-    <view :class="[cs.m('content'), customContentClass]">
+    <view :class="[cs.m('content'), customContentClass]" class="h-full">
       <slot />
     </view>
   </view>
@@ -37,5 +37,6 @@ const { navs } = useTabs(props, emit)
 .hi-tabs {
   --tab-nav-bg: white;
   --tab-nav-font-size: 32rpx;
+  height: 100%;
 }
 </style>

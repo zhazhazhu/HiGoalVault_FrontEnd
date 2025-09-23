@@ -16,7 +16,8 @@ export const messageInjectKey = Symbol('message') as InjectionKey<ChatInject>
 export function useMessageInject() {
   const context = inject(messageInjectKey)
   if (!context) {
-    throw new Error('useMessageInject must be used within a MessageProvider')
+    console.error('useMessageInject must be used within a MessageProvider')
+    return {} as ChatInject
   }
   return context
 }

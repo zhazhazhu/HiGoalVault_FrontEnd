@@ -24,6 +24,7 @@ declare module 'vue' {
     SharePopup: typeof import('./src/components/share/popup.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
     TabsItem: typeof import('./src/components/tabs/item.vue')['default']
+    ViewCard: typeof import('./src/components/view/card.vue')['default']
     WdActionSheet: typeof import('wot-design-uni/components/wd-action-sheet/wd-action-sheet.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
     WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']
