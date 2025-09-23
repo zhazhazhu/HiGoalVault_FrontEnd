@@ -55,7 +55,7 @@
       "urlCheck": false
     },
     "usingComponents": true,
-    // TODO
+    // "lazyCodeLoading": "requiredComponents",
     "__usePrivacyCheck__": true
   },
   "mp-alipay": {

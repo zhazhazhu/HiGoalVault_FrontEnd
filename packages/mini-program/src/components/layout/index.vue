@@ -1,17 +1,11 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
-import emitter from '@/event'
 
 const emit = defineEmits<{
-  (e: 'changeChat', id?: string): void
+  (e: 'changeChat'): void
 }>()
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('layout')
-
-emitter.on('changeChat', (id) => {
-  model.value = false
-  emit('changeChat', id)
-})
 
 function onClose() {
   if (model.value) {
@@ -23,7 +17,7 @@ function onClose() {
 <template>
   <view :class="[cs.m('container'), cs.is('open', model)]" class="h-screen overflow-hidden">
     <view :class="cs.m('wrapper')">
-      <LayoutContent />
+      <LayoutContent @close="onClose" @change-chat="emit('changeChat')" />
     </view>
     <view :class="cs.m('content')">
       <view :class="cs.e('content-mask')" @click.stop="onClose" />

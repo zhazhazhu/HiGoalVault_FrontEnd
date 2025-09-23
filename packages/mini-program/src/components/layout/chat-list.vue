@@ -3,18 +3,18 @@ import type { Chat, Page } from '@higoal/api'
 import type { ChatWithType } from '@/store'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
-import emitter from '@/event'
 import { useChatStore, useUserStore } from '@/store'
 
 defineProps<{
   isEdit: boolean
 }>()
 
+const emit = defineEmits(['changeChat'])
 const cs = useClassesName('chat-list')
 const chatStore = useChatStore()
 const userStore = useUserStore()
@@ -42,7 +42,7 @@ async function onCreateNewChat() {
   if (data.code === 200) {
     chatStore.currentChatId = data.result.chatId
   }
-  emitter.emit('changeChat', data.result.chatId)
+  emit('changeChat')
   await getChatList()
 }
 function onEditChat(item: Chat) {
@@ -68,10 +68,10 @@ function onDeleteChat(item: Chat) {
   })
 }
 
-// 当前聊天切换时，关闭侧边栏，刷新消息
-watch(() => chatStore.currentChatId, () => {
-  emitter.emit('changeChat', chatStore.currentChatId)
-})
+function onClickChat(item: Chat) {
+  chatStore.currentChatId = item.chatId
+  emit('changeChat')
+}
 
 onMounted(() => {
   getChatList()
@@ -100,7 +100,7 @@ onMounted(() => {
           <view :class="cs.m('key')">
             {{ DateZhCN[key] }}
           </view>
-          <view v-for="item in chats" :key="item.chatId" :class="[cs.m('item-container'), cs.is('active', item.chatId === chatStore.currentChatId)]" @click="chatStore.currentChatId = item.chatId">
+          <view v-for="item in chats" :key="item.chatId" :class="[cs.m('item-container'), cs.is('active', item.chatId === chatStore.currentChatId)]" @click="onClickChat(item)">
             <view :class="cs.m('left')">
               <view :class="cs.m('title')">
                 {{ item.title }}

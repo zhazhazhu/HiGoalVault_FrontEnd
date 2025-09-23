@@ -5,6 +5,7 @@ import { useUserStore } from '@/store'
 
 const emit = defineEmits<{
   (e: 'close'): void
+  (e: 'changeChat'): void
 }>()
 const cs = useClassesName('sidebar-content')
 const active = ref('chat')
@@ -32,7 +33,7 @@ function onEditChatList() {
         TODO
       </tabs-item>
       <tabs-item name="chat" label="对话">
-        <LayoutChatList :is-edit="isEdit" />
+        <LayoutChatList :is-edit="isEdit" @change-chat="$emit('changeChat')" />
       </tabs-item>
     </tabs>
 

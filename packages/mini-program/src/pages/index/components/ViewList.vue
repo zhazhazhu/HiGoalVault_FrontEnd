@@ -1,6 +1,7 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { api } from '@/api'
 
 const mock = ref([
   {
@@ -16,6 +17,10 @@ const mock = ref([
 ])
 
 const cs = useClassesName('view')
+
+onMounted(() => {
+  api.getPublishMessageList({ pageVO: { pageSize: 10, pageNumber: 1 } })
+})
 </script>
 
 <template>

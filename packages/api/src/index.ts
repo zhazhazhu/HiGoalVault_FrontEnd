@@ -1,4 +1,4 @@
-import type { AddCollectRequest, Chat, ChatHistoryRequestQuery, ChatMessageWithPage, ChatRequestQuery, ChatWithPage, LoginResult, PublishMessageRequest, UpdateChat, UserInfo } from './index.d'
+import type { AddCollectRequest, Chat, ChatHistoryRequestQuery, ChatMessageWithPage, ChatRequestQuery, ChatWithPage, LoginResult, PublishMessageListRequest, PublishMessageRequest, UpdateChat, UserInfo } from './index.d'
 import { API } from './url'
 
 export * from './index.d'
@@ -74,5 +74,9 @@ export class Api {
 
   public addPublishMessage(query: PublishMessageRequest) {
     return this.launcher<'uni'>(API.ADD_PUBLISH_MESSAGE).post<boolean>(query)
+  }
+
+  public getPublishMessageList(query: PublishMessageListRequest) {
+    return this.launcher<'uni'>(API.GET_PUBLISH_MESSAGE_LIST).post<ChatMessageWithPage>(query)
   }
 }

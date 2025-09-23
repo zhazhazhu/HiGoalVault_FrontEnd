@@ -125,3 +125,10 @@ export interface PublishMessageRequest {
   privacy: Truth
   contentType: PublishContentType
 }
+
+export interface PublishMessageListRequest {
+  authorId?: string
+  keyword?: string
+  tagId?: string
+  pageVO?: Page
+}
