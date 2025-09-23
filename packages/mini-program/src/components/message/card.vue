@@ -16,7 +16,7 @@ const props = defineProps<{
   message: ChatMessageAfter
 }>()
 
-const { share } = useMessageInject()!
+const messageInject = useMessageInject()
 const cs = useClassesName('message-card')
 const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
 const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
@@ -48,9 +48,9 @@ const htmlContent = computed(() => {
 
 function changeCheckbox({ value }: { value: boolean }) {
   if (value)
-    share.value.ids.push(props.message.msgId)
+    messageInject.share.value.ids.push(props.message.msgId)
   else
-    share.value.ids = share.value.ids.filter(item => item !== props.message.msgId)
+    messageInject.share.value.ids = messageInject.share.value.ids.filter(item => item !== props.message.msgId)
 }
 
 function onReference(item: ChatMessageReference) {
@@ -77,8 +77,8 @@ function onCopy() {
 }
 
 function openSharePopup() {
-  share.value.isChecked = true
-  share.value.ids.push(props.message.chatQueryAnswerList[currentAnswerIndex.value - 1].queryId)
+  messageInject.share.value.isChecked = true
+  messageInject.share.value.ids.push(props.message.chatQueryAnswerList[currentAnswerIndex.value - 1].queryId)
 }
 function onPublish() {
   publishVisible.value = true
@@ -100,8 +100,8 @@ function onFavorite() {
     <wd-checkbox
       v-model="check"
       shape="square"
-      :disabled="!share.isChecked"
-      size="20px" :custom-class="[cs.m('checkbox-message'), cs.is('hidden', !share.isChecked)].join(' ')"
+      :disabled="!messageInject.share.value.isChecked"
+      size="20px" :custom-class="[cs.m('checkbox-message'), cs.is('hidden', !messageInject.share.value.isChecked)].join(' ')"
       :custom-label-class="cs.m('checkbox-text')"
       :custom-shape-class="cs.m('checkbox-shape')"
       @change="changeCheckbox"
@@ -128,7 +128,7 @@ function onFavorite() {
           <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
         </view>
 
-        <view v-show="!share.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
+        <view v-show="!messageInject.share.value.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
           <view class="refresh-icon size-30px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
           <view class="flex items-center text-13px gap-4px">

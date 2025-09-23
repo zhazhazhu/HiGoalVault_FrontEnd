@@ -67,23 +67,14 @@ function onNavbarLeftClick() {
   }
   showSidebar.value = !showSidebar.value
 }
-function toggleSidebar() {
-  showSidebar.value = !showSidebar.value
-}
 
 provide(messageInjectKey, {
   share,
   scrollToTop,
-  refreshMessage,
-  toggleSidebar,
 })
 
 onMounted(() => {
   getMessage()
-})
-
-watch(() => chatStore.messages, () => {
-  console.log(chatStore.messages)
 })
 
 onShareAppMessage(({ from, target }) => {
@@ -100,7 +91,7 @@ onShareAppMessage(({ from, target }) => {
 </script>
 
 <template>
-  <Layout v-model="showSidebar">
+  <Layout v-model="showSidebar" @change-chat="refreshMessage">
     <share-popup v-model="share.isChecked" />
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">

@@ -24,7 +24,7 @@ const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
 const chatStore = useChatStore()
-const { scrollToTop } = useMessageInject()!
+const messageInject = useMessageInject()
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
@@ -38,7 +38,7 @@ ws.onMessage((data) => {
     data.data?.response && (currentMessage.response += data.data?.response)
     data.data?.message && (currentMessage.message += data.data?.message)
     data.data?.reference && (currentMessage.reference = data.data?.reference)
-    scrollToTop()
+    messageInject?.scrollToTop()
   }
   if (data.type === 'stream-end') {
     // 清空当前runId
@@ -73,7 +73,7 @@ async function onConfirmMessage() {
       query: text,
       chatId: chatStore.currentChatId,
     })
-    scrollToTop()
+    messageInject?.scrollToTop()
   })
 }
 

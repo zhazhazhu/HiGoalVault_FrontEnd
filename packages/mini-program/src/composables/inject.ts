@@ -9,8 +9,6 @@ export interface Share {
 export interface ChatInject {
   share: Ref<Share>
   scrollToTop: () => void
-  refreshMessage: () => void
-  toggleSidebar: () => void
 }
 
 export const messageInjectKey = Symbol('message') as InjectionKey<ChatInject>

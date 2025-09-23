@@ -1,8 +1,17 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
+import emitter from '@/event'
 
+const emit = defineEmits<{
+  (e: 'changeChat', id?: string): void
+}>()
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('layout')
+
+emitter.on('changeChat', (id) => {
+  model.value = false
+  emit('changeChat', id)
+})
 
 function onClose() {
   if (model.value) {

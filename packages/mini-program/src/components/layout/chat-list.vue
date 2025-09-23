@@ -6,9 +6,9 @@ import dayjs from 'dayjs'
 import { onMounted, ref, watch } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
-import { useMessageInject } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
+import emitter from '@/event'
 import { useChatStore, useUserStore } from '@/store'
 
 defineProps<{
@@ -16,7 +16,6 @@ defineProps<{
 }>()
 
 const cs = useClassesName('chat-list')
-const { refreshMessage, toggleSidebar } = useMessageInject()!
 const chatStore = useChatStore()
 const userStore = useUserStore()
 const [page] = useResetRef<Page>({
@@ -43,7 +42,7 @@ async function onCreateNewChat() {
   if (data.code === 200) {
     chatStore.currentChatId = data.result.chatId
   }
-  toggleSidebar()
+  emitter.emit('changeChat', data.result.chatId)
   await getChatList()
 }
 function onEditChat(item: Chat) {
@@ -71,8 +70,7 @@ function onDeleteChat(item: Chat) {
 
 // 当前聊天切换时，关闭侧边栏，刷新消息
 watch(() => chatStore.currentChatId, () => {
-  toggleSidebar()
-  refreshMessage()
+  emitter.emit('changeChat', chatStore.currentChatId)
 })
 
 onMounted(() => {
