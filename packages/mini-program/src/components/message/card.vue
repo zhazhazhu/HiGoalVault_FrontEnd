@@ -4,7 +4,6 @@ import { useClassesName } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref, watch } from 'vue'
-import { useToast } from 'wot-design-uni'
 import { api } from '@/api'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
@@ -21,6 +20,7 @@ const { share } = useMessageInject()!
 const cs = useClassesName('message-card')
 const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
 const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
+const publishVisible = ref(false)
 
 watch(() => props.message.chatQueryAnswerList.length, (val) => {
   currentAnswerIndex.value = val
@@ -37,7 +37,6 @@ const md = new MarkdownIt({
   },
 })
 const viewDeepThink = ref(true)
-const toast = useToast()
 const userInstance = ref<Element>()
 const check = ref(false)
 const chatStore = useChatStore()
@@ -73,9 +72,7 @@ function onCopy() {
   const response = markdownToText(currentAnswer.value.response || '')
   uni.setClipboardData({
     data: `${currentAnswer.value.message}\n${response}`,
-    success() {
-      toast.show('复制成功')
-    },
+    showToast: true,
   })
 }
 
@@ -83,7 +80,9 @@ function openSharePopup() {
   share.value.isChecked = true
   share.value.ids.push(props.message.chatQueryAnswerList[currentAnswerIndex.value - 1].queryId)
 }
-
+function onPublish() {
+  publishVisible.value = true
+}
 function onFavorite() {
   api.addCollect({
     chatId: props.message.chatId,
@@ -96,6 +95,7 @@ function onFavorite() {
 <template>
   <view :class="cs.m('wrapper')">
     <wd-toast />
+    <publish-popup v-model="publishVisible" :message="currentAnswer" />
 
     <wd-checkbox
       v-model="check"
@@ -140,7 +140,7 @@ function onFavorite() {
           </view>
           <view class="flex-1" />
           <view class="favorite-icon size-30px" @click="onFavorite" />
-          <view class="share-icon size-30px" />
+          <view class="share-icon size-30px" @click="onPublish" />
           <view class="wechat-icon size-30px" @click="openSharePopup" />
         </view>
       </view>

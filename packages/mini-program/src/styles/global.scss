@@ -30,6 +30,8 @@ navigator {
   --hi-h1-color: #121212ff;
   --hi-h2-color: #333333ff;
   --hi-h3-color: #666666ff;
+  --wot-textarea-fs: 16px;
+  --wot-color-theme: var(--hi-primary-color);
 }
 page {
   height: 100%;
@@ -90,4 +92,14 @@ page {
 
 .hi-sidebar-content--tab-nav {
   --tab-nav-font-size: 28rpx;
+}
+
+.hi-publish-popup--textarea {
+  --wot-textarea-fs: 14px;
+  --wot-cell-line-height: 14px;
+  height: 28px;
+}
+
+.hi-publish-popup--textarea-container {
+  --wot-textarea-bg: #f3f3f3;
 }

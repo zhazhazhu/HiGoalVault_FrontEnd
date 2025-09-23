@@ -105,3 +105,23 @@ export interface UpdateChat {
   chatId: string
   title: string
 }
+
+export enum Truth {
+  TRUE = 1,
+  FALSE = 0,
+}
+
+export enum PublishContentType {
+  Text = 1,
+  Image = 2,
+  Video = 3,
+  File = 4,
+}
+
+export interface PublishMessageRequest {
+  title: string
+  content: string
+  queryId: string
+  privacy: Truth
+  contentType: PublishContentType
+}

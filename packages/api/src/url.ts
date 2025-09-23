@@ -7,6 +7,7 @@ export enum API {
   GET_CHAT_LIST = '/buyer/chat/chat/getByPage',
   ADD_CHAT = '/buyer/chat/chat/add',
   ADD_COLLECT = '/buyer/chat/chatQueryCollect/add',
-  UPDATE_CHAT = '/buyer/chat/chat/update',
-  DELETE_CHAT = '/buyer/chat/chat/deleteByIds',
+  UPDATE_CHAT = '/buyer/chat/chat/updateByChatId',
+  DELETE_CHAT = '/buyer/chat/chat/deleteByChatId',
+  ADD_PUBLISH_MESSAGE = '/buyer/content/publish/add',
 }

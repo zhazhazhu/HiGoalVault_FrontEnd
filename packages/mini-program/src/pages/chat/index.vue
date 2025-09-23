@@ -25,7 +25,7 @@ const [page, resetPage] = useResetRef<Page>({
   sort: 'createTime',
 })
 const scrollTop = ref(0)
-const showSidebar = ref(true)
+const showSidebar = ref(false)
 const isFinish = ref(false)
 
 watch(() => share.value.isChecked, (newVal) => {
