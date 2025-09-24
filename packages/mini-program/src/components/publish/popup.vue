@@ -19,7 +19,7 @@ const [form, reset] = useResetRef<PublishMessageRequest>({
   queryId: props.message.queryId,
   title: props.message.query,
   content: '',
-  privacy: Truth.TRUE,
+  privacy: Truth.FALSE,
   contentType: PublishContentType.Text,
 })
 
@@ -71,6 +71,7 @@ function handleClose() {
           show-word-limit
           hold-keyboard
           placeholder="说些什么..."
+          :auto-height="true"
           :cursor-spacing="120"
           :maxlength="100"
           :custom-textarea-class="cs.m('textarea')"

@@ -78,7 +78,6 @@ function onCopy() {
 
 function openSharePopup() {
   messageInject.share.value.isChecked = true
-  messageInject.share.value.ids.push(props.message.chatQueryAnswerList[currentAnswerIndex.value - 1].queryId)
 }
 function onPublish() {
   publishVisible.value = true
