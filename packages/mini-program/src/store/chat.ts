@@ -4,6 +4,12 @@ import { defineStore } from 'pinia'
 import { useStoreRef } from '@/composables'
 import { createUUID, isThisMonth, isThisWeek, isToday } from '@/utils'
 
+interface WaitingMessageTask {
+  query: string
+  chatId: string
+  runId: string
+}
+
 interface State {
   chats: Chat[]
   currentChatId: Ref<string>
@@ -11,6 +17,7 @@ interface State {
   messages: ChatMessageAfter[]
   currentTemporaryMessageId: Ref<string>
   isReplying: boolean
+  waitingMessageTask: WaitingMessageTask | null
 }
 
 export interface ChatWithType {
@@ -28,6 +35,7 @@ export const useChatStore = defineStore('chat', {
     messages: [],
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
     isReplying: false,
+    waitingMessageTask: null,
   }),
   getters: {
     currentChat: (state) => {

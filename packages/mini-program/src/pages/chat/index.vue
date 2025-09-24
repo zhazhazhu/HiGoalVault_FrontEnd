@@ -10,6 +10,7 @@ import { messageInjectKey } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { useChatStore } from '@/store/chat'
+import { useWebsocketStore } from '@/store/websocket'
 
 const navbarInstance = ref<NavbarInstance>()
 const cs = useClassesName('messages')
@@ -27,6 +28,28 @@ const [page, resetPage] = useResetRef<Page>({
 const scrollTop = ref(0)
 const showSidebar = ref(false)
 const isFinish = ref(false)
+const websocketStore = useWebsocketStore()
+
+websocketStore.receiveMessage((data) => {
+  console.log('onMessage', data)
+  if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
+    return
+  const currentMessage = chatStore.currentTemporaryMessage.chatQueryAnswerList.find(item => item.runId === chatStore.currentRunId)
+  if (!currentMessage)
+    return
+
+  if (data.code === '200') {
+    data.data?.response && (currentMessage.response += data.data?.response)
+    data.data?.message && (currentMessage.message += data.data?.message)
+    data.data?.reference && (currentMessage.reference = data.data?.reference)
+    scrollToTop()
+  }
+  if (data.type === 'stream-end') {
+    // 清空当前runId
+    chatStore.currentRunId = ''
+    chatStore.isReplying = false
+  }
+})
 
 watch(() => share.value.isChecked, (newVal) => {
   if (!newVal) {
@@ -74,6 +97,8 @@ provide(messageInjectKey, {
 })
 
 onMounted(() => {
+  // 确保 WebSocket 连接已建立
+  websocketStore.connectWebSocket()
   getMessage()
 })
 

@@ -2,9 +2,11 @@
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 import { watch } from 'vue'
 import { useGlobalStore, useUserStore } from './store'
+import { useWebsocketStore } from './store/websocket'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
+const websocket = useWebsocketStore()
 
 watch(() => userStore.accessToken, async (val) => {
   if (val) {
@@ -33,8 +35,10 @@ onLaunch(async () => {
     await userStore.refreshAccessToken()
 })
 onShow(() => {
+  websocket.connectWebSocket()
 })
 onHide(() => {
+  websocket.closeWebSocket()
 })
 </script>
 

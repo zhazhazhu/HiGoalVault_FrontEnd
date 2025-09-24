@@ -1,10 +1,11 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, ref } from 'vue'
-import { useWs } from '@/api/wx'
+import { getCurrentInstance, nextTick, onMounted, ref } from 'vue'
+import { api } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
+import { useWebsocketStore } from '@/store/websocket'
 import { createUUID } from '@/utils'
 
 withDefaults(defineProps<{
@@ -22,7 +23,7 @@ const converseContainerStyle = ref<CSSProperties>({
 })
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
-const ws = useWs()
+const websocketStore = useWebsocketStore()
 const chatStore = useChatStore()
 const messageInject = useMessageInject()
 
@@ -30,37 +31,39 @@ const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
 const height = ref(0)
 
-ws.onMessage((data) => {
-  console.log('onMessage', data)
-  if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
-    return
-  const currentMessage = chatStore.currentTemporaryMessage.chatQueryAnswerList.find(item => item.runId === chatStore.currentRunId)
-  if (!currentMessage)
-    return
-
-  if (data.code === '200') {
-    data.data?.response && (currentMessage.response += data.data?.response)
-    data.data?.message && (currentMessage.message += data.data?.message)
-    data.data?.reference && (currentMessage.reference = data.data?.reference)
-    messageInject?.scrollToTop()
-  }
-  if (data.type === 'stream-end') {
-    // 清空当前runId
-    chatStore.currentRunId = ''
-    chatStore.isReplying = false
-  }
-})
-
-ws.onClose(() => {
-  chatStore.isReplying = false
-})
-
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
 }
 
 function onKeyboardHeightChange(e) {
   converseContainerStyle.value.paddingBottom = `${e.height + 10}px`
+}
+
+async function waitConfirmMessage(text: string) {
+  const data = await api.addChat()
+  if (data.code === 200) {
+    chatStore.currentChatId = data.result.chatId
+  }
+  chatStore.waitingMessageTask = {
+    query: text,
+    chatId: chatStore.currentChatId,
+    runId: createUUID(32),
+  }
+  uni.navigateTo({ url: '/pages/chat/index' })
+}
+
+function sendWaitingMessage() {
+  if (chatStore.waitingMessageTask === null)
+    return
+  websocketStore.sendMessage(chatStore.waitingMessageTask).then(() => {
+    chatStore.createTemporaryMessage({
+      query: chatStore.waitingMessageTask!.query,
+      chatId: chatStore.waitingMessageTask!.chatId,
+    })
+    messageInject?.scrollToTop()
+  }).catch((err) => {
+    console.log(err)
+  })
 }
 
 async function onConfirmMessage() {
@@ -71,8 +74,14 @@ async function onConfirmMessage() {
   chatStore.isReplying = true
   // 创建并保存当前消息的runId
   chatStore.currentRunId = createUUID(32)
+  const messageContent = { chatId: chatStore.currentChatId, query: text, runId: chatStore.currentRunId }
+  // 如果当前会话不存在，创建并保存当前会话
+  if (!chatStore.currentChatId) {
+    waitConfirmMessage(text)
+    return
+  }
 
-  ws.send({ chatId: chatStore.currentChatId, query: text, runId: chatStore.currentRunId }).then(() => {
+  websocketStore.sendMessage(messageContent).then(() => {
     chatStore.createTemporaryMessage({
       query: text,
       chatId: chatStore.currentChatId,
@@ -89,7 +98,7 @@ function onMessageTypeChange() {
 }
 
 function onStopSend() {
-  ws.stop({ runId: chatStore.currentRunId })
+  websocketStore.stopMessage({ runId: chatStore.currentRunId })
 }
 
 function getConverseHeight() {
@@ -108,13 +117,14 @@ function getConverseHeight() {
   })
 }
 
-onMounted(() => {
-  getConverseHeight()
-  ws.connect()
-})
+onMounted(async () => {
+  // 确保 WebSocket 连接已建立
+  websocketStore.connectWebSocket()
 
-onUnmounted(() => {
-  ws.close()
+  if (chatStore.waitingMessageTask) {
+    sendWaitingMessage()
+  }
+  getConverseHeight()
 })
 
 defineExpose({

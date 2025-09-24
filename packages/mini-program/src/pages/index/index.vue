@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type Converse from '@/components/converse/index.vue'
 import { useClassesName } from '@higoal/hooks'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useChatStore } from '@/store'
 import ViewList from './components/ViewList.vue'
 
 const cs = useClassesName('home')
 const showSidebar = ref(false)
 const active = ref('view')
 const converseInstance = ref<InstanceType<typeof Converse>>()
+const chatStore = useChatStore()
 
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
@@ -18,6 +20,9 @@ function onChangeChat() {
 function onClickSearch() {
   uni.navigateTo({ url: '/pages/search/index' })
 }
+onMounted(() => {
+  chatStore.currentChatId = ''
+})
 </script>
 
 <template>

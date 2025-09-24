@@ -5,9 +5,9 @@ import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref, watch } from 'vue'
 import { api } from '@/api'
-import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store'
+import { useWebsocketStore } from '@/store/websocket'
 import { createUUID, markdownToText } from '@/utils'
 
 import 'highlight.js/styles/github.css'
@@ -40,7 +40,7 @@ const viewDeepThink = ref(true)
 const userInstance = ref<Element>()
 const check = ref(false)
 const chatStore = useChatStore()
-const ws = useWs()
+const websocketStore = useWebsocketStore()
 
 const htmlContent = computed(() => {
   return md.render(currentAnswer.value.response || '')
@@ -64,7 +64,7 @@ function onRefresh() {
   chatStore.currentRunId = createUUID(32)
   chatStore.currentTemporaryMessageId = props.message.msgId
   chatStore.isReplying = true
-  ws.send({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId, query: props.message.query }).then(() => {
+  websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId, query: props.message.query }).then(() => {
     chatStore.pushTemporaryMessage(props.message.msgId)
   })
 }
