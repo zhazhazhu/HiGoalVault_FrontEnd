@@ -1,17 +1,39 @@
 <script lang='ts' setup>
-import type { PublishMessageListResponse } from '@higoal/api'
+import type { Page, PublishMessageListResponse } from '@higoal/api'
 import { useClassesName } from '@higoal/hooks'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
+import { useResetRef } from '@/composables/useResetRef'
 
 const cs = useClassesName('view')
 const list = ref<PublishMessageListResponse[]>([])
+const loading = ref(false)
+const isFinish = ref(false)
+const [page, reset] = useResetRef<Page>({
+  pageNumber: 1,
+  pageSize: 10,
+})
 
-onMounted(async () => {
-  const data = await api.getPublishMessageList({ pageVO: { pageSize: 10, pageNumber: 1 } })
+async function getData() {
+  const data = await api.getPublishMessageList({ pageVO: page.value }).finally(() => {
+    loading.value = false
+  })
   if (data.code === 200) {
-    list.value = data.result.records
+    list.value.push(...data.result.records)
+    isFinish.value = data.result.total <= list.value.length
   }
+}
+function load() {
+  if (loading.value || isFinish.value)
+    return
+  loading.value = true
+  page.value.pageNumber!++
+  getData()
+}
+
+onMounted(() => {
+  reset()
+  getData()
 })
 </script>
 
@@ -25,9 +47,18 @@ onMounted(async () => {
     :show-scrollbar="false"
     class="h-full overflow-y-auto"
     :class="cs.m('container')"
+    :lower-threshold="50"
+    @scrolltolower="load"
   >
     <view v-for="item in list" :key="item.id" :class="cs.m('card')">
       <ViewCard :view="item" />
+    </view>
+
+    <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
+      <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
+      <text class="ml-20rpx text-24rpx">
+        {{ isFinish ? '没有更多了' : '加载中...' }}
+      </text>
     </view>
   </scroll-view>
 </template>
