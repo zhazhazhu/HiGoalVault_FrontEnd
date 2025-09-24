@@ -40,4 +40,7 @@ export default {
       h3Color: 'var(--hi-h3-color)',
     },
   },
+  rules: [
+    ['word-wrap', { 'word-break': 'break-all' }],
+  ],
 }

@@ -24,7 +24,6 @@ input,
 textarea {
   background-origin: border-box;
   font-family: 'PingFangSC', 'PingFang SC';
-  word-break: break-all;
   --hi-bg-color: #f3f3f3;
   --hi-primary-color: #ff3b30ff;
   --hi-secondary-color: #ff9500ff;
@@ -97,12 +96,13 @@ page {
 
 .hi-publish-popup--textarea {
   --wot-textarea-fs: 14px;
-  --wot-cell-line-height: 14px;
+  --wot-cell-line-height: 20px;
   height: 28px;
 }
 
 .hi-publish-popup--textarea-container {
   --wot-textarea-bg: #f3f3f3;
+  padding: 16px 20px 10px 20px !important;
 }
 
 .hi-home--tab-nav {

@@ -56,7 +56,7 @@ onLoad((options) => {
             </wd-button>
           </view>
 
-          <view class="text-26rpx color-#666">
+          <view class="text-26rpx color-#666 word-wrap">
             <text>{{ data?.content }}</text>
           </view>
 
