@@ -27,6 +27,7 @@ async function onGetPhoneNumber(e) {
         refreshTokenExpireDateTime: getTokenExpireDateTime(data.result.refreshTokenExpireTime),
       }
       model.value = false // 登录成功后关闭弹窗
+      uni.reLaunch({ url: '/pages/index/index' })
     }
     else {
       console.error('登录失败:', data.message)
@@ -43,10 +44,6 @@ async function onGetPhoneNumber(e) {
       icon: 'none',
     })
   }
-}
-
-function handleCancel() {
-  model.value = false
 }
 
 function handleChange({ value }) {
@@ -74,38 +71,30 @@ function handleAgreePrivacyAuthorization() {
     <uni-nav-bar title="导航栏组件" dark />
     <wd-toast />
 
-    <view class="flex flex-col items-center gap-32rpx p-28rpx h-750rpx">
-      <view class="my-30rpx flex items-center flex-col gap-20px">
-        <wd-img :width="100" :height="100" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" />
+    <view class="flex flex-col items-center gap-32rpx py-28rpx px-60rpx h-500rpx">
+      <view class="mt-30rpx flex items-center flex-col gap-20px">
+        <wd-img :width="100" :height="100" round src="https://avatars.githubusercontent.com/u/233332699?s=48&v=4" />
 
-        <wd-text text="LOGO" />
+        <text class="text-32rpx font-bold italic">
+          HiGoal
+        </text>
       </view>
 
-      <view class="flex flex-col items-center gap-32rpx">
-        <view class="w-560rpx h-112rpx">
+      <view class="flex flex-col items-center gap-32rpx w-full">
+        <view class="w-full h-100rpx">
           <wd-button :open-type="'getPhoneNumber|agreePrivacyAuthorization' as any" :round="false" block size="large" @getphonenumber="onGetPhoneNumber" @agreeprivacyauthorization="handleAgreePrivacyAuthorization">
             同意协议并手机号一键登录
           </wd-button>
         </view>
 
-        <view class="w-560rpx h-112rpx">
-          <wd-button plain :round="false" size="large" block @click="handleCancel">
-            取消使用
-          </wd-button>
-        </view>
-
-        <view class="w-full">
-          <wd-checkbox v-model="isAgreed" @change="handleChange">
-            <view class="flex flex-wrap items-center text-24rpx">
-              <text>
-                我已经阅读并熟知
-              </text>
-              <text @click.stop="goToReadPrivacy">
-                <wd-text type="primary" :text="userStore.privacySettings?.privacyContractName" />
-              </text>
-            </view>
-          </wd-checkbox>
-        </view>
+        <wd-checkbox v-model="isAgreed" custom-class="w-full" @change="handleChange">
+          <text class="text-22rpx word-wrap" style="white-space: normal;">
+            我已经阅读并熟知
+            <text class="text-primary" @click.stop="goToReadPrivacy">
+              {{ userStore.privacySettings?.privacyContractName }}
+            </text>
+          </text>
+        </wd-checkbox>
       </view>
     </view>
   </wd-action-sheet>
