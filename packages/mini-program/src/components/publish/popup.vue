@@ -76,7 +76,7 @@ function handleClose() {
           :maxlength="100"
           :custom-textarea-class="cs.m('textarea')"
           :custom-class="cs.m('textarea-container')"
-          placeholder-class="text-gray-400 text-14px lh-14px"
+          :placeholder-class="cs.m('textarea-placeholder')"
         />
       </view>
 

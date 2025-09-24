@@ -96,7 +96,7 @@ page {
 
 .hi-publish-popup--textarea {
   --wot-textarea-fs: 14px;
-  --wot-cell-line-height: 20px;
+  --wot-cell-line-height: 24px;
   height: 28px;
 }
 
@@ -105,7 +105,29 @@ page {
   padding: 16px 20px 10px 20px !important;
 }
 
+.hi-publish-popup--textarea-placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+  line-height: 24px;
+}
+
 .hi-home--tab-nav {
   // --tab-nav-font-size: 28rpx;
   padding: 0 10rpx;
+}
+
+.hi-detail--textarea {
+  --wot-textarea-fs: 14px;
+  --wot-cell-line-height: 24px;
+}
+
+.hi-detail--textarea-container {
+  --wot-textarea-bg: #f1f1f1;
+  padding: 14px !important;
+}
+
+.hi-detail--textarea-placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+  line-height: 24px;
 }

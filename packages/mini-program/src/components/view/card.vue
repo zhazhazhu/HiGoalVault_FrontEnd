@@ -13,7 +13,7 @@ const cs = useClassesName('view-card')
 <template>
   <view :class="cs.m('container')">
     <view :class="cs.m('content')">
-      <view class="text-26rpx color-#333">
+      <view class="text-26rpx color-#333 word-wrap">
         {{ data.content }}
       </view>
     </view>

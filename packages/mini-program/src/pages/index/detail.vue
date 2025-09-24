@@ -1,13 +1,14 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@higoal/api'
 import { onLoad } from '@dcloudio/uni-app'
+import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { api } from '@/api'
-import { useUserStore } from '@/store'
 
-const userStore = useUserStore()
 const data = ref<PublishMessageListResponse | null>(null)
+const cs = useClassesName('detail')
+
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
   if (res.code === 200) {
@@ -76,8 +77,36 @@ onLoad((options) => {
         </view>
       </scroll-view>
 
-      <view class="h-200rpx bg-white">
-        <view class="wechat-icon bg-#666 size-50rpx" />
+      <view class="h-200rpx bg-white px-32rpx pt-30rpx rounded-t-30rpx">
+        <view class="flex items-center justify-between gap-10px">
+          <view class="wechat-icon bg-#666 size-70rpx" />
+          <view class="rounded-12px flex-1 overflow-hidden">
+            <wd-textarea
+              clearable
+              no-border
+              show-word-limit
+              hold-keyboard
+              placeholder="发表友善评论"
+              :auto-height="true"
+              :cursor-spacing="120"
+              :custom-textarea-class="cs.m('textarea')"
+              :custom-class="cs.m('textarea-container')"
+              :placeholder-class="cs.m('textarea-placeholder')"
+            />
+          </view>
+          <view class="flex flex-col items-center">
+            <view class="comment-icon size-60rpx" />
+            <text class="text-22rpx color-gray-6 font-bold">
+              {{ data?.commentCount }}
+            </text>
+          </view>
+          <view class="flex flex-col items-center">
+            <view class="thumb-up-icon size-60rpx" />
+            <text class="text-22rpx color-gray-6 font-bold">
+              {{ data?.likeCount }}
+            </text>
+          </view>
+        </view>
       </view>
     </Container>
   </view>
