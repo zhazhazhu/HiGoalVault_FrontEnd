@@ -1,4 +1,4 @@
-import type { LoginResult, UserInfo } from '@higoal/api'
+import type { LoginResult, UserInfo } from '../api'
 import { defineStore } from 'pinia'
 import { api } from '@/api'
 import { useStoreRef } from '@/composables'

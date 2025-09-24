@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { Page, PublishMessageListResponse } from '@higoal/api'
+import type { Page, PublishMessageListResponse } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'

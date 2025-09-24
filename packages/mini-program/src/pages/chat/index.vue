@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { Page } from '@higoal/api'
+import type { Page } from '@/api'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import { onShareAppMessage } from '@dcloudio/uni-app'

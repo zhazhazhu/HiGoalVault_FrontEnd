@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { ChatMessageAfter, ChatMessageReference } from '@higoal/api'
+import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'

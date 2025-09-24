@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@higoal/api':
-        specifier: workspace:*
-        version: link:packages/api
       '@higoal/hooks':
         specifier: workspace:*
         version: link:packages/hooks
@@ -39,12 +36,6 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.3.1)(jsdom@16.7.0)(sass@1.92.1)(terser@5.44.0)
-
-  packages/api:
-    devDependencies:
-      '@dcloudio/types':
-        specifier: ^3.4.19
-        version: 3.4.19
 
   packages/hooks: {}
 
@@ -866,9 +857,6 @@ packages:
 
   '@clack/prompts@0.11.0':
     resolution: {integrity: sha512-pMN5FcrEw9hUkZA4f+zLlzivQSeQf5dRGJjSUbvVYDLvpKCdQx5OaknvKzgbtXOizhP+SJJJjqEbOe55uKKfAw==}
-
-  '@dcloudio/types@3.4.19':
-    resolution: {integrity: sha512-1foayOFEAQ+jnQLt3ACsovCNjer3/fXn1I2VBpmDOzs2nk/n4UHwRLAxZV/RpxRqaGOPEvKrO/Pq+VI6sAmuRw==}
 
   '@dcloudio/types@3.4.21':
     resolution: {integrity: sha512-rsv3XfAaD/dtuVboPeYh+vPcULnWyozGaGKHWyN0dYRm7L1uypFUM30qNYMj9iNmbAENuBjV177S1gNEBIvdDA==}
@@ -6345,8 +6333,6 @@ snapshots:
       '@clack/core': 0.5.0
       picocolors: 1.1.1
       sisteransi: 1.0.5
-
-  '@dcloudio/types@3.4.19': {}
 
   '@dcloudio/types@3.4.21': {}
 

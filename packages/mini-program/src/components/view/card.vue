@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { PublishMessageListResponse } from '@higoal/api'
+import type { PublishMessageListResponse } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
 

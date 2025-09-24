@@ -1,4 +1,4 @@
-import type { AnswerAfter } from '@higoal/api'
+import type { AnswerAfter } from '../api'
 import { defineStore } from 'pinia'
 import { createUUID } from '@/utils'
 import { useUserStore } from './user'

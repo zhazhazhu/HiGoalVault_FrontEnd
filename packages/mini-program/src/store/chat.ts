@@ -1,5 +1,5 @@
-import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '@higoal/api'
 import type { Ref } from 'vue'
+import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '../api'
 import { defineStore } from 'pinia'
 import { useStoreRef } from '@/composables'
 import { createUUID, isThisMonth, isThisWeek, isToday } from '@/utils'

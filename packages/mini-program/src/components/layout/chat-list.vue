@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { Chat, Page } from '@higoal/api'
+import type { Chat, Page } from '@/api'
 import type { ChatWithType } from '@/store'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'

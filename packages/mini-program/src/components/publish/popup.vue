@@ -1,9 +1,8 @@
 <script lang='ts' setup>
-import type { AnswerAfter, PublishMessageRequest } from '@higoal/api'
-import { PublishContentType, Truth } from '@higoal/api'
+import type { AnswerAfter, PublishMessageRequest } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import { useToast } from 'wot-design-uni'
-import { api } from '@/api'
+import { api, PublishContentType, Truth } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { useGlobalStore } from '@/store'
 

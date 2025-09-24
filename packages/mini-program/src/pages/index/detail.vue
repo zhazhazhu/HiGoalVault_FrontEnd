@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { PublishMessageListResponse } from '@higoal/api'
+import type { PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
@@ -8,6 +8,7 @@ import { api } from '@/api'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const cs = useClassesName('detail')
+const isFocus = ref(false)
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
@@ -17,6 +18,9 @@ async function getData(id: string) {
 }
 function gotoBack() {
   uni.navigateBack()
+}
+function onConfirm() {
+
 }
 
 onShareAppMessage(() => {
@@ -97,11 +101,15 @@ onLoad((options) => {
               show-word-limit
               hold-keyboard
               placeholder="发表友善评论"
+              confirm-type="send"
               :auto-height="true"
               :cursor-spacing="120"
               :custom-textarea-class="cs.m('textarea')"
               :custom-class="cs.m('textarea-container')"
               :placeholder-class="cs.m('textarea-placeholder')"
+              @focus="isFocus = true"
+              @blur="isFocus = false"
+              @confirm="onConfirm"
             />
           </view>
           <view class="flex flex-col items-center">

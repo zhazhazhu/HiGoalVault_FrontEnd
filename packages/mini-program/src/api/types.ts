@@ -140,7 +140,6 @@ export interface PublishMessageListResponse {
   contentType: PublishContentType // 内容类型
   content: string // 内容
   createTime: string // 发布时间
-  id: string // id
   likeCount: number // 点赞数量
   privacy: Truth // 是否公开
   queryId: string // 问题id
