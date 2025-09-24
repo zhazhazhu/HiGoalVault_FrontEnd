@@ -7,6 +7,12 @@
       }
     },
     {
+      "path": "pages/index/detail",
+      "style": {
+        "navigationBarTitleText": "详情"
+      }
+    },
+    {
       "path": "pages/user/index",
       "style": {
         "navigationBarTitleText": "个人中心"
@@ -20,6 +26,13 @@
       }
     },
     {
+      "path": "pages/chat/share",
+      "style": {
+        "navigationBarTitleText": "分享",
+        "disableScroll": true
+      }
+    },
+    {
       "path": "pages/search/index",
       "style": {
         "navigationBarTitleText": "搜索",
@@ -27,7 +40,7 @@
       }
     }
   ],
-  "entryPagePath": "pages/index/index",
+  "entryPagePath": "pages/chat/index",
   "globalStyle": {
     "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#F8F8F8",

@@ -100,15 +100,17 @@ onMounted(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
   getMessage()
+  uni.navigateTo({ url: '/pages/chat/share?id=d55d1548-e18b-4d7d-acfa-c890a0d63985' })
 })
 
-onShareAppMessage(({ from, target }) => {
+onShareAppMessage(async ({ from }) => {
   const result = {
     title: '快来看看我聊了啥～',
     path: '/pages/chat/index',
   }
   if (from === 'button') {
-    result.path = `/pages/share_chat/index?ids=${target.dataset.ids}`
+    const data = await api.shareMessage({ queryIds: share.value.ids, userId: userStore.userInfo!.id })
+    result.path = `/pages/chat/share?id=${data.result.shareId}`
     share.value.ids = []
   }
   return result

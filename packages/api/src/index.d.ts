@@ -156,3 +156,8 @@ export interface PublishMessageListResponse {
 export interface PublishMessageListResponseWithPage extends PageResult {
   records: PublishMessageListResponse[]
 }
+
+export interface ShareMessageRequest {
+  queryIds: string[]
+  userId: string
+}

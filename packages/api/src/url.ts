@@ -11,4 +11,6 @@ export enum API {
   DELETE_CHAT = '/buyer/chat/chat/deleteByChatId',
   ADD_PUBLISH_MESSAGE = '/buyer/content/publish/add',
   GET_PUBLISH_MESSAGE_LIST = '/buyer/content/publish/getByPageForIndex',
+  SHARE_MESSAGE = '/buyer/chat/chatQueryShare/add',
+  GET_SHARE_MESSAGE_LIST = '/buyer/chat/chatQueryShare/getListByShareId',
 }

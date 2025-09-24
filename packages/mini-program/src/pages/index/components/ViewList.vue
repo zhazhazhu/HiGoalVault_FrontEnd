@@ -30,6 +30,11 @@ function load() {
   page.value.pageNumber!++
   getData()
 }
+function gotoDetail(item: PublishMessageListResponse) {
+  uni.navigateTo({
+    url: `/pages/index/detail?id=${item.id}`,
+  })
+}
 
 onMounted(() => {
   reset()
@@ -50,7 +55,7 @@ onMounted(() => {
     :lower-threshold="50"
     @scrolltolower="load"
   >
-    <view v-for="item in list" :key="item.id" :class="cs.m('card')">
+    <view v-for="item in list" :id="`view-${item.id}`" :key="item.id" :class="cs.m('card')" @click="gotoDetail(item)">
       <ViewCard :view="item" />
     </view>
 

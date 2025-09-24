@@ -6,6 +6,7 @@ import { useGlobalStore, useUserStore } from '@/store'
 interface Props {
   title?: string
   bgColor?: string
+  enableLeftSlot?: boolean
   leftText?: string | boolean
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -55,18 +56,20 @@ defineExpose({
     <view class="navbar__status" :style="{ '--status-bar-height': `${globalStore.windowInfo?.statusBarHeight}px` }" />
     <view class="navbar__content">
       <view class="navbar__content__left">
-        <view v-if="leftText" @click="emits('leftClick')">
+        <view v-if="!enableLeftSlot && leftText" @click="emits('leftClick')">
           {{ leftText }}
         </view>
 
         <view v-else>
-          <view v-if="userStore.isLogin" class="i-uil-list-ul text-54rpx" @click="emits('leftClick')" />
-          <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
-            <view class="i-uil-user text-46rpx mr-6rpx" />
-            <text class="text-24rpx" user-select="false">
-              未登录
-            </text>
-          </view>
+          <slot name="left">
+            <view v-if="userStore.isLogin" class="i-uil-list-ul text-54rpx" @click="emits('leftClick')" />
+            <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
+              <view class="i-uil-user text-46rpx mr-6rpx" />
+              <text class="text-24rpx" user-select="false">
+                未登录
+              </text>
+            </view>
+          </slot>
         </view>
       </view>
       <view class="navbar__title">
