@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@higoal/api'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
@@ -18,6 +18,13 @@ async function getData(id: string) {
 function gotoBack() {
   uni.navigateBack()
 }
+
+onShareAppMessage(() => {
+  return {
+    title: data.value?.title,
+    path: `/pages/index/detail?id=${data.value?.id}`,
+  }
+})
 
 onLoad((options) => {
   getData(options?.id)
@@ -79,7 +86,10 @@ onLoad((options) => {
 
       <view class="h-200rpx bg-white px-32rpx pt-30rpx rounded-t-30rpx">
         <view class="flex items-center justify-between gap-10px">
-          <view class="wechat-icon bg-#666 size-70rpx" />
+          <button open-type="share" class="share-btn">
+            <view class="wechat-icon bg-#666 size-70rpx" />
+          </button>
+
           <view class="rounded-12px flex-1 overflow-hidden">
             <wd-textarea
               clearable
@@ -112,4 +122,15 @@ onLoad((options) => {
   </view>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  padding: 0;
+  &::after {
+    display: none;
+  }
+}
+</style>
