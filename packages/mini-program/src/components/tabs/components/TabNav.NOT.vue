@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { Navs, TabChildrenProps } from '../tabs'
 import { useClassesName } from '@higoal/hooks'
-import { inject } from 'vue'
+import { getCurrentInstance, inject, nextTick, onMounted, onUpdated, ref } from 'vue'
 import { TABS_INJECTION_KEY } from '../tabs'
 
 defineProps<{
@@ -21,6 +21,32 @@ function handleTabClick(tab: TabChildrenProps, ev: Event) {
   }
   emit('tabClick', tab, ev)
 }
+const instance = getCurrentInstance()
+const height = ref(0)
+const query = uni.createSelectorQuery().in(instance)
+
+function getHeight() {
+  if (!instance) {
+    console.error('无法获取组件实例。')
+    return
+  }
+  nextTick(() => {
+    query
+      .select('.hi-tab-nav--container')
+      .boundingClientRect((rect) => {
+        height.value = (rect as any).height + 20
+      })
+      .exec()
+  })
+}
+
+onMounted(() => {
+  getHeight()
+})
+
+defineExpose({
+  height,
+})
 </script>
 
 <template>

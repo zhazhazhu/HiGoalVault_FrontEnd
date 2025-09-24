@@ -1,5 +1,6 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
+import { computed, ref } from 'vue'
 import TabNav from './components/TabNav.NOT.vue'
 import { useTabs } from './tabs'
 
@@ -17,17 +18,19 @@ const emit = defineEmits<{
 }>()
 const cs = useClassesName('tabs')
 const { navs } = useTabs(props, emit)
+const tabNavInstance = ref<InstanceType<typeof TabNav>>()
+const tabNavInstanceHeight = computed(() => tabNavInstance.value?.height || 0)
 </script>
 
 <template>
   <view :class="[cs.s(), customClass]">
-    <TabNav :navs="navs" :editable="editable" :custom-nav-class="customNavClass" @tab-click="$emit('tabChange', $event.name)" @edit="$emit('edit', $event)">
+    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" @tab-click="$emit('tabChange', $event.name)" @edit="$emit('edit', $event)">
       <template #edit>
         <slot name="edit" />
       </template>
     </TabNav>
 
-    <view :class="[cs.m('content'), customContentClass]" class="h-full">
+    <view :class="[cs.m('content'), customContentClass]" :style="{ height: `calc(100% - ${tabNavInstanceHeight}px)` }">
       <slot />
     </view>
   </view>

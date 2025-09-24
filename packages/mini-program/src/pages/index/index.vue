@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import type Converse from '@/components/converse/index.vue'
 import { useClassesName } from '@higoal/hooks'
-import { ref, useTemplateRef } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import ViewList from './components/ViewList.vue'
 
 const cs = useClassesName('home')
 const showSidebar = ref(false)
 const active = ref('view')
-const converseInstance = useTemplateRef<InstanceType<typeof Converse>>('converseInstance')
+const converseInstance = ref<InstanceType<typeof Converse>>()
+const converseInstanceHeight = computed(() => converseInstance.value?.height || 0)
+watchEffect(() => {
+  console.log('converseInstanceHeight', converseInstanceHeight.value)
+})
 
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
@@ -27,10 +31,11 @@ function onClickSearch() {
     <Container custom-class="px-24rpx">
       <tabs
         v-model="active"
-        class="h-full"
         editable
+        class="overflow-hidden"
         custom-content-class="mt-10px"
         :custom-nav-class="cs.m('tab-nav')"
+        :style="{ height: `calc(100% - ${converseInstanceHeight}px)` }"
         @edit="onClickSearch"
       >
         <template #edit>

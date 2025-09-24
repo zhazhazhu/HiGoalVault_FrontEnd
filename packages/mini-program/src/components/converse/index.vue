@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, ref } from 'vue'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
@@ -25,6 +25,10 @@ const messageType = ref<'text' | 'voice'>('text')
 const ws = useWs()
 const chatStore = useChatStore()
 const messageInject = useMessageInject()
+
+const instance = getCurrentInstance()
+const query = uni.createSelectorQuery().in(instance)
+const height = ref(0)
 
 ws.onMessage((data) => {
   console.log('onMessage', data)
@@ -88,17 +92,44 @@ function onStopSend() {
   ws.stop({ runId: chatStore.currentRunId })
 }
 
+function getConverseHeight() {
+  if (!instance) {
+    console.error('无法获取组件实例。')
+    return
+  }
+
+  nextTick(() => {
+    query
+      .select('.hi-converse--wrapper')
+      .boundingClientRect((rect) => {
+        console.log('converse height', (rect as any).height)
+
+        height.value = (rect as any).height + 20
+      })
+      .exec()
+  })
+}
+
 onMounted(() => {
+  getConverseHeight()
   ws.connect()
 })
 
 onUnmounted(() => {
   ws.close()
 })
+
+// onUpdated(() => {
+//   getConverseHeight()
+// })
+
+defineExpose({
+  height,
+})
 </script>
 
 <template>
-  <view class="mt-20px" :class="cs.m('wrapper')" :style="converseContainerStyle">
+  <view :class="cs.m('wrapper')" :style="converseContainerStyle">
     <ConverseSourceAction v-model="sourceActionShow" />
 
     <view :class="cs.m('container')">
@@ -146,8 +177,11 @@ onUnmounted(() => {
 </template>
 
 <style lang='scss' scoped>
+.hi-converse--wrapper {
+  margin-top: 20px;
+}
 .hi-converse--container {
-  padding: 40rpx;
+  padding: 30rpx 40rpx;
   background-color: white;
   box-shadow: 0px 4rpx 16rpx 0px rgba(0, 0, 0, 0.08);
   border-radius: 40rpx;
