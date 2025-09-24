@@ -56,7 +56,7 @@ onMounted(() => {
     @scrolltolower="load"
   >
     <view v-for="item in list" :id="`view-${item.id}`" :key="item.id" :class="cs.m('card')" @click="gotoDetail(item)">
-      <ViewCard :view="item" />
+      <ViewCard :data="item" />
     </view>
 
     <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">

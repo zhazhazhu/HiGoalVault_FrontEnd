@@ -21,10 +21,10 @@ map,
 scroll-view,
 swiper,
 input,
-textarea,
-navigator {
+textarea {
   background-origin: border-box;
   font-family: 'PingFangSC', 'PingFang SC';
+  word-break: break-all;
   --hi-bg-color: #f3f3f3;
   --hi-primary-color: #ff3b30ff;
   --hi-secondary-color: #ff9500ff;

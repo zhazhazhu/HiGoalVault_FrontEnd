@@ -87,4 +87,8 @@ export class Api {
   public getShareMessageList(shareId: string) {
     return this.launcher<'uni'>(`${API.GET_SHARE_MESSAGE_LIST}?id=${shareId}`).post<PublishMessageListResponse>()
   }
+
+  public getPublicMessageDetail(query: { contentId: string }) {
+    return this.launcher<'uni'>(API.GET_PUBLIC_MESSAGE_DETAIL).post<PublishMessageListResponse>(query)
+  }
 }

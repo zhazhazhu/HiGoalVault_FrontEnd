@@ -9,8 +9,9 @@ export enum API {
   ADD_COLLECT = '/buyer/chat/chatQueryCollect/add',
   UPDATE_CHAT = '/buyer/chat/chat/updateByChatId',
   DELETE_CHAT = '/buyer/chat/chat/deleteByChatId',
-  ADD_PUBLISH_MESSAGE = '/buyer/content/publish/add',
+  ADD_PUBLISH_MESSAGE = '/buyer/content/publish/publishContentFromChatQuery',
   GET_PUBLISH_MESSAGE_LIST = '/buyer/content/publish/getByPageForIndex',
   SHARE_MESSAGE = '/buyer/chat/chatQueryShare/add',
   GET_SHARE_MESSAGE_LIST = '/buyer/chat/chatQueryShare/getListByShareId',
+  GET_PUBLIC_MESSAGE_DETAIL = '/buyer/content/publish/getContentDetailForSelfAndOthers',
 }

@@ -48,9 +48,9 @@ const htmlContent = computed(() => {
 
 function changeCheckbox({ value }: { value: boolean }) {
   if (value)
-    messageInject.share.value.ids.push(props.message.msgId)
+    messageInject.share.value.ids.push(currentAnswer.value.queryId)
   else
-    messageInject.share.value.ids = messageInject.share.value.ids.filter(item => item !== props.message.msgId)
+    messageInject.share.value.ids = messageInject.share.value.ids.filter(item => item !== currentAnswer.value.queryId)
 }
 
 function onReference(item: ChatMessageReference) {

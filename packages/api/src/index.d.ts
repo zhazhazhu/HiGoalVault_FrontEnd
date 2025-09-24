@@ -151,6 +151,7 @@ export interface PublishMessageListResponse {
   nickName: string // 发布人昵称
   userId: string // 发布人id
   face: string // 发布人头像
+  tags: Array<{ id: string, tagName: string }>
 }
 
 export interface PublishMessageListResponseWithPage extends PageResult {
