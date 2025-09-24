@@ -102,8 +102,6 @@ function getConverseHeight() {
     query
       .select('.hi-converse--wrapper')
       .boundingClientRect((rect) => {
-        console.log('converse height', (rect as any).height)
-
         height.value = (rect as any).height + 20
       })
       .exec()

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type Converse from '@/components/converse/index.vue'
 import { useClassesName } from '@higoal/hooks'
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref } from 'vue'
 import ViewList from './components/ViewList.vue'
 
 const cs = useClassesName('home')
@@ -9,9 +9,6 @@ const showSidebar = ref(false)
 const active = ref('view')
 const converseInstance = ref<InstanceType<typeof Converse>>()
 const converseInstanceHeight = computed(() => converseInstance.value?.height || 0)
-watchEffect(() => {
-  console.log('converseInstanceHeight', converseInstanceHeight.value)
-})
 
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
