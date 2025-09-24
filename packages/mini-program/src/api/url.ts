@@ -14,4 +14,5 @@ export enum API {
   SHARE_MESSAGE = '/buyer/chat/chatQueryShare/add',
   GET_SHARE_MESSAGE_LIST = '/buyer/chat/chatQueryShare/getListByShareId',
   GET_PUBLIC_MESSAGE_DETAIL = '/buyer/content/publish/getContentDetailForSelfAndOthers',
+  FOLLOW_USER = '/buyer/member/my/follow',
 }

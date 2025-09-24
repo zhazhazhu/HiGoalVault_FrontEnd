@@ -161,3 +161,9 @@ export interface ShareMessageRequest {
   queryIds: string[]
   userId: string
 }
+
+export interface FollowUserRequest {
+  followAction: boolean //	操作类型：true-关注，false-取消关注
+  followeeId: string //	被关注用户ID
+  followerId: string //	关注用户ID
+}

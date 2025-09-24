@@ -5,6 +5,7 @@ import type {
   ChatMessageWithPage,
   ChatRequestQuery,
   ChatWithPage,
+  FollowUserRequest,
   LoginResult,
   PublishMessageListRequest,
   PublishMessageListResponse,
@@ -90,6 +91,10 @@ function getPublicMessageDetail(query: { contentId: string }) {
   return http(API.GET_PUBLIC_MESSAGE_DETAIL).post<PublishMessageListResponse>(query)
 }
 
+function followUser(query: FollowUserRequest) {
+  return http(API.FOLLOW_USER).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -106,4 +111,5 @@ export const api = {
   shareMessage,
   getShareMessageList,
   getPublicMessageDetail,
+  followUser,
 }

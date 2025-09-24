@@ -5,10 +5,12 @@ import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { useUserStore } from '@/store'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const cs = useClassesName('detail')
 const isFocus = ref(false)
+const userStore = useUserStore()
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
@@ -21,6 +23,12 @@ function gotoBack() {
 }
 function onConfirm() {
 
+}
+async function onFollowUser() {
+  const res = await api.followUser({ followAction: true, followeeId: data.value!.userId, followerId: userStore.userInfo!.id })
+  if (res.code === 200) {
+    console.log(res)
+  }
 }
 
 onShareAppMessage(() => {
@@ -63,7 +71,7 @@ onLoad((options) => {
               </text>
             </view>
 
-            <wd-button icon="add" size="small">
+            <wd-button v-if="data?.userId !== userStore.userInfo?.id" icon="add" size="small" @click="onFollowUser">
               关注
             </wd-button>
           </view>

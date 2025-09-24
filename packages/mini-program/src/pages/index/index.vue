@@ -3,7 +3,6 @@ import type Converse from '@/components/converse/index.vue'
 import { useClassesName } from '@higoal/hooks'
 import { onMounted, ref } from 'vue'
 import { useChatStore } from '@/store'
-import ViewList from './components/ViewList.vue'
 
 const cs = useClassesName('home')
 const showSidebar = ref(false)
