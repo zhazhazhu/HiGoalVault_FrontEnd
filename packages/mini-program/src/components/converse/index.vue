@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, ref } from 'vue'
+import { getCurrentInstance, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
@@ -18,7 +18,7 @@ const cs = useClassesName('converse')
 const cursorPosition = ref(0)
 const cursorSpacing = ref(40)
 const converseContainerStyle = ref<CSSProperties>({
-  paddingBottom: '20px',
+  paddingBottom: '10px',
 })
 const sourceActionShow = ref(false)
 const messageType = ref<'text' | 'voice'>('text')
@@ -60,7 +60,7 @@ function onLineChange(e) {
 }
 
 function onKeyboardHeightChange(e) {
-  converseContainerStyle.value.paddingBottom = `${e.height + 20}px`
+  converseContainerStyle.value.paddingBottom = `${e.height + 10}px`
 }
 
 async function onConfirmMessage() {
@@ -118,10 +118,6 @@ onMounted(() => {
 onUnmounted(() => {
   ws.close()
 })
-
-// onUpdated(() => {
-//   getConverseHeight()
-// })
 
 defineExpose({
   height,

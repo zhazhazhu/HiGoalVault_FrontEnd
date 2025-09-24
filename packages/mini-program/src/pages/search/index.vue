@@ -15,7 +15,7 @@ function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
 function onBackToHome() {
-  uni.navigateTo({ url: '/pages/index/index' })
+  uni.navigateBack()
 }
 function onConfirm() {
   if (!searchText.value)
@@ -30,7 +30,7 @@ function onConfirm() {
     <Navbar @left-click="onNavbarLeftClick" />
     <Container custom-class="px-32rpx">
       <view :class="cs.m('header')">
-        <view class="i-uil-angle-left-b size-25px" @click="onBackToHome" />
+        <wd-icon name="thin-arrow-left" size="19px" @click="onBackToHome" />
         <view :class="cs.m('input')">
           <wd-input
             v-model="searchText"
@@ -70,7 +70,7 @@ function onConfirm() {
     border-radius: 70rpx;
   }
   .hi-search--search-button {
-    width: 90rpx;
+    width: 120rpx;
     height: 60rpx;
     display: flex;
     align-items: center;

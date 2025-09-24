@@ -39,7 +39,7 @@ function onClickSearch() {
         @edit="onClickSearch"
       >
         <template #edit>
-          <wd-icon name="search" />
+          <wd-icon name="search" size="18" />
         </template>
         <tabs-item name="view" label="发现">
           <ViewList />
