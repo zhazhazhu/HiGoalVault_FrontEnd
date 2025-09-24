@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, ref } from 'vue'
 import { useWs } from '@/api/wx'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
