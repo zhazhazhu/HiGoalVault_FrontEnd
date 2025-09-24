@@ -1,8 +1,9 @@
 import type { Ref } from 'vue'
 import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '../api'
+import { useUUID } from '@higoal/hooks'
 import { defineStore } from 'pinia'
 import { useStoreRef } from '@/composables'
-import { createUUID, isThisMonth, isThisWeek, isToday } from '@/utils'
+import { isThisMonth, isThisWeek, isToday } from '@/utils'
 
 interface WaitingMessageTask {
   query: string
@@ -96,7 +97,7 @@ export const useChatStore = defineStore('chat', {
       }
     },
     createTemporaryMessage(message?: Partial<ChatMessageAfter>): ChatMessageAfter {
-      const id = createUUID(32)
+      const id = useUUID(32)
       const temp = {
         chatId: this.currentChatId || '',
         query: '',

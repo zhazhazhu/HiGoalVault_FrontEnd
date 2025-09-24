@@ -1,6 +1,6 @@
 import type { AnswerAfter } from '../api'
+import { useUUID } from '@higoal/hooks'
 import { defineStore } from 'pinia'
-import { createUUID } from '@/utils'
 import { useUserStore } from './user'
 
 // 定义 Pinia Store 的状态接口
@@ -167,8 +167,8 @@ export const useWebsocketStore = defineStore('websocket', {
               code: '100007',
               data: {
                 ...data,
-                msgId: data.msgId || createUUID(32),
-                runId: data.runId || createUUID(32),
+                msgId: data.msgId || useUUID(32),
+                runId: data.runId || useUUID(32),
                 clientType: data.clientType || ClientType.WECHAT_MP,
                 accessToken: data.accessToken || userStore.accessToken,
               },

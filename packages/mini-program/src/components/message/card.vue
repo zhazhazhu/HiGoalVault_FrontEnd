@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
-import { useClassesName } from '@higoal/hooks'
+import { useClassesName, useUUID } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref, watch } from 'vue'
@@ -8,7 +8,7 @@ import { api } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
-import { createUUID, markdownToText } from '@/utils'
+import { markdownToText } from '@/utils'
 
 import 'highlight.js/styles/github.css'
 
@@ -61,7 +61,7 @@ function onReference(item: ChatMessageReference) {
 }
 
 function onRefresh() {
-  chatStore.currentRunId = createUUID(32)
+  chatStore.currentRunId = useUUID(32)
   chatStore.currentTemporaryMessageId = props.message.msgId
   chatStore.isReplying = true
   websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId, query: props.message.query }).then(() => {

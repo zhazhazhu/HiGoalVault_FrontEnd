@@ -1,12 +1,11 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
-import { useClassesName } from '@higoal/hooks'
+import { useClassesName, useUUID } from '@higoal/hooks'
 import { getCurrentInstance, nextTick, onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
 import { useWebsocketStore } from '@/store/websocket'
-import { createUUID } from '@/utils'
 
 withDefaults(defineProps<{
   placeholder?: string
@@ -47,7 +46,7 @@ async function waitConfirmMessage(text: string) {
   chatStore.waitingMessageTask = {
     query: text,
     chatId: chatStore.currentChatId,
-    runId: createUUID(32),
+    runId: useUUID(32),
   }
   uni.navigateTo({ url: '/pages/chat/index' })
 }
@@ -73,7 +72,7 @@ async function onConfirmMessage() {
   model.value = ''
   chatStore.isReplying = true
   // 创建并保存当前消息的runId
-  chatStore.currentRunId = createUUID(32)
+  chatStore.currentRunId = useUUID(32)
   const messageContent = { chatId: chatStore.currentChatId, query: text, runId: chatStore.currentRunId }
   // 如果当前会话不存在，创建并保存当前会话
   if (!chatStore.currentChatId) {

@@ -19,16 +19,6 @@ export function markdownToText(markdown: string) {
   return markdown.replace(/\n/g, ' ')
 }
 
-export function createUUID(len: number = 16) {
-  const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
-  const maxPos = chars.length
-  let uuid = ''
-  for (let i = 0; i < len; i++) {
-    uuid += chars.charAt(Math.floor(Math.random() * maxPos))
-  }
-  return uuid
-}
-
 export function isToday(date: string) {
   return dayjs().format('YYYY-MM-DD') === dayjs(date).format('YYYY-MM-DD')
 }

@@ -1,8 +1,8 @@
 import type { Component, ComponentInternalInstance, InjectionKey, Ref, VNode, VNodeNormalizedChildren } from 'vue'
 import type Tabs from './index.vue'
 import type TabItem from './item.vue'
+import { useUUID } from '@higoal/hooks'
 import { computed, getCurrentInstance, provide, ref, watch } from 'vue'
-import { createUUID } from '@/utils'
 
 type TabsProps = InstanceType<typeof Tabs>['$props']
 type TabsEmits = InstanceType<typeof Tabs>['$emit']
@@ -21,7 +21,7 @@ interface InjectTabsContext extends UseTabChildren {
 export type { InjectTabsContext, Navs, TabChildrenProps, UseTabChildren }
 
 export const TABS_INJECTION_KEY: InjectionKey<InjectTabsContext>
-  = Symbol(createUUID())
+  = Symbol(useUUID())
 
 export function useTabs(props: TabsProps, emit: TabsEmits) {
   const instance = getCurrentInstance()!
