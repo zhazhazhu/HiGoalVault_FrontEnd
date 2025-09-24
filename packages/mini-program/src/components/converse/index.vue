@@ -62,6 +62,8 @@ function sendWaitingMessage() {
     messageInject?.scrollToTop()
   }).catch((err) => {
     console.log(err)
+  }).finally(() => {
+    chatStore.waitingMessageTask = null
   })
 }
 

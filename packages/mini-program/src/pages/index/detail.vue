@@ -1,16 +1,17 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
-import { useClassesName } from '@higoal/hooks'
+import { useClassesName, useUUID } from '@higoal/hooks'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 import { api } from '@/api'
-import { useUserStore } from '@/store'
+import { useChatStore, useUserStore } from '@/store'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const cs = useClassesName('detail')
 const isFocus = ref(false)
 const userStore = useUserStore()
+const chatStore = useChatStore()
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
@@ -29,6 +30,19 @@ async function onFollowUser() {
   if (res.code === 200) {
     console.log(res)
   }
+}
+async function onContinueTalk() {
+  const res = await api.addChat()
+  if (res.code === 200) {
+    chatStore.currentChatId = res.result.chatId
+  }
+  chatStore.currentRunId = useUUID(32)
+  chatStore.waitingMessageTask = {
+    query: data.value!.title,
+    chatId: chatStore.currentChatId,
+    runId: useUUID(32),
+  }
+  uni.redirectTo({ url: '/pages/chat/index' })
 }
 
 onShareAppMessage(() => {
@@ -58,7 +72,7 @@ onLoad((options) => {
             <view class="flex-1 truncate">
               <wd-text :text="data?.title" color="#121212" size="32rpx" bold />
             </view>
-            <wd-button type="primary" plain size="small">
+            <wd-button type="primary" plain size="small" @click="onContinueTalk">
               继续提问
             </wd-button>
           </view>
