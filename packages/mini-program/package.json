@@ -84,6 +84,7 @@
     "@unocss/eslint-config": "^66.1.1",
     "@unocss/transformer-directives": "^66.1.1",
     "@unocss/transformer-variant-group": "^0.65.1",
+    "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@vue/runtime-core": "^3.5.21",
     "@vue/tsconfig": "^0.8.1",
     "sass": "^1.78.0",
