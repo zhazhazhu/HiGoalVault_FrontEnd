@@ -1,5 +1,6 @@
 <script lang='ts' setup>
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
+import type { MessageToolOperateType } from '@/types'
 import { useClassesName, useUUID } from '@higoal/hooks'
 import { computed, reactive, ref, watch } from 'vue'
 import { api } from '@/api'
@@ -83,6 +84,24 @@ function openTooltips(e) {
   messageToolRect.y = e.detail.y
   messageToolVisible.value = true
 }
+function onMessageToolOperate(type: MessageToolOperateType) {
+  switch (type) {
+    case 'refresh':
+      onRefresh()
+      break
+    case 'copy':
+      onCopy()
+      break
+    case 'delete':
+      break
+    case 'voice':
+      break
+    case 'quote':
+      break
+    default:
+      break
+  }
+}
 </script>
 
 <template>
@@ -104,7 +123,7 @@ function openTooltips(e) {
       </view>
 
       <view :class="cs.m('model')">
-        <message-tool :id="message.msgId" :rect="messageToolRect" />
+        <message-tool :id="message.msgId" :rect="messageToolRect" @operate="onMessageToolOperate" />
 
         <message-response-card :data="currentAnswer" @longpress="openTooltips" />
 

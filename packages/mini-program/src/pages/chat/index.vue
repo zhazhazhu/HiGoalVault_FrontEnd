@@ -102,7 +102,7 @@ onMounted(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
   getMessage()
-  uni.navigateTo({ url: '/pages/chat/share?id=d55d1548-e18b-4d7d-acfa-c890a0d63985' })
+  // uni.navigateTo({ url: '/pages/chat/share?id=d55d1548-e18b-4d7d-acfa-c890a0d63985' })
 })
 
 onShareAppMessage(async ({ from }) => {

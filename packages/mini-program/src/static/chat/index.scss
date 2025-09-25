@@ -182,3 +182,58 @@
   mask-size: contain;
   mask-position: center;
 }
+
+.delete-float-menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-删除悬浮菜单.svg');
+  mask-image: url('/static/chat/svg/icon-删除悬浮菜单.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.refresh-float-menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-刷新悬浮菜单.svg');
+  mask-image: url('/static/chat/svg/icon-刷新悬浮菜单.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.copy-float-menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-复制悬浮菜单.svg');
+  mask-image: url('/static/chat/svg/icon-复制悬浮菜单.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.speaker-float-menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-外放悬浮菜单.svg');
+  mask-image: url('/static/chat/svg/icon-外放悬浮菜单.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.excerpt-copy-float-menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-节选复制悬浮菜单.svg');
+  mask-image: url('/static/chat/svg/icon-节选复制悬浮菜单.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}

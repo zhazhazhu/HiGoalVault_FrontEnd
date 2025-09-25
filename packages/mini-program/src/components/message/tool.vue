@@ -1,5 +1,6 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
+import type { MessageToolOperateType } from '@/types'
 import { useClassesName } from '@higoal/hooks'
 import { getCurrentInstance, nextTick, ref, watch } from 'vue'
 import { useMessageInject } from '@/composables/inject'
@@ -9,11 +10,10 @@ interface Props {
   rect: { x: number, y: number }
   id: string
 }
-type OperateType = 'delete' | 'refresh' | 'voice' | 'copy' | 'quote'
 
 const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'operate', type: OperateType): void
+  (e: 'operate', type: MessageToolOperateType): void
 }>()
 
 const cs = useClassesName('message-tool')
@@ -71,32 +71,32 @@ function calculatePosition(touchX: number, touchY: number) {
     })
     .exec()
 }
-function onOperate(type: OperateType) {
+function onOperate(type: MessageToolOperateType) {
   messageInject.currentToolMessageId.value = null
   emit('operate', type)
 }
 </script>
 
 <template>
-  <view v-if="id === messageInject.currentToolMessageId.value" :class="cs.m('wrapper')" :style="wrapperStyle" @tap.stop>
-    <view :class="cs.m('item')" @click="onOperate('delete')">
-      <view class="copy-icon bg-white" />
+  <view v-if="id === messageInject.currentToolMessageId.value" :class="cs.m('wrapper')" :style="wrapperStyle" @click.stop>
+    <view :class="cs.m('item')" @click.stop="onOperate('delete')">
+      <view class="delete-float-menu-icon bg-white size-40rpx" />
       <text>删除</text>
     </view>
-    <view :class="cs.m('item')" @click="onOperate('refresh')">
-      <view class="copy-icon bg-white" />
+    <view :class="cs.m('item')" @click.stop="onOperate('refresh')">
+      <view class="refresh-float-menu-icon bg-white size-40rpx" />
       <text>重新生成</text>
     </view>
-    <view :class="cs.m('item')" @click="onOperate('voice')">
-      <view class="copy-icon bg-white" />
+    <view :class="cs.m('item')" @click.stop="onOperate('voice')">
+      <view class="speaker-float-menu-icon bg-white size-40rpx" />
       <text>语音播放</text>
     </view>
-    <view :class="cs.m('item')" @click="onOperate('copy')">
-      <view class="copy-icon bg-white" />
+    <view :class="cs.m('item')" @click.stop="onOperate('copy')">
+      <view class="copy-float-menu-icon bg-white size-40rpx" />
       <text>复制</text>
     </view>
-    <view :class="cs.m('item')" @click="onOperate('quote')">
-      <view class="copy-icon bg-white" />
+    <view :class="cs.m('item')" @click.stop="onOperate('quote')">
+      <view class="excerpt-copy-float-menu-icon bg-white size-40rpx" />
       <text>节选复制</text>
     </view>
   </view>
@@ -116,7 +116,7 @@ function onOperate(type: OperateType) {
   justify-content: center;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  padding: 10rpx;
+  padding: 10rpx 20rpx;
 }
 .hi-message-tool--item {
   width: 100%;
