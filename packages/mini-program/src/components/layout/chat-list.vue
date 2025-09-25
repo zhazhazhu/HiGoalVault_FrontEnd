@@ -60,7 +60,7 @@ function onEditChat(item: Chat) {
 }
 function onDeleteChat(item: Chat) {
   message.confirm({
-    msg: '确认删除吗?',
+    msg: '该对话内容将被删除无法恢复，若您之前主动分享过该对话，分享链接也将一并被删除',
     title: '提示',
   }).then(async () => {
     await api.deleteChat(item.chatId)
