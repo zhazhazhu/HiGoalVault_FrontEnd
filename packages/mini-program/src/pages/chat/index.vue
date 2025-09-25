@@ -4,7 +4,7 @@ import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
-import { onMounted, provide, reactive, ref, watch } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { messageInjectKey } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
@@ -102,7 +102,7 @@ onMounted(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
   getMessage()
-  // uni.navigateTo({ url: '/pages/chat/share?id=d55d1548-e18b-4d7d-acfa-c890a0d63985' })
+  uni.navigateTo({ url: '/pages/chat/share?id=d55d1548-e18b-4d7d-acfa-c890a0d63985' })
 })
 
 onShareAppMessage(async ({ from }) => {

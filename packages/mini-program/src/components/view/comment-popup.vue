@@ -56,7 +56,7 @@ onMounted(() => {
   >
     <view class="min-h-500rpx p-32rpx">
       <view>
-        评论
+        <text>评论</text>
         <text class="text-22rpx">
           {{ total }}
         </text>

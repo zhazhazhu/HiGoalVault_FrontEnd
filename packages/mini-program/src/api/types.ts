@@ -207,4 +207,5 @@ export interface ReplyResponse {
   replyStatus: boolean // 回复状态
   replyToUserId: string // 被回复人id
   replyToUsername: string // 被回复人昵称
+  createTime: string
 }
