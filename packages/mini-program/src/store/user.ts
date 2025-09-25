@@ -53,5 +53,9 @@ export const useUserStore = defineStore('user', {
         this.userInfo = res.result
       }
     },
+    logout() {
+      this.auth = null
+      this.userInfo = null
+    },
   },
 })

@@ -40,7 +40,7 @@
       }
     }
   ],
-  "entryPagePath": "pages/chat/index",
+  "entryPagePath": "pages/user/index",
   "globalStyle": {
     "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#F8F8F8",

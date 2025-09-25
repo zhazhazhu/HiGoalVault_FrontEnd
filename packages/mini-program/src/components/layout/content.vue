@@ -15,6 +15,9 @@ const isEdit = ref(false)
 function onEditChatList() {
   isEdit.value = !isEdit.value
 }
+function gotoSettings() {
+  uni.navigateTo({ url: '/pages/settings/index' })
+}
 </script>
 
 <template>
@@ -46,7 +49,7 @@ function onEditChatList() {
       </view>
 
       <view class="flex gap-10px text-48rpx text-h3-color w-80px justify-end">
-        <view class="i-tabler-settings" />
+        <view class="i-tabler-settings" @click="gotoSettings" />
         <view class="i-material-symbols-lightbulb-2-outline-sharp" />
       </view>
     </view>
