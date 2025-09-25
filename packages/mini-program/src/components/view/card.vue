@@ -12,22 +12,22 @@ const cs = useClassesName('view-card')
 
 <template>
   <view :class="cs.m('container')">
-    <view :class="cs.m('content')">
-      <view class="text-26rpx color-#333 word-wrap">
-        {{ data.content }}
-      </view>
-    </view>
-
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center">
-        <!-- <wd-img width="52rpx" height="56rpx" round mode="aspectFill" :src="data.face" /> -->
-        <text>
+        <wd-img width="52rpx" height="56rpx" round mode="aspectFill" :src="data.face" />
+        <text class="ml-16rpx">
           {{ data.nickName }}
         </text>
       </view>
 
       <view>
         {{ dayjs(data.createTime).format('YY/MM/DD') }}
+      </view>
+    </view>
+
+    <view :class="cs.m('content')">
+      <view class="text-26rpx color-#333 word-wrap">
+        {{ data.content }}
       </view>
     </view>
 

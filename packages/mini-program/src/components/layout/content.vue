@@ -39,7 +39,7 @@ function onEditChatList() {
 
     <view :class="cs.m('bottom')">
       <view :class="cs.m('user')">
-        <wd-img :src="userStore.userInfo?.face" :width="24" :height="24" />
+        <wd-img :src="userStore.userInfo?.face" round :width="26" :height="26" />
         <text class="text-16px font-bold text-h1-color ml-8px max-w-120px truncate">
           {{ userStore.userInfo?.username }}{{ userStore.userInfo?.username }}{{ userStore.userInfo?.username }}
         </text>

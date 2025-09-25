@@ -21,7 +21,7 @@ function onClickSearch() {
 }
 onMounted(() => {
   chatStore.currentChatId = ''
-  uni.navigateTo({ url: '/pages/index/detail?id=1970773872903147522' })
+  uni.navigateTo({ url: '/pages/index/detail?id=1971044791038980097' })
 })
 </script>
 

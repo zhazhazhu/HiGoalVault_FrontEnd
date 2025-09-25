@@ -1,16 +1,12 @@
 <script lang='ts' setup>
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import { useClassesName, useUUID } from '@higoal/hooks'
-import hljs from 'highlight.js'
-import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
 import { markdownToText } from '@/utils'
-
-import 'highlight.js/styles/github.css'
 
 const props = defineProps<{
   message: ChatMessageAfter
@@ -21,30 +17,17 @@ const cs = useClassesName('message-card')
 const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
 const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
 const publishVisible = ref(false)
+const tooltipsVisible = ref(false)
+const messageToolInstance = ref<InstanceType<typeof import('./message-tool.vue').default> | null>(null)
 
 watch(() => props.message.chatQueryAnswerList.length, (val) => {
   currentAnswerIndex.value = val
 })
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  breaks: true,
-  highlight(str, lang) {
-    const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
-    return html
-  },
-})
-const viewDeepThink = ref(true)
 const userInstance = ref<Element>()
 const check = ref(false)
 const chatStore = useChatStore()
 const websocketStore = useWebsocketStore()
-
-const htmlContent = computed(() => {
-  return md.render(currentAnswer.value.response || '')
-})
 
 function changeCheckbox({ value }: { value: boolean }) {
   if (value)
@@ -89,12 +72,16 @@ function onFavorite() {
     msgId: props.message.msgId,
   })
 }
+function openTooltips() {
+  tooltipsVisible.value = true
+}
 </script>
 
 <template>
   <view :class="cs.m('wrapper')">
     <wd-toast />
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
+    <message-tool ref="messageToolInstance" />
 
     <wd-checkbox
       v-model="check"
@@ -109,33 +96,18 @@ function onFavorite() {
         {{ message.query }}
       </view>
 
-      <view :class="cs.m('model')">
-        <view :class="cs.e('deep-think')">
-          <view :class="cs.e('deep-think-title')" @click="() => { viewDeepThink = !viewDeepThink }">
-            <text class="mr-10px">
-              已深度思考 (用时x秒)
-            </text>
-            <view :class="viewDeepThink ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
-          </view>
-          <view v-if="viewDeepThink" :class="cs.e('deep-think-content')" align="left">
-            {{ currentAnswer.message }}
-          </view>
-        </view>
-
-        <view :class="cs.m('response')">
-          <!-- 使用自定义组件渲染markdown内容，避免XSS攻击风险 -->
-          <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
-        </view>
+      <view :class="cs.m('model')" @longpress="openTooltips">
+        <message-response-card :data="currentAnswer" />
 
         <view v-show="!messageInject.share.value.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
           <view class="refresh-icon size-30px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
-          <view class="flex items-center text-13px gap-4px">
-            <view class="i-material-symbols-arrow-back-ios-rounded" :class="[{ 'opacity-50': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex - 1 : 1" />
+          <view class="flex items-center text-14px gap-8px">
+            <view class="i-material-symbols-arrow-back-ios-rounded size-30rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex - 1 : 1" />
             <view>
               {{ currentAnswerIndex }}/{{ props.message.chatQueryAnswerList.length }}
             </view>
-            <view class="i-material-symbols-arrow-forward-ios-rounded" :class="[{ 'opacity-50': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
+            <view class="i-material-symbols-arrow-forward-ios-rounded size-30rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
           </view>
           <view class="flex-1" />
           <view class="favorite-icon size-30px" @click="onFavorite" />
@@ -180,28 +152,6 @@ function onFavorite() {
   color: #121212;
   line-height: 20px;
   margin-bottom: 10px;
-}
-.hi-message-card__deep-think {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  color: #666666;
-  margin-bottom: 10px;
-}
-.hi-message-card__deep-think-title {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.hi-message-card__deep-think-content {
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid #e5e5e5;
-  padding-left: 10px;
-}
-.hi-message-card__rich-text {
-  color: #333333;
-  line-height: 48rpx;
 }
 .hi-message-card--reference {
   display: flex;
