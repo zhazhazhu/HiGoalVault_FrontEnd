@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import { useClassesName, useUUID } from '@higoal/hooks'
-import { computed, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store'
@@ -17,8 +17,11 @@ const cs = useClassesName('message-card')
 const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
 const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
 const publishVisible = ref(false)
-const tooltipsVisible = ref(false)
-const messageToolInstance = ref<InstanceType<typeof import('./message-tool.vue').default> | null>(null)
+const messageToolRect = reactive({
+  x: 0,
+  y: 0,
+})
+const messageToolVisible = ref(false)
 
 watch(() => props.message.chatQueryAnswerList.length, (val) => {
   currentAnswerIndex.value = val
@@ -72,8 +75,13 @@ function onFavorite() {
     msgId: props.message.msgId,
   })
 }
-function openTooltips() {
-  tooltipsVisible.value = true
+function openTooltips(e) {
+  if (messageInject.currentToolMessageId.value === props.message.msgId)
+    return
+  messageInject.currentToolMessageId.value = props.message.msgId
+  messageToolRect.x = e.detail.x
+  messageToolRect.y = e.detail.y
+  messageToolVisible.value = true
 }
 </script>
 
@@ -81,7 +89,6 @@ function openTooltips() {
   <view :class="cs.m('wrapper')">
     <wd-toast />
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
-    <message-tool ref="messageToolInstance" />
 
     <wd-checkbox
       v-model="check"
@@ -96,8 +103,10 @@ function openTooltips() {
         {{ message.query }}
       </view>
 
-      <view :class="cs.m('model')" @longpress="openTooltips">
-        <message-response-card :data="currentAnswer" />
+      <view :class="cs.m('model')">
+        <message-tool :id="message.msgId" :rect="messageToolRect" />
+
+        <message-response-card :data="currentAnswer" @longpress="openTooltips" />
 
         <view v-show="!messageInject.share.value.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
           <view class="refresh-icon size-30px" @click="onRefresh" />

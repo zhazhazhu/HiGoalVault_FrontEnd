@@ -35,6 +35,12 @@ const cs = useClassesName('view-card')
       <wd-text :text="data.title" color="#121212" size="32rpx" bold />
     </view>
 
+    <view class="flex gap-20rpx">
+      <Tag v-for="item in data?.tags" :key="item.id">
+        #{{ item.tagName }}
+      </Tag>
+    </view>
+
     <view class="flex items-center color-#666 gap-30rpx">
       <view class="wechat-icon bg-#666 size-50rpx" />
       <view class="flex-1" />
