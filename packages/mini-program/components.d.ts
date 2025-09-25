@@ -16,6 +16,7 @@ declare module 'vue' {
     LayoutContent: typeof import('./src/components/layout/content.vue')['default']
     LoginPopup: typeof import('./src/components/login/popup.vue')['default']
     MessageCard: typeof import('./src/components/message/card.vue')['default']
+    MessageExcerptCopyPopup: typeof import('./src/components/message/excerpt-copy-popup.vue')['default']
     MessageResponseCard: typeof import('./src/components/message/response-card.vue')['default']
     MessageTool: typeof import('./src/components/message/tool.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']

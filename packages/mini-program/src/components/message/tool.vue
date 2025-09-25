@@ -95,7 +95,7 @@ function onOperate(type: MessageToolOperateType) {
       <view class="copy-float-menu-icon bg-white size-40rpx" />
       <text>复制</text>
     </view>
-    <view :class="cs.m('item')" @click.stop="onOperate('quote')">
+    <view :class="cs.m('item')" @click.stop="onOperate('excerptCopy')">
       <view class="excerpt-copy-float-menu-icon bg-white size-40rpx" />
       <text>节选复制</text>
     </view>

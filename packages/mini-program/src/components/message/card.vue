@@ -23,6 +23,7 @@ const messageToolRect = reactive({
   y: 0,
 })
 const messageToolVisible = ref(false)
+const messageExcerptCopyPopupVisible = ref(false)
 
 watch(() => props.message.chatQueryAnswerList.length, (val) => {
   currentAnswerIndex.value = val
@@ -96,7 +97,8 @@ function onMessageToolOperate(type: MessageToolOperateType) {
       break
     case 'voice':
       break
-    case 'quote':
+    case 'excerptCopy':
+      messageExcerptCopyPopupVisible.value = true
       break
     default:
       break
@@ -108,6 +110,7 @@ function onMessageToolOperate(type: MessageToolOperateType) {
   <view :class="cs.m('wrapper')">
     <wd-toast />
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
+    <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" />
 
     <wd-checkbox
       v-model="check"
