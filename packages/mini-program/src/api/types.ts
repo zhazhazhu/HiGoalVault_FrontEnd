@@ -126,11 +126,10 @@ export interface PublishMessageRequest {
   contentType: PublishContentType
 }
 
-export interface PublishMessageListRequest {
+export interface PublishMessageListRequest extends Page {
   authorId?: string
   keyword?: string
   tagId?: string
-  pageVO?: Page
 }
 
 export interface PublishMessageListResponse {
@@ -172,4 +171,24 @@ export interface FollowUserRequest {
 export interface AddCommentRequest {
   commentContent: string
   contentId: string
+}
+
+export interface CommentListRequest extends Page {
+  contentId: string
+  commentId?: string
+  memberId?: string
+}
+
+export interface CommentListResponse extends PageResult {
+  records: CommentResponse[]
+}
+
+export interface CommentResponse {
+  commentContent: string
+  commenterId: string
+  commenterUsername: string
+  createTime: string
+  id: string
+  isLike: boolean
+  likeCount: number
 }

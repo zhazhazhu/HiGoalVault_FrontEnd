@@ -6,6 +6,8 @@ import type {
   ChatMessageWithPage,
   ChatRequestQuery,
   ChatWithPage,
+  CommentListRequest,
+  CommentListResponse,
   FollowUserRequest,
   LoginResult,
   PublishMessageListRequest,
@@ -100,6 +102,10 @@ function addComment(query: AddCommentRequest) {
   return http(API.ADD_COMMENT).post<boolean>(query)
 }
 
+function getCommentList(query: CommentListRequest) {
+  return http(API.GET_COMMENT_LIST).post<CommentListResponse>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -118,4 +124,5 @@ export const api = {
   getPublicMessageDetail,
   followUser,
   addComment,
+  getCommentList,
 }
