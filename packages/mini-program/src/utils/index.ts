@@ -30,3 +30,10 @@ export function isThisWeek(date: string) {
 export function isThisMonth(date: string) {
   return dayjs().isSame(dayjs(date), 'month')
 }
+
+export function formatDate(date: string) {
+  if (isToday(date)) {
+    return dayjs(date).format('HH:mm')
+  }
+  return dayjs(date).format('YY/MM/DD HH:mm')
+}

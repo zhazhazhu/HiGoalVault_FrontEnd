@@ -62,9 +62,9 @@ async function onContinueTalk() {
     </view>
 
     <view>
-      <wd-tag v-for="item in data?.tags" :key="item.id">
+      <Tag v-for="item in data?.tags" :key="item.id" custom-class="mr-20rpx">
         #{{ item.tagName }}
-      </wd-tag>
+      </Tag>
     </view>
 
     <view class="text-22rpx color-#969696">

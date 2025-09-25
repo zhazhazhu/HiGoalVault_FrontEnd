@@ -184,11 +184,27 @@ export interface CommentListResponse extends PageResult {
 }
 
 export interface CommentResponse {
-  commentContent: string
-  commenterId: string
-  commenterUsername: string
-  createTime: string
-  id: string
-  isLike: boolean
-  likeCount: number
+  comment: {
+    commentContent: string
+    commenterId: string
+    commenterUsername: string
+    createTime: string
+    id: string
+    isLike: boolean
+    likeCount: number
+  }
+  replies: ReplyResponse[]
+}
+
+export interface ReplyResponse {
+  commentId: string // 评论id
+  contentId: string // 帖子id
+  isLike: boolean // 是否点赞
+  likeCount: number // 点赞数量
+  replierId: string // 回复人id
+  replierUsername: string // 回复人昵称
+  replyContent: string // 回复内容
+  replyStatus: boolean // 回复状态
+  replyToUserId: string // 被回复人id
+  replyToUsername: string // 被回复人昵称
 }

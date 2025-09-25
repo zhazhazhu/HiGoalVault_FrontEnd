@@ -4,7 +4,7 @@ import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
-import { onMounted, provide, ref, watch } from 'vue'
+import { onMounted, provide, reactive, ref, watch } from 'vue'
 import { api } from '@/api'
 import { messageInjectKey } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
@@ -90,9 +90,11 @@ function onNavbarLeftClick() {
   }
   showSidebar.value = !showSidebar.value
 }
+const currentToolMessageId = ref<string | null>(null)
 
 provide(messageInjectKey, {
   share,
+  currentToolMessageId,
   scrollToTop,
 })
 
@@ -118,7 +120,7 @@ onShareAppMessage(async ({ from }) => {
 </script>
 
 <template>
-  <Layout v-model="showSidebar" @change-chat="refreshMessage">
+  <Layout v-model="showSidebar" @change-chat="refreshMessage" @tap="currentToolMessageId = null">
     <share-popup v-model="share.isChecked" />
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">

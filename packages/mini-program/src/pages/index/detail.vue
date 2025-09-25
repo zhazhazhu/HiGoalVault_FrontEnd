@@ -10,6 +10,7 @@ const cs = useClassesName('detail')
 const isFocus = ref(false)
 const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
+const commentVisible = ref(true)
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
@@ -45,6 +46,9 @@ async function onConfirm() {
     commentContent.value = ''
   }
 }
+function openCommentPopup() {
+  commentVisible.value = true
+}
 
 onShareAppMessage(() => {
   return {
@@ -60,6 +64,8 @@ onLoad((options) => {
 
 <template>
   <view>
+    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" />
+
     <Navbar title="详情" enable-left-slot>
       <template #left>
         <wd-icon name="thin-arrow-left" size="17px" @click="gotoBack" />
@@ -106,7 +112,7 @@ onLoad((options) => {
               @confirm="onConfirm"
             />
           </view>
-          <view class="flex flex-col items-center">
+          <view class="flex flex-col items-center" @click="openCommentPopup">
             <view class="comment-icon size-60rpx" />
             <text class="text-22rpx color-gray-6 font-bold">
               {{ data?.commentCount }}

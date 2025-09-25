@@ -46,7 +46,7 @@ onMounted(() => {
           <ViewList />
         </tabs-item>
         <tabs-item name="follow" label="关注">
-          关注
+          <ViewFollowList />
         </tabs-item>
       </tabs>
 

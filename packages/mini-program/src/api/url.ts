@@ -16,5 +16,5 @@ export enum API {
   GET_PUBLIC_MESSAGE_DETAIL = '/buyer/content/publish/getContentDetailForSelfAndOthers',
   FOLLOW_USER = '/buyer/member/my/follow',
   ADD_COMMENT = '/buyer/content/comment/addComment/withFiles',
-  GET_COMMENT_LIST = '/buyer/content/comment/comments/getByPage',
+  GET_COMMENT_LIST = '/buyer/content/comment/comments/getCommentWithRepliesByPage',
 }

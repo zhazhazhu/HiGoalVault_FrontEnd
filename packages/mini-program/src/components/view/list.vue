@@ -12,10 +12,11 @@ const isFinish = ref(false)
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
+  sort: 'createTime',
 })
 
 async function getData() {
-  const data = await api.getPublishMessageList({ pageVO: page.value }).finally(() => {
+  const data = await api.getPublishMessageList({ ...page.value }).finally(() => {
     loading.value = false
   })
   if (data.code === 200) {
