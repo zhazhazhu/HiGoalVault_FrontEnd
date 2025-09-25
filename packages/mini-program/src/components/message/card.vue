@@ -85,6 +85,12 @@ function openTooltips(e) {
   messageToolRect.y = e.detail.y
   messageToolVisible.value = true
 }
+// @ts-ignore
+const weChatSI = requirePlugin('WechatSI')
+// const content = computed(() => markdownToText(currentAnswer.value.response))
+const innerAudioContext = uni.createInnerAudioContext()
+innerAudioContext.autoplay = true
+
 function onMessageToolOperate(type: MessageToolOperateType) {
   switch (type) {
     case 'refresh':
@@ -96,6 +102,17 @@ function onMessageToolOperate(type: MessageToolOperateType) {
     case 'delete':
       break
     case 'voice':
+      weChatSI.textToSpeech({
+        lang: 'zh_CN', // 中文 当然还可以换成其他语言读出
+        tts: true,
+        content: '你好', // 要读的内容
+        success: (res) => {
+          innerAudioContext.src = res.filename
+          innerAudioContext.play()
+        },
+        fail: () => {
+        },
+      })
       break
     case 'excerptCopy':
       messageExcerptCopyPopupVisible.value = true
