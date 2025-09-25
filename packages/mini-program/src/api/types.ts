@@ -148,9 +148,10 @@ export interface PublishMessageListResponse {
   shareCount: number // 分享数量
   viewCount: number // 阅读数量
   nickName: string // 发布人昵称
-  userId: string // 发布人id
+  memberId: string // 发布人id
   face: string // 发布人头像
   tags: Array<{ id: string, tagName: string }>
+  chatQueryAnswerVO: AnswerBefore
 }
 
 export interface PublishMessageListResponseWithPage extends PageResult {
@@ -166,4 +167,9 @@ export interface FollowUserRequest {
   followAction: boolean //	操作类型：true-关注，false-取消关注
   followeeId: string //	被关注用户ID
   followerId: string //	关注用户ID
+}
+
+export interface AddCommentRequest {
+  commentContent: string
+  contentId: string
 }

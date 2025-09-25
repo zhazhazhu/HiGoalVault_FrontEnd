@@ -1,5 +1,6 @@
 import type {
   AddCollectRequest,
+  AddCommentRequest,
   Chat,
   ChatHistoryRequestQuery,
   ChatMessageWithPage,
@@ -95,6 +96,10 @@ function followUser(query: FollowUserRequest) {
   return http(API.FOLLOW_USER).post<boolean>(query)
 }
 
+function addComment(query: AddCommentRequest) {
+  return http(API.ADD_COMMENT).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -112,4 +117,5 @@ export const api = {
   getShareMessageList,
   getPublicMessageDetail,
   followUser,
+  addComment,
 }
