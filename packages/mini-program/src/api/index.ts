@@ -1,5 +1,6 @@
 import type {
   AddCollectRequest,
+  AddCommentReplyRequest,
   AddCommentRequest,
   Chat,
   ChatHistoryRequestQuery,
@@ -112,6 +113,10 @@ function globalSearch(query: GlobalSearchRequest) {
   return http(API.GLOBAL_SEARCH).post<GlobalSearchResultResponse>(query)
 }
 
+function addCommentReply(query: AddCommentReplyRequest) {
+  return http(API.ADD_COMMENT_REPLY).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -132,4 +137,5 @@ export const api = {
   addComment,
   getCommentList,
   globalSearch,
+  addCommentReply,
 }

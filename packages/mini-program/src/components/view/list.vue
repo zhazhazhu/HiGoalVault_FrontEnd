@@ -47,6 +47,6 @@ function gotoDetail(item: PublishMessageListResponse) {
 
 <style lang='scss' scoped>
 .hi-view--card + .hi-view--card {
-  margin-top: 40rpx;
+  margin-top: 20rpx;
 }
 </style>

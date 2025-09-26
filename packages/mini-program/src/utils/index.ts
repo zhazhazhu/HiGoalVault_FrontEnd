@@ -35,5 +35,5 @@ export function formatDate(date: string) {
   if (isToday(date)) {
     return dayjs(date).format('HH:mm')
   }
-  return dayjs(date).format('YY/MM/DD HH:mm')
+  return dayjs(date).format('MM/DD HH:mm')
 }

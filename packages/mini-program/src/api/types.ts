@@ -193,6 +193,9 @@ export interface CommentResponse {
     id: string
     isLike: boolean
     likeCount: number
+    commentUsername: string
+    nickname: string
+    face: string
   }
   replies: ReplyResponse[]
 }
@@ -204,10 +207,12 @@ export interface ReplyResponse {
   likeCount: number // 点赞数量
   replierId: string // 回复人id
   replierUsername: string // 回复人昵称
+  nickname: string // 回复人头像
   replyContent: string // 回复内容
   replyStatus: boolean // 回复状态
   replyToUserId: string // 被回复人id
   replyToUsername: string // 被回复人昵称
+  replyToFace: string // 被回复人头像
   createTime: string
 }
 
@@ -222,4 +227,11 @@ export interface GlobalSearchResultResponse extends PageResult {
 export interface GlobalSearchResult {
   chatQuery: ChatMessageBefore
   memberContentForClientVO: PublishMessageListResponse
+}
+
+export interface AddCommentReplyRequest {
+  commentId: string // 评论ID
+  replyContent: string //	回复内容
+  parentReplyId?: string // 父回复ID（对回复进行回复时使用）
+  replyToUserId?: string //	被回复用户ID
 }

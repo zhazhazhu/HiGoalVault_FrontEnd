@@ -51,7 +51,7 @@ onMounted(() => {
   chatStore.currentChatId = ''
   reset()
   getData()
-  // uni.navigateTo({ url: '/pages/index/detail?id=1971044791038980097' })
+  uni.navigateTo({ url: '/pages/index/detail?id=1971044791038980097' })
 })
 </script>
 

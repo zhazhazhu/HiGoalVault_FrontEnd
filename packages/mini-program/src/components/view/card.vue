@@ -42,10 +42,10 @@ const cs = useClassesName('view-card')
     </view>
 
     <view class="flex items-center color-#666 gap-30rpx">
-      <view class="wechat-icon bg-#666 size-50rpx" />
+      <view class="wechat-icon bg-#666 size-50rpx" @click.stop />
       <view class="flex-1" />
       <view class="flex items-center">
-        <view class="thumb-up-icon bg-#666 size-46rpx" :class="{ 'bg-red': data.isLiked }" />
+        <view class="thumb-up-icon bg-#666 size-46rpx" :class="{ 'bg-red': data.isLiked }" @click.stop />
         <view class="text-26rpx">
           {{ data.likeCount }}
         </view>

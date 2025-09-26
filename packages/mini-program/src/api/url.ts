@@ -18,4 +18,5 @@ export enum API {
   ADD_COMMENT = '/buyer/content/comment/addComment/withFiles',
   GET_COMMENT_LIST = '/buyer/content/comment/comments/getCommentWithRepliesByPage',
   GLOBAL_SEARCH = '/buyer/search/processGlobalSearch',
+  ADD_COMMENT_REPLY = '/buyer/content/comment/reply/add',
 }

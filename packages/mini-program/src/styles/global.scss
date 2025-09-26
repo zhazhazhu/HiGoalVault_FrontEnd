@@ -50,7 +50,7 @@ page {
 
 .hi-converse__textarea {
   max-height: 100px;
-  --wot-textarea-fs: 16px;
+  --wot-textarea-fs: 14px;
   --wot-cell-line-height: 28px;
 }
 
@@ -116,17 +116,21 @@ page {
   padding: 0 10rpx;
 }
 
-.hi-detail--textarea {
+.hi-detail--textarea,
+.hi-comment-popup--textarea {
   --wot-textarea-fs: 14px;
   --wot-cell-line-height: 24px;
+  max-height: 50px;
 }
 
-.hi-detail--textarea-container {
+.hi-detail--textarea-container,
+.hi-comment-popup--textarea-container {
   --wot-textarea-bg: #f1f1f1;
   padding: 14px !important;
 }
 
-.hi-detail--textarea-placeholder {
+.hi-detail--textarea-placeholder,
+.hi-comment-popup--textarea-placeholder {
   color: #9ca3af;
   font-size: 14px;
   line-height: 24px;
