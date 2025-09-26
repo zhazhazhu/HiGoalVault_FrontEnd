@@ -90,6 +90,11 @@ function onNavbarLeftClick() {
   }
   showSidebar.value = !showSidebar.value
 }
+function onTabChange(e: number) {
+  if (e === 1) {
+    uni.redirectTo({ url: '/pages/index/index' })
+  }
+}
 const currentToolMessageId = ref<string | null>(null)
 
 provide(messageInjectKey, {
@@ -125,7 +130,7 @@ onShareAppMessage(async ({ from }) => {
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">
       <template #title>
-        <tabs>
+        <tabs @tab-change="onTabChange($event as any)">
           <tabs-item :name="0" label="黑狗" />
           <tabs-item :name="1" label="关注" />
         </tabs>
