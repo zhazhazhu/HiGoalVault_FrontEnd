@@ -19,4 +19,5 @@ export enum API {
   GET_COMMENT_LIST = '/buyer/content/comment/comments/getCommentWithRepliesByPage',
   GLOBAL_SEARCH = '/buyer/search/processGlobalSearch',
   ADD_COMMENT_REPLY = '/buyer/content/comment/reply/add',
+  GET_FOLLOWING_PUBLISH_MESSAGE_LIST = '/buyer/member/my/content/following-combined/getCombinedContentByPage',
 }

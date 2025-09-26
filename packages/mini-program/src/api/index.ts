@@ -117,6 +117,10 @@ function addCommentReply(query: AddCommentReplyRequest) {
   return http(API.ADD_COMMENT_REPLY).post<boolean>(query)
 }
 
+function getFollowingPublishMessageList(query) {
+  return http(API.GET_FOLLOWING_PUBLISH_MESSAGE_LIST).post<PublishMessageListResponseWithPage>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -138,4 +142,5 @@ export const api = {
   getCommentList,
   globalSearch,
   addCommentReply,
+  getFollowingPublishMessageList,
 }

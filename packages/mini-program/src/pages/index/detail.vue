@@ -10,7 +10,7 @@ const cs = useClassesName('detail')
 const isFocus = ref(false)
 const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
-const commentVisible = ref(true)
+const commentVisible = ref(false)
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
