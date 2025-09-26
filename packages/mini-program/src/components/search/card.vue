@@ -5,6 +5,12 @@ defineProps<{
   title: string
   editIcon?: string
   data: string[]
+  enableClose?: boolean
+}>()
+const emit = defineEmits<{
+  (e: 'tagClick', value: string): void
+  (e: 'editClick'): void
+  (e: 'close', index: number, item: string): void
 }>()
 const isExpanded = ref(false)
 const isOverflowing = ref(false)
@@ -36,6 +42,15 @@ function checkOverflow() {
 function toggleExpand() {
   isExpanded.value = !isExpanded.value
 }
+function onEdit() {
+  emit('editClick')
+}
+function onClose(index: number, val: string) {
+  emit('close', index, val)
+}
+function onTagClick(val: string) {
+  emit('tagClick', val)
+}
 
 // 在组件挂载和数据更新后检查是否溢出
 onMounted(() => {
@@ -53,17 +68,21 @@ onUpdated(() => {
       <view class="text-30rpx font-bold">
         {{ title }}
       </view>
-      <view :class="editIcon" class="text-34rpx" />
+      <view v-show="data.length > 0" class="text-34rpx" @click="onEdit">
+        <slot name="edit" />
+      </view>
     </view>
 
     <view class="search-tags-container" :class="{ expanded: isExpanded }">
       <view class="search-tags flex flex-wrap gap-16rpx py-20rpx pr-60rpx">
         <view
-          v-for="item in data"
+          v-for="item, index in data"
           :key="item"
-          class="text-26rpx color-#666 rounded-12rpx bg-#E4E4E4 py-16rpx px-30rpx"
+          class="text-26rpx color-#666 rounded-12rpx bg-#E4E4E4 py-16rpx px-30rpx relative"
+          @click="onTagClick(item)"
         >
-          {{ item }}
+          <text>{{ item }}</text>
+          <view class="i-material-symbols-light-cancel absolute -top-6px -right-6px text-36rpx" :class="{ hidden: !enableClose }" @click="onClose(index, item)" />
         </view>
       </view>
       <view

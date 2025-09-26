@@ -6,6 +6,7 @@ import { useSearchStore } from '@/store'
 const cs = useClassesName('search')
 const showSidebar = ref(false)
 const searchStore = useSearchStore()
+const removeSearchHistoryVisible = ref(false)
 const searchText = ref('')
 
 function onNavbarLeftClick() {
@@ -14,14 +15,29 @@ function onNavbarLeftClick() {
 function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
-function onBackToHome() {
-  uni.navigateBack()
-}
 function onConfirm() {
-  if (!searchText.value)
-    return
-  searchStore.addSearchHistory(searchText.value)
   searchText.value = ''
+  uni.navigateTo({ url: '/pages/search/result' })
+}
+function onGotoBack() {
+  uni.navigateBack({ delta: 999 })
+}
+function onOperate(type: 'delete') {
+  switch (type) {
+    case 'delete':
+      removeSearchHistoryVisible.value = !removeSearchHistoryVisible.value
+      break
+
+    default:
+      break
+  }
+}
+function onCloseSearchHistory(index: number) {
+  searchStore.removeSearchHistory(index)
+}
+function onTagClick(val: string) {
+  searchStore.addSearchHistory(val)
+  uni.navigateTo({ url: '/pages/search/result' })
 }
 </script>
 
@@ -29,26 +45,25 @@ function onConfirm() {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
     <Container custom-class="px-32rpx">
-      <view :class="cs.m('header')">
-        <wd-icon name="thin-arrow-left" size="19px" @click="onBackToHome" />
-        <view :class="cs.m('input')">
-          <wd-input
-            v-model="searchText"
-            custom-class="w-full ml-20rpx"
-            placeholder="搜索"
-            clearable
-            no-border
-            @confirm="onConfirm"
-          />
-          <view :class="cs.m('search-button')" @click="onConfirm">
-            <wd-icon name="search" color="#fff" />
-          </view>
-        </view>
-        <view class="i-uil-camera size-25px" />
-      </view>
+      <SearchHead v-model="searchText" @confirm="onConfirm" @back="onGotoBack" />
+
       <view :class="cs.m('content')">
         <view :class="cs.m('lately-search')">
-          <SearchCard title="最近搜索" edit-icon="i-material-symbols-light-delete-outline" :data="searchStore.searchHistory" />
+          <SearchCard
+            title="最近搜索"
+            :enable-close="removeSearchHistoryVisible"
+            :data="searchStore.searchHistory"
+            @edit-click="onOperate('delete')"
+            @close="onCloseSearchHistory"
+            @tag-click="onTagClick"
+          >
+            <template #edit>
+              <view v-if="!removeSearchHistoryVisible" class="i-material-symbols-light-delete-outline" />
+              <wd-button v-else type="primary" size="small">
+                完成
+              </wd-button>
+            </template>
+          </SearchCard>
         </view>
       </view>
     </Container>
@@ -56,30 +71,6 @@ function onConfirm() {
 </template>
 
 <style lang='scss' scoped>
-.hi-search--header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20rpx;
-  .hi-search--input {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    padding: 14rpx 20rpx;
-    background-color: white;
-    border-radius: 70rpx;
-  }
-  .hi-search--search-button {
-    width: 120rpx;
-    height: 60rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--hi-primary-color);
-    border-radius: 60rpx;
-    margin-left: 20rpx;
-  }
-}
 .hi-search--content {
   margin-top: 60rpx;
 }

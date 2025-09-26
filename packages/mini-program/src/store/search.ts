@@ -23,5 +23,8 @@ export const useSearchStore = defineStore('search', {
         searchHistory.pop()
       }
     },
+    removeSearchHistory(index: number) {
+      this.searchHistory.splice(index, 1)
+    },
   },
 })

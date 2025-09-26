@@ -25,6 +25,7 @@ declare module 'vue' {
     RecordPopup: typeof import('./src/components/record/popup.vue')['default']
     RecordWave: typeof import('./src/components/record/Wave.vue')['default']
     SearchCard: typeof import('./src/components/search/card.vue')['default']
+    SearchHead: typeof import('./src/components/search/head.vue')['default']
     SharePopup: typeof import('./src/components/share/popup.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
     TabsItem: typeof import('./src/components/tabs/item.vue')['default']

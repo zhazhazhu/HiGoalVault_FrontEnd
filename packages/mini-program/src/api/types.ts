@@ -21,6 +21,7 @@ export interface UserInfo {
 }
 
 export interface Page {
+  keyWord?: string
   pageSize?: number
   pageNumber?: number
   sort?: string
@@ -208,4 +209,17 @@ export interface ReplyResponse {
   replyToUserId: string // 被回复人id
   replyToUsername: string // 被回复人昵称
   createTime: string
+}
+
+export interface GlobalSearchRequest extends Page {
+  userId?: string
+}
+
+export interface GlobalSearchResultResponse extends PageResult {
+  records: GlobalSearchResult[]
+}
+
+export interface GlobalSearchResult {
+  chatQuery: ChatMessageBefore
+  memberContentForClientVO: PublishMessageListResponse
 }
