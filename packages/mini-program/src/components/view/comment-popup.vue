@@ -210,18 +210,21 @@ onMounted(() => {
     position="bottom"
     custom-style="border-radius:32rpx;"
     safe-area-inset-bottom
-    closable
     lock-scroll
     @close="handleClose"
   >
     <view class="h-1000rpx p-32rpx relative">
-      <view class="h-50rpx">
-        <text class="font-bold">
-          评论
-        </text>
-        <text class="color-#666">
-          {{ total }}
-        </text>
+      <view class="h-50rpx flex items-center justify-between">
+        <view class="flex items-center gap-10rpx">
+          <text class="font-bold">
+            评论
+          </text>
+          <text class="color-#666">
+            {{ total }}
+          </text>
+        </view>
+
+        <view class="i-material-symbols-light-close-rounded text-50rpx color-#333" @click="handleClose" />
       </view>
 
       <scroll-view
