@@ -52,7 +52,9 @@ const cs = useClassesName('view-card')
       </view>
       <view class="flex items-center">
         <view class="comment-icon bg-#666 size-46rpx" />
-        <view>{{ data.commentCount }}</view>
+        <view class="text-26rpx">
+          {{ data.commentCount }}
+        </view>
       </view>
     </view>
   </view>

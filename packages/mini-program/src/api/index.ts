@@ -9,7 +9,6 @@ import type {
   ChatWithPage,
   CommentListRequest,
   CommentListResponse,
-  CommentResponse,
   CommentResponseRequired,
   FollowUserRequest,
   GlobalSearchRequest,
