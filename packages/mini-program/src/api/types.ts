@@ -15,7 +15,7 @@ export interface UserInfo {
   birthday: string
   face: string
   sex: Sex
-  nickname: string
+  nickName: string
   mobile: string
   username: string
 }
@@ -174,45 +174,62 @@ export interface AddCommentRequest {
   contentId: string
 }
 
+export interface CommentResponseRequired {
+  id: string
+}
+
 export interface CommentListRequest extends Page {
   contentId: string
   commentId?: string
   memberId?: string
 }
 
+export interface ReplyListRequest extends Page {
+  commentId: string
+}
+
 export interface CommentListResponse extends PageResult {
   records: CommentResponse[]
 }
 
+export interface ReplyListResponse extends PageResult {
+  records: ReplyResponse[]
+}
+
 export interface CommentResponse {
   comment: {
-    commentContent: string
-    commenterId: string
-    commenterUsername: string
+    commentContent: string // 评论内容
+    commenterId: string // 评论人id
+    commenterUsername: string // 评论人昵称
     createTime: string
     id: string
     isLike: boolean
     likeCount: number
-    commentUsername: string
-    nickname: string
-    face: string
+    commentUsername: string // 评论人昵称
+    nickName: string // 评论人昵称
+    face: string // 评论人头像
   }
   replies: ReplyResponse[]
+  totalReplies: number // 回复数量
 }
 
 export interface ReplyResponse {
+  id: string
   commentId: string // 评论id
   contentId: string // 帖子id
   isLike: boolean // 是否点赞
   likeCount: number // 点赞数量
   replierId: string // 回复人id
   replierUsername: string // 回复人昵称
-  nickname: string // 回复人头像
+  nickName: string // 回复人昵称
+  face: string // 回复人头像
   replyContent: string // 回复内容
   replyStatus: boolean // 回复状态
   replyToUserId: string // 被回复人id
   replyToUsername: string // 被回复人昵称
+  replyToNickName: string // 被回复人昵称
   replyToFace: string // 被回复人头像
+  parentReplyId: string | null // 父回复ID（对评论进行回复时使用）
   createTime: string
 }
 

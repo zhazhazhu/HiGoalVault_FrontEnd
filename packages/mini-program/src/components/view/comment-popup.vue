@@ -1,9 +1,11 @@
 <script lang='ts' setup>
-import type { CommentResponse, Page } from '@/api'
-import { useClassesName } from '@higoal/hooks'
+import type { CommentResponse, Page, ReplyResponse } from '@/api'
+import { useClassesName, useUUID } from '@higoal/hooks'
+import dayjs from 'dayjs'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
+import { useUserStore } from '@/store'
 
 const props = defineProps<{ contentId: string }>()
 const model = defineModel({ type: Boolean, default: false })
@@ -14,18 +16,19 @@ const [page, reset] = useResetRef<Page>({
 })
 const cs = useClassesName('comment-popup')
 const data = ref<CommentResponse[]>([])
-const loading = ref(false)
+const isLoading = ref(false)
 const isFinish = ref(false)
 const total = ref(0)
 const commentContent = ref('')
 const placeholder = ref('发表友善评论')
 const textareaInstance = ref()
 const isFocus = ref(false)
+const userStore = useUserStore()
 
 async function getData() {
-  loading.value = true
+  isLoading.value = true
   const res = await api.getCommentList({ contentId: props.contentId, ...page.value }).finally(() => {
-    loading.value = false
+    isLoading.value = false
   })
   if (res.code === 200) {
     total.value = res.result.total
@@ -35,43 +38,168 @@ async function getData() {
 }
 
 async function load() {
-  if (loading.value || isFinish.value)
+  if (isLoading.value || isFinish.value)
     return
-  loading.value = true
+  isLoading.value = true
   page.value.pageNumber!++
   getData()
 }
 const currentOperating = ref<number | null>(null)
+const [currentReplying, resetCurrentReplying] = useResetRef<{
+  type: 'comment' | 'reply'
+  comment: CommentResponse['comment'] | null
+  reply: ReplyResponse | null
+}>({
+  type: 'comment',
+  comment: null,
+  reply: null,
+})
 
 function handleClose() {
   model.value = false
 }
-async function onConfirm() {
-  if (currentOperating.value === null) {
-    const res = await api.addComment({ commentContent: commentContent.value, contentId: props.contentId })
-    if (res.code === 200) {
-      commentContent.value = ''
-    }
-  }
-  else {
-    const res = await api.addCommentReply({
-      commentId: data.value[currentOperating.value].comment.id,
-      replyContent: commentContent.value,
-      replyToUserId: data.value[currentOperating.value].comment.commenterId,
-    })
-    if (res.code === 200) {
-      commentContent.value = ''
-    }
+function createTemporaryComment(): CommentResponse['comment'] {
+  return {
+    commentContent: commentContent.value,
+    commenterId: userStore.userInfo!.id,
+    commenterUsername: userStore.userInfo!.username,
+    createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    id: useUUID(),
+    isLike: false,
+    likeCount: 0,
+    commentUsername: userStore.userInfo!.username,
+    nickName: userStore.userInfo!.nickName,
+    face: userStore.userInfo!.face,
   }
 }
+
+function createTemporaryReply(type: 'comment' | 'reply'): ReplyResponse {
+  return {
+    id: useUUID(),
+    commentId: currentReplying.value[type]!.id,
+    contentId: props.contentId,
+    isLike: false,
+    likeCount: 0,
+    replyStatus: true,
+    replierId: userStore.userInfo!.id,
+    face: userStore.userInfo!.face,
+    replierUsername: userStore.userInfo!.username,
+    nickName: userStore.userInfo!.nickName,
+    replyContent: commentContent.value,
+    replyToUserId: type === 'comment' ? currentReplying.value.comment!.commenterId : currentReplying.value.reply!.replierId,
+    replyToUsername: type === 'comment' ? currentReplying.value.comment!.commenterUsername : currentReplying.value.reply!.replierUsername,
+    replyToNickName: type === 'comment' ? currentReplying.value.comment!.nickName : currentReplying.value.reply!.nickName,
+    replyToFace: type === 'comment' ? currentReplying.value.comment!.face : currentReplying.value.reply!.face,
+    parentReplyId: currentReplying.value.reply?.id || null,
+    createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  }
+}
+function putTemporaryComment(id) {
+  if (currentOperating.value === null) {
+    data.value.unshift({
+      comment: {
+        ...createTemporaryComment(),
+        id,
+      },
+      replies: [],
+      totalReplies: 0,
+    })
+  }
+  else if (currentReplying.value.type === 'comment') {
+    data.value[currentOperating.value].totalReplies++
+    data.value[currentOperating.value].replies.unshift({
+      ...createTemporaryReply('comment'),
+      id,
+    })
+  }
+  else if (currentReplying.value.type === 'reply') {
+    data.value[currentOperating.value].totalReplies++
+    data.value[currentOperating.value].replies.unshift({
+      ...createTemporaryReply('reply'),
+      parentReplyId: currentReplying.value.reply!.id,
+      id,
+    })
+  }
+  console.log('putTemporaryComment', data.value)
+}
+async function onConfirm() {
+  try {
+    if (currentOperating.value === null) {
+      const res = await api.addComment({ commentContent: commentContent.value, contentId: props.contentId })
+      if (res.code === 200) {
+        putTemporaryComment(res.result.id)
+        commentContent.value = ''
+      }
+    }
+    else if (currentReplying.value.type === 'comment') {
+      const res = await api.addCommentReply({
+        commentId: currentReplying.value.comment!.id,
+        replyContent: commentContent.value,
+        replyToUserId: currentReplying.value.comment!.commenterId,
+      })
+      if (res.code === 200) {
+        putTemporaryComment(res.result.id)
+        commentContent.value = ''
+      }
+    }
+    else if (currentReplying.value.type === 'reply') {
+      const res = await api.addCommentReply({
+        commentId: data.value[currentOperating.value].comment.id,
+        replyContent: commentContent.value,
+        replyToUserId: currentReplying.value.reply!.replierId,
+        parentReplyId: currentReplying.value.reply!.id,
+      })
+      if (res.code === 200) {
+        putTemporaryComment(res.result.id)
+        commentContent.value = ''
+      }
+    }
+  }
+  catch (error) {
+    console.log(error)
+  }
+  resetComment()
+}
 function onReplyComment(comment: CommentResponse['comment'], index: number) {
-  debugger
   currentOperating.value = index
-  placeholder.value = `@${comment.nickname || 'Unknown'}`
+  placeholder.value = `@${comment.nickName || 'Unknown'}`
+  currentReplying.value = {
+    type: 'comment',
+    comment,
+    reply: null,
+  }
   isFocus.value = true
+}
+function onReplyReply(reply: ReplyResponse, index: number) {
+  currentOperating.value = index
+  placeholder.value = `@${reply.nickName || 'Unknown'}`
+  currentReplying.value = {
+    type: 'reply',
+    comment: null,
+    reply,
+  }
+  isFocus.value = true
+}
+async function onLoadRely(comment: CommentResponse['comment'], index: number) {
+  const res = await api.getCommentRepliesList({ commentId: comment.id })
+  if (res.code === 200) {
+    data.value[index].totalReplies = res.result.total
+    data.value[index].replies.push(...res.result.records)
+  }
+}
+function resetComment() {
+  currentOperating.value = null
+  commentContent.value = ''
+  isFocus.value = false
+  placeholder.value = '发表友善评论'
+  resetCurrentReplying()
+}
+function onBlur() {
+  resetComment()
 }
 
 onMounted(() => {
+  reset()
   getData()
 })
 </script>
@@ -101,8 +229,16 @@ onMounted(() => {
         enhanced
         :show-scrollbar="false"
         class="max-h-800rpx overflow-y-auto pb-20rpx gap-20rpx py-30rpx"
+        @scrolltolower="load"
       >
-        <view-comment-card v-for="item, index in data" :key="item.comment.id" :data="item" @reply-comment="onReplyComment($event, index)" />
+        <view-comment-card v-for="item, index in data" :key="item.comment.id" :data="item" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" @load-rely="onLoadRely($event, index)" />
+
+        <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
+          <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
+          <text class="ml-20rpx text-24rpx">
+            {{ isFinish ? '没有更多了' : '加载中...' }}
+          </text>
+        </view>
       </scroll-view>
 
       <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx min-h-100rpx">
@@ -123,7 +259,7 @@ onMounted(() => {
             :custom-class="cs.m('textarea-container')"
             :placeholder-class="cs.m('textarea-placeholder')"
             @focus="isFocus = true"
-            @blur="isFocus = false"
+            @blur="onBlur"
             @confirm="onConfirm"
           />
         </view>

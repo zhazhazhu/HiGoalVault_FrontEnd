@@ -1,21 +1,34 @@
 <script lang='ts' setup>
-import type { CommentResponse } from '@/api'
-import { formatDate } from '@/utils'
+import type { CommentResponse, ReplyResponse } from '@/api'
+import { computed } from 'vue'
+import { formatCommentDate } from '@/utils'
 
-defineProps<{ data: CommentResponse }>()
+const props = defineProps<{ data: CommentResponse }>()
 
 const emit = defineEmits<{
   (e: 'replyComment', comment: CommentResponse['comment']): void
+  (e: 'loadRely', comment: CommentResponse['comment']): void
+  (e: 'replyReply', reply: ReplyResponse): void
 }>()
+
+const remainReplyTotal = computed(() => props.data.totalReplies - props.data.replies.length)
+
+function onLoadReply() {
+  emit('loadRely', props.data.comment)
+}
+
+function onReply(reply: ReplyResponse) {
+  emit('replyReply', reply)
+}
 </script>
 
 <template>
-  <view class="flex flex-col gap-14rpx w-full">
+  <view class="flex flex-col gap-24rpx w-full mb-24rpx">
     <view class="flex flex-col gap-14rpx">
       <view class="flex items-center gap-10rpx">
         <wd-img round :src="data.comment.face || 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" width="52rpx" height="52rpx" />
         <view class="text-28rpx color-#666666">
-          {{ data.comment.nickname || 'Unknown' }}
+          {{ data.comment.nickName || 'Unknown' }}
         </view>
       </view>
 
@@ -26,25 +39,25 @@ const emit = defineEmits<{
       <view class="flex justify-between">
         <view class="flex items-center gap-10rpx">
           <view class="text-#8E8E93 text-20rpx">
-            发表于 {{ formatDate(data.comment.createTime) }}
+            发表于 {{ formatCommentDate(data.comment.createTime) }}
           </view>
           <view class="text-#333333 text-20rpx" @click="emit('replyComment', data.comment)">
             回复
           </view>
         </view>
 
-        <view class="flex items-center gap-6rpx">
+        <view class="flex items-center gap-6rpx color-#666">
           <view class="thumb-up-icon size-42rpx" :class="{ 'color-red': data.comment.isLike }" />
           <view>{{ data.comment.likeCount }}</view>
         </view>
       </view>
     </view>
 
-    <view class="bg-#F1F1F1 rounded-14rpx">
-      <view v-for="item in data.replies" :key="item.replierId">
-        <view class="text-#666666 text-26rpx">
-          {{ item.replyContent }}
-        </view>
+    <view v-if="data.totalReplies > 0" class="bg-#F1F1F1 rounded-14rpx p-26rpx flex flex-col gap-40rpx">
+      <ViewReplyCard v-for="item in data.replies" :key="item.id" :data="item" :comment="data.comment" @reply-click="onReply" />
+
+      <view v-if="data.totalReplies > data.replies.length" class="text-#333333 text-20rpx" @click="onLoadReply">
+        展开{{ remainReplyTotal > 10 ? '10' : remainReplyTotal }}条
       </view>
     </view>
   </view>

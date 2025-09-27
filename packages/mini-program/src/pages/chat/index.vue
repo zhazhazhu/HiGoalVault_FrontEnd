@@ -126,8 +126,6 @@ onShareAppMessage(async ({ from }) => {
 
 <template>
   <Layout v-model="showSidebar" @change-chat="refreshMessage" @tap="currentToolMessageId = null">
-    <share-popup v-model="share.isChecked" />
-
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">
       <template #title>
         <tabs @tab-change="onTabChange($event as any)">
@@ -153,6 +151,8 @@ onShareAppMessage(async ({ from }) => {
         @scrolltolower="loadMessage"
       >
         <view :class="cs.m('wrapper')" class="px-32rpx w-full">
+          <share-popup v-model="share.isChecked" />
+
           <MessageCard v-for="item in chatStore.messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
 
           <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">

@@ -9,6 +9,8 @@ import type {
   ChatWithPage,
   CommentListRequest,
   CommentListResponse,
+  CommentResponse,
+  CommentResponseRequired,
   FollowUserRequest,
   GlobalSearchRequest,
   GlobalSearchResultResponse,
@@ -17,6 +19,8 @@ import type {
   PublishMessageListResponse,
   PublishMessageListResponseWithPage,
   PublishMessageRequest,
+  ReplyListRequest,
+  ReplyListResponse,
   ShareMessageRequest,
   UpdateChat,
   UserInfo,
@@ -102,7 +106,7 @@ function followUser(query: FollowUserRequest) {
 }
 
 function addComment(query: AddCommentRequest) {
-  return http(API.ADD_COMMENT).post<boolean>(query)
+  return http(API.ADD_COMMENT).post<CommentResponseRequired>(query)
 }
 
 function getCommentList(query: CommentListRequest) {
@@ -114,11 +118,15 @@ function globalSearch(query: GlobalSearchRequest) {
 }
 
 function addCommentReply(query: AddCommentReplyRequest) {
-  return http(API.ADD_COMMENT_REPLY).post<boolean>(query)
+  return http(API.ADD_COMMENT_REPLY).post<CommentResponseRequired>(query)
 }
 
 function getFollowingPublishMessageList(query) {
   return http(API.GET_FOLLOWING_PUBLISH_MESSAGE_LIST).post<PublishMessageListResponseWithPage>(query)
+}
+
+function getCommentRepliesList(query: ReplyListRequest) {
+  return http(API.GET_REPLIES_LIST).post<ReplyListResponse>(query)
 }
 
 // 创建 API 实例对象，保持向后兼容
@@ -143,4 +151,5 @@ export const api = {
   globalSearch,
   addCommentReply,
   getFollowingPublishMessageList,
+  getCommentRepliesList,
 }

@@ -17,6 +17,7 @@ export enum API {
   FOLLOW_USER = '/buyer/member/my/follow',
   ADD_COMMENT = '/buyer/content/comment/addComment/withFiles',
   GET_COMMENT_LIST = '/buyer/content/comment/comments/getCommentWithRepliesByPage',
+  GET_REPLIES_LIST = '/buyer/content/comment/reply/getCommentRepliesByPage',
   GLOBAL_SEARCH = '/buyer/search/processGlobalSearch',
   ADD_COMMENT_REPLY = '/buyer/content/comment/reply/add',
   GET_FOLLOWING_PUBLISH_MESSAGE_LIST = '/buyer/member/my/content/following-combined/getCombinedContentByPage',
