@@ -6,6 +6,18 @@ import Wave from './Wave.vue'
 const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null
 }>()
+// APPID 1308154027
+// SECRET AKIDu25CIJCwX2SlsnV5TgmpjSzJRbdWCl8N
+// const qCloudAIVoice = requirePlugin('QCloudAIVoice')
+// const speechRecognizerManager = qCloudAIVoice.speechRecognizerManager()
+
+// speechRecognizerManager.start({
+//   secretkey: 'your-secretkey',
+//   secretid: 'AKIDu25CIJCwX2SlsnV5TgmpjSzJRbdWCl8N',
+//   appid: '1308154027',
+//   engine_model_type: '16k_zh',
+//   voice_format: 8,
+// })
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('record')
 const record = uni.getRecorderManager()

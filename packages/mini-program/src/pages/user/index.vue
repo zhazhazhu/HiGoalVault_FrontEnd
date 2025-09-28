@@ -1,31 +1,55 @@
 <script lang='ts' setup>
-import type { ProfileStatistics, PublishMessageListResponse } from '@/api'
+import type { AnswerBefore, Page, ProfileStatistics, PublishMessageListResponse } from '@/api'
+import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { api } from '@/api'
+import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
+import MessageList from './message-list.vue'
 
 const cs = useClassesName('user')
 const userStore = useUserStore()
-const activeTab = ref('publish')
+const activeTab = ref<'published' | 'commented' | 'interacted'>('interacted')
 const data = ref<ProfileStatistics>({} as ProfileStatistics)
 const publishList = ref<PublishMessageListResponse[]>([])
+const commentedContentList = ref<PublishMessageListResponse[]>([])
 const isLoading = ref(false)
 const isFinish = ref(false)
+const [page, resetPage] = useResetRef<Page>({
+  pageNumber: 1,
+  pageSize: 10,
+})
+const interactActiveTab = ref<'liked' | 'collected'>('liked')
+const interactedLikedContent = ref<{ total: number, data: PublishMessageListResponse[] }>({
+  total: 0,
+  data: [],
+})
+const interactedCollectedContent = ref<{ total: number, data: AnswerBefore[] }>({
+  total: 0,
+  data: [],
+})
+const userId = ref<string>('')
 
 async function getData() {
-  const res = await api.getProfileStatistics(userStore.userInfo!.id)
+  const res = await api.getProfileStatistics(userId.value || userStore.userInfo!.id)
   if (res.code === 200) {
     data.value = res.result
   }
 }
 
 watch(() => activeTab.value, (val) => {
+  resetPage()
   switch (val) {
-    case 'publish':
+    case 'published':
       getPublishList()
       break
-    case 'like':
+    case 'commented':
+      getCommentedContentList()
+      break
+    case 'interacted':
+      getInteractedLikedContentList()
+      getInteractedCollectedContentList()
       break
   }
 }, { immediate: true })
@@ -34,6 +58,7 @@ async function getPublishList() {
   isLoading.value = true
   const res = await api.getPublishList({
     authorId: userStore.userInfo!.id,
+    ...page.value,
   })
   if (res.code === 200) {
     publishList.value = res.result.records
@@ -42,11 +67,56 @@ async function getPublishList() {
   }
 }
 
+async function getCommentedContentList() {
+  isLoading.value = true
+  const res = await api.getCommentedContentList({
+    ...page.value,
+  })
+  if (res.code === 200) {
+    commentedContentList.value = res.result.records
+    isLoading.value = false
+    isFinish.value = res.result.records.length <= res.result.size
+  }
+}
+async function getInteractedLikedContentList() {
+  isLoading.value = true
+  const res = await api.getInteractedLikedContentList({
+    ...page.value,
+  })
+  if (res.code === 200) {
+    interactedLikedContent.value = {
+      total: res.result.total,
+      data: res.result.records,
+    }
+    isLoading.value = false
+    isFinish.value = res.result.records.length <= res.result.size
+  }
+}
+async function getInteractedCollectedContentList() {
+  isLoading.value = true
+  const res = await api.getInteractedCollectedContentList({
+    ...page.value,
+    userId: userStore.userInfo!.id,
+  })
+  if (res.code === 200) {
+    interactedCollectedContent.value = {
+      total: res.result.total,
+      data: res.result.records,
+    }
+    isLoading.value = false
+    isFinish.value = res.result.records.length <= res.result.size
+  }
+}
+function onClickInteractTab(tab: 'liked' | 'collected') {
+  interactActiveTab.value = tab
+}
+
 function gotoHome() {
   uni.redirectTo({ url: '/pages/index/index' })
 }
 
-onMounted(() => {
+onLoad((options) => {
+  userId.value = options?.id
   getData()
 })
 </script>
@@ -114,14 +184,26 @@ onMounted(() => {
               <view class="user-message-icon" />
             </view>
           </template>
-          <tabs-item name="publish" :label="`发布${data?.contentCount || 0}`">
+          <tabs-item name="published" :label="`发布${data?.contentCount || 0}`">
             <ViewList :data="publishList" :is-loading="isLoading" :is-finish="isFinish" />
           </tabs-item>
-          <tabs-item name="comment" label="评论过">
-            评论过
+          <tabs-item v-if="!userId" name="commented" label="评论过">
+            <ViewList :data="commentedContentList" :is-loading="isLoading" :is-finish="isFinish" />
           </tabs-item>
-          <tabs-item name="interact" label="互动过">
-            互动过
+          <tabs-item v-if="!userId" name="interacted" label="互动过">
+            <view>
+              <view class="flex flex-wrap gap-12rpx mb-20rpx">
+                <Tag type="warning" :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
+                  赞过99
+                </Tag>
+                <Tag type="warning" :active="interactActiveTab === 'collected'" @tap="onClickInteractTab('collected')">
+                  收藏99
+                </Tag>
+              </view>
+
+              <ViewList v-if="interactActiveTab === 'liked'" :data="interactedLikedContent.data" :is-loading="isLoading" :is-finish="isFinish" />
+              <MessageList v-else :data="interactedCollectedContent.data" :is-loading="isLoading" :is-finish="isFinish" />
+            </view>
           </tabs-item>
         </tabs>
       </view>
@@ -129,4 +211,4 @@ onMounted(() => {
   </view>
 </template>
 
-<style lang='css' scoped></style>
+<style lang='scss' scoped></style>

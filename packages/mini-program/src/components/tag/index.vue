@@ -1,12 +1,20 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
 
-const props = defineProps<{ customClass?: string }>()
+const props = withDefaults(defineProps<{
+  customClass?: string
+  type?: 'primary' | 'warning'
+  size?: 'large' | 'default' | 'small'
+}>(), {
+  type: 'primary',
+  size: 'default',
+})
+const model = defineModel('active', { type: Boolean, default: false })
 const cs = useClassesName('tag')
 </script>
 
 <template>
-  <view :class="[cs.m('container'), props.customClass]">
+  <view :class="[cs.m('container'), props.customClass, cs.m(props.type), cs.is('active', model), cs.m(props.size)]">
     <slot />
   </view>
 </template>
@@ -14,14 +22,35 @@ const cs = useClassesName('tag')
 <style lang='scss' scoped>
 .hi-tag--container {
   width: auto;
-  height: 24rpx;
-  background: #66666614;
-  border-radius: 4rpx;
-  padding: 10rpx 16rpx;
+  border-radius: 8rpx;
+  padding: 10rpx 22rpx;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 18rpx;
-  color: var(--hi-primary-color);
+  font-weight: 400;
+  &.hi-tag--large {
+    font-size: 26rpx;
+    height: 42rpx;
+  }
+  &.hi-tag--default {
+    font-size: 24rpx;
+    height: 36rpx;
+  }
+  &.hi-tag--small {
+    font-size: 18rpx;
+    height: 26rpx;
+  }
+  &.hi-tag--primary {
+    background: #66666614;
+    color: var(--hi-primary-color);
+  }
+  &.hi-tag--warning {
+    background: #ff950014;
+    color: #666666;
+    &.is-active {
+      background: #ff950033;
+      color: #121212;
+    }
+  }
 }
 </style>

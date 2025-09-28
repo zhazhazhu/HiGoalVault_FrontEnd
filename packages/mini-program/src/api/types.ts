@@ -268,3 +268,11 @@ export interface ProfileStatistics {
 export interface PublishListRequest extends Page {
   authorId?: string
 }
+
+export interface InteractedContentListRequest extends Page {
+  userId: string
+}
+
+export interface InteractedContentListResponse extends PageResult {
+  records: AnswerBefore[]
+}

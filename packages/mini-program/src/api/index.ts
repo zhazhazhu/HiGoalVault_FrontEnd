@@ -13,7 +13,10 @@ import type {
   FollowUserRequest,
   GlobalSearchRequest,
   GlobalSearchResultResponse,
+  InteractedContentListRequest,
+  InteractedContentListResponse,
   LoginResult,
+  Page,
   ProfileStatistics,
   PublishListRequest,
   PublishMessageListRequest,
@@ -140,6 +143,21 @@ function getPublishList(query: PublishListRequest) {
   return http(API.GET_PUBLISH_CONTENT_LIST).post<PublishMessageListResponseWithPage>(query)
 }
 
+// 获取评论过的内容列表
+function getCommentedContentList(query: Page) {
+  return http(API.GET_COMMENTED_CONTENT_LIST).post<PublishMessageListResponseWithPage>(query)
+}
+
+// 获取互动过的内容列表
+function getInteractedLikedContentList(query: Page) {
+  return http(API.GET_INTERACTED_LIKED_CONTENT_LIST).post<PublishMessageListResponseWithPage>(query)
+}
+
+// 获取收藏过的内容列表
+function getInteractedCollectedContentList(query: InteractedContentListRequest) {
+  return http(API.GET_INTERACTED_COLLECTED_CONTENT_LIST).post<InteractedContentListResponse>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -165,4 +183,7 @@ export const api = {
   getCommentRepliesList,
   getProfileStatistics,
   getPublishList,
+  getCommentedContentList,
+  getInteractedLikedContentList,
+  getInteractedCollectedContentList,
 }

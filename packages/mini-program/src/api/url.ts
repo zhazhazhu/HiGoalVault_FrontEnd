@@ -24,4 +24,6 @@ export enum API {
   GET_PROFILE_STATISTICS = '/buyer/member/profile/statistics',
   GET_PUBLISH_CONTENT_LIST = '/buyer/content/publish/getByPage',
   GET_COMMENTED_CONTENT_LIST = '/buyer/content/comment/content/commented/getMyCommentedContentByPage',
+  GET_INTERACTED_LIKED_CONTENT_LIST = '/buyer/member/my/content/interacted/getMyInteractedContentByPage',
+  GET_INTERACTED_COLLECTED_CONTENT_LIST = '/buyer/chat/chatQueryCollect/getChatQueryCollectVOByPage',
 }

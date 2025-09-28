@@ -35,8 +35,9 @@ const cs = useClassesName('view-card')
       <wd-text :text="data.title" color="#121212" size="32rpx" bold />
     </view>
 
-    <view class="flex gap-20rpx">
-      <Tag v-for="item in data?.tags" :key="item.id">
+    <!-- 标签区域 - 超出一行隐藏 -->
+    <view class="flex gap-20rpx overflow-hidden">
+      <Tag v-for="item in data?.tags" :key="item.id" class="flex-shrink-0">
         #{{ item.tagName }}
       </Tag>
     </view>
