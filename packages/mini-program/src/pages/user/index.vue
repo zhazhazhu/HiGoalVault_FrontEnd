@@ -182,8 +182,8 @@ onLoad((options) => {
     <Navbar enable-left-slot>
       <template #left>
         <view class="flex items-center gap-20rpx" @click="gotoHome">
-          <wd-icon name="thin-arrow-left" size="16px" />
-          <wd-icon name="home" size="22px" />
+          <view class="i-material-symbols-arrow-back-ios-new-rounded text-44rpx" />
+          <view class="i-material-symbols-home-outline-rounded text-46rpx" />
         </view>
       </template>
     </Navbar>

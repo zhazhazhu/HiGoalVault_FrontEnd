@@ -41,7 +41,10 @@ function openPrivacyPolicy() {
 
     <Navbar enable-left-slot>
       <template #left>
-        <wd-icon name="arrow-left" size="22px" @click="gotoHome" />
+        <view class="flex items-center gap-20rpx" @click="gotoHome">
+          <view class="i-material-symbols-arrow-back-ios-new-rounded text-44rpx" />
+          <view class="i-material-symbols-home-outline-rounded text-46rpx" />
+        </view>
       </template>
     </Navbar>
 
