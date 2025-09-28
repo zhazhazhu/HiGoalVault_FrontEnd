@@ -150,7 +150,8 @@ export interface PublishMessageListResponse {
   memberId: string // 发布人id
   face: string // 发布人头像
   tags: Array<{ id: string, tagName: string }>
-  chatQueryAnswerVO: AnswerBefore
+  chatQueryAnswerVO: AnswerBefore // 问题回答
+  isFollowed: boolean // 是否关注
 }
 
 export interface PublishMessageListResponseWithPage extends PageResult {

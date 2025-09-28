@@ -2,6 +2,7 @@
 import type { PublishMessageListResponse } from '@/api'
 import { useUUID } from '@higoal/hooks'
 import dayjs from 'dayjs'
+import { onMounted } from 'vue'
 import { api } from '@/api'
 import { useChatStore, useUserStore } from '@/store'
 
@@ -12,10 +13,16 @@ const props = defineProps<{
 const userStore = useUserStore()
 const chatStore = useChatStore()
 
-async function onFollowUser() {
-  const res = await api.followUser({ followAction: true, followeeId: props.data!.memberId, followerId: userStore.userInfo!.id })
+async function checkFollowUser() {
+  const res = await api.checkFollowUser(props.data!.memberId)
   if (res.code === 200) {
-    console.log(res)
+    props.data!.isFollowed = res.result
+  }
+}
+async function onFollowUser(followAction: 'follow' | 'unfollow') {
+  const res = await api.followUser({ followAction: followAction === 'follow', followeeId: props.data!.memberId, followerId: userStore.userInfo!.id })
+  if (res.code === 200) {
+    props.data!.isFollowed = followAction === 'follow'
   }
 }
 async function onContinueTalk() {
@@ -31,6 +38,10 @@ async function onContinueTalk() {
   }
   uni.redirectTo({ url: '/pages/chat/index' })
 }
+
+onMounted(() => {
+  checkFollowUser()
+})
 </script>
 
 <template>
@@ -39,7 +50,7 @@ async function onContinueTalk() {
       <view class="flex-1 truncate">
         <wd-text :text="data?.title" color="#121212" size="32rpx" bold />
       </view>
-      <wd-button type="primary" plain size="small" @click="onContinueTalk">
+      <wd-button type="success" plain size="small" @click="onContinueTalk">
         继续提问
       </wd-button>
     </view>
@@ -52,9 +63,14 @@ async function onContinueTalk() {
         </text>
       </view>
 
-      <wd-button v-if="data?.memberId !== userStore.userInfo?.id" icon="add" size="small" @click="onFollowUser">
-        关注
-      </wd-button>
+      <template v-if="data?.memberId !== userStore.userInfo?.id">
+        <wd-button v-if="!data?.isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
+          关注
+        </wd-button>
+        <wd-button v-else plain size="small" @click="onFollowUser('unfollow')">
+          取消关注
+        </wd-button>
+      </template>
     </view>
 
     <view class="text-26rpx color-#666 word-wrap font-500">

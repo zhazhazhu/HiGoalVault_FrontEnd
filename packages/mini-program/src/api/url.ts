@@ -30,4 +30,5 @@ export enum API {
   THUMBS_UP_CONTENT = '/buyer/content/like/likeContent',
   THUMBS_UP_CONTENT_COMMENT = '/buyer/content/comment/like/likeComment',
   THUMBS_UP_CONTENT_REPLY = '/buyer/content/comment/reply/like/likeReply',
+  CHECK_FOLLOW_USER = '/buyer/member/my/follow/check',
 }

@@ -181,6 +181,11 @@ function thumbsUpReply(query: LikeReplyRequest) {
   return http(API.THUMBS_UP_CONTENT_REPLY).post<boolean>(query)
 }
 
+// 检查关注用户
+function checkFollowUser(followeeId: string) {
+  return http(`${API.CHECK_FOLLOW_USER}?followeeId=${followeeId}`).get<boolean>()
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -213,4 +218,5 @@ export const api = {
   thumbsUp,
   thumbsUpComment,
   thumbsUpReply,
+  checkFollowUser,
 }
