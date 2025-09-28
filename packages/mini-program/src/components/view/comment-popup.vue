@@ -180,13 +180,6 @@ function onReplyReply(reply: ReplyResponse, index: number) {
   }
   isFocus.value = true
 }
-async function onLoadRely(comment: CommentResponse['comment'], index: number) {
-  const res = await api.getCommentRepliesList({ commentId: comment.id })
-  if (res.code === 200) {
-    data.value[index].totalReplies = res.result.total
-    data.value[index].replies.push(...res.result.records)
-  }
-}
 function resetComment() {
   currentOperating.value = null
   commentContent.value = ''
@@ -234,7 +227,7 @@ onMounted(() => {
         class="max-h-800rpx overflow-y-auto pb-20rpx gap-20rpx py-30rpx"
         @scrolltolower="load"
       >
-        <view-comment-card v-for="item, index in data" :key="item.comment.id" :data="item" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" @load-rely="onLoadRely($event, index)" />
+        <view-comment-card v-for="item, index in data" :key="item.comment.id" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
 
         <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
           <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />

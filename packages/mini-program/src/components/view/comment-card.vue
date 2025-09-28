@@ -1,25 +1,39 @@
 <script lang='ts' setup>
-import type { CommentResponse, ReplyResponse } from '@/api'
-import { computed } from 'vue'
+import type { CommentResponse, Page, ReplyResponse } from '@/api'
+import { computed, onMounted } from 'vue'
+import { api } from '@/api'
+import { useResetRef } from '@/composables/useResetRef'
 import { formatCommentDate } from '@/utils'
-
-const props = defineProps<{ data: CommentResponse }>()
 
 const emit = defineEmits<{
   (e: 'replyComment', comment: CommentResponse['comment']): void
-  (e: 'loadRely', comment: CommentResponse['comment']): void
   (e: 'replyReply', reply: ReplyResponse): void
 }>()
 
-const remainReplyTotal = computed(() => props.data.totalReplies - props.data.replies.length)
+const data = defineModel('data', { type: Object as () => CommentResponse, required: true })
 
-function onLoadReply() {
-  emit('loadRely', props.data.comment)
+const remainReplyTotal = computed(() => data.value.totalReplies - data.value.replies.length)
+const [page, reset] = useResetRef<Page>({
+  pageNumber: 2,
+  pageSize: 10,
+  sort: 'createTime',
+})
+
+async function onLoadReply(comment: CommentResponse['comment']) {
+  const res = await api.getCommentRepliesList({ commentId: comment.id, ...page.value })
+  if (res.code === 200) {
+    data.value.totalReplies = res.result.total
+    data.value.replies.push(...res.result.records)
+  }
 }
 
 function onReply(reply: ReplyResponse) {
   emit('replyReply', reply)
 }
+
+onMounted(() => {
+  reset()
+})
 </script>
 
 <template>
@@ -56,7 +70,7 @@ function onReply(reply: ReplyResponse) {
     <view v-if="data.totalReplies > 0" class="bg-#F1F1F1 rounded-14rpx p-26rpx flex flex-col gap-40rpx">
       <ViewReplyCard v-for="item in data.replies" :key="item.id" :data="item" :comment="data.comment" @reply-click="onReply" />
 
-      <view v-if="data.totalReplies > data.replies.length" class="text-#333333 text-20rpx" @click="onLoadReply">
+      <view v-if="data.totalReplies > data.replies.length" class="text-#333333 text-20rpx" @click="onLoadReply(data.comment)">
         展开{{ remainReplyTotal > 10 ? '10' : remainReplyTotal }}条
       </view>
     </view>
