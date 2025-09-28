@@ -7,6 +7,7 @@ const { theme, themeVars } = useTheme({
   buttonMediumRadius: '4px',
   buttonLargeRadius: '4px',
   actionSheetRadius: '20px',
+  colorSuccess: '#4e92de',
 })
 </script>
 
