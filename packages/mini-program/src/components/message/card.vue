@@ -144,6 +144,8 @@ function onMessageToolOperate(type: MessageToolOperateType) {
 
         <message-response-card :data="currentAnswer" @longpress="openTooltips" />
 
+        <view v-show="currentAnswer.isLoading" class="i-eos-icons-three-dots-loading text-100rpx color-[var(--hi-primary-color)]" />
+
         <view v-show="!messageInject.share.value.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
           <view class="refresh-icon size-30px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />

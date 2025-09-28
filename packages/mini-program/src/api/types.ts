@@ -62,6 +62,7 @@ export interface AnswerBefore {
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
   reference: ChatMessageReference[]
   data: ChatMessageStockData // 股票图数据
+  isLoading: boolean // 是否正在加载中
 }
 
 export interface ChatMessageAfter extends Omit<ChatMessageBefore, 'chatQueryAnswerList'> {

@@ -38,6 +38,7 @@ websocketStore.receiveMessage((data) => {
   if (!currentMessage)
     return
 
+  currentMessage.isLoading = true
   if (data.code === '200') {
     data.data?.response && (currentMessage.response += data.data?.response)
     data.data?.message && (currentMessage.message += data.data?.message)
@@ -45,6 +46,7 @@ websocketStore.receiveMessage((data) => {
     scrollToTop()
   }
   if (data.type === 'stream-end') {
+    currentMessage.isLoading = false
     // 清空当前runId
     chatStore.currentRunId = ''
     chatStore.isReplying = false

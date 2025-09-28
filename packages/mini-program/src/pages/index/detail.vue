@@ -37,6 +37,7 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
     ...message,
     reference,
     data,
+    isLoading: false,
   }
 }
 function gotoBack() {
