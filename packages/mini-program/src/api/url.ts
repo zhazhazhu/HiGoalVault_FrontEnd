@@ -28,4 +28,6 @@ export enum API {
   GET_INTERACTED_LIKED_CONTENT_LIST = '/buyer/member/my/content/interacted/getMyInteractedContentByPage',
   GET_INTERACTED_COLLECTED_CONTENT_LIST = '/buyer/chat/chatQueryCollect/getChatQueryCollectVOByPage',
   THUMBS_UP_CONTENT = '/buyer/content/like/likeContent',
+  THUMBS_UP_CONTENT_COMMENT = '/buyer/content/comment/like/likeComment',
+  THUMBS_UP_CONTENT_REPLY = '/buyer/content/comment/reply/like/likeReply',
 }

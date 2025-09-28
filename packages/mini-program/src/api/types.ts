@@ -281,3 +281,13 @@ export interface LikeContentRequest {
   contentId: string
   likeAction: boolean // 操作类型：true-点赞，false-取消点赞
 }
+
+export interface LikeCommentRequest {
+  commentId: string
+  likeAction: boolean // 操作类型：true-点赞，false-取消点赞
+}
+
+export interface LikeReplyRequest {
+  replyId: string
+  likeAction: boolean // 操作类型：true-点赞，false-取消点赞
+}

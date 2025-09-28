@@ -1,17 +1,24 @@
 <script lang='ts' setup>
 import type { CommentResponse, ReplyResponse } from '@/api'
+import { api } from '@/api'
 import { formatCommentDate } from '@/utils'
 
 defineProps<{
-  data: ReplyResponse
   comment: CommentResponse['comment']
 }>()
 const emit = defineEmits<{
   (e: 'replyClick', data: ReplyResponse): void
 }>()
-
+const data = defineModel('data', { type: Object as () => ReplyResponse, required: true })
 function onReplyClick(data: ReplyResponse) {
   emit('replyClick', data)
+}
+async function onLikeReply(data: ReplyResponse) {
+  const res = await api.thumbsUpReply({ replyId: data.id, likeAction: !data.isLike })
+  if (res.code === 200) {
+    data.isLike = !data.isLike
+    data.likeCount = data.isLike ? data.likeCount + 1 : data.likeCount - 1
+  }
 }
 </script>
 
@@ -44,7 +51,7 @@ function onReplyClick(data: ReplyResponse) {
           回复
         </view>
       </view>
-      <view class="flex items-center gap-6rpx color-#666">
+      <view class="flex items-center gap-6rpx color-#666" @click="onLikeReply(data)">
         <view class="thumb-up-icon size-42rpx" :class="{ 'color-red': data.isLike }" />
         <view>{{ data.likeCount }}</view>
       </view>

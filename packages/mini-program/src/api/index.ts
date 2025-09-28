@@ -15,7 +15,9 @@ import type {
   GlobalSearchResultResponse,
   InteractedContentListRequest,
   InteractedContentListResponse,
+  LikeCommentRequest,
   LikeContentRequest,
+  LikeReplyRequest,
   LoginResult,
   Page,
   ProfileStatistics,
@@ -169,6 +171,16 @@ function thumbsUp(query: LikeContentRequest) {
   return http(API.THUMBS_UP_CONTENT).post<boolean>(query)
 }
 
+// 点赞评论
+function thumbsUpComment(query: LikeCommentRequest) {
+  return http(API.THUMBS_UP_CONTENT_COMMENT).post<boolean>(query)
+}
+
+// 点赞回复
+function thumbsUpReply(query: LikeReplyRequest) {
+  return http(API.THUMBS_UP_CONTENT_REPLY).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -199,4 +211,6 @@ export const api = {
   getInteractedCollectedContentList,
   cancelCollect,
   thumbsUp,
+  thumbsUpComment,
+  thumbsUpReply,
 }

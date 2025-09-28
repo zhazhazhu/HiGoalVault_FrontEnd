@@ -26,6 +26,13 @@ async function onLoadReply(comment: CommentResponse['comment']) {
     data.value.replies.push(...res.result.records)
   }
 }
+async function onLikeComment(comment: CommentResponse['comment']) {
+  const res = await api.thumbsUpComment({ commentId: comment.id, likeAction: !comment.isLike })
+  if (res.code === 200) {
+    comment.isLike = !comment.isLike
+    comment.likeCount = comment.isLike ? comment.likeCount + 1 : comment.likeCount - 1
+  }
+}
 
 function onReply(reply: ReplyResponse) {
   emit('replyReply', reply)
@@ -60,7 +67,7 @@ onMounted(() => {
           </view>
         </view>
 
-        <view class="flex items-center gap-6rpx color-#666">
+        <view class="flex items-center gap-6rpx color-#666" @click="onLikeComment(data.comment)">
           <view class="thumb-up-icon size-42rpx" :class="{ 'color-red': data.comment.isLike }" />
           <view>{{ data.comment.likeCount }}</view>
         </view>
@@ -68,7 +75,7 @@ onMounted(() => {
     </view>
 
     <view v-if="data.totalReplies > 0" class="bg-#F1F1F1 rounded-14rpx p-26rpx flex flex-col gap-40rpx">
-      <ViewReplyCard v-for="item in data.replies" :key="item.id" :data="item" :comment="data.comment" @reply-click="onReply" />
+      <ViewReplyCard v-for="item, index in data.replies" :key="item.id" :data="item" :comment="data.comment" @update:data="(val) => data.replies[index] = val" @reply-click="onReply" />
 
       <view v-if="data.totalReplies > data.replies.length" class="text-#333333 text-20rpx" @click="onLoadReply(data.comment)">
         展开{{ remainReplyTotal > 10 ? '10' : remainReplyTotal }}条
