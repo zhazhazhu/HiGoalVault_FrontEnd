@@ -2,6 +2,7 @@
 @use '@/static/converse/index.scss' as *;
 @use '@/static/navbar/index.scss' as *;
 @use '@/static/home/index.scss' as *;
+@use '@/static/user/index.scss' as *;
 
 view,
 :before,
@@ -134,4 +135,11 @@ page {
   color: #9ca3af;
   font-size: 14px;
   line-height: 24px;
+}
+
+.hi-user--tabs {
+}
+
+.hi-user--tab-nav .hi-tab-nav--left {
+  gap: 70rpx !important;
 }

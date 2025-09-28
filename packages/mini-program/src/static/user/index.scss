@@ -1,0 +1,22 @@
+// User SVG Icons
+.user-search-icon {
+  background-color: #333;
+  -webkit-mask-image: url('/static/user/svg/icon-search.svg');
+  mask-image: url('/static/user/svg/icon-search.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.user-message-icon {
+  background-color: #333;
+  -webkit-mask-image: url('/static/user/svg/icon-message.svg');
+  mask-image: url('/static/user/svg/icon-message.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}
