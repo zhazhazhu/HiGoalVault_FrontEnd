@@ -41,7 +41,7 @@ function openPrivacyPolicy() {
 
     <Navbar enable-left-slot>
       <template #left>
-        <wd-icon name="home" size="22px" @click="gotoHome" />
+        <wd-icon name="arrow-left" size="22px" @click="gotoHome" />
       </template>
     </Navbar>
 

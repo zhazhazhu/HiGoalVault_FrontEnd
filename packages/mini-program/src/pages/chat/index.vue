@@ -130,7 +130,7 @@ onShareAppMessage(async ({ from }) => {
       <template #title>
         <tabs @tab-change="onTabChange($event as any)">
           <tabs-item :name="0" label="黑狗" />
-          <tabs-item :name="1" label="关注" />
+          <tabs-item :name="1" label="发现" />
         </tabs>
       </template>
     </navbar>
