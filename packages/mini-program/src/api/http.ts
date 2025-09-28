@@ -32,9 +32,16 @@ function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: La
       data,
       ...options,
       success(res) {
+        if (res.statusCode === 400) {
+          uni.showToast({
+            title: String((res.data as any).message || '请求失败'),
+            icon: 'none',
+          })
+        }
         resolve(res.data as any)
       },
       fail(err) {
+        console.log('request', err)
         reject(err)
       },
     })
