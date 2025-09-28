@@ -4,6 +4,7 @@ import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { useUserStore } from '@/store'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const cs = useClassesName('detail')
@@ -11,6 +12,7 @@ const isFocus = ref(false)
 const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
 const commentVisible = ref(false)
+const userStore = useUserStore()
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
@@ -48,6 +50,19 @@ async function onConfirm() {
 }
 function openCommentPopup() {
   commentVisible.value = true
+}
+async function onThumbsUp() {
+  if (!userStore.isLogin) {
+    return
+  }
+  const res = await api.thumbsUp({
+    contentId: data.value!.id,
+    likeAction: !data.value!.isLiked,
+  })
+  if (res.code === 200) {
+    data.value!.isLiked = !data.value!.isLiked
+    data.value!.likeCount = data.value!.isLiked ? data.value!.likeCount + 1 : data.value!.likeCount - 1
+  }
 }
 
 onShareAppMessage(() => {
@@ -118,8 +133,8 @@ onLoad((options) => {
               {{ data?.commentCount }}
             </text>
           </view>
-          <view class="flex flex-col items-center">
-            <view class="thumb-up-icon size-60rpx" />
+          <view class="flex flex-col items-center" @click="onThumbsUp">
+            <view class="thumb-up-icon size-60rpx" :class="{ 'bg-red': data?.isLiked }" />
             <text class="text-22rpx color-gray-6 font-bold">
               {{ data?.likeCount }}
             </text>

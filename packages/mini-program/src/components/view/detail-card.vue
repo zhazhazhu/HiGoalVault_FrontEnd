@@ -57,11 +57,11 @@ async function onContinueTalk() {
       </wd-button>
     </view>
 
-    <view class="text-26rpx color-#666 word-wrap">
+    <view class="text-26rpx color-#666 word-wrap font-500">
       <text>{{ data?.content }}</text>
     </view>
 
-    <view>
+    <view class="flex flex-wrap gap-20rpx">
       <Tag v-for="item in data?.tags" :key="item.id" custom-class="mr-20rpx">
         #{{ item.tagName }}
       </Tag>

@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
 import { useClassesName } from '@higoal/hooks'
-import dayjs from 'dayjs'
 import { api } from '@/api'
 import { useUserStore } from '@/store'
+import { formatCommentDate } from '@/utils'
 
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
@@ -35,12 +35,12 @@ async function onThumbsUp() {
       </view>
 
       <view>
-        {{ dayjs(data.createTime).format('YY/MM/DD') }}
+        {{ formatCommentDate(data.createTime) }}
       </view>
     </view>
 
     <view :class="cs.m('content')">
-      <view class="text-26rpx color-#333 word-wrap">
+      <view class="text-26rpx color-#333 word-wrap font-500">
         {{ data.content }}
       </view>
     </view>
