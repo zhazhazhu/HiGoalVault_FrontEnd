@@ -14,7 +14,7 @@ const data = ref<PublishMessageListResponse[]>([])
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
-  sort: 'createTime',
+  sort: '',
   keyWord: latestSearchText.value,
 })
 
@@ -25,7 +25,7 @@ watch(latestSearchText, (val) => {
 })
 
 async function getData() {
-  const res = await api.globalSearch({ ...page.value }).finally(() => {
+  const res = await api.globalSearch({ ...page.value, searchSort: 'HOT' }).finally(() => {
     isLoading.value = false
   })
   if (res.code === 200) {
