@@ -234,6 +234,7 @@ export interface ReplyResponse {
 
 export interface GlobalSearchRequest extends Page {
   userId?: string
+  searchSort: 'SMART' | 'LAST' | 'HOT'
 }
 
 export interface GlobalSearchResultResponse extends PageResult {

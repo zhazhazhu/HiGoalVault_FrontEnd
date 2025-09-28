@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { AnswerBefore, Page, ProfileStatistics, PublishMessageListResponse } from '@/api'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref, watch } from 'vue'
 import { api, Truth } from '@/api'
@@ -139,6 +139,21 @@ function onClickInteractTab(tab: 'liked' | 'collected') {
 function gotoHome() {
   uni.redirectTo({ url: '/pages/index/index' })
 }
+
+onShareAppMessage(({ target, from }) => {
+  if (from === 'button') {
+    return {
+      title: '快来看看我聊了啥～',
+      path: `/pages/chat/index?id=${target.dataset.id}`,
+    }
+  }
+  else {
+    return {
+      title: '快来看看我聊了啥～',
+      path: '/pages/chat/index',
+    }
+  }
+})
 
 onLoad((options) => {
   userId.value = options?.id

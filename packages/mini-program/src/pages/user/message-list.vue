@@ -69,7 +69,9 @@ async function collect(queryId: string, index: number) {
         <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">
           {{ item.isCollected === Truth.TRUE ? '取消收藏' : '收藏' }}
         </view>
-        <view class="wechat-icon size-54rpx" />
+        <button open-type="share" class="share-btn contents" :data-id="item.queryId">
+          <view class="wechat-icon size-54rpx" />
+        </button>
       </view>
     </view>
 

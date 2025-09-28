@@ -143,3 +143,17 @@ page {
 .hi-user--tab-nav .hi-tab-nav--left {
   gap: 70rpx !important;
 }
+
+.share-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 12px;
+  &::after {
+    display: none;
+  }
+}
