@@ -252,3 +252,19 @@ export interface AddCommentReplyRequest {
   parentReplyId?: string // 父回复ID（对回复进行回复时使用）
   replyToUserId?: string //	被回复用户ID
 }
+
+export interface ProfileStatistics {
+  contentCount: number // 发布内容数量
+  followerCount: number // 粉丝数量
+  followingCount: number // 关注数量
+  followingTagCount: number // 关注标签数量
+  statisticsTime: string // 统计时间
+  totalCommentCount: number // 总评论数量
+  totalLikeCount: number // 总点赞数量
+  totalShareCount: number // 总分享数量
+  totalViewCount: number // 总阅读数量
+}
+
+export interface PublishListRequest extends Page {
+  authorId?: string
+}

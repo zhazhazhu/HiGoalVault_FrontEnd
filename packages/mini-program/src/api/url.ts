@@ -21,4 +21,7 @@ export enum API {
   GLOBAL_SEARCH = '/buyer/search/processGlobalSearch',
   ADD_COMMENT_REPLY = '/buyer/content/comment/reply/add',
   GET_FOLLOWING_PUBLISH_MESSAGE_LIST = '/buyer/member/my/content/following-combined/getCombinedContentByPage',
+  GET_PROFILE_STATISTICS = '/buyer/member/profile/statistics',
+  GET_PUBLISH_CONTENT_LIST = '/buyer/content/publish/getByPage',
+  GET_COMMENTED_CONTENT_LIST = '/buyer/content/comment/content/commented/getMyCommentedContentByPage',
 }

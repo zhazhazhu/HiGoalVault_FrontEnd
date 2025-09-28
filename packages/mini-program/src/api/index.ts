@@ -14,6 +14,8 @@ import type {
   GlobalSearchRequest,
   GlobalSearchResultResponse,
   LoginResult,
+  ProfileStatistics,
+  PublishListRequest,
   PublishMessageListRequest,
   PublishMessageListResponse,
   PublishMessageListResponseWithPage,
@@ -128,6 +130,16 @@ function getCommentRepliesList(query: ReplyListRequest) {
   return http(API.GET_REPLIES_LIST).post<ReplyListResponse>(query)
 }
 
+// 获取用户统计信息
+function getProfileStatistics(authorId: string = '') {
+  return http(API.GET_PROFILE_STATISTICS).post<ProfileStatistics>({ authorId })
+}
+
+// 获取发布列表
+function getPublishList(query: PublishListRequest) {
+  return http(API.GET_PUBLISH_CONTENT_LIST).post<PublishMessageListResponseWithPage>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -151,4 +163,6 @@ export const api = {
   addCommentReply,
   getFollowingPublishMessageList,
   getCommentRepliesList,
+  getProfileStatistics,
+  getPublishList,
 }
