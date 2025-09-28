@@ -7,6 +7,7 @@ export enum API {
   GET_CHAT_LIST = '/buyer/chat/chat/getByPage',
   ADD_CHAT = '/buyer/chat/chat/add',
   ADD_COLLECT = '/buyer/chat/chatQueryCollect/add',
+  CANCEL_COLLECT = '/buyer/chat/chatQueryCollect/deleteByParams',
   UPDATE_CHAT = '/buyer/chat/chat/updateByChatId',
   DELETE_CHAT = '/buyer/chat/chat/deleteByChatId',
   ADD_PUBLISH_MESSAGE = '/buyer/content/publish/publishContentFromChatQuery',
@@ -26,4 +27,5 @@ export enum API {
   GET_COMMENTED_CONTENT_LIST = '/buyer/content/comment/content/commented/getMyCommentedContentByPage',
   GET_INTERACTED_LIKED_CONTENT_LIST = '/buyer/member/my/content/interacted/getMyInteractedContentByPage',
   GET_INTERACTED_COLLECTED_CONTENT_LIST = '/buyer/chat/chatQueryCollect/getChatQueryCollectVOByPage',
+
 }

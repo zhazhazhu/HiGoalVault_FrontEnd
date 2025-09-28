@@ -3,7 +3,7 @@ import type { AnswerBefore, Page, ProfileStatistics, PublishMessageListResponse 
 import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref, watch } from 'vue'
-import { api } from '@/api'
+import { api, Truth } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import MessageList from './message-list.vue'
@@ -37,10 +37,27 @@ async function getData() {
     data.value = res.result
   }
 }
-
-watch(() => activeTab.value, (val) => {
+function resetData() {
   resetPage()
-  switch (val) {
+  publishList.value = []
+  commentedContentList.value = []
+  interactedLikedContent.value = {
+    total: 0,
+    data: [],
+  }
+  interactedCollectedContent.value = {
+    total: 0,
+    data: [],
+  }
+}
+
+watch(() => activeTab.value, () => {
+  resetData()
+  getListData()
+}, { immediate: true })
+
+async function getListData() {
+  switch (activeTab.value) {
     case 'published':
       getPublishList()
       break
@@ -52,7 +69,15 @@ watch(() => activeTab.value, (val) => {
       getInteractedCollectedContentList()
       break
   }
-}, { immediate: true })
+}
+
+function loadData() {
+  if (isLoading.value || isFinish.value)
+    return
+  isLoading.value = true
+  page.value.pageNumber!++
+  getListData()
+}
 
 async function getPublishList() {
   isLoading.value = true
@@ -61,7 +86,7 @@ async function getPublishList() {
     ...page.value,
   })
   if (res.code === 200) {
-    publishList.value = res.result.records
+    publishList.value.push(...res.result.records)
     isLoading.value = false
     isFinish.value = res.result.records.length <= res.result.size
   }
@@ -73,7 +98,7 @@ async function getCommentedContentList() {
     ...page.value,
   })
   if (res.code === 200) {
-    commentedContentList.value = res.result.records
+    commentedContentList.value.push(...res.result.records)
     isLoading.value = false
     isFinish.value = res.result.records.length <= res.result.size
   }
@@ -86,7 +111,7 @@ async function getInteractedLikedContentList() {
   if (res.code === 200) {
     interactedLikedContent.value = {
       total: res.result.total,
-      data: res.result.records,
+      data: [...interactedLikedContent.value.data, ...res.result.records],
     }
     isLoading.value = false
     isFinish.value = res.result.records.length <= res.result.size
@@ -101,7 +126,7 @@ async function getInteractedCollectedContentList() {
   if (res.code === 200) {
     interactedCollectedContent.value = {
       total: res.result.total,
-      data: res.result.records,
+      data: [...interactedCollectedContent.value.data, ...res.result.records].map(item => ({ ...item, isCollected: Truth.TRUE })),
     }
     isLoading.value = false
     isFinish.value = res.result.records.length <= res.result.size
@@ -185,10 +210,10 @@ onLoad((options) => {
             </view>
           </template>
           <tabs-item name="published" :label="`发布${data?.contentCount || 0}`">
-            <ViewList :data="publishList" :is-loading="isLoading" :is-finish="isFinish" />
+            <ViewList :data="publishList" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
           </tabs-item>
           <tabs-item v-if="!userId" name="commented" label="评论过">
-            <ViewList :data="commentedContentList" :is-loading="isLoading" :is-finish="isFinish" />
+            <ViewList :data="commentedContentList" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
           </tabs-item>
           <tabs-item v-if="!userId" name="interacted" label="互动过">
             <view>
@@ -201,8 +226,8 @@ onLoad((options) => {
                 </Tag>
               </view>
 
-              <ViewList v-if="interactActiveTab === 'liked'" :data="interactedLikedContent.data" :is-loading="isLoading" :is-finish="isFinish" />
-              <MessageList v-else :data="interactedCollectedContent.data" :is-loading="isLoading" :is-finish="isFinish" />
+              <ViewList v-if="interactActiveTab === 'liked'" :data="interactedLikedContent.data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
+              <MessageList v-else v-model:data="interactedCollectedContent.data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
             </view>
           </tabs-item>
         </tabs>

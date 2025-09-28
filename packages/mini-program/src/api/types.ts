@@ -56,6 +56,7 @@ export interface AnswerBefore {
   response: string // 回答问题
   ts: string // 时间
   runId: string
+  isCollected: Truth // 是否已收藏
 }
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
@@ -97,8 +98,6 @@ export interface Chat {
 }
 
 export interface AddCollectRequest {
-  chatId: string
-  msgId: string
   queryId: string
 }
 

@@ -72,9 +72,7 @@ function onPublish() {
 }
 function onFavorite() {
   api.addCollect({
-    chatId: props.message.chatId,
     queryId: currentAnswer.value.queryId,
-    msgId: props.message.msgId,
   })
 }
 function openTooltips(e) {

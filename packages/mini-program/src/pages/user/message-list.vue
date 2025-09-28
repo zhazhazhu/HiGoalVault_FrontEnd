@@ -1,20 +1,21 @@
 <script lang='ts' setup>
+import type { PropType } from 'vue'
 import type { AnswerBefore } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
+import { api, Truth } from '@/api'
 
-import { computed } from 'vue'
 import 'highlight.js/styles/github.css'
 
 defineProps<{
-  data: AnswerBefore[]
   isLoading: boolean
   isFinish: boolean
 }>()
 const emit = defineEmits<{
   (e: 'load'): void
 }>()
+const data = defineModel('data', { type: Array as PropType<AnswerBefore[]>, default: () => [] })
 const cs = useClassesName('collected-message-list')
 const md = new MarkdownIt({
   html: true,
@@ -26,6 +27,22 @@ const md = new MarkdownIt({
     return html
   },
 })
+
+async function collect(queryId: string, index: number) {
+  const isCollected = data.value[index].isCollected === Truth.TRUE
+  if (isCollected) {
+    const res = await api.cancelCollect(queryId)
+    if (res.code === 200) {
+      data.value[index].isCollected = Truth.FALSE
+    }
+  }
+  else {
+    const res = await api.addCollect({ queryId })
+    if (res.code === 200) {
+      data.value[index].isCollected = Truth.TRUE
+    }
+  }
+}
 </script>
 
 <template>
@@ -41,7 +58,7 @@ const md = new MarkdownIt({
     :lower-threshold="50"
     @scrolltolower="emit('load')"
   >
-    <view v-for="item in data" :key="item.queryId" :class="cs.m('card')">
+    <view v-for="item, index in data" :key="item.queryId" :class="cs.m('card')">
       <view class="text-36rpx font-bold">
         {{ item.query }}
       </view>
@@ -49,8 +66,8 @@ const md = new MarkdownIt({
         <rich-text :class="cs.e('rich-text')" :nodes="md.render(item.response || '')" space="ensp" />
       </view>
       <view class="flex items-center justify-between">
-        <view class="text-24rpx font-500 color-#666">
-          取消收藏
+        <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">
+          {{ item.isCollected === Truth.TRUE ? '取消收藏' : '收藏' }}
         </view>
         <view class="wechat-icon size-54rpx" />
       </view>

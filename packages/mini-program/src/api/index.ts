@@ -158,6 +158,11 @@ function getInteractedCollectedContentList(query: InteractedContentListRequest) 
   return http(API.GET_INTERACTED_COLLECTED_CONTENT_LIST).post<InteractedContentListResponse>(query)
 }
 
+// 取消收藏
+function cancelCollect(queryId: string) {
+  return http(API.CANCEL_COLLECT).post<boolean>({ queryId })
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -186,4 +191,5 @@ export const api = {
   getCommentedContentList,
   getInteractedLikedContentList,
   getInteractedCollectedContentList,
+  cancelCollect,
 }
