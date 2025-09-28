@@ -2,12 +2,21 @@
 import type { PublishMessageListResponse } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
-
-defineProps<{
-  data: PublishMessageListResponse
-}>()
+import { api } from '@/api'
 
 const cs = useClassesName('view-card')
+const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
+
+async function onThumbsUp() {
+  const res = await api.thumbsUp({
+    contentId: data.value.id,
+    likeAction: !data.value.isLiked,
+  })
+  if (res.code === 200) {
+    data.value.isLiked = !data.value.isLiked
+    data.value.likeCount = data.value.isLiked ? data.value.likeCount + 1 : data.value.likeCount - 1
+  }
+}
 </script>
 
 <template>
@@ -46,7 +55,7 @@ const cs = useClassesName('view-card')
       <view class="wechat-icon bg-#666 size-50rpx" @click.stop />
       <view class="flex-1" />
       <view class="flex items-center">
-        <view class="thumb-up-icon bg-#666 size-46rpx" :class="{ 'bg-red': data.isLiked }" @click.stop />
+        <view class="thumb-up-icon bg-#666 size-46rpx" :class="{ 'bg-red': data.isLiked }" @click.stop="onThumbsUp" />
         <view class="text-26rpx">
           {{ data.likeCount }}
         </view>

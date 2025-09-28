@@ -10,7 +10,7 @@ import MessageList from './message-list.vue'
 
 const cs = useClassesName('user')
 const userStore = useUserStore()
-const activeTab = ref<'published' | 'commented' | 'interacted'>('interacted')
+const activeTab = ref<'published' | 'commented' | 'interacted'>('published')
 const data = ref<ProfileStatistics>({} as ProfileStatistics)
 const publishList = ref<PublishMessageListResponse[]>([])
 const commentedContentList = ref<PublishMessageListResponse[]>([])
@@ -126,7 +126,7 @@ async function getInteractedCollectedContentList() {
   if (res.code === 200) {
     interactedCollectedContent.value = {
       total: res.result.total,
-      data: [...interactedCollectedContent.value.data, ...res.result.records].map(item => ({ ...item, isCollected: Truth.TRUE })),
+      data: [...interactedCollectedContent.value.data, ...res.result.records].map(item => ({ ...item, isCollect: Truth.TRUE })),
     }
     isLoading.value = false
     isFinish.value = res.result.records.length <= res.result.size

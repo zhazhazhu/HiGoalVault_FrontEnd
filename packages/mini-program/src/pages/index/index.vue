@@ -73,7 +73,7 @@ onMounted(() => {
           <wd-icon name="search" size="18" />
         </template>
         <tabs-item name="view" label="发现">
-          <ViewList :data="data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
+          <ViewList v-model:data="data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
         </tabs-item>
         <tabs-item name="follow" label="关注">
           <ViewFollowList />

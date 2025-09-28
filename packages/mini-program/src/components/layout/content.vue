@@ -18,6 +18,9 @@ function onEditChatList() {
 function gotoSettings() {
   uni.navigateTo({ url: '/pages/settings/index' })
 }
+function gotoUser() {
+  uni.navigateTo({ url: '/pages/user/index' })
+}
 </script>
 
 <template>
@@ -41,7 +44,7 @@ function gotoSettings() {
     </tabs>
 
     <view :class="cs.m('bottom')">
-      <view :class="cs.m('user')">
+      <view :class="cs.m('user')" @click="gotoUser">
         <wd-img :src="userStore.userInfo?.face" round :width="26" :height="26" />
         <text class="text-16px font-bold text-h1-color ml-8px max-w-120px truncate">
           {{ userStore.userInfo?.username }}{{ userStore.userInfo?.username }}{{ userStore.userInfo?.username }}

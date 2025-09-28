@@ -3,7 +3,7 @@ import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import type { MessageToolOperateType } from '@/types'
 import { useClassesName, useUUID } from '@higoal/hooks'
 import { computed, reactive, ref, watch } from 'vue'
-import { api } from '@/api'
+import { api, Truth } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
@@ -70,10 +70,21 @@ function openSharePopup() {
 function onPublish() {
   publishVisible.value = true
 }
-function onFavorite() {
-  api.addCollect({
-    queryId: currentAnswer.value.queryId,
-  })
+async function onFavorite() {
+  if (currentAnswer.value.isCollect === Truth.FALSE) {
+    const res = await api.addCollect({
+      queryId: currentAnswer.value.queryId,
+    })
+    if (res.code === 200) {
+      currentAnswer.value.isCollect = Truth.TRUE
+    }
+  }
+  else {
+    const res = await api.cancelCollect(currentAnswer.value.queryId)
+    if (res.code === 200) {
+      currentAnswer.value.isCollect = Truth.FALSE
+    }
+  }
 }
 function openTooltips(e) {
   if (messageInject.currentToolMessageId.value === props.message.msgId)
@@ -144,7 +155,7 @@ function onMessageToolOperate(type: MessageToolOperateType) {
             <view class="i-material-symbols-arrow-forward-ios-rounded size-30rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
           </view>
           <view class="flex-1" />
-          <view class="favorite-icon size-30px" @click="onFavorite" />
+          <view class="favorite-icon size-30px" :class="{ 'bg-red-6': currentAnswer.isCollect === Truth.TRUE }" @click="onFavorite" />
           <view class="share-icon size-30px" @click="onPublish" />
           <view class="wechat-icon size-30px" @click="openSharePopup" />
         </view>

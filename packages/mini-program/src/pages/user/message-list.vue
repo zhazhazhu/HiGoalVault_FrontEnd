@@ -29,17 +29,17 @@ const md = new MarkdownIt({
 })
 
 async function collect(queryId: string, index: number) {
-  const isCollected = data.value[index].isCollected === Truth.TRUE
-  if (isCollected) {
+  const isCollect = data.value[index].isCollect === Truth.TRUE
+  if (isCollect) {
     const res = await api.cancelCollect(queryId)
     if (res.code === 200) {
-      data.value[index].isCollected = Truth.FALSE
+      data.value[index].isCollect = Truth.FALSE
     }
   }
   else {
     const res = await api.addCollect({ queryId })
     if (res.code === 200) {
-      data.value[index].isCollected = Truth.TRUE
+      data.value[index].isCollect = Truth.TRUE
     }
   }
 }
@@ -67,7 +67,7 @@ async function collect(queryId: string, index: number) {
       </view>
       <view class="flex items-center justify-between">
         <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">
-          {{ item.isCollected === Truth.TRUE ? '取消收藏' : '收藏' }}
+          {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
         </view>
         <button open-type="share" class="share-btn contents" :data-id="item.queryId">
           <view class="wechat-icon size-54rpx" />

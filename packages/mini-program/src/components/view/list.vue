@@ -3,13 +3,13 @@ import type { PublishMessageListResponse } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 
 defineProps<{
-  data: PublishMessageListResponse[]
   isLoading: boolean
   isFinish: boolean
 }>()
 const emit = defineEmits<{
   (e: 'load'): void
 }>()
+const data = defineModel('data', { type: Array as () => PublishMessageListResponse[], required: true })
 const cs = useClassesName('view')
 
 function gotoDetail(item: PublishMessageListResponse) {
@@ -32,8 +32,8 @@ function gotoDetail(item: PublishMessageListResponse) {
     :lower-threshold="50"
     @scrolltolower="emit('load')"
   >
-    <view v-for="item in data" :id="`view-${item.id}`" :key="item.id" :class="cs.m('card')" @click="gotoDetail(item)">
-      <ViewCard :data="item" />
+    <view v-for="item, index in data" :id="`view-${item.id}`" :key="item.id" :class="cs.m('card')" @click="gotoDetail(item)">
+      <ViewCard :data="item" @update:data="(newData) => data[index] = newData" />
     </view>
 
     <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">

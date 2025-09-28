@@ -15,6 +15,7 @@ import type {
   GlobalSearchResultResponse,
   InteractedContentListRequest,
   InteractedContentListResponse,
+  LikeContentRequest,
   LoginResult,
   Page,
   ProfileStatistics,
@@ -163,6 +164,11 @@ function cancelCollect(queryId: string) {
   return http(API.CANCEL_COLLECT).post<boolean>({ queryId })
 }
 
+// 点赞
+function thumbsUp(query: LikeContentRequest) {
+  return http(API.THUMBS_UP_CONTENT).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -192,4 +198,5 @@ export const api = {
   getInteractedLikedContentList,
   getInteractedCollectedContentList,
   cancelCollect,
+  thumbsUp,
 }

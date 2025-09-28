@@ -56,7 +56,7 @@ export interface AnswerBefore {
   response: string // 回答问题
   ts: string // 时间
   runId: string
-  isCollected: Truth // 是否已收藏
+  isCollect: Truth // 是否收藏
 }
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
@@ -142,7 +142,7 @@ export interface PublishMessageListResponse {
   likeCount: number // 点赞数量
   privacy: Truth // 是否公开
   queryId: string // 问题id
-  isLiked: Truth // 是否点赞
+  isLiked: boolean // 是否点赞
   title: string // 标题
   shareCount: number // 分享数量
   viewCount: number // 阅读数量
@@ -275,4 +275,9 @@ export interface InteractedContentListRequest extends Page {
 
 export interface InteractedContentListResponse extends PageResult {
   records: AnswerBefore[]
+}
+
+export interface LikeContentRequest {
+  contentId: string
+  likeAction: boolean // 操作类型：true-点赞，false-取消点赞
 }
