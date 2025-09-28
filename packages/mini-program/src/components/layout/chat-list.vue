@@ -50,21 +50,27 @@ function onEditChat(item: Chat) {
   message.prompt({
     title: '编辑名称',
     inputValue: input.value,
-  }).then(async ({ value }) => {
-    await api.updateChat({
+  }).then(({ value }) => {
+    if (!value)
+      return
+    api.updateChat({
       chatId: item.chatId,
       title: value?.toString() || '',
     })
-    getChatList()
+    item.title = value?.toString() || ''
   })
 }
 function onDeleteChat(item: Chat) {
   message.confirm({
     msg: '该对话内容将被删除无法恢复，若您之前主动分享过该对话，分享链接也将一并被删除',
     title: '提示',
-  }).then(async () => {
-    await api.deleteChat(item.chatId)
-    getChatList()
+  }).then(() => {
+    api.deleteChat(item.chatId)
+    if (chatStore.currentChatId === item.chatId) {
+      chatStore.currentChatId = ''
+      emit('changeChat')
+    }
+    chatStore.chats = chatStore.chats.filter(chat => chat.chatId !== item.chatId)
   })
 }
 

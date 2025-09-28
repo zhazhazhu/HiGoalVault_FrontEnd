@@ -4,6 +4,7 @@ import { useUUID } from '@higoal/hooks'
 import { defineStore } from 'pinia'
 import { useStoreRef } from '@/composables'
 import { isThisMonth, isThisWeek, isToday } from '@/utils'
+import { Truth } from '../api'
 
 interface WaitingMessageTask {
   query: string
@@ -112,6 +113,7 @@ export const useChatStore = defineStore('chat', {
             runId: this.currentRunId,
             queryId: '',
             query: message?.query || '',
+            isCollect: Truth.FALSE,
           },
         ],
         ...message,
@@ -130,6 +132,7 @@ export const useChatStore = defineStore('chat', {
         runId: this.currentRunId,
         queryId: '',
         query: '',
+        isCollect: Truth.FALSE,
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)

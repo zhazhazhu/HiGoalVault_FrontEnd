@@ -63,6 +63,8 @@ function scrollToTop() {
 const loading = ref(false)
 
 async function getMessage() {
+  if (!chatStore.currentChatId)
+    return
   const data = await api.getMessageList({ userId: userStore.userInfo!.id, chatId: chatStore.currentChatId, ...page.value })
   if (data.code === 200) {
     const _messages = data.result.records.map(chatStore.transformMessage)
