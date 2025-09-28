@@ -1,4 +1,5 @@
 <script lang='ts' setup>
+import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
 import { useSearchStore } from '@/store'
@@ -8,6 +9,7 @@ const showSidebar = ref(false)
 const searchStore = useSearchStore()
 const removeSearchHistoryVisible = ref(false)
 const searchText = ref('')
+const userId = ref('')
 
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
@@ -16,8 +18,8 @@ function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
 function onConfirm() {
+  uni.navigateTo({ url: `/pages/search/result?keyWord=${searchText.value}&userId=${userId.value}` })
   searchText.value = ''
-  uni.navigateTo({ url: '/pages/search/result' })
 }
 function onGotoBack() {
   uni.navigateBack({ delta: 999 })
@@ -37,8 +39,12 @@ function onCloseSearchHistory(index: number) {
 }
 function onTagClick(val: string) {
   searchStore.addSearchHistory(val)
-  uni.navigateTo({ url: '/pages/search/result' })
+  uni.navigateTo({ url: `/pages/search/result?keyWord=${val}&userId=${userId.value}` })
 }
+
+onLoad((options) => {
+  userId.value = options?.userId
+})
 </script>
 
 <template>

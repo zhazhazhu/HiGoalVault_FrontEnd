@@ -141,6 +141,8 @@ function gotoHome() {
   uni.redirectTo({ url: '/pages/index/index' })
 }
 async function checkFollowUser() {
+  if (!userId.value)
+    return
   const res = await api.checkFollowUser(userId.value)
   if (res.code === 200) {
     isFollowed.value = res.result
@@ -151,6 +153,9 @@ async function onFollowUser(followAction: 'follow' | 'unfollow') {
   if (res.code === 200) {
     isFollowed.value = followAction === 'follow'
   }
+}
+function gotoSearch() {
+  uni.navigateTo({ url: `/pages/search/index?userId=${userId.value}` })
 }
 
 onShareAppMessage(({ target, from }) => {
@@ -170,8 +175,7 @@ onShareAppMessage(({ target, from }) => {
 
 onLoad((options) => {
   userId.value = options?.id
-  if (userId.value)
-    checkFollowUser()
+  checkFollowUser()
   getData()
   getListData()
 })
@@ -236,7 +240,7 @@ onLoad((options) => {
         >
           <template #edit>
             <view class="flex items-center gap-30rpx">
-              <view class="user-search-icon" />
+              <view class="user-search-icon" @click="gotoSearch" />
               <view v-if="!userId" class="user-message-icon" />
               <template v-else>
                 <wd-button v-if="!isFollowed" icon="add" size="small" @click="onFollowUser('follow')">

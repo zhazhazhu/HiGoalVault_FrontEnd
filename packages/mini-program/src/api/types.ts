@@ -292,3 +292,8 @@ export interface LikeReplyRequest {
   replyId: string
   likeAction: boolean // 操作类型：true-点赞，false-取消点赞
 }
+
+export interface UserCenterSearchRequest extends Page {
+  userId?: string
+  searchSort: 'SMART' | 'LAST' | 'HOT'
+}

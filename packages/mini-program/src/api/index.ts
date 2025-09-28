@@ -30,6 +30,7 @@ import type {
   ReplyListResponse,
   ShareMessageRequest,
   UpdateChat,
+  UserCenterSearchRequest,
   UserInfo,
 } from './types'
 import { http } from './http'
@@ -186,6 +187,11 @@ function checkFollowUser(followeeId: string) {
   return http(`${API.CHECK_FOLLOW_USER}?followeeId=${followeeId}`).get<boolean>()
 }
 
+// 用户中心搜索
+function userCenterSearch(query: UserCenterSearchRequest) {
+  return http(API.USER_CENTER_SEARCH).post<GlobalSearchResultResponse>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -219,4 +225,5 @@ export const api = {
   thumbsUpComment,
   thumbsUpReply,
   checkFollowUser,
+  userCenterSearch,
 }
