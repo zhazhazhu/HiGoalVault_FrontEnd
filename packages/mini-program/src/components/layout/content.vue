@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
-import { useUserStore } from '@/store'
+import { useChatStore, useUserStore } from '@/store'
 
 const emit = defineEmits<{
   (e: 'close'): void
@@ -10,6 +10,7 @@ const emit = defineEmits<{
 const cs = useClassesName('sidebar-content')
 const active = ref('chat')
 const userStore = useUserStore()
+const chatStore = useChatStore()
 const isEdit = ref(false)
 
 function onEditChatList() {
@@ -28,12 +29,14 @@ function gotoUser() {
     <view class="i-material-symbols-light-close-rounded size-30px absolute top-60px left-14px" @click="emit('close')" />
     <tabs v-model="active" custom-class="flex-1" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
       <template #edit>
-        <wd-button v-if="!isEdit" type="text">
-          编辑
-        </wd-button>
-        <wd-button v-else type="primary" :round="false" size="small">
-          完成
-        </wd-button>
+        <template v-if="chatStore.chats.length > 0">
+          <wd-button v-if="!isEdit" type="text">
+            编辑
+          </wd-button>
+          <wd-button v-else type="primary" :round="false" size="small">
+            完成
+          </wd-button>
+        </template>
       </template>
       <tabs-item name="browse" label="发现">
         TODO
