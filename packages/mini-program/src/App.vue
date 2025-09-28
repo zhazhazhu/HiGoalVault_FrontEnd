@@ -35,10 +35,12 @@ onLaunch(async () => {
     await userStore.refreshAccessToken()
 })
 onShow(() => {
-  websocket.connectWebSocket()
+  if (userStore.isLogin)
+    websocket.connectWebSocket()
 })
 onHide(() => {
-  websocket.closeWebSocket()
+  if (userStore.isLogin)
+    websocket.closeWebSocket()
 })
 </script>
 

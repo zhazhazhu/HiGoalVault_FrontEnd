@@ -89,7 +89,7 @@ onLoad((options) => {
 
       <view class="h-200rpx bg-white px-32rpx pt-30rpx">
         <view class="flex items-center justify-between gap-10px">
-          <button open-type="share" class="share-btn">
+          <button open-type="share" class="share-btn contents">
             <view class="wechat-icon bg-#666 size-70rpx" />
           </button>
 
@@ -130,15 +130,4 @@ onLoad((options) => {
   </view>
 </template>
 
-<style lang='scss' scoped>
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  padding: 0;
-  &::after {
-    display: none;
-  }
-}
-</style>
+<style lang='scss' scoped></style>

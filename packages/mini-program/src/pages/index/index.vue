@@ -5,7 +5,7 @@ import { useClassesName } from '@higoal/hooks'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
-import { useChatStore } from '@/store'
+import { useChatStore, useUserStore } from '@/store'
 
 const cs = useClassesName('home')
 const showSidebar = ref(false)
@@ -20,6 +20,8 @@ const [page, reset] = useResetRef<Page>({
   pageSize: 10,
   sort: 'createTime',
 })
+const userStore = useUserStore()
+
 async function getData() {
   const res = await api.getPublishMessageList({ ...page.value }).finally(() => {
     isLoading.value = false
@@ -27,6 +29,15 @@ async function getData() {
   if (res.code === 200) {
     data.value.push(...res.result.records)
     isFinish.value = res.result.total <= data.value.length
+  }
+}
+function onTabChange() {
+  if (!userStore.isLogin) {
+    active.value = 'view'
+    uni.showToast({
+      title: '请先登录',
+      icon: 'none',
+    })
   }
 }
 
@@ -68,6 +79,7 @@ onMounted(() => {
         :custom-nav-class="cs.m('tab-nav')"
         :style="{ height: `calc(100% - ${140}px)` }"
         @edit="onClickSearch"
+        @tab-change="onTabChange"
       >
         <template #edit>
           <wd-icon name="search" size="18" />

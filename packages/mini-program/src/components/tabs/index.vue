@@ -1,4 +1,5 @@
 <script lang='ts' setup>
+import type { TabChildrenProps } from './tabs'
 import { useClassesName } from '@higoal/hooks'
 import { computed, ref } from 'vue'
 import TabNav from './components/TabNav.NOT.vue'
@@ -20,11 +21,17 @@ const cs = useClassesName('tabs')
 const { navs } = useTabs(props, emit)
 const tabNavInstance = ref<InstanceType<typeof TabNav>>()
 const tabNavInstanceHeight = computed(() => tabNavInstance.value?.height || 0)
+
+function onTabClick(event: TabChildrenProps) {
+  if (!props.editable)
+    return
+  emit('tabChange', event.name)
+}
 </script>
 
 <template>
   <view :class="[cs.s(), customClass]">
-    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" @tab-click="$emit('tabChange', $event.name)" @edit="$emit('edit', $event)">
+    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" @tab-click="onTabClick" @edit="$emit('edit', $event)">
       <template #edit>
         <slot name="edit" />
       </template>

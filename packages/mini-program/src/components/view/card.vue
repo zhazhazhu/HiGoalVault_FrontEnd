@@ -3,11 +3,16 @@ import type { PublishMessageListResponse } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import dayjs from 'dayjs'
 import { api } from '@/api'
+import { useUserStore } from '@/store'
 
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
+const userStore = useUserStore()
 
 async function onThumbsUp() {
+  if (!userStore.isLogin) {
+    return
+  }
   const res = await api.thumbsUp({
     contentId: data.value.id,
     likeAction: !data.value.isLiked,
@@ -23,7 +28,7 @@ async function onThumbsUp() {
   <view :class="cs.m('container')">
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center">
-        <wd-img width="52rpx" height="56rpx" round mode="aspectFill" :src="data.face" />
+        <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data.face" />
         <text class="ml-16rpx">
           {{ data.nickName }}
         </text>
