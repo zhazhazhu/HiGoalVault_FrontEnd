@@ -30,6 +30,7 @@ const interactedCollectedContent = ref<{ total: number, data: AnswerBefore[] }>(
   data: [],
 })
 const userId = ref<string>('')
+const isFollowed = ref(false)
 
 async function getData() {
   const res = await api.getProfileStatistics(userId.value || userStore.userInfo!.id)
@@ -54,7 +55,7 @@ function resetData() {
 watch(() => activeTab.value, () => {
   resetData()
   getListData()
-}, { immediate: true })
+})
 
 async function getListData() {
   switch (activeTab.value) {
@@ -82,7 +83,7 @@ function loadData() {
 async function getPublishList() {
   isLoading.value = true
   const res = await api.getPublishList({
-    authorId: userStore.userInfo!.id,
+    authorId: userId.value || userStore.userInfo!.id,
     ...page.value,
   })
   if (res.code === 200) {
@@ -139,6 +140,18 @@ function onClickInteractTab(tab: 'liked' | 'collected') {
 function gotoHome() {
   uni.redirectTo({ url: '/pages/index/index' })
 }
+async function checkFollowUser() {
+  const res = await api.checkFollowUser(userId.value)
+  if (res.code === 200) {
+    isFollowed.value = res.result
+  }
+}
+async function onFollowUser(followAction: 'follow' | 'unfollow') {
+  const res = await api.followUser({ followAction: followAction === 'follow', followeeId: userId.value, followerId: userStore.userInfo!.id })
+  if (res.code === 200) {
+    isFollowed.value = followAction === 'follow'
+  }
+}
 
 onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
@@ -157,7 +170,10 @@ onShareAppMessage(({ target, from }) => {
 
 onLoad((options) => {
   userId.value = options?.id
+  if (userId.value)
+    checkFollowUser()
   getData()
+  getListData()
 })
 </script>
 
@@ -221,7 +237,15 @@ onLoad((options) => {
           <template #edit>
             <view class="flex items-center gap-30rpx">
               <view class="user-search-icon" />
-              <view class="user-message-icon" />
+              <view v-if="!userId" class="user-message-icon" />
+              <template v-else>
+                <wd-button v-if="!isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
+                  关注
+                </wd-button>
+                <wd-button v-else plain size="small" @click="onFollowUser('unfollow')">
+                  取消关注
+                </wd-button>
+              </template>
             </view>
           </template>
           <tabs-item name="published" :label="`发布${data?.contentCount || 0}`">
