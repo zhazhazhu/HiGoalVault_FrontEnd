@@ -298,3 +298,10 @@ export interface UserCenterSearchRequest extends Page {
   userId?: string
   searchSort: 'SMART' | 'LAST' | 'HOT'
 }
+
+export interface GenerateStsTempKeyResponse {
+  expiredTime: number // 过期时间
+  tmpSecretId: string // STS 临时密钥
+  tmpSecretKey: string // STS 临时密钥
+  token: string // STS 临时密钥
+}

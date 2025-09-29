@@ -5,7 +5,7 @@ declare global {
 
   type VoiceFormat = 1 | 8 // 1 为 pcm, 8为 mp3, 目前仅支持mp3和pcm
 
-  type QCloudAIVoiceSpeechRecognizerManagerStart = (params: {
+  interface QCloudAIVoiceSpeechRecognizerManagerStartParams {
     secretkey: string
     secretid: string
     appid: string // 腾讯云账号appid（非微信appid）
@@ -22,7 +22,10 @@ declare global {
     convert_num_mode?: number
     word_info?: number
     vad_silence_time?: number
-  }) => void
+    [key: string]: any
+  }
+
+  type QCloudAIVoiceSpeechRecognizerManagerStart = (params: QCloudAIVoiceSpeechRecognizerManagerStartParams) => void
 
   interface QCloudAIVoiceSpeechRecognizerManager {
     start: QCloudAIVoiceSpeechRecognizerManagerStart

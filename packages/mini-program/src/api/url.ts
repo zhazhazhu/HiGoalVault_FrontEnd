@@ -32,4 +32,5 @@ export enum API {
   THUMBS_UP_CONTENT_REPLY = '/buyer/content/comment/reply/like/likeReply',
   CHECK_FOLLOW_USER = '/buyer/member/my/follow/check',
   USER_CENTER_SEARCH = '/buyer/search/processUserCenterSearch',
+  GENERATE_STS_TEMP_KEY = '/buyer/thirdCloudPlatform/generateStsTempKey',
 }

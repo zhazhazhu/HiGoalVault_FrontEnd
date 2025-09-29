@@ -11,6 +11,7 @@ import type {
   CommentListResponse,
   CommentResponseRequired,
   FollowUserRequest,
+  GenerateStsTempKeyResponse,
   GlobalSearchRequest,
   GlobalSearchResultResponse,
   InteractedContentListRequest,
@@ -192,6 +193,11 @@ function userCenterSearch(query: UserCenterSearchRequest) {
   return http(API.USER_CENTER_SEARCH).post<GlobalSearchResultResponse>(query)
 }
 
+// 生成 STS 临时密钥
+function generateStsTempKey() {
+  return http(API.GENERATE_STS_TEMP_KEY).post<GenerateStsTempKeyResponse>()
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -226,4 +232,5 @@ export const api = {
   thumbsUpReply,
   checkFollowUser,
   userCenterSearch,
+  generateStsTempKey,
 }
