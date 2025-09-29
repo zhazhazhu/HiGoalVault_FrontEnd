@@ -1,26 +1,12 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
-import { computed, getCurrentInstance, ref, watch } from 'vue'
-import Wave from './Wave.vue'
+import { computed, getCurrentInstance, ref } from 'vue'
 
 const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null
 }>()
-// APPID 1308154027
-// SECRET AKIDu25CIJCwX2SlsnV5TgmpjSzJRbdWCl8N
-// const qCloudAIVoice = requirePlugin('QCloudAIVoice')
-// const speechRecognizerManager = qCloudAIVoice.speechRecognizerManager()
-
-// speechRecognizerManager.start({
-//   secretkey: 'your-secretkey',
-//   secretid: 'AKIDu25CIJCwX2SlsnV5TgmpjSzJRbdWCl8N',
-//   appid: '1308154027',
-//   engine_model_type: '16k_zh',
-//   voice_format: 8,
-// })
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('record')
-const record = uni.getRecorderManager()
 const currentDecibel = ref(0)
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
@@ -35,80 +21,9 @@ const text = computed(() => {
   return '松开编辑文字'
 })
 
-record.onFrameRecorded((res) => {
-  const { frameBuffer } = res
-  // 将音频数据转换为 16 位整数
-  const audioData = new Int16Array(frameBuffer)
-
-  let sum = 0
-  for (let i = 0; i < audioData.length; i++) {
-    // 将16位整数归一化到 -1 到 1 的范围
-    const normalizedValue = audioData[i] / 32768
-    sum += normalizedValue * normalizedValue // 平方和
-  }
-  // 计算 RMS
-  const rms = Math.sqrt(sum / audioData.length)
-  // 将 RMS 转换为分贝，并处理对数函数的边界问题
-  const db = 20 * Math.log10(Math.max(rms, 0.00001))
-
-  const minDb = -60 // 假设-60dB为最低音量
-  const maxDb = 0 // 0dB为最高音量
-
-  let mappedAmplitude = (db - minDb) / (maxDb - minDb) * 60 // 映射到0-60的振幅
-  mappedAmplitude = Math.max(0, mappedAmplitude) // 确保振幅为正数
-
-  // console.log('当前音量（分贝）：', db)
-  // console.log('Canvas振幅：', mappedAmplitude)
-
-  // 更新 ref，触发 Canvas 重新绘制
-  currentDecibel.value = mappedAmplitude
-})
-
-record.onStart(() => {
-  console.log('录音开始')
-})
-
-record.onStop((res) => {
-  console.log('录音停止', res)
-  model.value = false
-  currentDecibel.value = 0
-})
-
-record.onError((err) => {
-  console.error('录音错误', err)
-  model.value = false
-  currentDecibel.value = 0
-})
-
 function handleClose() {
   model.value = false
-  stopRecording()
 }
-
-function startRecording() {
-  record.start({
-    duration: 60000 * 3,
-    sampleRate: 44100,
-    numberOfChannels: 1,
-    encodeBitRate: 192000,
-    format: 'pcm',
-    frameSize: 5, // 每帧音频数据的大小
-  })
-}
-
-function stopRecording() {
-  model.value = false
-  record.stop()
-}
-
-watch(() => model.value, (value) => {
-  if (value) {
-    startRecording()
-  }
-  else {
-    stopRecording()
-  }
-})
 
 defineExpose({
   recordContainer,
@@ -128,7 +43,7 @@ defineExpose({
   >
     <view :class="cs.m('container')">
       <view :class="cs.e('decibel')">
-        <Wave :decibel="currentDecibel" :is-recording="model" />
+        <RecordWave :decibel="currentDecibel" :is-recording="model" />
       </view>
 
       <text :class="cs.e('description')">

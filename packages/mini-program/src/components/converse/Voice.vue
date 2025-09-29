@@ -1,21 +1,29 @@
 <script lang='ts' setup>
+import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
+import { useGlobalStore } from '@/store'
 import RecordPopup from '~/components/record/popup.vue'
 
 const cs = useClassesName('voice')
 const isRecording = ref(false)
 const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>(null)
 const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
+const globalStore = useGlobalStore()
+const qCloudAIVoice = requirePlugin('QCloudAIVoice')
+const speechRecognizerManager = qCloudAIVoice.speechRecognizerManager()
+const isConnecting = ref(false)
 
 function onTouchStart() {
   recordPopupFocusedButton.value = 'microphone'
   isRecording.value = true
+  start()
 }
 
 function onTouchEnd() {
   recordPopupFocusedButton.value = null
   isRecording.value = false
+  stop()
 }
 function onTouchMove(event) {
   const touch = event.touches[0]
@@ -43,6 +51,52 @@ function onTouchMove(event) {
     }
   }).exec()
 }
+function start() {
+  const config: QCloudAIVoiceSpeechRecognizerManagerStartParams = {
+    secretkey: globalStore.stsTempConfig?.tmpSecretKey || '',
+    secretid: globalStore.stsTempConfig?.tmpSecretId || '',
+    appid: 1308154027,
+    token: globalStore.stsTempConfig?.token || '',
+    engine_model_type: '16k_zh',
+    voice_format: 1,
+  }
+  speechRecognizerManager.start(config)
+}
+function stop() {
+  if (!isConnecting.value) {
+    console.log('未连接，无需停止')
+    return
+  }
+  speechRecognizerManager.stop()
+  isConnecting.value = false
+}
+
+onLoad(async () => {
+  await globalStore.generateStsTempKey()
+
+  if (!speechRecognizerManager)
+    return
+
+  speechRecognizerManager.OnRecognitionStart = (res) => {
+    isConnecting.value = true
+    console.log('OnRecognitionComplete', res)
+  }
+  speechRecognizerManager.OnRecognitionComplete = (res) => {
+    console.log('OnRecognitionComplete', res)
+  }
+  speechRecognizerManager.OnRecognitionResultChange = (res) => {
+    console.log('OnRecognitionResultChange', res)
+  }
+  speechRecognizerManager.OnSentenceEnd = (res) => {
+    console.log('OnSentenceEnd', res)
+  }
+  speechRecognizerManager.OnError = (res) => {
+    console.log('OnError', res)
+  }
+  speechRecognizerManager.OnRecorderStop = (res) => {
+    console.log('OnRecorderStop', res)
+  }
+})
 </script>
 
 <template>

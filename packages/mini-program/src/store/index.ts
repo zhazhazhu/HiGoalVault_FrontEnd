@@ -1,5 +1,4 @@
 export * from './chat'
 export * from './global'
-export * from './qCloudAIVoice'
 export * from './search'
 export * from './user'

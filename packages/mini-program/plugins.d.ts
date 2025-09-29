@@ -8,7 +8,7 @@ declare global {
   interface QCloudAIVoiceSpeechRecognizerManagerStartParams {
     secretkey: string
     secretid: string
-    appid: string // 腾讯云账号appid（非微信appid）
+    appid: number // 腾讯云账号appid（非微信appid）
     token?: string // 选填参数，若密钥为临时密钥，需传此参数。
     // 实时识别接口参数
     engine_model_type: EngineModelType

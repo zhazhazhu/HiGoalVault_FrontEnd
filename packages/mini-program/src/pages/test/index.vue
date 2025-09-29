@@ -46,7 +46,7 @@ function start() {
   speechRecognizerManager.start({
     secretkey: 'mwtADgGIgPholyT+2Aeb7pNkWg0zO6SkNr13AlYY57c=',
     secretid: 'AKIDd_1DVZmH9gbmfdDSMZEFaB1NFMzk47uhj5QShLYubuGAqrRlQZTpdRhVoOP7GbSz',
-    appid: '1308154027', // 腾讯云账号appid（非微信appid）
+    appid: 1308154027, // 腾讯云账号appid（非微信appid）
     token: 'XIRjwtpGZr6pNe6J9xCOcM0W3HxDri0aa30e9a2913013cd64e6052d1961179eePo5Q48whmjv4fm-Fp6U1OAcGqiDSyRgb5aNudfAbzErdGwNR-iwluVshHCNMBhsWD-UXsYnNni8tLtuLse6xE4ll063R3DY6yY-fkze1CsbiVC12gsp4erg9AaUL6yw6NuOfmjMTbdB2P-ZaM18aNh2aY-A8tVkoz3YWgmUIyieZ_N4-1EuGWPZB_fMdFFgUpA73GK5Ly98S0-O8JB575CwE-oJeLw3BnpvmqTjFNTqMHLNzDh6hkeApTK6UfH8iLsyNpFBN9jSYqibaB6vFrdp1J5ipjXagLvliPZlbPAlsMEtBCe-GnP8yik6jqeOk', // 选填参数，若密钥为临时密钥，需传此参数。
     engine_model_type: '16k_zh',
     voice_format: 1, // 1 为 pcm, 8为 mp3, 目前仅支持mp3和pcm
