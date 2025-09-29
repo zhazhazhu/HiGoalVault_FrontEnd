@@ -50,14 +50,14 @@
   "quickapp": {},
   /* 小程序特有相关 */
   "mp-weixin": {
-    "appid": "",
+    "appid": "wx938c4df402aa04f9",
     "setting": {
       "urlCheck": false
     },
     "plugins": {
-      "WechatSI": {
-        "version": "0.3.6",
-        "provider": "wx069ba97219f66d99"// 插件的appId
+      "QCloudAIVoice": {
+        "version": "2.3.12",
+        "provider": "wx3e17776051baf153"
       }
     },
     "usingComponents": true,

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 import { watch } from 'vue'
-import { useGlobalStore, useUserStore } from './store'
+import { useGlobalStore, useQCloudAIVoiceStore, useUserStore } from './store'
 import { useWebsocketStore } from './store/websocket'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
 const websocket = useWebsocketStore()
+const { initSpeechRecognizerManager } = useQCloudAIVoiceStore()
 
 watch(() => userStore.accessToken, async (val) => {
   if (val) {
@@ -17,6 +18,7 @@ watch(() => userStore.accessToken, async (val) => {
 onLaunch(async () => {
   globalStore.syncStatusBarHeight()
   globalStore.syncKeyboardHeight()
+  initSpeechRecognizerManager()
 
   uni.getPrivacySetting({
     success: (res) => {
