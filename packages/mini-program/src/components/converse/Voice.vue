@@ -13,6 +13,7 @@ const globalStore = useGlobalStore()
 const qCloudAIVoice = requirePlugin('QCloudAIVoice')
 const speechRecognizerManager = qCloudAIVoice.speechRecognizerManager()
 const isConnecting = ref(false)
+const speechText = ref('')
 
 function onTouchStart() {
   recordPopupFocusedButton.value = 'microphone'
@@ -23,6 +24,7 @@ function onTouchStart() {
 function onTouchEnd() {
   recordPopupFocusedButton.value = null
   isRecording.value = false
+
   stop()
 }
 function onTouchMove(event) {
@@ -59,6 +61,8 @@ function start() {
     token: globalStore.stsTempConfig?.token || '',
     engine_model_type: '16k_zh',
     voice_format: 1,
+    frameSize: 20,
+    duration: 60 * 1000 * 3,
   }
   speechRecognizerManager.start(config)
 }
@@ -83,9 +87,11 @@ onLoad(async () => {
   }
   speechRecognizerManager.OnRecognitionComplete = (res) => {
     console.log('OnRecognitionComplete', res)
+    console.log('识别结果', speechText.value)
   }
   speechRecognizerManager.OnRecognitionResultChange = (res) => {
     console.log('OnRecognitionResultChange', res)
+    speechText.value = res.result
   }
   speechRecognizerManager.OnSentenceEnd = (res) => {
     console.log('OnSentenceEnd', res)
@@ -100,7 +106,7 @@ onLoad(async () => {
 </script>
 
 <template>
-  <RecordPopup ref="recordPopupRef" v-model="isRecording" :focused-button="recordPopupFocusedButton" />
+  <RecordPopup ref="recordPopupRef" v-model="isRecording" :speech-text="speechText" :focused-button="recordPopupFocusedButton" />
 
   <view :class="cs.m('wrapper')" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
     按住 说话

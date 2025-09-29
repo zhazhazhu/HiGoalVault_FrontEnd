@@ -4,10 +4,10 @@ import { computed, getCurrentInstance, ref } from 'vue'
 
 const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null
+  speechText: string
 }>()
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('record')
-const currentDecibel = ref(0)
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
 const recordContainer = query.select('.hi-record--container')
@@ -43,7 +43,7 @@ defineExpose({
   >
     <view :class="cs.m('container')">
       <view :class="cs.e('decibel')">
-        <RecordWave :decibel="currentDecibel" :is-recording="model" />
+        <RecordWave :visible="model" :speech-text="speechText" />
       </view>
 
       <text :class="cs.e('description')">
