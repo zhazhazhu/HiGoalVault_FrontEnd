@@ -117,6 +117,10 @@ function getConverseHeight() {
       .exec()
   })
 }
+function onVoiceDone(text: string) {
+  model.value = text
+  messageType.value = 'text'
+}
 
 onMounted(async () => {
   // 确保 WebSocket 连接已建立
@@ -166,7 +170,7 @@ defineExpose({
       </view>
 
       <view v-show="messageType === 'voice'" :class="cs.m('voice')">
-        <ConverseVoice />
+        <ConverseVoice @done="onVoiceDone" />
       </view>
 
       <view :class="cs.e('right')">

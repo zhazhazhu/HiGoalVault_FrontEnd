@@ -1,10 +1,11 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
-import { computed, getCurrentInstance, ref } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 
 const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null
   speechText: string
+  decibel: number
 }>()
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('record')
@@ -34,17 +35,14 @@ defineExpose({
   <wd-popup
     v-model="model"
     position="bottom"
-    custom-style="height: 250px; border-radius: 16px; margin: 20px;"
     lazy-render
     lock-scroll
     root-portal
-    transition="zoom-in"
+    custom-style="border-radius: 20px 20px 0 0;"
     @close="handleClose"
   >
     <view :class="cs.m('container')">
-      <view :class="cs.e('decibel')">
-        <RecordWave :visible="model" :speech-text="speechText" />
-      </view>
+      <RecordWave :visible="model" :decibel="decibel" />
 
       <text :class="cs.e('description')">
         {{ text }}
@@ -77,15 +75,8 @@ defineExpose({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px;
-  overflow: hidden;
-}
-
-.hi-record__decibel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  padding: 50px;
+  height: 200px;
 }
 
 .hi-record__description {
@@ -93,7 +84,7 @@ defineExpose({
   color: #666666;
   line-height: 18px;
   text-align: center;
-  margin: 20px 0;
+  margin: 30px 0 20px 0;
 }
 
 .hi-record__button-group {

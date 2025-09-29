@@ -25,7 +25,7 @@ declare global {
     [key: string]: any
   }
 
-  type QCloudAIVoiceSpeechRecognizerManagerStart = (params: QCloudAIVoiceSpeechRecognizerManagerStartParams) => void
+  type QCloudAIVoiceSpeechRecognizerManagerStart = (params: QCloudAIVoiceSpeechRecognizerManagerStartParams, voiceId?: string) => void
 
   interface QCloudAIVoiceSpeechRecognizerManager {
     start: QCloudAIVoiceSpeechRecognizerManagerStart
@@ -39,8 +39,21 @@ declare global {
     OnRecorderStop: (res) => void
   }
 
+  interface QCloudAIVoiceRealtimeRecognition {
+    start: QCloudAIVoiceSpeechRecognizerManagerStart
+    stop: () => void
+    write: (data: Uint8Array) => void
+    OnRecognitionStart: (res) => void
+    OnRecognitionResultChange: (res) => void
+    OnSentenceBegin: (res) => void
+    OnSentenceEnd: (res) => void
+    OnRecognitionComplete: (res) => void
+    OnError: (res) => void
+  }
+
   interface QCloudAIVoice {
     speechRecognizerManager: () => QCloudAIVoiceSpeechRecognizerManager
+    realtimeRecognition: () => QCloudAIVoiceRealtimeRecognition
   }
 
   interface RequirePluginReturn {
