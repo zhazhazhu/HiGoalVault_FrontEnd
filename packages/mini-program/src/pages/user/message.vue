@@ -50,6 +50,12 @@ async function onThumbsUp(item: MyCommentedRepliedListResponse, index: number) {
 function gotoContentDetail(item: MyCommentedRepliedListResponse) {
   uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}` })
 }
+function gotoUser(id: string) {
+  uni.navigateTo({ url: `/pages/user/index?id=${id}` })
+}
+function gotoContentComment(item: MyCommentedRepliedListResponse) {
+  uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}&commentId=${item.commentId}` })
+}
 function gotoBack() {
   uni.navigateBack()
 }
@@ -84,9 +90,9 @@ onMounted(() => {
         <view class="flex flex-col gap-20rpx">
           <view v-for="item, index in data" :key="index" class="bg-white flex flex-col gap-20rpx rounded-20rpx py-20rpx px-30rpx" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx">
-              <wd-img :src="item.face" round width="64rpx" height="64rpx" />
+              <wd-img :src="item.face" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.commenterId)" />
               <view class="flex flex-col gap-10rpx">
-                <view class="flex items-center gap-10rpx font-500">
+                <view class="flex items-center gap-10rpx font-500" @click.stop="gotoUser(item.commenterId)">
                   <view class="text-34rpx color-#333">
                     {{ item.nickName }}
                   </view>
@@ -111,7 +117,7 @@ onMounted(() => {
             </view>
 
             <view class="flex justify-end gap-50rpx ">
-              <view class="flex items-center gap-6rpx">
+              <view class="flex items-center gap-6rpx" @click.stop="gotoContentComment(item)">
                 <view class="comment-icon bg-#666 size-46rpx" />
                 <view class="text-24rpx color-#666">
                   回复评论

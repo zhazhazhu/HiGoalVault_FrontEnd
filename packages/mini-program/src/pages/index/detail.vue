@@ -13,6 +13,7 @@ const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
 const commentVisible = ref(false)
 const userStore = useUserStore()
+const commentId = ref('')
 
 async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
@@ -74,13 +75,17 @@ onShareAppMessage(() => {
 })
 
 onLoad((options) => {
+  commentId.value = options?.commentId || ''
+  if (commentId.value) {
+    commentVisible.value = true
+  }
   getData(options?.id)
 })
 </script>
 
 <template>
   <view>
-    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" />
+    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" :comment-id="commentId" />
 
     <Navbar title="详情" enable-left-slot>
       <template #left>

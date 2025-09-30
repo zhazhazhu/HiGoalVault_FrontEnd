@@ -7,7 +7,7 @@ import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 
-const props = defineProps<{ contentId: string }>()
+const props = defineProps<{ contentId: string, commentId?: string }>()
 const model = defineModel({ type: Boolean, default: false })
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
@@ -224,10 +224,11 @@ onMounted(() => {
         scroll-y
         enhanced
         :show-scrollbar="false"
+        :scroll-into-view="commentId"
         class="max-h-800rpx overflow-y-auto pb-20rpx gap-20rpx py-30rpx"
         @scrolltolower="load"
       >
-        <view-comment-card v-for="item, index in data" :key="item.comment.id" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
+        <view-comment-card v-for="item, index in data" :id="item.comment.id" :key="item.comment.id" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
 
         <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
           <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />

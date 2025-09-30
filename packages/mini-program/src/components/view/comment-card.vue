@@ -5,6 +5,10 @@ import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { formatCommentDate } from '@/utils'
 
+defineProps<{
+  id: string
+}>()
+
 const emit = defineEmits<{
   (e: 'replyComment', comment: CommentResponse['comment']): void
   (e: 'replyReply', reply: ReplyResponse): void
@@ -45,7 +49,8 @@ onMounted(() => {
 
 <template>
   <view class="flex flex-col gap-24rpx w-full mb-24rpx">
-    <view class="flex flex-col gap-14rpx">
+    <!-- <view class="flex flex-col gap-14rpx p-14rpx rounded-20rpx" :class="{ 'bg-#e4e9f5a8': data.comment.id === id }"> -->
+    <view class="flex flex-col gap-14rpx p-14rpx rounded-20rpx">
       <view class="flex items-center gap-10rpx">
         <wd-img round :src="data.comment.face || 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" width="52rpx" height="52rpx" />
         <view class="text-28rpx color-#666666">
