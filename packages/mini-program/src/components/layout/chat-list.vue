@@ -86,7 +86,9 @@ onMounted(() => {
 
 <template>
   <view :class="cs.m('container')" class="mt-10px">
-    <wd-message-box />
+    <wd-root-portal>
+      <wd-message-box />
+    </wd-root-portal>
 
     <wd-button icon="add" plain block @click="onCreateNewChat">
       新对话
