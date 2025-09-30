@@ -52,6 +52,13 @@
         "navigationBarTitleText": "设置",
         "disableScroll": true
       }
+    },
+    {
+      "path": "pages/user/message",
+      "style": {
+        "navigationBarTitleText": "用户消息",
+        "disableScroll": true
+      }
     }
   ],
   "entryPagePath": "pages/index/index",
