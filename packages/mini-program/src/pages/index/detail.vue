@@ -45,6 +45,8 @@ function gotoBack() {
   uni.navigateBack()
 }
 async function onConfirm() {
+  if (!commentContent.value)
+    return
   const res = await api.addComment({ commentContent: commentContent.value, contentId: data.value!.id })
   if (res.code === 200) {
     commentContent.value = ''
