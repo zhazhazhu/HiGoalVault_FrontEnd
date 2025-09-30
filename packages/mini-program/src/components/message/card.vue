@@ -171,7 +171,8 @@ function onMessageToolOperate(type: MessageToolOperateType) {
             <view class="i-material-symbols-arrow-forward-ios-rounded size-30rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
           </view>
           <view class="flex-1" />
-          <view class="favorite-icon size-30px" :class="{ 'bg-[var(--hi-primary-color)]': currentAnswer.isCollect === Truth.TRUE }" @click="onFavorite" />
+          <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-baseline-star-border size-24px mx-4px" @click="onFavorite" />
+          <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-baseline-star size-24px color-[var(--hi-primary-color)] mx-4px" @click="onFavorite" />
           <view class="share-icon size-30px" @click="onPublish" />
           <view class="wechat-icon size-30px" @click="openSharePopup" />
         </view>
