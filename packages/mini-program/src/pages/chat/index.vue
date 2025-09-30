@@ -152,7 +152,7 @@ onShareAppMessage(async ({ from }) => {
     <container>
       <scroll-view
         id="scroll-view"
-        class="flex flex-1 h-full overflow-y-auto transform"
+        class="flex flex-1 h-full overflow-y-auto [scrollbar-width:none] transform"
         scroll-into-view-alignment="end"
         enhanced
         enable-passive

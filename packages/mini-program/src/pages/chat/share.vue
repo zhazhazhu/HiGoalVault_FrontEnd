@@ -49,11 +49,8 @@ onLoad((options) => {
     <Container custom-class="px-24rpx relative">
       <scroll-view
         id="scroll-view"
-        class="h-[calc(100vh-100px)] overflow-y-auto pt-10px pb-20px"
-        scroll-into-view-alignment="end"
+        class="h-[calc(100vh-100px)] pt-10px pb-20px"
         enhanced
-        enable-passive
-        enable-flex
         :scroll-y="true"
         :show-scrollbar="false"
         :lower-threshold="50"
