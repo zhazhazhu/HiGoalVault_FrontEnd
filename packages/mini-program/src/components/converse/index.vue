@@ -121,6 +121,11 @@ function onVoiceDone(text: string) {
   model.value = text
   messageType.value = 'text'
 }
+function onInputFocus(e) {
+  console.log('input focus', e)
+
+  cursorPosition.value = model.value.length
+}
 
 onMounted(async () => {
   // 确保 WebSocket 连接已建立
@@ -160,9 +165,7 @@ defineExpose({
           :custom-textarea-class="cs.e('textarea')"
           :cursor="cursorPosition"
           :disable-default-padding="true"
-          @focus="() => {
-            cursorPosition = model.length
-          }"
+          @focus="onInputFocus"
           @linechange="onLineChange"
           @keyboardheightchange="onKeyboardHeightChange"
           @confirm="onConfirmMessage"

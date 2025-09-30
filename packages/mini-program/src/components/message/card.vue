@@ -9,9 +9,13 @@ import { useChatStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
 import { markdownToText } from '@/utils'
 
-const props = defineProps<{
-  message: ChatMessageAfter
-}>()
+const props = withDefaults(defineProps<{
+  message: ChatMessageAfter & Record<string, any>
+  readonly?: boolean
+  withAvatar?: boolean
+}>(), {
+  readonly: false,
+})
 
 const messageInject = useMessageInject()
 const cs = useClassesName('message-card')
@@ -40,6 +44,12 @@ function changeCheckbox({ value }: { value: boolean }) {
   else
     messageInject.share.value.ids = messageInject.share.value.ids.filter(item => item !== currentAnswer.value.queryId)
 }
+
+watch(() => messageInject.share.value.isChecked, (val) => {
+  if (!val) {
+    check.value = false
+  }
+})
 
 function onReference(item: ChatMessageReference) {
   uni.setClipboardData({
@@ -135,6 +145,10 @@ function onMessageToolOperate(type: MessageToolOperateType) {
       :custom-shape-class="cs.m('checkbox-shape')"
       @change="changeCheckbox"
     >
+      <view v-if="withAvatar" class="flex items-center gap-20rpx mb-10px">
+        <wd-img :src="message.face" round :width="26" :height="26" />
+        <view>{{ message.nickName }}</view>
+      </view>
       <view ref="userInstance" :class="cs.m('user')">
         {{ message.query }}
       </view>
@@ -146,7 +160,7 @@ function onMessageToolOperate(type: MessageToolOperateType) {
 
         <view v-show="currentAnswer.isLoading" class="i-eos-icons-three-dots-loading text-100rpx color-[var(--hi-primary-color)]" />
 
-        <view v-show="!messageInject.share.value.isChecked" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
+        <view v-show="!messageInject.share.value.isChecked && !readonly" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
           <view class="refresh-icon size-30px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
           <view class="flex items-center text-14px gap-8px">

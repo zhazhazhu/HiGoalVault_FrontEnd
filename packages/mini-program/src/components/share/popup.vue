@@ -12,9 +12,9 @@ const messageInject = inject(messageInjectKey)
 </script>
 
 <template>
-  <wd-popup v-model="model" position="bottom" :modal="false" :z-index="9999">
-    <view class="p-20px h-100px rounded-t-20px">
-      <button open-type="share" :data-ids="messageInject?.share.value.ids" class="share-btn" @tap.stop>
+  <wd-popup v-model="model" root-portal position="bottom" :modal="false" safe-area-inset-bottom custom-class="rounded-t-20px">
+    <view class="p-20px h-100px">
+      <button open-type="share" :data-ids="messageInject?.share.value.ids" class="share-btn">
         <view class="share-wechat-icon" />
         <text>分享好友</text>
       </button>
