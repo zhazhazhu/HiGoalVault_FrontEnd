@@ -31,6 +31,7 @@ import type {
   ReplyListResponse,
   ShareMessageRequest,
   UpdateChat,
+  UpdateUserInfoRequest,
   UserCenterSearchRequest,
   UserInfo,
 } from './types'
@@ -198,6 +199,11 @@ function generateStsTempKey() {
   return http(API.GENERATE_STS_TEMP_KEY).post<GenerateStsTempKeyResponse>()
 }
 
+// 修改用户信息
+function updateUserInfo(query: UpdateUserInfoRequest) {
+  return http(API.UPDATE_USER_INFO).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -233,4 +239,5 @@ export const api = {
   checkFollowUser,
   userCenterSearch,
   generateStsTempKey,
+  updateUserInfo,
 }

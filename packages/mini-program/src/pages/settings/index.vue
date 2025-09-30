@@ -1,11 +1,22 @@
 <script lang='ts' setup>
 import { useClassesName } from '@higoal/hooks'
+import { computed, ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
+import { api } from '@/api'
 import { useUserStore } from '@/store'
 
 const user = useUserStore()
 const cs = useClassesName('settings')
 const message = useMessage()
+const isUpdateNickname = ref(false)
+const userInfo = computed({
+  get() {
+    return user.userInfo
+  },
+  set(val) {
+    user.userInfo = val
+  },
+})
 
 function gotoHome() {
   uni.redirectTo({ url: '/pages/index/index' })
@@ -33,6 +44,21 @@ function openPrivacyPolicy() {
     },
   })
 }
+function onChooseAvatar(e) {
+  console.log(e)
+}
+async function onUpdateNickname() {
+  if (isUpdateNickname.value) {
+    isUpdateNickname.value = false
+    const res = await api.updateUserInfo({ nickName: user.userInfo?.nickName })
+    if (res.code === 200) {
+      console.log('修改昵称成功')
+    }
+  }
+  else {
+    isUpdateNickname.value = true
+  }
+}
 </script>
 
 <template>
@@ -50,9 +76,22 @@ function openPrivacyPolicy() {
 
     <Container custom-class="px-32rpx flex flex-col gap-60rpx">
       <view class="flex items-center flex-col">
-        <wd-img round mode="aspectFill" :src="user.userInfo?.face" width="200rpx" height="200rpx" />
-        <view class="color-#333 text-32rpx font-bold mt-20rpx">
-          {{ user.userInfo?.username }}
+        <view class="relative w-200rpx h-200rpx">
+          <wd-img round mode="aspectFill" :src="user.userInfo?.face" width="200rpx" height="200rpx" />
+          <view class="absolute top-0 left-0 w-100% h-100% bg-black opacity-50 rounded-full flex items-center justify-center">
+            <button :class="cs.m('icon-btn')" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
+              <view class="i-material-symbols-landscape-2-edit-rounded text-60rpx color-white" />
+            </button>
+          </view>
+        </view>
+        <view class="flex items-center">
+          <view class=" mt-20rpx flex items-center gap-10rpx">
+            <wd-input v-if="isUpdateNickname" :model-value="userInfo?.nickName" no-border :autofocus="true" type="nickname" @update:model-value="user.userInfo!.nickName = $event" @blur="onUpdateNickname" />
+            <view v-else class="color-#333 text-32rpx font-bold">
+              {{ userInfo?.nickName }}
+            </view>
+            <view v-if="!isUpdateNickname" class="i-tabler-pencil-minus color-#333 text-36rpx" @click="onUpdateNickname" />
+          </view>
         </view>
       </view>
 
@@ -96,6 +135,16 @@ function openPrivacyPolicy() {
   }
   & + & {
     border-top: 1px solid #e5e5e5;
+  }
+}
+.hi-settings--icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  &::after {
+    display: none;
   }
 }
 </style>

@@ -33,4 +33,5 @@ export enum API {
   CHECK_FOLLOW_USER = '/buyer/member/my/follow/check',
   USER_CENTER_SEARCH = '/buyer/search/processUserCenterSearch',
   GENERATE_STS_TEMP_KEY = '/buyer/thirdCloudPlatform/generateStsTempKey',
+  UPDATE_USER_INFO = '/buyer/passport/member/editOwn',
 }

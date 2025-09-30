@@ -305,3 +305,10 @@ export interface GenerateStsTempKeyResponse {
   tmpSecretKey: string // STS 临时密钥
   token: string // STS 临时密钥
 }
+
+export interface UpdateUserInfoRequest {
+  birthday?: string // 生日
+  face?: string // 头像
+  sex?: Sex // 性别
+  nickName?: string // 昵称
+}
