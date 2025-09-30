@@ -53,7 +53,7 @@ async function collect(queryId: string, index: number) {
     enable-flex
     :scroll-y="true"
     :show-scrollbar="false"
-    class="h-full overflow-y-auto"
+    class="h-full overflow-y-auto [scrollbar-width:none]"
     :class="cs.m('container')"
     :lower-threshold="50"
     @scrolltolower="emit('load')"

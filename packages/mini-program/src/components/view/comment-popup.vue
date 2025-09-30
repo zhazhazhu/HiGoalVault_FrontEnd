@@ -201,7 +201,7 @@ onMounted(() => {
   <wd-popup
     v-model="model"
     position="bottom"
-    custom-style="border-radius:32rpx;"
+    custom-class="rounded-t-32px"
     safe-area-inset-bottom
     lock-scroll
     @close="handleClose"
@@ -251,6 +251,7 @@ onMounted(() => {
             :focus="isFocus"
             :placeholder="placeholder"
             :auto-height="true"
+            :show-confirm-bar="false"
             :cursor-spacing="120"
             :custom-textarea-class="cs.m('textarea')"
             :custom-class="cs.m('textarea-container')"

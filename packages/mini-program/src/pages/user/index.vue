@@ -206,7 +206,7 @@ onLoad((options) => {
     </Navbar>
 
     <scroll-view
-      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-100px)] overflow-y-auto box-border"
+      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-110px)] [scrollbar-width:none] box-border"
       scroll-y
       enhanced
       :show-scrollbar="false"
@@ -275,10 +275,10 @@ onLoad((options) => {
             <view>
               <view class="flex flex-wrap gap-12rpx mb-20rpx">
                 <Tag type="warning" :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
-                  赞过99
+                  赞过{{ interactedLikedContent.total }}
                 </Tag>
                 <Tag type="warning" :active="interactActiveTab === 'collected'" @tap="onClickInteractTab('collected')">
-                  收藏99
+                  收藏{{ interactedCollectedContent.total }}
                 </Tag>
               </view>
 

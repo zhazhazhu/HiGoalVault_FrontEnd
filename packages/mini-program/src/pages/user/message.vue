@@ -76,7 +76,7 @@ onMounted(() => {
       </template>
     </Navbar>
 
-    <Container custom-class="px-24rpx">
+    <Container>
       <scroll-view
         scroll-into-view-alignment="end"
         enhanced
@@ -87,11 +87,11 @@ onMounted(() => {
         :lower-threshold="50"
         @scrolltolower="load"
       >
-        <view class="flex flex-col gap-20rpx">
-          <view v-for="item, index in data" :key="index" class="bg-white flex flex-col gap-20rpx rounded-20rpx py-20rpx px-30rpx" @click="gotoContentDetail(item)">
+        <view class="bg-white flex flex-col gap-20rpx py-32rpx">
+          <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-1 border-gray-1 border-solid" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx">
               <wd-img :src="item.face" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.commenterId)" />
-              <view class="flex flex-col gap-10rpx">
+              <view class="flex flex-col gap-4rpx">
                 <view class="flex items-center gap-10rpx font-500" @click.stop="gotoUser(item.commenterId)">
                   <view class="text-34rpx color-#333">
                     {{ item.nickName }}
@@ -100,11 +100,11 @@ onMounted(() => {
                     作者
                   </view>
                 </view>
-                <view class="text-20rpx color-gray-4">
+                <view class="text-22rpx color-gray-4">
                   回复了你的评论 {{ formatCommentDate(item.createTime) }}
                 </view>
 
-                <view class="font-500 text-28rpx color-#333">
+                <view class="font-500 text-28rpx color-#333 mt-6px">
                   {{ item.commentContent }}
                 </view>
               </view>
@@ -125,7 +125,7 @@ onMounted(() => {
               </view>
 
               <view class="flex items-center gap-6rpx">
-                <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': item?.isLike }" @click.stop="onThumbsUp(item, index)" />
+                <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-4rpx" :class="{ 'color-red': item?.isLike }" @click.stop="onThumbsUp(item, index)" />
                 <view class="text-24rpx color-#666">
                   {{ item.likeCount }}
                 </view>
