@@ -11,7 +11,7 @@ const emit = defineEmits<{
 
 const cs = useClassesName('voice')
 const isRecording = ref(false)
-const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>(null)
+const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>('microphone')
 const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
 const globalStore = useGlobalStore()
 const qCloudAIVoice = requirePlugin('QCloudAIVoice')
@@ -21,6 +21,7 @@ const speechText = ref('')
 const record = uni.getRecorderManager()
 const voiceId = ref('')
 const decibel = ref(0)
+const textRecognitionVisible = ref(false)
 
 record.onFrameRecorded((res) => {
   if (res.frameBuffer && isConnecting.value) {
@@ -49,9 +50,15 @@ function onTouchStart() {
 }
 
 function onTouchEnd() {
-  recordPopupFocusedButton.value = null
-  isRecording.value = false
+  if (recordPopupFocusedButton.value === 'cancel') {
+    speechText.value = ''
+  }
 
+  if (recordPopupFocusedButton.value !== 'text') {
+    recordPopupFocusedButton.value = null
+  }
+
+  isRecording.value = false
   stop()
 }
 function onTouchMove(event) {
@@ -70,12 +77,15 @@ function onTouchMove(event) {
 
       if (touchX < leftThreshold) {
         recordPopupFocusedButton.value = 'cancel'
+        textRecognitionVisible.value = false
       }
       else if (touchX > rightThreshold) {
         recordPopupFocusedButton.value = 'text'
+        textRecognitionVisible.value = true
       }
       else {
         recordPopupFocusedButton.value = 'microphone'
+        textRecognitionVisible.value = false
       }
     }
   }).exec()
@@ -103,6 +113,20 @@ function stop() {
   record.stop()
   isConnecting.value = false
   emit('done', speechText.value)
+}
+function onConfirm() {
+  isRecording.value = false
+  textRecognitionVisible.value = false
+  isConnecting.value = false
+  emit('done', speechText.value)
+  speechText.value = ''
+}
+function onCloseTextRecognition() {
+  isRecording.value = false
+  textRecognitionVisible.value = false
+  isConnecting.value = false
+  emit('done', speechText.value)
+  speechText.value = ''
 }
 
 onLoad(async () => {
@@ -138,7 +162,41 @@ onLoad(async () => {
 </script>
 
 <template>
-  <RecordPopup ref="recordPopupRef" v-model="isRecording" :speech-text="speechText" :decibel="decibel" :focused-button="recordPopupFocusedButton" />
+  <root-portal>
+    <RecordPopup ref="recordPopupRef" v-model="isRecording" :speech-text="speechText" :decibel="decibel" :focused-button="recordPopupFocusedButton" />
+
+    <view v-show="textRecognitionVisible" class="w-screen h-screen fixed top-0 left-0 flex flex-col items-center justify-end z-10" :class="[cs.m('text-recognition-wrapper'), cs.is('transparent', isRecording)]">
+      <view class="p-8% w-full h-70% box-border flex flex-col justify-between" :style="{ paddingBottom: globalStore.keyboardHeight ? `${globalStore.keyboardHeight + 30}px` : '8%' }">
+        <view class="bg-white p-20rpx rounded-20rpx max-w-500px" :class="cs.m('textarea-wrapper')">
+          <wd-textarea
+            v-model="speechText"
+            no-border
+            confirm-type="send"
+            :show-confirm-bar="false"
+            :auto-height="true"
+            :custom-textarea-class="cs.m('textarea')"
+            :custom-class="cs.m('textarea-container')"
+            :placeholder-class="cs.m('textarea-placeholder')"
+            @confirm="onConfirm"
+          />
+        </view>
+
+        <view v-show="!isRecording" class="w-full flex justify-between mt-20rpx">
+          <wd-button
+            type="info"
+            size="large"
+            custom-style="--wot-button-large-height: 55px;--wot-button-info-bg-color: #212121;--wot-button-info-color: white;"
+            @click="onCloseTextRecognition"
+          >
+            取消
+          </wd-button>
+          <wd-button type="info" size="large" custom-style="--wot-button-large-height: 55px" @click="onConfirm">
+            发送
+          </wd-button>
+        </view>
+      </view>
+    </view>
+  </root-portal>
 
   <view :class="cs.m('wrapper')" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd">
     按住 说话
@@ -151,5 +209,29 @@ onLoad(async () => {
   font-weight: bold;
   text-align: center;
   line-height: 36px;
+}
+
+.hi-voice--textarea-wrapper {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    right: 15%;
+    bottom: -5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background-color: white;
+    transform: rotate(45deg);
+  }
+}
+
+.hi-voice--text-recognition-wrapper {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.45));
+  justify-content: flex-end;
+  &.is-transparent {
+    background: transparent;
+    justify-content: center;
+  }
 }
 </style>

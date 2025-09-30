@@ -37,7 +37,6 @@ defineExpose({
     position="bottom"
     lazy-render
     lock-scroll
-    root-portal
     custom-style="border-radius: 20px 20px 0 0;"
     @close="handleClose"
   >

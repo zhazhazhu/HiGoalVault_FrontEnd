@@ -7,6 +7,7 @@ import { useStoreRef } from '@/composables'
 interface Status {
   windowInfo: UniApp.GetWindowInfoResult | null
   hasKeyboard: boolean
+  keyboardHeight: number
   stsTempConfig: Ref<GenerateStsTempKeyResponse | null>
 }
 
@@ -14,6 +15,7 @@ export const useGlobalStore = defineStore('global', {
   state: (): Status => ({
     windowInfo: null,
     hasKeyboard: false,
+    keyboardHeight: 0,
     stsTempConfig: useStoreRef('qCloudAIVoice', null),
   }),
   actions: {
@@ -23,8 +25,7 @@ export const useGlobalStore = defineStore('global', {
     },
     syncKeyboardHeight() {
       uni.onKeyboardHeightChange((res) => {
-        console.log('onKeyboardHeightChange', res)
-
+        this.keyboardHeight = res.height
         this.hasKeyboard = res.height > 0
       })
     },

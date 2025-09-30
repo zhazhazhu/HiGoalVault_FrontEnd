@@ -124,17 +124,31 @@ page {
   max-height: 50px;
 }
 
+.hi-voice--textarea {
+  max-height: 90px;
+}
+
 .hi-detail--textarea-container,
-.hi-comment-popup--textarea-container {
+.hi-comment-popup--textarea-container,
+.hi-voice--textarea-container {
   --wot-textarea-bg: #f1f1f1;
   padding: 14px !important;
 }
 
+.hi-voice--textarea-container {
+  --wot-textarea-bg: white;
+}
+
 .hi-detail--textarea-placeholder,
-.hi-comment-popup--textarea-placeholder {
+.hi-comment-popup--textarea-placeholder,
+.hi-voice--textarea-placeholder {
   color: #9ca3af;
   font-size: 14px;
   line-height: 24px;
+}
+
+.hi-voice--textarea-placeholder {
+  color: #333;
 }
 
 .hi-user--tab-nav .hi-tab-nav--left {
