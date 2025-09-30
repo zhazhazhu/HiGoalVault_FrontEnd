@@ -60,7 +60,9 @@ function gotoUser() {
     </view>
 
     <view class="flex items-center color-#666 gap-30rpx">
-      <view class="wechat-icon bg-#666 size-50rpx" @click.stop />
+      <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
+        <view class="wechat-icon bg-#666 size-50rpx" />
+      </button>
       <view class="flex-1" />
       <view class="flex items-center">
         <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLiked }" @click.stop="onThumbsUp" />

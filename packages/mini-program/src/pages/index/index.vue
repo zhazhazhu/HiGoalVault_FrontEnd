@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Page, PublishMessageListResponse } from '@/api'
 import type Converse from '@/components/converse/index.vue'
+import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
@@ -58,11 +59,26 @@ function onChangeChat() {
 function onClickSearch() {
   uni.navigateTo({ url: '/pages/search/index' })
 }
+
+onShareAppMessage(({ target, from }) => {
+  if (from === 'button') {
+    return {
+      title: '我发布了最新的行情，快来看看吧',
+      path: `/pages/index/detail?id=${target.dataset.id}`,
+    }
+  }
+  return {
+    title: '分享',
+    path: '/pages/index/index',
+  }
+})
 onMounted(() => {
   chatStore.currentChatId = ''
   reset()
   getData()
   // uni.navigateTo({ url: '/pages/user/index?id=1966062825596010496' })
+  // uni.navigateTo({ url: '/pages/chat/index' })
+  // uni.navigateTo({ url: '/pages/user/message' })
 })
 </script>
 
