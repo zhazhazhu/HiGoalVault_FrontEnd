@@ -142,7 +142,7 @@ onLoad((options) => {
             </text>
           </view>
           <view class="flex flex-col items-center" @click="onThumbsUp">
-            <view class="thumb-up-icon size-60rpx" :class="{ 'bg-red': data?.isLiked }" />
+            <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLiked }" />
             <text class="text-22rpx color-gray-6 font-bold">
               {{ data?.likeCount }}
             </text>

@@ -52,7 +52,7 @@ async function onLikeReply(data: ReplyResponse) {
         </view>
       </view>
       <view class="flex items-center gap-6rpx color-#666" @click="onLikeReply(data)">
-        <view class="thumb-up-icon size-42rpx" :class="{ 'color-red': data.isLike }" />
+        <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" />
         <view>{{ data.likeCount }}</view>
       </view>
     </view>

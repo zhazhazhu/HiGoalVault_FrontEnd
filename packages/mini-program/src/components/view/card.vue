@@ -63,7 +63,7 @@ function gotoUser() {
       <view class="wechat-icon bg-#666 size-50rpx" @click.stop />
       <view class="flex-1" />
       <view class="flex items-center">
-        <view class="thumb-up-icon bg-#666 size-46rpx" :class="{ 'bg-red': data.isLiked }" @click.stop="onThumbsUp" />
+        <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLiked }" @click.stop="onThumbsUp" />
         <view class="text-26rpx">
           {{ data.likeCount }}
         </view>

@@ -72,7 +72,7 @@ onMounted(() => {
         </view>
 
         <view class="flex items-center gap-6rpx color-#666" @click="onLikeComment(data.comment)">
-          <view class="thumb-up-icon size-42rpx" :class="{ 'color-red': data.comment.isLike }" />
+          <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.comment.isLike }" />
           <view>{{ data.comment.likeCount }}</view>
         </view>
       </view>

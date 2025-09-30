@@ -125,7 +125,7 @@ onMounted(() => {
               </view>
 
               <view class="flex items-center gap-6rpx">
-                <view class="thumb-up-icon bg-#666 size-46rpx" :class="{ 'bg-red': item.isLike }" @click.stop="onThumbsUp(item, index)" />
+                <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': item?.isLike }" @click.stop="onThumbsUp(item, index)" />
                 <view class="text-24rpx color-#666">
                   {{ item.likeCount }}
                 </view>
