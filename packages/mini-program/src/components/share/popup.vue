@@ -5,15 +5,11 @@ import { messageInjectKey } from '@/composables/inject'
 const model = defineModel({ type: Boolean, default: false })
 
 const messageInject = inject(messageInjectKey)
-
-// function shareToWechat() {
-//   console.log('messageInject', messageInject?.share.value.ids)
-// }
 </script>
 
 <template>
   <wd-popup v-model="model" root-portal position="bottom" :modal="false" safe-area-inset-bottom custom-class="rounded-t-20px">
-    <view class="p-20px h-100px">
+    <view class="h-110px flex items-center justify-center flex-col">
       <button open-type="share" :data-ids="messageInject?.share.value.ids" class="share-btn">
         <view class="share-wechat-icon" />
         <text>分享好友</text>
@@ -24,17 +20,7 @@ const messageInject = inject(messageInjectKey)
 
 <style lang='scss' scoped>
 .share-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
-  border-radius: 12px;
-  &::after {
-    display: none;
-  }
+  display: contents;
   view {
     border-radius: 100%;
     width: 48px;
