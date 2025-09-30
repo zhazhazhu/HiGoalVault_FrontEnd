@@ -33,6 +33,7 @@ import type {
   ReplyListRequest,
   ReplyListResponse,
   ShareMessageRequest,
+  Tag,
   UpdateChat,
   UpdateUserInfoRequest,
   UserCenterSearchRequest,
@@ -212,6 +213,11 @@ function getMyCommentedRepliedList(query: MyCommentedRepliedListRequest) {
   return http(API.GET_MY_COMMENTED_REPLIED_LIST).post<MyCommentedRepliedListResponseWithPage>(query)
 }
 
+// 获取热门标签
+function getPopularTags() {
+  return http(API.GET_POPULAR_TAGS).get<Tag[]>()
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -249,4 +255,5 @@ export const api = {
   generateStsTempKey,
   updateUserInfo,
   getMyCommentedRepliedList,
+  getPopularTags,
 }

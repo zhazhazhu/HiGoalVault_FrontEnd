@@ -349,5 +349,14 @@ export interface MyCommentedRepliedListResponse {
   likeCount: number // 点赞数量
   title: string // 帖子标题
   createTime: string // 创建时间
+}
 
+export interface Tag {
+  id: string
+  createBy: string
+  createTime: string
+  tagName: string
+  tagColor: string
+  tagDescription: string
+  useCount: number
 }

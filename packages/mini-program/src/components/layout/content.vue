@@ -1,6 +1,8 @@
 <script lang='ts' setup>
+import type { Tag } from '@/api'
 import { useClassesName } from '@higoal/hooks'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { api } from '@/api'
 import { useChatStore, useUserStore } from '@/store'
 
 const emit = defineEmits<{
@@ -12,7 +14,14 @@ const active = ref('chat')
 const userStore = useUserStore()
 const chatStore = useChatStore()
 const isEdit = ref(false)
+const popularTags = ref<Tag[]>([])
 
+async function getData() {
+  const res = await api.getPopularTags()
+  if (res.code === 200) {
+    popularTags.value = res.result
+  }
+}
 function onEditChatList() {
   isEdit.value = !isEdit.value
 }
@@ -22,6 +31,10 @@ function gotoSettings() {
 function gotoUser() {
   uni.navigateTo({ url: '/pages/user/index' })
 }
+
+onMounted(() => {
+  getData()
+})
 </script>
 
 <template>
@@ -39,7 +52,16 @@ function gotoUser() {
         </template>
       </template>
       <tabs-item name="browse" label="发现">
-        TODO
+        <view class="flex flex-col gap-10px mt-10px">
+          <view class="text-16px font-bold text-h1-color">
+            热门
+          </view>
+          <view class="flex flex-col gap-10px ml-10px">
+            <view v-for="item in popularTags" :key="item.id" class="text-14px text-h3-color">
+              {{ item.tagName }}
+            </view>
+          </view>
+        </view>
       </tabs-item>
       <tabs-item name="chat" label="对话">
         <LayoutChatList :is-edit="isEdit" @change-chat="$emit('changeChat')" />
