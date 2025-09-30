@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { AnswerBefore, Page, ProfileStatistics, PublishMessageListResponse } from '@/api'
+import type { AnswerBefore, Page, ProfileStatistics, PublishMessageListResponse, UserInfo } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref, watch } from 'vue'
@@ -31,11 +31,21 @@ const interactedCollectedContent = ref<{ total: number, data: AnswerBefore[] }>(
 })
 const userId = ref<string>('')
 const isFollowed = ref(false)
+const userInfo = ref<UserInfo | null>(null)
 
 async function getData() {
-  const res = await api.getProfileStatistics(userId.value || userStore.userInfo!.id)
-  if (res.code === 200) {
-    data.value = res.result
+  if (userId.value) {
+    const res = await api.getUserInfo(userId.value)
+    if (res.code === 200) {
+      userInfo.value = res.result
+    }
+  }
+  else {
+    userInfo.value = userStore.userInfo
+  }
+  const res2 = await api.getProfileStatistics(userId.value || userStore.userInfo!.id)
+  if (res2.code === 200) {
+    data.value = res2.result
   }
 }
 function resetData() {
@@ -157,6 +167,9 @@ async function onFollowUser(followAction: 'follow' | 'unfollow') {
 function gotoSearch() {
   uni.navigateTo({ url: `/pages/search/index?userId=${userId.value}` })
 }
+function gotoMessage() {
+  uni.navigateTo({ url: '/pages/user/message' })
+}
 
 onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
@@ -200,9 +213,9 @@ onLoad((options) => {
     >
       <view class="flex items-center justify-between gap-20rpx">
         <view class="flex items-center gap-10rpx">
-          <wd-img :src="userStore.userInfo!.face" round :width="60" :height="60" mode="aspectFill" />
+          <wd-img :src="userInfo?.face" round :width="60" :height="60" mode="aspectFill" />
           <view class="text-35rpx font-bold ml-10rpx">
-            {{ userStore.userInfo!.nickName }}
+            {{ userInfo?.nickName }}
           </view>
         </view>
 
@@ -241,7 +254,7 @@ onLoad((options) => {
           <template #edit>
             <view class="flex items-center gap-30rpx">
               <view class="user-search-icon" @click="gotoSearch" />
-              <view v-if="!userId" class="user-message-icon" />
+              <view v-if="!userId" class="user-message-icon" @click="gotoMessage" />
               <template v-else>
                 <wd-button v-if="!isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
                   关注

@@ -56,6 +56,7 @@ export const useUserStore = defineStore('user', {
     logout() {
       this.auth = null
       this.userInfo = null
+      uni.clearStorage()
     },
   },
 })

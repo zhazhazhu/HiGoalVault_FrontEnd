@@ -34,4 +34,5 @@ export enum API {
   USER_CENTER_SEARCH = '/buyer/search/processUserCenterSearch',
   GENERATE_STS_TEMP_KEY = '/buyer/thirdCloudPlatform/generateStsTempKey',
   UPDATE_USER_INFO = '/buyer/passport/member/editOwn',
+  GET_MY_COMMENTED_REPLIED_LIST = '/buyer/member/my/comment-and-reply/getCommentAndReplyForMeWithContentByPage',
 }

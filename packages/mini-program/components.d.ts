@@ -48,7 +48,6 @@ declare module 'vue' {
     WdLoading: typeof import('wot-design-uni/components/wd-loading/wd-loading.vue')['default']
     WdMessageBox: typeof import('wot-design-uni/components/wd-message-box/wd-message-box.vue')['default']
     WdPopup: typeof import('wot-design-uni/components/wd-popup/wd-popup.vue')['default']
-    WdRootPortal: typeof import('wot-design-uni/components/wd-root-portal/wd-root-portal.vue')['default']
     WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
     WdTextarea: typeof import('wot-design-uni/components/wd-textarea/wd-textarea.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']

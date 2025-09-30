@@ -21,6 +21,8 @@ import type {
   LikeContentRequest,
   LikeReplyRequest,
   LoginResult,
+  MyCommentedRepliedListRequest,
+  MyCommentedRepliedListResponseWithPage,
   Page,
   ProfileStatistics,
   PublishListRequest,
@@ -53,8 +55,8 @@ function refreshToken(refreshToken: string) {
 }
 
 // 获取用户信息
-function getUserInfo() {
-  return http(API.USER_INFO).get<UserInfo>()
+function getUserInfo(memberId?: string) {
+  return http(API.USER_INFO).post<UserInfo>({ memberId })
 }
 
 // 获取消息列表
@@ -205,6 +207,11 @@ function updateUserInfo(query: UpdateUserInfoRequest) {
   return http(API.UPDATE_USER_INFO).post<boolean>(query)
 }
 
+// 分页获取评论我和回复我的聚合列表（带内容）
+function getMyCommentedRepliedList(query: MyCommentedRepliedListRequest) {
+  return http(API.GET_MY_COMMENTED_REPLIED_LIST).post<MyCommentedRepliedListResponseWithPage>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -241,4 +248,5 @@ export const api = {
   userCenterSearch,
   generateStsTempKey,
   updateUserInfo,
+  getMyCommentedRepliedList,
 }

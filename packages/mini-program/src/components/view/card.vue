@@ -22,12 +22,15 @@ async function onThumbsUp() {
     data.value.likeCount = data.value.isLiked ? data.value.likeCount + 1 : data.value.likeCount - 1
   }
 }
+function gotoUser() {
+  uni.navigateTo({ url: `/pages/user/index?id=${data.value.memberId}` })
+}
 </script>
 
 <template>
   <view :class="cs.m('container')">
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
-      <view class="flex items-center">
+      <view class="flex items-center" @click="gotoUser">
         <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data.face" />
         <text class="ml-16rpx">
           {{ data.nickName }}

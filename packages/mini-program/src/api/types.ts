@@ -326,3 +326,27 @@ export interface UpdateUserInfoRequest {
   sex?: Sex // 性别
   nickName?: string // 昵称
 }
+
+export interface MyCommentedRepliedListRequest extends Page {
+  memberId?: string
+}
+
+export interface MyCommentedRepliedListResponseWithPage extends PageResult {
+  records: MyCommentedRepliedListResponse[]
+}
+
+export interface MyCommentedRepliedListResponse {
+  commentContent: string // 评论内容
+  commentId: string // 评论id
+  contentId: string // 帖子id
+  content: string // 帖子内容
+  commentStatus: 0 | 1 // 评论状态 0 已删除 1 正常
+  commentType: 0 | 1 // 评论类型 1 评论 2 回复
+  face: string // 发帖人头像
+  nickName: string // 发帖人昵称
+  isLike: boolean // 是否点赞
+  likeCount: number // 点赞数量
+  title: string // 帖子标题
+  createTime: string // 创建时间
+
+}

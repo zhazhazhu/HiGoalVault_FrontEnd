@@ -17,6 +17,7 @@ watch(() => userStore.accessToken, async (val) => {
 onLaunch(async () => {
   globalStore.syncStatusBarHeight()
   globalStore.syncKeyboardHeight()
+  userStore.getUserInfo()
 
   uni.getPrivacySetting({
     success: (res) => {
