@@ -61,7 +61,7 @@ export interface WsMessageResponse {
   id: string
   code: '200'
   type: 'message' | 'stream-end'
-  data: AnswerAfter | null
+  data: (AnswerAfter & Record<string, any>) | null
 }
 
 export interface WsMessageResponseBefore {

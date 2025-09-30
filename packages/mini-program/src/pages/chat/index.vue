@@ -4,7 +4,7 @@ import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
-import { onMounted, provide, ref, watch } from 'vue'
+import { computed, onMounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { messageInjectKey } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
@@ -29,20 +29,27 @@ const scrollTop = ref(0)
 const showSidebar = ref(false)
 const isFinish = ref(false)
 const websocketStore = useWebsocketStore()
+const messages = computed(() => chatStore.messages)
 
 websocketStore.receiveMessage((data) => {
   console.log('onMessage', data)
   if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
     return
   const currentMessage = chatStore.currentTemporaryMessage.chatQueryAnswerList.find(item => item.runId === chatStore.currentRunId)
+
   if (!currentMessage)
     return
 
   currentMessage.isLoading = true
   if (data.code === '200') {
-    data.data?.response && (currentMessage.response += data.data?.response)
-    data.data?.message && (currentMessage.message += data.data?.message)
-    data.data?.reference && (currentMessage.reference = data.data?.reference)
+    chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+      response: currentMessage.response += (data.data?.response || ''),
+      message: currentMessage.message += (data.data?.message || ''),
+      data: data.data?.data,
+      reference: data.data?.reference,
+      queryId: data.data?.query_id,
+    })
+
     scrollToTop()
   }
   if (data.type === 'stream-end') {
@@ -158,7 +165,7 @@ onShareAppMessage(async ({ from }) => {
         @scrolltolower="loadMessage"
       >
         <view :class="cs.m('wrapper')" class="px-32rpx w-full">
-          <MessageCard v-for="item in chatStore.messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
+          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
 
           <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
             <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
