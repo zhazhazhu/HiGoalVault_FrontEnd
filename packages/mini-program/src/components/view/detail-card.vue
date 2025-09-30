@@ -57,7 +57,7 @@ onMounted(() => {
 
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center">
-        <wd-img width="52rpx" height="56rpx" round mode="aspectFill" :src="data?.face" />
+        <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data?.face" />
         <text class="ml-16rpx">
           {{ data?.nickName }}
         </text>

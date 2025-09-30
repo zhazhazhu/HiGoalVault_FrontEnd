@@ -155,6 +155,11 @@ page {
   gap: 70rpx !important;
 }
 
+.hi-share--wrapper .hi-message-card--wrapper {
+  transform: scaleY(1) !important;
+  -webkit-transform: scaleY(1) !important;
+}
+
 .share-btn {
   display: flex;
   flex-direction: column;

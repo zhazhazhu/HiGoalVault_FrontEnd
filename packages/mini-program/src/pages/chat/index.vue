@@ -111,7 +111,7 @@ onMounted(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
   getMessage()
-  // uni.navigateTo({ url: '/pages/chat/share?id=d55d1548-e18b-4d7d-acfa-c890a0d63985' })
+  // uni.navigateTo({ url: '/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
 
 onShareAppMessage(async ({ from }) => {
@@ -120,6 +120,7 @@ onShareAppMessage(async ({ from }) => {
     path: '/pages/chat/index',
   }
   if (from === 'button') {
+    share.value.isChecked = false
     const data = await api.shareMessage({ queryIds: share.value.ids, userId: userStore.userInfo!.id })
     result.path = `/pages/chat/share?id=${data.result.shareId}`
     share.value.ids = []
@@ -129,11 +130,9 @@ onShareAppMessage(async ({ from }) => {
 </script>
 
 <template>
-  <root-portal>
-    <share-popup v-model="share.isChecked" />
-  </root-portal>
-
   <Layout v-model="showSidebar" @change-chat="refreshMessage" @tap="currentToolMessageId = null">
+    <SharePopup v-model="share.isChecked" />
+
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">
       <template #title>
         <tabs @tab-change="onTabChange($event as any)">
