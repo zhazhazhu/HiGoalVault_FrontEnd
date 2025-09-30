@@ -187,7 +187,7 @@ defineExpose({
 
 <style lang='scss' scoped>
 .hi-converse--wrapper {
-  margin-top: 20px;
+  padding-top: 10px;
 }
 .hi-converse--container {
   padding: 30rpx 40rpx;

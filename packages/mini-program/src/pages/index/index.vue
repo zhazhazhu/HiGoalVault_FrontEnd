@@ -77,7 +77,7 @@ onMounted(() => {
         class="overflow-hidden"
         custom-content-class="mt-10px"
         :custom-nav-class="cs.m('tab-nav')"
-        :style="{ height: `calc(100% - ${140}px)` }"
+        :style="{ height: `calc(100% - ${120}px)` }"
         @edit="onClickSearch"
         @tab-change="onTabChange"
       >
