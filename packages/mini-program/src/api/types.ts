@@ -26,6 +26,7 @@ export interface Page {
   pageNumber?: number
   sort?: string
   order?: 'asc' | 'desc'
+  [key: string]: any
 }
 
 export interface PageResult {
@@ -45,6 +46,11 @@ export interface ChatMessageBefore {
   query: string // 用户问题
   msgId: string
   chatQueryAnswerList: AnswerBefore[]
+}
+
+export interface ChatMessageWithShareBefore extends ChatMessageBefore {
+  face: string
+  nickName: string
 }
 
 export interface AnswerBefore {
@@ -69,8 +75,16 @@ export interface ChatMessageAfter extends Omit<ChatMessageBefore, 'chatQueryAnsw
   chatQueryAnswerList: AnswerAfter[]
 }
 
+export interface ChatMessageWithShare extends Omit<ChatMessageWithShareBefore, 'chatQueryAnswerList'> {
+  chatQueryAnswerList: AnswerAfter[]
+}
+
 export interface ChatMessageWithPage extends PageResult {
   records: ChatMessageBefore[]
+}
+
+export interface ChatMessageWithShareWithPage extends PageResult {
+  records: ChatMessageWithShareBefore[]
 }
 
 export interface ChatMessageStockData {

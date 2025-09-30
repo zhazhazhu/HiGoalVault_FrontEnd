@@ -5,6 +5,7 @@ import type {
   Chat,
   ChatHistoryRequestQuery,
   ChatMessageWithPage,
+  ChatMessageWithShareBefore,
   ChatRequestQuery,
   ChatWithPage,
   CommentListRequest,
@@ -102,8 +103,8 @@ function shareMessage(query: ShareMessageRequest) {
 }
 
 // 获取分享消息列表
-function getShareMessageList(shareId: string) {
-  return http(`${API.GET_SHARE_MESSAGE_LIST}?id=${shareId}`).post<PublishMessageListResponse>()
+function getShareMessageList(query: { shareId: string }) {
+  return http(API.GET_SHARE_MESSAGE_LIST).post<ChatMessageWithShareBefore[]>(query)
 }
 
 // 获取公共消息详情
