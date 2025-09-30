@@ -112,7 +112,7 @@ onMounted(() => {
                 {{ item.title }}
               </view>
               <view :class="cs.m('username')">
-                {{ userStore.userInfo?.username }}
+                {{ userStore.userInfo?.nickName }}
               </view>
             </view>
             <view v-if="!isEdit" :class="cs.m('time')">
@@ -150,6 +150,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     flex: 1;
+    width: calc(100% - 50px);
   }
   .hi-chat-list--title {
     font-size: 14px;
@@ -157,13 +158,18 @@ onMounted(() => {
     line-height: 19px;
     font-weight: bold;
     margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .hi-chat-list--time {
+    width: 60px;
     font-size: 12px;
     color: var(--hi-h3-color);
     line-height: 18px;
     display: flex;
     align-items: flex-end;
+    justify-content: flex-end;
   }
   .hi-chat-list--username {
     font-size: 12px;
