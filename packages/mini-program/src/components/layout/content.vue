@@ -70,7 +70,7 @@ onMounted(() => {
 
     <view :class="cs.m('bottom')">
       <view :class="cs.m('user')" @click="gotoUser">
-        <wd-img :src="userStore.userInfo?.face" round :width="26" :height="26" />
+        <wd-img :src="userStore.userInfo?.face" round :width="30" :height="30" />
         <text class="text-16px font-bold text-h1-color ml-8px max-w-120px truncate">
           {{ userStore.userInfo?.nickName }}
         </text>

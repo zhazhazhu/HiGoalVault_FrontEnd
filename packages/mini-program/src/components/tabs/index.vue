@@ -46,7 +46,7 @@ function onTabClick(event: TabChildrenProps) {
 <style lang='scss'>
 .hi-tabs {
   --tab-nav-bg: white;
-  --tab-nav-font-size: 32rpx;
+  --tab-nav-font-size: 36rpx;
   height: 100%;
 }
 </style>
