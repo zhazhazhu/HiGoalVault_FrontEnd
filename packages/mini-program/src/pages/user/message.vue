@@ -104,7 +104,7 @@ onMounted(() => {
                   回复了你的评论 {{ formatCommentDate(item.createTime) }}
                 </view>
 
-                <view class="font-500 text-34rpx color-#333">
+                <view class="font-500 text-28rpx color-#333">
                   {{ item.commentContent }}
                 </view>
               </view>
