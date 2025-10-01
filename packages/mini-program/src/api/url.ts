@@ -36,4 +36,7 @@ export enum API {
   UPDATE_USER_INFO = '/buyer/passport/member/editOwn',
   GET_MY_COMMENTED_REPLIED_LIST = '/buyer/member/my/comment-and-reply/getCommentAndReplyForMeWithContentByPage',
   GET_POPULAR_TAGS = '/buyer/tag/popular',
+  GET_TAG_BY_ID = '/buyer/tag',
+  CHECK_TAG_FOLLOW = '/buyer/tag/follow/follow/check',
+  FOLLOW_TAG = '/buyer/tag/follow/follow',
 }

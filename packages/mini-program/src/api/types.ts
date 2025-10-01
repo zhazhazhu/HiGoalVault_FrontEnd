@@ -360,3 +360,8 @@ export interface Tag {
   tagDescription: string
   useCount: number
 }
+
+export interface FollowTag {
+  followAction: boolean
+  tagId: string
+}

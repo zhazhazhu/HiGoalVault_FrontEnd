@@ -11,6 +11,7 @@ import type {
   CommentListRequest,
   CommentListResponse,
   CommentResponseRequired,
+  FollowTag,
   FollowUserRequest,
   GenerateStsTempKeyResponse,
   GlobalSearchRequest,
@@ -218,6 +219,21 @@ function getPopularTags() {
   return http(API.GET_POPULAR_TAGS).get<Tag[]>()
 }
 
+// 根据ID获取标签
+function getTagById(tagId: string) {
+  return http(`${API.GET_TAG_BY_ID}/${tagId}`).get<Tag>()
+}
+
+// 检查是否关注标签
+function checkTagFollow(tagId: string) {
+  return http(`${API.CHECK_TAG_FOLLOW}?tagId=${tagId}`).get<boolean>()
+}
+
+// 关注标签
+function followTag(query: FollowTag) {
+  return http(API.FOLLOW_TAG).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -256,4 +272,7 @@ export const api = {
   updateUserInfo,
   getMyCommentedRepliedList,
   getPopularTags,
+  getTagById,
+  checkTagFollow,
+  followTag,
 }

@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { PublishMessageListResponse } from '@/api'
+import type { PublishMessageListResponse, Tag } from '@/api'
 import { useClassesName } from '@higoal/hooks'
 import { api } from '@/api'
 import { useUserStore } from '@/store'
@@ -24,6 +24,9 @@ async function onThumbsUp() {
 }
 function gotoUser() {
   uni.navigateTo({ url: `/pages/user/index?id=${data.value.memberId}` })
+}
+function onClickTag({ id }: { id: string }) {
+  uni.navigateTo({ url: `/pages/tag/index?id=${id}` })
 }
 </script>
 
@@ -54,7 +57,7 @@ function gotoUser() {
 
     <!-- 标签区域 - 超出一行隐藏 -->
     <view class="flex gap-20rpx overflow-hidden">
-      <Tag v-for="item in data?.tags" :key="item.id" class="flex-shrink-0">
+      <Tag v-for="item in data?.tags" :key="item.id" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
         #{{ item.tagName }}
       </Tag>
     </view>
