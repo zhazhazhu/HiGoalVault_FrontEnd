@@ -8,7 +8,6 @@ export interface Share {
 
 export interface ChatInject {
   share: Ref<Share>
-  currentToolMessageId: Ref<string | null>
   scrollToTop: () => void
 }
 

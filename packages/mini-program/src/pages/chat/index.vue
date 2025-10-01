@@ -106,11 +106,8 @@ function onTabChange(e: number) {
     uni.redirectTo({ url: '/pages/index/index' })
   }
 }
-const currentToolMessageId = ref<string | null>(null)
-
 provide(messageInjectKey, {
   share,
-  currentToolMessageId,
   scrollToTop,
 })
 
@@ -137,7 +134,7 @@ onShareAppMessage(async ({ from }) => {
 </script>
 
 <template>
-  <Layout v-model="showSidebar" @change-chat="refreshMessage" @tap="currentToolMessageId = null">
+  <Layout v-model="showSidebar" @change-chat="refreshMessage">
     <SharePopup v-model="share.isChecked" />
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">

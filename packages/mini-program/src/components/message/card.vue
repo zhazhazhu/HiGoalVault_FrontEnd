@@ -2,7 +2,7 @@
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import type { MessageToolOperateType } from '@/types'
 import { useClassesName, useUUID } from '@higoal/hooks'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { api, Truth } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store'
@@ -22,7 +22,7 @@ const cs = useClassesName('message-card')
 const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
 const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
 const publishVisible = ref(false)
-const messageToolRect = reactive({
+const messageToolRect = ref({
   x: 0,
   y: 0,
 })
@@ -97,16 +97,10 @@ async function onFavorite() {
   }
 }
 function openTooltips(e) {
-  if (messageInject.currentToolMessageId.value === props.message.msgId)
-    return
-  messageInject.currentToolMessageId.value = props.message.msgId
-  messageToolRect.x = e.detail.x
-  messageToolRect.y = e.detail.y
+  messageToolRect.value.x = e.detail.x
+  messageToolRect.value.y = e.detail.y
   messageToolVisible.value = true
 }
-// const content = computed(() => markdownToText(currentAnswer.value.response))
-const innerAudioContext = uni.createInnerAudioContext()
-innerAudioContext.autoplay = true
 
 function onMessageToolOperate(type: MessageToolOperateType) {
   switch (type) {
@@ -135,6 +129,7 @@ function onMessageToolOperate(type: MessageToolOperateType) {
     <wd-toast />
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
     <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" />
+    <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" @operate="onMessageToolOperate" />
 
     <wd-checkbox
       v-model="check"
@@ -155,8 +150,6 @@ function onMessageToolOperate(type: MessageToolOperateType) {
       </view>
 
       <view :class="cs.m('model')">
-        <message-tool :id="message.msgId" :rect="messageToolRect" @operate="onMessageToolOperate" />
-
         <message-response-card :data="currentAnswer" @longpress="openTooltips" />
 
         <view v-show="currentAnswer.isLoading" class="i-eos-icons-three-dots-loading text-100rpx color-[var(--hi-primary-color)]" />
