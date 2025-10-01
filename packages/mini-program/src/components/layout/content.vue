@@ -31,6 +31,9 @@ function gotoSettings() {
 function gotoUser() {
   uni.navigateTo({ url: '/pages/user/index' })
 }
+function onClickTag(tag: Tag) {
+  uni.navigateTo({ url: `/pages/tag/index?id=${tag.id}` })
+}
 
 onMounted(() => {
   getData()
@@ -53,11 +56,11 @@ onMounted(() => {
       </template>
       <tabs-item name="browse" label="发现">
         <view class="flex flex-col gap-10px mt-10px">
-          <view class="text-16px font-bold text-h1-color">
+          <view class="text-34rpx font-bold text-h1-color">
             热门
           </view>
           <view class="flex flex-col gap-10px ml-10px">
-            <view v-for="item in popularTags" :key="item.id" class="text-14px text-h3-color">
+            <view v-for="item in popularTags" :key="item.id" class="text-30rpx text-h2-color" @click="onClickTag(item)">
               {{ item.tagName }}
             </view>
           </view>
