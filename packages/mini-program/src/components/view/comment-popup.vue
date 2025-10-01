@@ -206,7 +206,7 @@ onMounted(() => {
     lock-scroll
     @close="handleClose"
   >
-    <view class="h-1000rpx p-32rpx relative">
+    <view class="max-h-1000rpx min-h-500rpx p-32rpx relative pb-120rpx">
       <view class="h-50rpx flex items-center justify-between">
         <view class="flex items-center gap-10rpx">
           <text class="font-bold">
@@ -225,7 +225,7 @@ onMounted(() => {
         enhanced
         :show-scrollbar="false"
         :scroll-into-view="commentId"
-        class="max-h-800rpx overflow-y-auto pb-20rpx gap-20rpx py-30rpx"
+        class="max-h-800rpx gap-20rpx py-32rpx"
         @scrolltolower="load"
       >
         <view-comment-card v-for="item, index in data" :id="item.comment.id" :key="item.comment.id" :current-comment-id="commentId" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
@@ -238,7 +238,7 @@ onMounted(() => {
         </view>
       </scroll-view>
 
-      <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx min-h-100rpx">
+      <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx min-h-100rpx bg-white">
         <view class="rounded-12px flex-1 overflow-hidden">
           <wd-textarea
             ref="textareaInstance"
