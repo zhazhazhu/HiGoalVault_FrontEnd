@@ -136,7 +136,7 @@ onMounted(() => {
     <navbar @left-click="onNavbarLeftClick" />
 
     <scroll-view
-      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-100px)] box-border"
+      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
       :style="{ paddingBottom: `${converseHeight}px` }"
       scroll-y
       enhanced
@@ -163,7 +163,7 @@ onMounted(() => {
       </tabs>
     </scroll-view>
 
-    <view class="fixed w-full bottom-0 left-0 bg-white px-32rpx">
+    <view class="fixed w-full bottom-0 left-0 bg-transparent px-32rpx">
       <Converse @resize="handleResize" />
     </view>
   </Layout>

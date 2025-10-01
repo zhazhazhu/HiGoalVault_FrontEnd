@@ -84,7 +84,7 @@ onLoad((option) => {
       enhanced
       enable-passive
       scroll-y
-      class="h-[calc(100vh-100px)] bg-[var(--hi-bg-color)] px-32rpx py-20rpx box-border"
+      class="h-[calc(100vh-80px)] bg-[var(--hi-bg-color)] p-32rpx"
       :lower-threshold="50"
       :show-scrollbar="false"
       @scrolltolower="load"

@@ -91,7 +91,7 @@ defineExpose({
   padding: 0 32rpx;
 }
 .navbar__container .navbar__content {
-  height: 100rpx;
+  height: 80rpx;
   display: flex;
   align-items: flex-start;
   justify-content: center;

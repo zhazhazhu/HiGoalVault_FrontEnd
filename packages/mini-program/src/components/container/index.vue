@@ -16,7 +16,7 @@ function rpxToPx(rpx: number = 0) {
 
 // 计算容器高度
 const containerHeight = computed(() => {
-  const navbarHeight = rpxToPx(100) + globalStore.windowInfo!.statusBarHeight
+  const navbarHeight = rpxToPx(80) + globalStore.windowInfo!.statusBarHeight
   return `calc(100vh - ${navbarHeight}px)`
 })
 </script>

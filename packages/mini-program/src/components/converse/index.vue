@@ -190,7 +190,7 @@ onMounted(async () => {
   padding: 30rpx 40rpx;
   background-color: white;
   box-shadow: 0px 4rpx 16rpx 0px rgba(0, 0, 0, 0.08);
-  border-radius: 40rpx;
+  border-radius: 26rpx;
   display: flex;
   align-items: flex-end;
 }

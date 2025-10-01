@@ -101,7 +101,7 @@ onMounted(() => {
       enable-flex
       :scroll-y="true"
       :show-scrollbar="false"
-      class="h-[calc(100vh-300px)] overflow-y-auto py-10px"
+      class="h-[calc(100vh-280px)] overflow-y-auto py-10px"
     >
       <view v-for="chats, key of chatStore.chatWithType" :key="key" :class="cs.m('chat-type')">
         <view v-if="chats.length">

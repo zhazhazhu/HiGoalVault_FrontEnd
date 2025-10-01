@@ -30,15 +30,12 @@ const cs = useClassesName('tag')
   font-weight: 400;
   &.hi-tag--large {
     font-size: 26rpx;
-    height: 42rpx;
   }
   &.hi-tag--default {
     font-size: 24rpx;
-    height: 36rpx;
   }
   &.hi-tag--small {
     font-size: 18rpx;
-    height: 26rpx;
   }
   &.hi-tag--primary {
     background: #66666614;
