@@ -59,6 +59,13 @@
         "navigationBarTitleText": "用户消息",
         "disableScroll": true
       }
+    },
+    {
+      "path": "pages/tag/index",
+      "style": {
+        "navigationBarTitleText": "标签",
+        "disableScroll": true
+      }
     }
   ],
   "entryPagePath": "pages/index/index",
