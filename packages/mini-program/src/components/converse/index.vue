@@ -12,6 +12,9 @@ withDefaults(defineProps<{
 }>(), {
   placeholder: '你的金融助理，有什么问题可以咨询我',
 })
+const emit = defineEmits<{
+  (e: 'resize', height: number): void
+}>()
 
 const model = defineModel({ type: String, default: '' })
 const cs = useClassesName('converse')
@@ -28,10 +31,10 @@ const messageInject = useMessageInject()
 
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
-const height = ref(0)
 
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
+  getConverseHeight()
 }
 
 function onKeyboardHeightChange(e) {
@@ -103,16 +106,11 @@ function onStopSend() {
 }
 
 function getConverseHeight() {
-  if (!instance) {
-    console.error('无法获取组件实例。')
-    return
-  }
-
   nextTick(() => {
     query
       .select('.hi-converse--wrapper')
       .boundingClientRect((rect) => {
-        height.value = (rect as any).height + 20
+        emit('resize', (rect as any).height)
       })
       .exec()
   })
@@ -135,10 +133,6 @@ onMounted(async () => {
     sendWaitingMessage()
   }
   getConverseHeight()
-})
-
-defineExpose({
-  height,
 })
 </script>
 

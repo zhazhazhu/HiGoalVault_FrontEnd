@@ -5,6 +5,9 @@ import { api } from '@/api'
 import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 
+const props = defineProps<{
+  disableToUser?: boolean
+}>()
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
 const userStore = useUserStore()
@@ -23,6 +26,9 @@ async function onThumbsUp() {
   }
 }
 function gotoUser() {
+  if (props.disableToUser) {
+    return
+  }
   uni.navigateTo({ url: `/pages/user/index?id=${data.value.memberId}` })
 }
 function onClickTag({ id }: { id: string }) {

@@ -7,12 +7,12 @@ export function getTokenExpireDateTime(expireTime: number) {
   return now + expireTime
 }
 
-export function isTokenExpired(expireDateTime?: number) {
+export function isTokenExpired(expireDateTime?: number, offset: number = EXPIRE_TIME) {
   if (!expireDateTime)
     return true
 
   const now = dayjs().unix()
-  return now > (expireDateTime - EXPIRE_TIME)
+  return now > (expireDateTime - offset)
 }
 
 export function markdownToText(markdown: string) {

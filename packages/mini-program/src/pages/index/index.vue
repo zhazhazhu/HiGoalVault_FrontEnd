@@ -6,32 +6,79 @@ import { useClassesName } from '@higoal/hooks'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
-import { useChatStore, useUserStore } from '@/store'
+import { useUserStore } from '@/store'
 
+interface Data {
+  data: PublishMessageListResponse[]
+  isLoading: boolean
+  isFinish: boolean
+  page: Page
+}
 const cs = useClassesName('home')
 const showSidebar = ref(false)
 const active = ref('view')
-const converseInstance = ref<InstanceType<typeof Converse>>()
-const chatStore = useChatStore()
-const isLoading = ref(false)
-const isFinish = ref(false)
-const data = ref<PublishMessageListResponse[]>([])
-const [page, reset] = useResetRef<Page>({
-  pageNumber: 1,
-  pageSize: 10,
-  sort: 'createTime',
+const [data, resetData] = useResetRef<Record<'view' | 'follow', Data>>({
+  view: {
+    data: [],
+    isLoading: false,
+    isFinish: false,
+    page: {
+      pageNumber: 1,
+      pageSize: 20,
+      sort: 'createTime',
+    },
+  },
+  follow: {
+    data: [],
+    isLoading: false,
+    isFinish: false,
+    page: {
+      pageNumber: 1,
+      pageSize: 20,
+      sort: 'createTime',
+    },
+  },
 })
 const userStore = useUserStore()
+const converseHeight = ref(0)
 
 async function getData() {
-  const res = await api.getPublishMessageList({ ...page.value }).finally(() => {
-    isLoading.value = false
+  getViewData()
+  getFollowData()
+}
+async function getViewData() {
+  const res = await api.getPublishMessageList({ ...data.value.view.page }).finally(() => {
+    data.value.view.isLoading = false
   })
   if (res.code === 200) {
-    data.value.push(...res.result.records)
-    isFinish.value = res.result.total <= data.value.length
+    data.value.view.data.push(...res.result.records)
+    data.value.view.isFinish = res.result.total <= data.value.view.data.length
   }
 }
+function loadViewData() {
+  if (data.value.view.isLoading || data.value.view.isFinish)
+    return
+  data.value.view.isLoading = true
+  data.value.view.page.pageNumber!++
+  getViewData()
+}
+async function getFollowData() {
+  const res = await api.getFollowingPublishMessageList({ ...data.value.follow.page }).finally(() => {
+    data.value.follow.isLoading = false
+  })
+  if (res.code === 200) {
+    data.value.follow.data.push(...res.result.records)
+    data.value.follow.isFinish = res.result.total <= data.value.follow.data.length
+  }
+}
+function loadFollowData() {
+  if (data.value.follow.isLoading || data.value.follow.isFinish)
+    return
+  data.value.follow.isLoading = true
+  data.value.follow.page.pageNumber!++
+  getFollowData()
+}
+
 function onTabChange() {
   if (!userStore.isLogin) {
     active.value = 'view'
@@ -43,11 +90,13 @@ function onTabChange() {
 }
 
 function loadData() {
-  if (isLoading.value || isFinish.value)
-    return
-  isLoading.value = true
-  page.value.pageNumber!++
-  getData()
+  if (active.value === 'view')
+    loadViewData()
+  else
+    loadFollowData()
+}
+function handleResize(height: number) {
+  converseHeight.value = height
 }
 
 function onNavbarLeftClick() {
@@ -72,9 +121,9 @@ onShareAppMessage(({ target, from }) => {
     path: '/pages/index/index',
   }
 })
+
 onMounted(() => {
-  chatStore.currentChatId = ''
-  reset()
+  resetData()
   getData()
   // uni.navigateTo({ url: '/pages/user/index?id=1966062825596010496' })
   // uni.navigateTo({ url: '/pages/chat/index' })
@@ -86,14 +135,19 @@ onMounted(() => {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <navbar @left-click="onNavbarLeftClick" />
 
-    <Container custom-class="px-24rpx">
+    <scroll-view
+      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-100px)] box-border"
+      :style="{ paddingBottom: `${converseHeight}px` }"
+      scroll-y
+      enhanced
+      :show-scrollbar="false"
+      @scrolltolower="loadData"
+    >
       <tabs
         v-model="active"
         editable
-        class="overflow-hidden"
         custom-content-class="mt-10px"
         :custom-nav-class="cs.m('tab-nav')"
-        :style="{ height: `calc(100% - ${120}px)` }"
         @edit="onClickSearch"
         @tab-change="onTabChange"
       >
@@ -101,15 +155,17 @@ onMounted(() => {
           <wd-icon name="search" size="18" />
         </template>
         <tabs-item name="view" label="发现">
-          <ViewList v-model:data="data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
+          <ViewList v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
         </tabs-item>
         <tabs-item name="follow" label="关注">
-          <ViewFollowList />
+          <ViewList v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
         </tabs-item>
       </tabs>
+    </scroll-view>
 
-      <Converse ref="converseInstance" />
-    </Container>
+    <view class="fixed w-full bottom-0 left-0 bg-white px-32rpx">
+      <Converse @resize="handleResize" />
+    </view>
   </Layout>
 </template>
 

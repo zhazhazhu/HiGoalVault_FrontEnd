@@ -23,6 +23,7 @@ scroll-view,
 swiper,
 input,
 textarea {
+  box-sizing: border-box;
   background-origin: border-box;
   font-family: 'PingFangSC', 'PingFang SC';
   --hi-bg-color: #f3f3f3;

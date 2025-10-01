@@ -6,9 +6,6 @@ defineProps<{
   isLoading: boolean
   isFinish: boolean
 }>()
-const emit = defineEmits<{
-  (e: 'load'): void
-}>()
 const data = defineModel('data', { type: Array as () => PublishMessageListResponse[], required: true })
 const cs = useClassesName('view')
 
@@ -20,19 +17,8 @@ function gotoDetail(item: PublishMessageListResponse) {
 </script>
 
 <template>
-  <scroll-view
-    scroll-into-view-alignment="end"
-    enhanced
-    enable-passive
-    enable-flex
-    :scroll-y="true"
-    :show-scrollbar="false"
-    class="h-full overflow-y-auto [scrollbar-width:none]"
-    :class="cs.m('container')"
-    :lower-threshold="50"
-    @scrolltolower="emit('load')"
-  >
-    <view v-for="item, index in data" :id="`view-${item.id}`" :key="item.id" :class="cs.m('card')" @click="gotoDetail(item)">
+  <view>
+    <view v-for="item, index in data" :id="`view-${item.id}`" :key="index" :class="cs.m('card')" @click="gotoDetail(item)">
       <ViewCard :data="item" @update:data="(newData) => data[index] = newData" />
     </view>
 
@@ -42,7 +28,7 @@ function gotoDetail(item: PublishMessageListResponse) {
         {{ isFinish ? '没有更多了' : '加载中...' }}
       </text>
     </view>
-  </scroll-view>
+  </view>
 </template>
 
 <style lang='scss' scoped>

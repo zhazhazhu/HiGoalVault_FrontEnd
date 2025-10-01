@@ -3,6 +3,7 @@ import type { GenerateStsTempKeyResponse } from '@/api'
 import { defineStore } from 'pinia'
 import { api } from '@/api'
 import { useStoreRef } from '@/composables'
+import { isTokenExpired } from '@/utils'
 
 interface Status {
   windowInfo: UniApp.GetWindowInfoResult | null
@@ -16,7 +17,7 @@ export const useGlobalStore = defineStore('global', {
     windowInfo: null,
     hasKeyboard: false,
     keyboardHeight: 0,
-    stsTempConfig: useStoreRef('qCloudAIVoice', null),
+    stsTempConfig: useStoreRef('Q_CLOUD_AI_VOICE', null),
   }),
   actions: {
     syncStatusBarHeight() {
@@ -30,10 +31,15 @@ export const useGlobalStore = defineStore('global', {
       })
     },
     async generateStsTempKey() {
-      if (this.stsTempConfig) {
+      const isExpired = isTokenExpired(this.stsTempConfig?.expiredTime)
+      if (isExpired) {
+        console.log('STS临时密钥已过期:', this.stsTempConfig)
+      }
+      else if (this.stsTempConfig && !isExpired) {
         console.log('STS临时密钥已存在:', this.stsTempConfig)
         return
       }
+
       console.log('开始获取STS临时密钥...')
       const res = await api.generateStsTempKey()
       console.log('STS临时密钥响应:', res)
