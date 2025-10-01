@@ -137,7 +137,7 @@ onMounted(() => {
 
     <scroll-view
       class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
-      :style="{ paddingBottom: `${converseHeight}px` }"
+      :style="{ paddingBottom: `${converseHeight + 10}px` }"
       scroll-y
       enhanced
       :show-scrollbar="false"

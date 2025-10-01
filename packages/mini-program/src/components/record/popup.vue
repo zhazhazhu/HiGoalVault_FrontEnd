@@ -74,7 +74,7 @@ defineExpose({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 50px;
+  margin: 50px;
   height: 200px;
 }
 

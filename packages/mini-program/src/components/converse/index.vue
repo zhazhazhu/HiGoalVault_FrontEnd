@@ -160,6 +160,7 @@ onMounted(async () => {
           :cursor="cursorPosition"
           :disable-default-padding="true"
           @focus="onInputFocus"
+          @blur="getConverseHeight"
           @linechange="onLineChange"
           @keyboardheightchange="onKeyboardHeightChange"
           @confirm="onConfirmMessage"
@@ -205,9 +206,7 @@ onMounted(async () => {
 }
 .hi-converse__icon {
   font-size: 56rpx;
-  width: 56rpx;
-  height: 56rpx;
-  padding: 5px 0;
+  margin: 5px 0;
   & + & {
     margin-left: 20rpx;
   }
