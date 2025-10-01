@@ -38,7 +38,6 @@ declare module 'vue' {
     ViewCommentCard: typeof import('./src/components/view/comment-card.vue')['default']
     ViewCommentPopup: typeof import('./src/components/view/comment-popup.vue')['default']
     ViewDetailCard: typeof import('./src/components/view/detail-card.vue')['default']
-    ViewFollowList: typeof import('./src/components/view/follow-list.vue')['default']
     ViewList: typeof import('./src/components/view/list.vue')['default']
     ViewReplyCard: typeof import('./src/components/view/reply-card.vue')['default']
     WdActionSheet: typeof import('wot-design-uni/components/wd-action-sheet/wd-action-sheet.vue')['default']
