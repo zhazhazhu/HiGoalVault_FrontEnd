@@ -88,15 +88,15 @@ onMounted(() => {
         @scrolltolower="load"
       >
         <view class="bg-white flex flex-col gap-20rpx py-32rpx">
-          <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-1 border-gray-1 border-solid" @click="gotoContentDetail(item)">
+          <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx">
               <wd-img :src="item.face" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.commenterId)" />
               <view class="flex flex-col gap-4rpx">
-                <view class="flex items-center gap-10rpx font-500" @click.stop="gotoUser(item.commenterId)">
-                  <view class="text-34rpx color-#333">
+                <view class="flex items-center gap-10rpx" @click.stop="gotoUser(item.commenterId)">
+                  <view class="text-34rpx color-#333 font-500">
                     {{ item.nickName }}
                   </view>
-                  <view class="text-24rpx color-#8E8E93">
+                  <view class="text-22rpx color-#8E8E93">
                     作者
                   </view>
                 </view>

@@ -141,9 +141,10 @@ onMounted(() => {
 .hi-chat-list--item-container {
   display: flex;
   width: 100%;
-  padding: 13px 16px;
+  padding: 16px;
   box-sizing: border-box;
   border-radius: 10px;
+
   &.is-active {
     border: 1px solid var(--hi-primary-color);
     background-color: #fff4f3;
