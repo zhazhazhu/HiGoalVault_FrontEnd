@@ -91,7 +91,6 @@ onMounted(() => {
 
 <style lang='scss' scoped>
 .hi-sidebar-content--bottom {
-  height: 40px;
   padding-bottom: 40px;
   display: flex;
   align-items: center;

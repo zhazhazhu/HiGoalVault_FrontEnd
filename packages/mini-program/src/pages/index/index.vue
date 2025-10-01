@@ -163,7 +163,7 @@ onMounted(() => {
       </tabs>
     </scroll-view>
 
-    <view class="fixed w-full bottom-0 left-0 bg-transparent px-32rpx">
+    <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)] px-32rpx">
       <Converse @resize="handleResize" />
     </view>
   </Layout>
