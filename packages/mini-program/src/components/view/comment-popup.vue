@@ -59,8 +59,9 @@ function handleClose() {
   model.value = false
 }
 function createTemporaryComment(): CommentResponse['comment'] {
+  const content = commentContent.value.trim()
   return {
-    commentContent: commentContent.value,
+    commentContent: content,
     commenterId: userStore.userInfo!.id,
     commenterUsername: userStore.userInfo!.username,
     createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -134,7 +135,7 @@ async function onConfirm() {
     else if (currentReplying.value.type === 'comment') {
       const res = await api.addCommentReply({
         commentId: currentReplying.value.comment!.id,
-        replyContent: commentContent.value,
+        replyContent: commentContent.value.trim(),
         replyToUserId: currentReplying.value.comment!.commenterId,
       })
       if (res.code === 200) {
@@ -145,7 +146,7 @@ async function onConfirm() {
     else if (currentReplying.value.type === 'reply') {
       const res = await api.addCommentReply({
         commentId: data.value[currentOperating.value].comment.id,
-        replyContent: commentContent.value,
+        replyContent: commentContent.value.trim(),
         replyToUserId: currentReplying.value.reply!.replierId,
         parentReplyId: currentReplying.value.reply!.id,
       })
@@ -187,9 +188,6 @@ function resetComment() {
   placeholder.value = '发表友善评论'
   resetCurrentReplying()
 }
-function onBlur() {
-  resetComment()
-}
 
 onMounted(() => {
   reset()
@@ -206,7 +204,7 @@ onMounted(() => {
     lock-scroll
     @close="handleClose"
   >
-    <view class="max-h-1000rpx min-h-500rpx p-32rpx relative pb-120rpx">
+    <view class="h-1000rpx p-32rpx relative pb-130rpx">
       <view class="h-50rpx flex items-center justify-between">
         <view class="flex items-center gap-10rpx">
           <text class="font-bold">
@@ -223,9 +221,10 @@ onMounted(() => {
       <scroll-view
         scroll-y
         enhanced
+        enable-passive
         :show-scrollbar="false"
         :scroll-into-view="commentId"
-        class="max-h-800rpx gap-20rpx py-32rpx"
+        class="h-800rpx gap-20rpx py-32rpx"
         @scrolltolower="load"
       >
         <view-comment-card v-for="item, index in data" :id="item.comment.id" :key="item.comment.id" :current-comment-id="commentId" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
@@ -238,7 +237,7 @@ onMounted(() => {
         </view>
       </scroll-view>
 
-      <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx min-h-100rpx bg-white">
+      <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx h-100rpx bg-white">
         <view class="rounded-12px flex-1 overflow-hidden">
           <wd-textarea
             ref="textareaInstance"
@@ -257,11 +256,10 @@ onMounted(() => {
             :custom-class="cs.m('textarea-container')"
             :placeholder-class="cs.m('textarea-placeholder')"
             @focus="isFocus = true"
-            @blur="onBlur"
             @confirm="onConfirm"
           />
         </view>
-        <view class="text-28rpx color-#666666" @click="onConfirm">
+        <view class="text-28rpx color-#666666 font-500" :class="{ 'text-#FC6146FF': commentContent.length > 0 }" @click="onConfirm">
           发表
         </view>
       </view>
