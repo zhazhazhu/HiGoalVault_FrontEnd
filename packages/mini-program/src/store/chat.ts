@@ -117,6 +117,7 @@ export const useChatStore = defineStore('chat', {
             query: message?.query || '',
             isCollect: Truth.FALSE,
             isLoading: true,
+            messageTimeLong: 0,
           },
         ],
         ...message,
@@ -137,6 +138,7 @@ export const useChatStore = defineStore('chat', {
         query: '',
         isCollect: Truth.FALSE,
         isLoading: false,
+        messageTimeLong: 0,
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)

@@ -33,7 +33,7 @@ const htmlContent = computed(() => {
   <view :class="cs.e('deep-think')">
     <view :class="cs.e('deep-think-title')" @click="() => { viewDeepThink = !viewDeepThink }">
       <text class="mr-10px">
-        已深度思考 (用时x秒)
+        已深度思考 (用时{{ props.data.messageTimeLong / 1000 }}秒)
       </text>
       <view :class="viewDeepThink ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
     </view>
