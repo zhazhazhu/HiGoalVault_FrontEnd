@@ -54,7 +54,7 @@ export interface ChatMessageWithShareBefore extends ChatMessageBefore {
 }
 
 export interface AnswerBefore {
-  data: string // 股票图数据
+  data: string | null // 股票图数据
   message: string // 深度思考内容
   query: string // 用户问题
   queryId: string // 问题id
@@ -68,7 +68,7 @@ export interface AnswerBefore {
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
   reference: ChatMessageReference[]
-  data: ChatMessageStockData // 股票图数据
+  data: ChatMessageStock | null // 股票图数据
   isLoading: boolean // 是否正在加载中
 }
 
@@ -88,8 +88,64 @@ export interface ChatMessageWithShareWithPage extends PageResult {
   records: ChatMessageWithShareBefore[]
 }
 
-export interface ChatMessageStockData {
+/**
+ * 聊天消息中的股票数据结构
+ */
+export interface ChatMessageStock {
+  /** 股票数据元信息 */
+  metadata: ChatMessageStockMetadata
+  /** 股票交易数据列表 */
+  data: ChatMessageStockData[]
+  /** 数据名称标识 */
+  name: string
+}
 
+/**
+ * 股票数据元信息
+ */
+export interface ChatMessageStockMetadata {
+  /** 股票代码列表 */
+  symbol: string[]
+  /** 数据生成时间 */
+  generated_at: string
+  /** 用户查询内容 */
+  query: string
+  /** 时间粒度（秒） */
+  time_granularity_seconds: number
+  /** 时间粒度标签 */
+  time_granularity_label: string
+}
+
+/**
+ * 股票交易数据
+ */
+export interface ChatMessageStockData {
+  /** 成交额 */
+  amount: number
+  /** 创建时间 */
+  create_time: string
+  /** 交易日期 */
+  trade_date: string
+  /** 是否删除标识 */
+  is_delete: number
+  /** 更新时间 */
+  update_time: string
+  /** 最高价 */
+  high: number
+  /** 成交量 */
+  vol: number
+  /** 股票代码 */
+  ts_code: string
+  /** 最低价 */
+  low: number
+  /** 更新者 */
+  updated_by: string
+  /** 持仓量 */
+  oi: number
+  /** 收盘价 */
+  close: number
+  /** 开盘价 */
+  open: number
 }
 
 export interface ChatMessageReference {
