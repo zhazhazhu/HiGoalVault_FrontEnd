@@ -16,6 +16,8 @@ export function isTokenExpired(expireDateTime?: number, offset: number = EXPIRE_
 }
 
 export function markdownToText(markdown: string) {
+  if (!markdown)
+    return ''
   return markdown.replace(/\n/g, ' ')
 }
 
