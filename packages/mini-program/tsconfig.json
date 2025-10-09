@@ -7,7 +7,7 @@
       "@/*": ["./src/*"],
       "~/*": ["./src/*"]
     },
-    "types": ["@dcloudio/types", "@types/weixin-app", "wot-design-uni/global", "./components"],
+    "types": ["@dcloudio/types", "@types/weixin-app", "wot-design-uni/global", "./components", "node"],
     "sourceMap": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.NOT.vue", "components.d.ts", "plugins.d.ts"]
