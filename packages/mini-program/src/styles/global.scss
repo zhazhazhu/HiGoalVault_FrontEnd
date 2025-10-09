@@ -39,17 +39,6 @@ page {
   height: 100%;
 }
 
-// 登录弹窗
-.login_model_header {
-  background: linear-gradient(180deg, #ffefee 0%, #ffffff 100%);
-  --wot-action-sheet-title-fs: 34rpx;
-}
-
-.login_model {
-  --wot-button-large-height: 100%;
-  --wot-button-large-radius: 15rpx;
-}
-
 .hi-converse__textarea {
   max-height: 100px;
   --wot-textarea-fs: 14px;

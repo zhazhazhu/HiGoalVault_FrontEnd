@@ -7,8 +7,9 @@ import { useUserStore } from '~/store'
 const model = defineModel({ type: Boolean, default: false })
 const isAgreed = ref(false)
 const userStore = useUserStore()
+const phoneOpentype = 'getPhoneNumber|agreePrivacyAuthorization' as any
 
-function close() {
+function handleClose() {
   model.value = false
 }
 
@@ -67,38 +68,70 @@ function handleAgreePrivacyAuthorization() {
 </script>
 
 <template>
-  <wd-action-sheet v-model="model" title="请阅读并勾选下方协议" custom-class="login_model" custom-header-class="login_model_header" @close="close">
-    <uni-nav-bar title="导航栏组件" dark />
+  <wd-popup
+    v-model="model"
+    position="bottom"
+    lock-scroll
+    custom-class="rounded-t-32rpx"
+    :safe-area-inset-bottom="true"
+  >
     <wd-toast />
 
-    <view class="flex flex-col items-center gap-32rpx py-28rpx px-60rpx h-500rpx">
-      <view class="mt-30rpx flex items-center flex-col gap-20px">
-        <wd-img :width="100" :height="100" round src="https://avatars.githubusercontent.com/u/233332699?s=48&v=4" />
+    <view class="content">
+      <view class="flex items-center justify-between header">
+        <view class="w-50rpx" />
 
-        <text class="text-32rpx font-bold italic">
-          HiGoal
-        </text>
-      </view>
-
-      <view class="flex flex-col items-center gap-32rpx w-full">
-        <view class="w-full h-100rpx">
-          <wd-button :open-type="'getPhoneNumber|agreePrivacyAuthorization' as any" :round="false" block size="large" @getphonenumber="onGetPhoneNumber" @agreeprivacyauthorization="handleAgreePrivacyAuthorization">
-            同意协议并手机号一键登录
-          </wd-button>
+        <view class="font-bold flex-1 text-center">
+          请阅读并勾选下方协议
         </view>
 
-        <wd-checkbox v-model="isAgreed" custom-class="w-full" @change="handleChange">
-          <text class="text-22rpx word-wrap" style="white-space: normal;">
-            我已经阅读并熟知
-            <text class="text-primary" @click.stop="goToReadPrivacy">
-              {{ userStore.privacySettings?.privacyContractName }}
-            </text>
+        <view class="i-material-symbols-light-close-rounded text-50rpx color-#333 w-50rpx" @click="handleClose" />
+      </view>
+
+      <view class="flex flex-col items-center gap-32rpx py-28rpx px-60rpx h-600rpx">
+        <view class="mt-30rpx flex items-center flex-col gap-20px">
+          <wd-img :width="100" :height="100" round src="https://avatars.githubusercontent.com/u/233332699?s=48&v=4" />
+
+          <text class="text-32rpx font-bold italic">
+            HiGoal
           </text>
-        </wd-checkbox>
+        </view>
+
+        <view class="flex flex-col items-center gap-32rpx w-full">
+          <view class="w-full h-100rpx">
+            <wd-button
+              :open-type="phoneOpentype"
+              :round="false"
+              block
+              size="large"
+              @getphonenumber="onGetPhoneNumber"
+              @agreeprivacyauthorization="handleAgreePrivacyAuthorization"
+            >
+              同意协议并手机号一键登录
+            </wd-button>
+          </view>
+
+          <wd-checkbox v-model="isAgreed" custom-class="w-full" @change="handleChange">
+            <text class="text-22rpx word-wrap" style="white-space: normal;">
+              我已经阅读并熟知
+              <text class="text-primary" @click.stop="goToReadPrivacy">
+                {{ userStore.privacySettings?.privacyContractName }}
+              </text>
+            </text>
+          </wd-checkbox>
+        </view>
       </view>
     </view>
-  </wd-action-sheet>
+  </wd-popup>
 </template>
 
-<style lang='scss'>
+<style lang='scss' scoped>
+.header {
+  background: linear-gradient(180deg, #ffefee 0%, #ffffff 100%);
+  padding: 32rpx;
+}
+.content {
+  --wot-button-large-height: 100%;
+  --wot-button-large-radius: 15rpx;
+}
 </style>
