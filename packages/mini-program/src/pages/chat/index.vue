@@ -45,7 +45,7 @@ websocketStore.receiveMessage((data) => {
     chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
       response: currentMessage.response += (data.data?.response || ''),
       message: currentMessage.message += (data.data?.message || ''),
-      data: data.data?.data,
+      data: data.data?.data ? data.data.data : null,
       reference: data.data?.reference,
       queryId: data.data?.query_id,
     })

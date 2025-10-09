@@ -150,7 +150,7 @@ function onMessageToolOperate(type: MessageToolOperateType) {
       </view>
 
       <view :class="cs.m('model')">
-        <message-response-card :data="currentAnswer" @longpress="openTooltips" />
+        <message-response-card :data="currentAnswer" @long-press-content="openTooltips" />
 
         <view v-show="currentAnswer.isLoading" class="i-eos-icons-three-dots-loading text-100rpx color-[var(--hi-primary-color)]" />
 

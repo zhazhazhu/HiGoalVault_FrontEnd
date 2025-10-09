@@ -11,6 +11,10 @@ const props = defineProps<{
   data: AnswerAfter
 }>()
 
+const emit = defineEmits<{
+  (e: 'longPressContent', val: any): void
+}>()
+
 const cs = useClassesName('message-card')
 const viewDeepThink = ref(true)
 const md = new MarkdownIt({
@@ -23,7 +27,6 @@ const md = new MarkdownIt({
     return html
   },
 })
-
 const htmlContent = computed(() => {
   return md.render(props.data.response || '')
 })
@@ -42,9 +45,13 @@ const htmlContent = computed(() => {
     </view>
   </view>
 
-  <view :class="cs.m('response')">
+  <view :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e)">
     <!-- 使用自定义组件渲染markdown内容，避免XSS攻击风险 -->
     <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
+  </view>
+
+  <view v-if="data.data" :class="cs.m('stock')">
+    <message-stock :data="data.data" />
   </view>
 </template>
 

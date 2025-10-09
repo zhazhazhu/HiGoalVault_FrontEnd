@@ -15,7 +15,7 @@ interface WaitingMessageTask {
 
 interface State {
   chats: Chat[]
-  currentChatId: string
+  currentChatId: Ref<string>
   currentRunId: Ref<string>
   messages: ChatMessageAfter[]
   currentTemporaryMessageId: Ref<string>
@@ -33,7 +33,7 @@ export interface ChatWithType {
 export const useChatStore = defineStore('chat', {
   state: (): State => ({
     chats: [],
-    currentChatId: '',
+    currentChatId: useStoreRef<string>('CURRENT_CHAT_ID', ''),
     currentRunId: useStoreRef<string>('CURRENT_RUN_ID', ''),
     messages: [],
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
@@ -80,7 +80,7 @@ export const useChatStore = defineStore('chat', {
         if (item.reference) {
           try {
             reference = JSON.parse(item.reference)
-            data = JSON.parse(item.data)
+            data = JSON.parse(item.data || '{}')
           }
           catch (error) {
             console.log('transformMessage error', error)
@@ -107,7 +107,7 @@ export const useChatStore = defineStore('chat', {
         msgId: id,
         chatQueryAnswerList: [
           {
-            data: [],
+            data: null,
             message: '',
             reference: [],
             response: '',
@@ -128,7 +128,7 @@ export const useChatStore = defineStore('chat', {
     },
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
-        data: [],
+        data: null,
         message: '',
         reference: [],
         response: '',

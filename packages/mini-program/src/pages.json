@@ -3,19 +3,22 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "首页",
+        "disableScroll": true
       }
     },
     {
       "path": "pages/index/detail",
       "style": {
-        "navigationBarTitleText": "详情"
+        "navigationBarTitleText": "详情",
+        "disableScroll": true
       }
     },
     {
       "path": "pages/user/index",
       "style": {
-        "navigationBarTitleText": "个人中心"
+        "navigationBarTitleText": "个人中心",
+        "disableScroll": true
       }
     },
     {
@@ -66,12 +69,24 @@
         "navigationBarTitleText": "标签",
         "disableScroll": true
       }
+    },
+    {
+      "path": "pages/test/index",
+      "style": {
+        "navigationBarTitleText": "测试",
+        "disableScroll": true
+      }
     }
   ],
   "entryPagePath": "pages/index/index",
   "globalStyle": {
     "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#F8F8F8",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    // #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+    "usingComponents": {
+      "ec-canvas": "/wxcomponents/ec-canvas/ec-canvas"
+    }
+    // #endif
   }
 }

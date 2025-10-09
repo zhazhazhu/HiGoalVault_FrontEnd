@@ -18,6 +18,7 @@ declare module 'vue' {
     MessageCard: typeof import('./src/components/message/card.vue')['default']
     MessageExcerptCopyPopup: typeof import('./src/components/message/excerpt-copy-popup.vue')['default']
     MessageResponseCard: typeof import('./src/components/message/response-card.vue')['default']
+    MessageStock: typeof import('./src/components/message/stock.vue')['default']
     MessageTool: typeof import('./src/components/message/tool.vue')['default']
     Navbar: typeof import('./src/components/navbar/index.vue')['default']
     Popover: typeof import('./src/components/popover/index.vue')['default']

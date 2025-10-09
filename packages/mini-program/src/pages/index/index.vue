@@ -125,8 +125,8 @@ onShareAppMessage(({ target, from }) => {
 onMounted(() => {
   resetData()
   getData()
-  // uni.navigateTo({ url: '/pages/user/index?id=1966062825596010496' })
-  // uni.navigateTo({ url: '/pages/chat/index' })
+  uni.navigateTo({ url: '/pages/chat/index' })
+  // uni.navigateTo({ url: '/pages/index/detail?id=1972913302560460801' })
   // uni.navigateTo({ url: '/pages/user/message' })
 })
 </script>
