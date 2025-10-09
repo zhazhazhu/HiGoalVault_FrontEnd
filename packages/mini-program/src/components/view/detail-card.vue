@@ -78,7 +78,7 @@ onMounted(() => {
     </view>
 
     <view class="flex flex-wrap gap-20rpx">
-      <Tag v-for="item in data?.tags" :key="item.id" custom-class="mr-20rpx">
+      <Tag v-for="item in data?.tags" :key="item.id">
         #{{ item.tagName }}
       </Tag>
     </view>
