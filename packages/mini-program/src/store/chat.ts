@@ -15,7 +15,7 @@ interface WaitingMessageTask {
 
 interface State {
   chats: Chat[]
-  currentChatId: Ref<string>
+  currentChatId: string
   currentRunId: Ref<string>
   messages: ChatMessageAfter[]
   currentTemporaryMessageId: Ref<string>
@@ -33,7 +33,7 @@ export interface ChatWithType {
 export const useChatStore = defineStore('chat', {
   state: (): State => ({
     chats: [],
-    currentChatId: useStoreRef<string>('CURRENT_CHAT_ID', ''),
+    currentChatId: '',
     currentRunId: useStoreRef<string>('CURRENT_RUN_ID', ''),
     messages: [],
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
