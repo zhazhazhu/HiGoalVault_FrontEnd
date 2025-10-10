@@ -44,21 +44,21 @@ export function generateDateCategory(date: string, type: DateCategoryType) {
 /**
  * 计算移动平均线
  * @param dayCount 移动平均线的天数
- * @param data 股票数据，每个元素为 [日期, 收盘价]
- * @returns 移动平均线数据，每个元素为 [日期, 移动平均线值]
+ * @param data 股票数据，每个元素为 [open, close, low, high]
+ * @returns 移动平均线数据数组
  */
 export function calculateMA(dayCount: number, data: number[][]) {
-  const result: Array<number> = []
+  const result: Array<number | null> = []
   for (let i = 0, len = data.length; i < len; i++) {
-    if (i < dayCount) {
-      result.push(0)
+    if (i < dayCount - 1) {
+      result.push(null) // 数据不足时返回null，ECharts会自动处理
       continue
     }
     let sum = 0
     for (let j = 0; j < dayCount; j++) {
-      sum += +data[i - j][1]
+      sum += data[i - j][1] // 使用收盘价（close）计算移动平均线
     }
-    result.push(sum / dayCount)
+    result.push(+(sum / dayCount).toFixed(2)) // 保留两位小数并转换为数字
   }
   return result
 }
