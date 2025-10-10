@@ -16,6 +16,7 @@ interface Data {
 }
 const cs = useClassesName('home')
 const showSidebar = ref(false)
+const refreshing = ref(false)
 const active = ref('view')
 const [data, resetData] = useResetRef<Record<'view' | 'follow', Data>>({
   view: {
@@ -43,8 +44,15 @@ const userStore = useUserStore()
 const converseHeight = ref(0)
 
 async function getData() {
-  getViewData()
-  getFollowData()
+  const viewPromise = getViewData()
+  const followPromise = getFollowData()
+  await Promise.all([viewPromise, followPromise])
+}
+async function refreshData() {
+  refreshing.value = true
+  resetData()
+  await getData()
+  refreshing.value = false
 }
 async function getViewData() {
   const res = await api.getPublishMessageList({ ...data.value.view.page }).finally(() => {
@@ -141,7 +149,10 @@ onMounted(() => {
       scroll-y
       enhanced
       :show-scrollbar="false"
+      :refresher-enabled="true"
+      :refresher-triggered="refreshing"
       @scrolltolower="loadData"
+      @refresherrefresh="refreshData"
     >
       <tabs
         v-model="active"
