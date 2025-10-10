@@ -25,14 +25,6 @@ declare global {
     [key: string]: any
   }
 
-  interface QCloudAIVoiceSetQCloudSecretParams {
-    secretkey: string
-    secretid: string
-    appid: number // 腾讯云账号appid（非微信appid）
-    openConsole?: boolean // 是否开启控制台日志，默认false
-    token?: string // 选填参数，若密钥为临时密钥，需传此参数。
-  }
-
   function QCloudAIVoiceTextToSpeechSuccessCallback(res: { result: { filePath: string } }): void
 
   function QCloudAIVoiceTextToSpeechFailCallback(error: any): void
@@ -41,7 +33,8 @@ declare global {
     content: string
     speed?: number // 语速，范围：[-2，2]，分别对应不同语速：-2代表0.6倍，-1代表0.8倍，0代表1.0倍（默认），1代表1.2倍，2代表1.5倍。如果需要更细化的语速，可以保留小数点后一位，例如0.5 1.1 1.8等。
     volume?: number // 音量大小，范围：[0，10]，分别对应11个等级的音量，默认为0，代表正常音量。没有静音选项。输入除以上整数之外的其他参数不生效，按默认值处理。
-    voiceType?: number // 音色
+    projectId?: number // 项目id，默认0
+    voiceType: number // 音色
     language?: 0 | 1 // 主语言类型：1-中文（默认)，2-英文
     sampleRate?: number // 采样率，范围：[8000, 16000]，默认16000
     emotionCategory?: string // 控制合成音频的情感，仅支持多情感音色使用。取值: neutral(中性)、sad(悲伤)、happy(高兴)、angry(生气)、fear(恐惧)、news(新闻)、story(故事)、radio(广播)、poetry(诗歌)、call(客服)。
@@ -79,7 +72,7 @@ declare global {
   interface QCloudAIVoice {
     speechRecognizerManager: () => QCloudAIVoiceSpeechRecognizerManager
     realtimeRecognition: () => QCloudAIVoiceRealtimeRecognition
-    setQCloudSecret: (params: QCloudAIVoiceSetQCloudSecretParams) => void
+    setQCloudSecret: (appid: number, secretid: string, secretkey: string, openConsole?: boolean, token?: string) => void
     textToSpeech: (params: QCloudAIVoiceTextToSpeechParams) => void
   }
 

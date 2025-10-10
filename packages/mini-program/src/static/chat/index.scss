@@ -237,3 +237,14 @@
   mask-size: contain;
   mask-position: center;
 }
+
+.wave-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/wave.svg');
+  mask-image: url('/static/chat/svg/wave.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}

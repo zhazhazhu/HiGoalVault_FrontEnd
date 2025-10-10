@@ -1,14 +1,14 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
 import { computed } from 'vue'
-import { markdownToText } from '@/utils'
+import { markdownToPlainText } from '@/utils'
 
 const props = defineProps<{
   message: AnswerAfter
 }>()
 const model = defineModel({ type: Boolean, default: false })
 
-const content = computed(() => markdownToText(props.message.response))
+const content = computed(() => markdownToPlainText(props.message.response))
 </script>
 
 <template>

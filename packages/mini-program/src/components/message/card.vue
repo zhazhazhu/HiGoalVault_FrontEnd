@@ -3,11 +3,12 @@ import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import type { MessageToolOperateType } from '@/types'
 import { useClassesName, useUUID } from '@higoal/hooks'
 import { computed, ref, watch } from 'vue'
+import { useCountDown } from 'wot-design-uni'
 import { api, Truth } from '@/api'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore, useGlobalStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
-import { markdownToText } from '@/utils'
+import { markdownToPlainText } from '@/utils'
 
 const props = withDefaults(defineProps<{
   message: ChatMessageAfter & Record<string, any>
@@ -28,9 +29,35 @@ const messageToolRect = ref({
 })
 const messageToolVisible = ref(false)
 const messageExcerptCopyPopupVisible = ref(false)
+const messageTextToSpeaking = ref(false)
 const globalStore = useGlobalStore()
-const innerAudioContext = wx.createInnerAudioContext()
 const qCloudAIVoice = requirePlugin('QCloudAIVoice')
+const innerAudioContext = uni.createInnerAudioContext()
+const audioUrl = ref('')
+const { start, reset } = useCountDown({
+  time: 50 * 1000,
+  onFinish() {
+    audioUrl.value = ''
+    innerAudioContext.destroy()
+  },
+})
+
+innerAudioContext.onPlay(() => {
+  console.log('音频开始播放')
+})
+innerAudioContext.onEnded(() => {
+  reset()
+  messageTextToSpeaking.value = false
+})
+innerAudioContext.onError((res) => {
+  reset()
+  messageTextToSpeaking.value = false
+  console.error('音频播放错误:', res.errCode)
+  uni.showToast({
+    title: '音频播放失败',
+    icon: 'error',
+  })
+})
 
 // 初始化QCloudAIVoice配置
 async function initQCloudAIVoice() {
@@ -43,13 +70,7 @@ async function initQCloudAIVoice() {
       return false
     }
 
-    qCloudAIVoice.setQCloudSecret({
-      secretkey: globalStore.stsTempConfig.tmpSecretKey || '',
-      secretid: globalStore.stsTempConfig.tmpSecretId || '',
-      appid: 1308154027,
-      token: globalStore.stsTempConfig.token || '',
-      openConsole: true, // 开启调试日志
-    })
+    qCloudAIVoice.setQCloudSecret(1308154027, globalStore.stsTempConfig.tmpSecretId, globalStore.stsTempConfig.tmpSecretKey, true, globalStore.stsTempConfig.token)
 
     console.log('QCloudAIVoice 初始化成功')
     return true
@@ -98,7 +119,7 @@ function onRefresh() {
   })
 }
 function onCopy() {
-  const response = markdownToText(currentAnswer.value.response || '')
+  const response = markdownToPlainText(currentAnswer.value.response || '')
   uni.setClipboardData({
     data: `${currentAnswer.value.message}\n${response}`,
     showToast: true,
@@ -132,7 +153,6 @@ function openTooltips(e) {
   messageToolRect.value.y = e.detail.y
   messageToolVisible.value = true
 }
-const text = '腾讯云基于业界领先技术构建的语音合成系统，具备合成速度快、合成拟真度高、语音自然流畅等特点，能够应用于多种使用场景，让设备和应用轻松发声。'
 
 async function onMessageToolOperate(type: MessageToolOperateType) {
   switch (type) {
@@ -145,53 +165,64 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
     case 'delete':
       break
     case 'voice': {
-      // 确保QCloudAIVoice已正确初始化
-      const isInitialized = await initQCloudAIVoice()
-      if (!isInitialized) {
-        uni.showToast({
-          title: '语音服务初始化失败',
-          icon: 'error',
-        })
-        return
-      }
-
-      qCloudAIVoice.textToSpeech({
-        content: text,
-        sampleRate: 16000,
-        success(data) {
-          console.log('语音合成成功:', data)
-          const url = data.result.filePath // data.result.filePath返回的url有效期为1分钟，若需要播放，建议自行存储音频数据
-          if (url && url.length > 0) {
-            innerAudioContext.autoplay = true
-            innerAudioContext.src = url
-            innerAudioContext.onPlay(() => {
-              console.log('音频开始播放')
-            })
-            innerAudioContext.onError((res) => {
-              console.error('音频播放错误:', res.errCode)
-              uni.showToast({
-                title: '音频播放失败',
-                icon: 'error',
-              })
-            })
-          }
-        },
-        fail(error) {
-          console.error('语音合成失败:', error)
-          uni.showToast({
-            title: '语音合成失败',
-            icon: 'error',
-          })
-        },
-      })
+      const content = markdownToPlainText(currentAnswer.value.response || '').substring(0, 100)
+      await textToSpeech(content)
       break
     }
+    case 'stopVoice':
+      stopTextToSpeech()
+      break
     case 'excerptCopy':
       messageExcerptCopyPopupVisible.value = true
       break
     default:
       break
   }
+}
+async function textToSpeech(content: string) {
+  if (messageTextToSpeaking.value) {
+    return
+  }
+  if (audioUrl.value && audioUrl.value.length > 0) {
+    messageTextToSpeaking.value = true
+    innerAudioContext.play()
+    return
+  }
+  // 确保QCloudAIVoice已正确初始化
+  const isInitialized = await initQCloudAIVoice()
+  if (!isInitialized) {
+    uni.showToast({
+      title: '语音服务初始化失败',
+      icon: 'error',
+    })
+    return
+  }
+  qCloudAIVoice.textToSpeech({
+    content,
+    voiceType: 0,
+    success(data) {
+      messageTextToSpeaking.value = true
+      audioUrl.value = data.result.filePath // data.result.filePath返回的url有效期为1分钟，若需要播放，建议自行存储音频数据
+      if (audioUrl.value && audioUrl.value.length > 0) {
+        reset()
+        start()
+        innerAudioContext.autoplay = true
+        innerAudioContext.src = audioUrl.value
+      }
+    },
+    fail(error) {
+      console.error('语音合成失败:', error)
+      uni.showToast({
+        title: '语音合成失败',
+        icon: 'error',
+      })
+    },
+  })
+}
+function stopTextToSpeech() {
+  innerAudioContext.pause()
+  reset()
+  messageTextToSpeaking.value = false
 }
 </script>
 
@@ -200,7 +231,7 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
     <wd-toast />
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
     <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" />
-    <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" @operate="onMessageToolOperate" />
+    <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" :message-text-to-speaking="messageTextToSpeaking" @operate="onMessageToolOperate" />
 
     <wd-checkbox
       v-model="check"
@@ -225,15 +256,20 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
 
         <view v-show="currentAnswer.isLoading" class="i-eos-icons-three-dots-loading text-100rpx color-[var(--hi-primary-color)]" />
 
-        <view v-show="!messageInject.share.value.isChecked && !readonly" :class="cs.e('operations')" class="flex items-center mt-18px gap-14px">
-          <view class="refresh-icon size-30px" @click="onRefresh" />
+        <view v-show="!messageInject.share.value.isChecked && !readonly" :class="cs.e('operations')" class="flex items-center mt-18px gap-8px">
+          <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
+          <view class="refresh-icon size-28px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
           <view class="flex items-center text-14px gap-8px">
-            <view class="i-material-symbols-arrow-back-ios-rounded size-30rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex - 1 : 1" />
+            <view class="size-30px flex items-center justify-center">
+              <view class="i-material-symbols-arrow-back-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex - 1 : 1" />
+            </view>
             <view>
               {{ currentAnswerIndex }}/{{ props.message.chatQueryAnswerList.length }}
             </view>
-            <view class="i-material-symbols-arrow-forward-ios-rounded size-30rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
+            <view class="size-30px flex items-center justify-center">
+              <view class="i-material-symbols-arrow-forward-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
+            </view>
           </view>
           <view class="flex-1" />
           <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border size-24px mx-4px" @click="onFavorite" />

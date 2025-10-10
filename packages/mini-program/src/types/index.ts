@@ -1,1 +1,1 @@
-export type MessageToolOperateType = 'delete' | 'refresh' | 'voice' | 'copy' | 'excerptCopy'
+export type MessageToolOperateType = 'delete' | 'refresh' | 'voice' | 'copy' | 'excerptCopy' | 'stopVoice'
