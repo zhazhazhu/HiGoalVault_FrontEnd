@@ -5,7 +5,7 @@ import { useClassesName, useUUID } from '@higoal/hooks'
 import { computed, ref, watch } from 'vue'
 import { api, Truth } from '@/api'
 import { useMessageInject } from '@/composables/inject'
-import { useChatStore } from '@/store'
+import { useChatStore, useGlobalStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
 import { markdownToText } from '@/utils'
 
@@ -28,6 +28,37 @@ const messageToolRect = ref({
 })
 const messageToolVisible = ref(false)
 const messageExcerptCopyPopupVisible = ref(false)
+const globalStore = useGlobalStore()
+const innerAudioContext = wx.createInnerAudioContext()
+const qCloudAIVoice = requirePlugin('QCloudAIVoice')
+
+// 初始化QCloudAIVoice配置
+async function initQCloudAIVoice() {
+  try {
+    // 确保STS临时密钥已获取
+    await globalStore.generateStsTempKey()
+
+    if (!globalStore.stsTempConfig) {
+      console.error('STS临时密钥获取失败')
+      return false
+    }
+
+    qCloudAIVoice.setQCloudSecret({
+      secretkey: globalStore.stsTempConfig.tmpSecretKey || '',
+      secretid: globalStore.stsTempConfig.tmpSecretId || '',
+      appid: 1308154027,
+      token: globalStore.stsTempConfig.token || '',
+      openConsole: true, // 开启调试日志
+    })
+
+    console.log('QCloudAIVoice 初始化成功')
+    return true
+  }
+  catch (error) {
+    console.error('QCloudAIVoice 初始化失败:', error)
+    return false
+  }
+}
 
 watch(() => props.message.chatQueryAnswerList.length, (val) => {
   currentAnswerIndex.value = val
@@ -101,8 +132,9 @@ function openTooltips(e) {
   messageToolRect.value.y = e.detail.y
   messageToolVisible.value = true
 }
+const text = '腾讯云基于业界领先技术构建的语音合成系统，具备合成速度快、合成拟真度高、语音自然流畅等特点，能够应用于多种使用场景，让设备和应用轻松发声。'
 
-function onMessageToolOperate(type: MessageToolOperateType) {
+async function onMessageToolOperate(type: MessageToolOperateType) {
   switch (type) {
     case 'refresh':
       onRefresh()
@@ -112,9 +144,48 @@ function onMessageToolOperate(type: MessageToolOperateType) {
       break
     case 'delete':
       break
-    case 'voice':
+    case 'voice': {
+      // 确保QCloudAIVoice已正确初始化
+      const isInitialized = await initQCloudAIVoice()
+      if (!isInitialized) {
+        uni.showToast({
+          title: '语音服务初始化失败',
+          icon: 'error',
+        })
+        return
+      }
 
+      qCloudAIVoice.textToSpeech({
+        content: text,
+        sampleRate: 16000,
+        success(data) {
+          console.log('语音合成成功:', data)
+          const url = data.result.filePath // data.result.filePath返回的url有效期为1分钟，若需要播放，建议自行存储音频数据
+          if (url && url.length > 0) {
+            innerAudioContext.autoplay = true
+            innerAudioContext.src = url
+            innerAudioContext.onPlay(() => {
+              console.log('音频开始播放')
+            })
+            innerAudioContext.onError((res) => {
+              console.error('音频播放错误:', res.errCode)
+              uni.showToast({
+                title: '音频播放失败',
+                icon: 'error',
+              })
+            })
+          }
+        },
+        fail(error) {
+          console.error('语音合成失败:', error)
+          uni.showToast({
+            title: '语音合成失败',
+            icon: 'error',
+          })
+        },
+      })
       break
+    }
     case 'excerptCopy':
       messageExcerptCopyPopupVisible.value = true
       break
