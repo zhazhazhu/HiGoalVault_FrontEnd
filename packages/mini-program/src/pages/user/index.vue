@@ -94,7 +94,9 @@ onShareAppMessage(({ target, from }) => {
 })
 
 onLoad((options) => {
-  userId.value = options?.id
+  if (options?.id !== userStore.userInfo!.id) {
+    userId.value = options?.id
+  }
   checkFollowUser()
   getData()
 })
