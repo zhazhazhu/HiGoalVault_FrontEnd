@@ -422,3 +422,8 @@ export interface FollowTag {
   followAction: boolean
   tagId: string
 }
+
+export interface GetPublishListByTagRequest extends Page {
+  tagId: string
+  searchSort: 'SMART' | 'LAST' | 'HOT'
+}

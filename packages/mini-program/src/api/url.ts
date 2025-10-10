@@ -39,4 +39,5 @@ export enum API {
   GET_TAG_BY_ID = '/buyer/tag',
   CHECK_TAG_FOLLOW = '/buyer/tag/follow/follow/check',
   FOLLOW_TAG = '/buyer/tag/follow/follow',
+  GET_PUBLISH_BY_TAG = '/buyer/member/my/content/tagByPage',
 }

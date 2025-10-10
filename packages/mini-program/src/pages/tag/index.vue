@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { PublishMessageListRequest, PublishMessageListResponse, Tag } from '@/api'
+import type { GetPublishListByTagRequest, PublishMessageListResponse, Tag } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName } from '@higoal/hooks'
 import { ref } from 'vue'
@@ -9,15 +9,16 @@ import { TagType } from '.'
 
 const cs = useClassesName('tag-detail')
 const tag = ref<Tag>()
-const [params] = useResetRef<PublishMessageListRequest>({
+const tagId = ref('')
+const [params, reset] = useResetRef<GetPublishListByTagRequest>({
   pageNumber: 1,
   pageSize: 10,
   tagId: '',
+  searchSort: 'SMART',
 })
 const data = ref<PublishMessageListResponse[]>([])
 const isLoading = ref(false)
 const isFinish = ref(false)
-const activeTab = ref(TagType.synthesis)
 const checkFollowTag = ref(false)
 
 async function getTag(id: string) {
@@ -31,7 +32,7 @@ async function getTag(id: string) {
   }
 }
 async function getData() {
-  const res = await api.getPublishMessageList(params.value).finally(() => {
+  const res = await api.getPublishListByTag(params.value).finally(() => {
     isLoading.value = false
   })
   if (res.code === 200) {
@@ -58,11 +59,23 @@ async function followTag(action: boolean) {
 function gotoBack() {
   uni.navigateBack()
 }
+function resetData() {
+  reset()
+  params.value.tagId = tagId.value
+  data.value = []
+  isFinish.value = false
+}
+function changeTagType(key: any) {
+  resetData()
+  params.value.searchSort = key
+  getData()
+}
 
 onLoad((option) => {
   if (!option?.id)
     return
 
+  tagId.value = option.id
   params.value.tagId = option.id
   getTag(option.id)
   getData()
@@ -108,7 +121,7 @@ onLoad((option) => {
       </view>
 
       <view class="flex items-center gap-50rpx mt-40rpx">
-        <view v-for="item, key in TagType" :key="key" class="text-28rpx font-500 color-#909090" :class="[activeTab === item && 'color-#333']">
+        <view v-for="item, key in TagType" :key="key" class="text-28rpx font-500 color-#909090" :class="{ active: params.searchSort === key }" @click="changeTagType(key)">
           {{ item }}
         </view>
       </view>
@@ -127,4 +140,8 @@ onLoad((option) => {
   </view>
 </template>
 
-<style lang='css' scoped></style>
+<style lang='scss' scoped>
+.active {
+  color: #333;
+}
+</style>

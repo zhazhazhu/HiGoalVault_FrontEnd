@@ -14,6 +14,7 @@ import type {
   FollowTag,
   FollowUserRequest,
   GenerateStsTempKeyResponse,
+  GetPublishListByTagRequest,
   GlobalSearchRequest,
   GlobalSearchResultResponse,
   InteractedContentListRequest,
@@ -234,6 +235,11 @@ function followTag(query: FollowTag) {
   return http(API.FOLLOW_TAG).post<boolean>(query)
 }
 
+// 获取发布列表（根据标签）
+function getPublishListByTag(query: GetPublishListByTagRequest) {
+  return http(API.GET_PUBLISH_BY_TAG).post<PublishMessageListResponseWithPage>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -275,4 +281,5 @@ export const api = {
   getTagById,
   checkTagFollow,
   followTag,
+  getPublishListByTag,
 }
