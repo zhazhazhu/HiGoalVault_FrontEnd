@@ -16,7 +16,7 @@ export type UniOptions = Partial<UniApp.RequestOptions>
 
 export type TestOptions = Partial<{ js: string }>
 
-export const baseUrl = 'http://218.108.203.90:8888'
+export const baseUrl = 'https://higoall.com:9443/api/v1'
 
 const defaultOptions: LauncherOptions = {
   header: {

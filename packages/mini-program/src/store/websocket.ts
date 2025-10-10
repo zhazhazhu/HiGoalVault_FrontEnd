@@ -97,7 +97,7 @@ export const useWebsocketStore = defineStore('websocket', {
 
       // 创建 WebSocket 连接实例
       this.websocket = uni.connectSocket({
-        url: 'ws://218.108.203.90:8888/buyer/ai-chat-ws',
+        url: 'wss://higoall.com:9443/api/v1/buyer/ai-chat-ws',
         header: {
           'AccessToken': userStore.accessToken,
           'Content-type': 'application/json',
