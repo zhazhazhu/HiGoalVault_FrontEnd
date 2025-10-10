@@ -38,6 +38,12 @@ async function onContinueTalk() {
   }
   uni.redirectTo({ url: '/pages/chat/index' })
 }
+function onClickTag({ id }: { id: string }) {
+  uni.navigateTo({ url: `/pages/tag/index?id=${id}` })
+}
+function gotoUser() {
+  uni.navigateTo({ url: `/pages/user/index?id=${props.data!.memberId}` })
+}
 
 onMounted(() => {
   checkFollowUser()
@@ -56,7 +62,7 @@ onMounted(() => {
     </view>
 
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
-      <view class="flex items-center">
+      <view class="flex items-center" @click="gotoUser">
         <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data?.face" />
         <text class="ml-16rpx">
           {{ data?.nickName }}
@@ -78,7 +84,7 @@ onMounted(() => {
     </view>
 
     <view class="flex flex-wrap gap-20rpx">
-      <Tag v-for="item in data?.tags" :key="item.id">
+      <Tag v-for="item in data?.tags" :key="item.id" @tap.stop="onClickTag(item)">
         #{{ item.tagName }}
       </Tag>
     </view>

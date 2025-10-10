@@ -27,8 +27,8 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
   let data: any = null
   if (message.reference) {
     try {
-      reference = JSON.parse(message.reference)
-      data = JSON.parse(message.data)
+      reference = JSON.parse(message.reference || '[]')
+      data = JSON.parse(message.data || '{}')
     }
     catch (error) {
       console.log('transformMessage error', error)
