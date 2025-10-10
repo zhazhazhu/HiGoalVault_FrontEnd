@@ -147,13 +147,13 @@ onLoad(async () => {
     })
   }
   speechRecognizerManager.OnRecognitionComplete = (res) => {
-    speechText.value = String(res.result.voice_text_str)
+    speechText.value = String(res.result?.voice_text_str || '')
   }
   speechRecognizerManager.OnRecognitionResultChange = (res) => {
-    speechText.value = String(res.result.voice_text_str)
+    speechText.value = String(res.result?.voice_text_str || '')
   }
   speechRecognizerManager.OnSentenceEnd = (res) => {
-    speechText.value = String(res.result.voice_text_str)
+    speechText.value = String(res.result?.voice_text_str || '')
   }
   speechRecognizerManager.OnError = (res) => {
     console.log('OnError', res)
