@@ -48,10 +48,10 @@ export function generateDateCategory(date: string, type: DateCategoryType) {
  * @returns 移动平均线数据，每个元素为 [日期, 移动平均线值]
  */
 export function calculateMA(dayCount: number, data: number[][]) {
-  const result: Array<number | string> = []
+  const result: Array<number> = []
   for (let i = 0, len = data.length; i < len; i++) {
     if (i < dayCount) {
-      result.push('-')
+      result.push(0)
       continue
     }
     let sum = 0

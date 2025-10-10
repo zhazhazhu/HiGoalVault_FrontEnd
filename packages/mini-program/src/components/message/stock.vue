@@ -39,7 +39,7 @@ function initChart(canvas, width, height, dpr) {
       },
     },
     legend: {
-      data: ['日K'],
+      data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
       top: 20,
     },
     grid: {
