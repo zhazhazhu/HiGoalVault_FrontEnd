@@ -31,7 +31,7 @@ export const useGlobalStore = defineStore('global', {
       })
     },
     async generateStsTempKey() {
-      const isExpired = isTokenExpired(this.stsTempConfig?.expiredTime)
+      const isExpired = isTokenExpired(this.stsTempConfig?.expiredTime, 30 * 60)
       if (isExpired) {
         console.log('STS临时密钥已过期:', this.stsTempConfig)
       }
