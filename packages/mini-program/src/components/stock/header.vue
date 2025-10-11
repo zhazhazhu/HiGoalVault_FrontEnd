@@ -58,4 +58,35 @@ defineProps<{
   font-size: 14px;
   color: #666;
 }
+.stock-price-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.current-price {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.price-change {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.change-amount,
+.change-percent {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.price-up {
+  color: #ec0000;
+}
+
+.price-down {
+  color: #00da3c;
+}
 </style>

@@ -15,7 +15,8 @@ const current = ref(StockShowType.DAY_K)
 const activeData = ref<StockData | null>(null)
 const { store, config } = useStockChart(props.data)
 const stockInfo = computed(() => store.data.value.stockInfo)
-const canvasId = `stock-chart-${useUUID()}`
+const chartId = `stock-chart-${useUUID()}`
+const canvasId = `stock-canvas-${useUUID()}`
 const chartCanvasInstance = ref()
 
 function initChart(canvas, width, height, dpr) {
@@ -41,7 +42,7 @@ function tryInitChart() {
 }
 
 function onClickContainer(e) {
-  if (e.target.id === canvasId)
+  if (e.target.id === chartId)
     return
   activeData.value = null
 }
@@ -65,11 +66,13 @@ onMounted(() => {
     </view>
 
     <!-- 点击数据显示区域 -->
-    <StockSelectedDataPanel v-if="activeData" :data="activeData" />
+    <view v-if="activeData">
+      <StockSelectedDataPanel :data="activeData" />
+    </view>
 
     <!-- 图表容器 -->
     <view class="chart-wrapper">
-      <ec-canvas ref="chartCanvasInstance" :canvas-id="canvasId" :ec="{ lazyLoad: true }" type="2d" />
+      <ec-canvas :id="chartId" ref="chartCanvasInstance" :canvas-id="canvasId" :ec="{ lazyLoad: true }" type="2d" />
     </view>
   </view>
 </template>
