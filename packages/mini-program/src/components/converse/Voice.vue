@@ -2,7 +2,7 @@
 import type RecordPopup from '~/components/record/popup.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName, useUUID } from '@higoal/hooks'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useGlobalStore } from '@/store'
 
 const emit = defineEmits<{
@@ -147,7 +147,7 @@ onLoad(async () => {
     })
   }
   speechRecognizerManager.OnRecognitionComplete = (res) => {
-    speechText.value = String(res.result?.voice_text_str || '')
+    console.log('OnRecognitionComplete', res)
   }
   speechRecognizerManager.OnRecognitionResultChange = (res) => {
     speechText.value = String(res.result?.voice_text_str || '')
