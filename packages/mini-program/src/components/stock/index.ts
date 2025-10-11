@@ -1,5 +1,5 @@
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
-import type { ChatMessageStock, ChatMessageStockData } from '@/api'
+import type { ChatMessageStock, ChatMessageStockData, ChatMessageStockMetadata } from '@/api'
 import dayjs from 'dayjs'
 import { computed, toValue } from 'vue'
 import { calculateMA, DateFormat } from '@/utils/stock'
@@ -18,6 +18,8 @@ export interface StockData extends ChatMessageStockData {
 }
 
 export interface StockInfo {
+  name: string // 股票名称
+  code: string // 股票代码
   currentPrice: number // 当前价格
   change: number // 涨跌值
   changePercent: number // 涨跌百分比
@@ -45,7 +47,7 @@ export interface StockChartStore {
 export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
   const [stock] = toValue(stockData)
   const data = computed(() => stock.data)
-  const stockInfo = getStockInfo(data)
+  const stockInfo = getStockInfo(data, stock.metadata)
   const categoryData = computed(() => {
     return data.value.map((item) => {
       return dayjs(item.trade_date || '').format(DateFormat.DAY)
@@ -105,7 +107,7 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
   }
 }
 
-function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>) {
+function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, metadata: ChatMessageStockMetadata) {
   const stockData = toValue(stockChartData)
   const latestData = stockData[stockData.length - 1]
   const previousData = stockData[stockData.length - 2]
@@ -113,7 +115,10 @@ function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>) 
   if (!latestData || !previousData) {
     return null
   }
+
   return computed<StockInfo>(() => ({
+    name: metadata.symbol?.[0],
+    code: metadata.symbol?.[1],
     currentPrice: Number(latestData.close.toFixed(2)),
     change: Number((latestData.close - previousData.close).toFixed(2)),
     changePercent: Number((latestData.close - previousData.close) / previousData.close),
