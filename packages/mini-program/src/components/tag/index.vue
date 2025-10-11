@@ -3,7 +3,7 @@ import { useClassesName } from '@higoal/hooks'
 
 const props = withDefaults(defineProps<{
   customClass?: string
-  type?: 'primary' | 'warning'
+  type?: 'primary' | 'info' | 'warning'
   size?: 'large' | 'default' | 'small'
 }>(), {
   type: 'primary',
@@ -40,6 +40,10 @@ const cs = useClassesName('tag')
   &.hi-tag--primary {
     background: #66666614;
     color: var(--hi-primary-color);
+  }
+  &.hi-tag--info {
+    background: #66666614;
+    color: #404040;
   }
   &.hi-tag--warning {
     background: #ff950014;

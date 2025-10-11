@@ -221,7 +221,7 @@ export interface PublishMessageListResponse {
   nickName: string // 发布人昵称
   memberId: string // 发布人id
   face: string // 发布人头像
-  tags: Array<{ id: string, tagName: string }>
+  tags: Array<Tag>
   chatQueryAnswerVO: AnswerBefore // 问题回答
   isFollowed: boolean // 是否关注
 }
@@ -416,6 +416,7 @@ export interface Tag {
   tagColor: string
   tagDescription: string
   useCount: number
+  followStatus: boolean
 }
 
 export interface FollowTag {

@@ -84,7 +84,7 @@ onMounted(() => {
     </view>
 
     <view class="flex flex-wrap gap-20rpx">
-      <Tag v-for="item in data?.tags" :key="item.id" @tap.stop="onClickTag(item)">
+      <Tag v-for="item in data?.tags" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" @tap.stop="onClickTag(item)">
         #{{ item.tagName }}
       </Tag>
     </view>
