@@ -214,7 +214,7 @@ export interface PublishMessageListResponse {
   likeCount: number // 点赞数量
   privacy: Truth // 是否公开
   queryId: string // 问题id
-  isLiked: boolean // 是否点赞
+  isLike: boolean // 是否点赞
   title: string // 标题
   shareCount: number // 分享数量
   viewCount: number // 阅读数量

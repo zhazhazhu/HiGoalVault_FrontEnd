@@ -61,11 +61,11 @@ async function onThumbsUp() {
   }
   const res = await api.thumbsUp({
     contentId: data.value!.id,
-    likeAction: !data.value!.isLiked,
+    likeAction: !data.value!.isLike,
   })
   if (res.code === 200) {
-    data.value!.isLiked = !data.value!.isLiked
-    data.value!.likeCount = data.value!.isLiked ? data.value!.likeCount + 1 : data.value!.likeCount - 1
+    data.value!.isLike = !data.value!.isLike
+    data.value!.likeCount = data.value!.isLike ? data.value!.likeCount + 1 : data.value!.likeCount - 1
   }
 }
 
@@ -142,7 +142,7 @@ onLoad((options) => {
             </text>
           </view>
           <view class="flex flex-col items-center" @click="onThumbsUp">
-            <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLiked }" />
+            <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLike }" />
             <text class="text-22rpx color-gray-6 font-bold">
               {{ data?.likeCount }}
             </text>

@@ -18,11 +18,11 @@ async function onThumbsUp() {
   }
   const res = await api.thumbsUp({
     contentId: data.value.id,
-    likeAction: !data.value.isLiked,
+    likeAction: !data.value.isLike,
   })
   if (res.code === 200) {
-    data.value.isLiked = !data.value.isLiked
-    data.value.likeCount = data.value.isLiked ? data.value.likeCount + 1 : data.value.likeCount - 1
+    data.value.isLike = !data.value.isLike
+    data.value.likeCount = data.value.isLike ? data.value.likeCount + 1 : data.value.likeCount - 1
   }
 }
 function gotoUser() {
@@ -74,7 +74,7 @@ function onClickTag({ id }: { id: string }) {
       </button>
       <view class="flex-1" />
       <view class="flex items-center">
-        <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLiked }" @click.stop="onThumbsUp" />
+        <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" @click.stop="onThumbsUp" />
         <view class="text-26rpx">
           {{ data.likeCount }}
         </view>
