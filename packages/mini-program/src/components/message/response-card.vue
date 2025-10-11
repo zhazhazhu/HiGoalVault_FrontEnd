@@ -51,7 +51,7 @@ const htmlContent = computed(() => {
   </view>
 
   <view v-if="data.data" :class="cs.m('stock')">
-    <message-stock :data="data.data" />
+    <stock :data="data.data" />
   </view>
 </template>
 

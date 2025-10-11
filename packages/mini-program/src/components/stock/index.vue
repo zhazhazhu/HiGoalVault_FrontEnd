@@ -1,78 +1,19 @@
 <script lang='ts' setup>
+import type { StockData } from '.'
 import type { ChatMessageStock } from '@/api'
-import dayjs from 'dayjs'
 import { computed, ref } from 'vue'
-import { calculateMA, DateFormat } from '@/utils/stock'
+import echarts from '@/echarts'
+import { useStockChart } from '.'
+import { StockShowType } from './config'
 
 const props = defineProps<{
   data: [ChatMessageStock]
 }>()
 
-interface SelectedDataType {
-  date: string
-  open: number
-  close: number
-  low: number
-  high: number
-  volume: number
-  ma5: number | null
-  ma10: number | null
-  ma20: number | null
-  ma30: number | null
-}
-
-console.log(props.data)
-
-// eslint-disable-next-line ts/no-require-imports
-const echarts = require('../../wxcomponents/ec-canvas/echarts.min.js')
-
-const upColor = '#ec0000'
-const downColor = '#00da3c'
-
-const selectedData = ref<SelectedDataType>({} as SelectedDataType)
-const selectedVisible = ref(false)
-const list = ref<string[]>(['分时', '日K', '周K', '月K'])
-const current = ref('日K')
-const dateRange = props.data[0].data.map((item) => {
-  return dayjs(item.trade_date || '').format(DateFormat.DAY)
-})
-const stockData1 = props.data[0].data.map((item) => {
-  return [item.open, item.close, item.low, item.high]
-})
-const ma5 = calculateMA(5, stockData1)
-const ma10 = calculateMA(10, stockData1)
-const ma20 = calculateMA(20, stockData1)
-const ma30 = calculateMA(30, stockData1)
-
-// 计算股票基本信息
-const stockInfo = computed(() => {
-  const data = props.data[0].data
-  const latestData = data[data.length - 1]
-  const previousData = data[data.length - 2]
-
-  if (!latestData || !previousData) {
-    return null
-  }
-
-  const currentPrice = latestData.close
-  const previousPrice = previousData.close
-  const change = currentPrice - previousPrice
-  const changePercent = ((change / previousPrice) * 100).toFixed(2)
-  const totalVolume = data.reduce((sum, item) => sum + item.vol, 0)
-  const openInterest = latestData.oi || 0
-
-  return {
-    currentPrice: currentPrice.toFixed(2),
-    change: change.toFixed(2),
-    changePercent,
-    isUp: change >= 0,
-    totalVolume,
-    openInterest,
-    high: latestData.high.toFixed(2),
-    low: latestData.low.toFixed(2),
-    open: latestData.open.toFixed(2),
-  }
-})
+const current = ref(StockShowType.DAY_K)
+const activeData = ref<StockData | null>(null)
+const { store, config } = useStockChart(props.data)
+const stockInfo = computed(() => store.data.value.stockInfo)
 
 function initChart(canvas, width, height, dpr) {
   const chart = echarts.init(canvas, null, {
@@ -81,223 +22,19 @@ function initChart(canvas, width, height, dpr) {
     devicePixelRatio: dpr, // 像素比
   })
   canvas.setChart(chart)
-
-  const option = {
-    legend: {
-      data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
-      top: 10,
-      itemWidth: 12,
-      itemHeight: 8,
-      itemGap: 8,
-      textStyle: {
-        fontSize: 11,
-      },
-      itemStyle: {
-        color: 'transparent',
-      },
-    },
-    grid: [
-      {
-        left: '8%',
-        right: '8%',
-        top: '15%',
-        height: '50%',
-      },
-      {
-        left: '8%',
-        right: '8%',
-        top: '70%',
-        height: '16%',
-      },
-    ],
-    xAxis: [
-      {
-        type: 'category',
-        data: dateRange,
-        boundaryGap: false,
-        axisLine: { onZero: false },
-        splitLine: { show: false },
-        min: 'dataMin',
-        max: 'dataMax',
-        axisPointer: {
-          z: 100,
-        },
-      },
-      {
-        type: 'category',
-        gridIndex: 1,
-        data: dateRange,
-        boundaryGap: false,
-        axisLine: { onZero: false },
-        axisTick: { show: false },
-        splitLine: { show: false },
-        axisLabel: { show: false },
-        min: 'dataMin',
-        max: 'dataMax',
-      },
-    ],
-    yAxis: [
-      {
-        scale: true,
-        splitArea: {
-          show: true,
-        },
-      },
-      {
-        scale: true,
-        gridIndex: 1,
-        splitNumber: 2,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { show: false },
-      },
-    ],
-    dataZoom: [
-      {
-        type: 'inside',
-        xAxisIndex: [0, 1],
-        start: 70,
-        end: 100,
-        minSpan: 5,
-        maxSpan: 100,
-        zoomOnMouseWheel: true,
-        moveOnMouseMove: true,
-        moveOnMouseWheel: true,
-        preventDefaultMouseMove: false,
-      },
-      {
-        type: 'slider',
-        xAxisIndex: [0, 1],
-        start: 70,
-        end: 100,
-        height: 20,
-        bottom: 10,
-        borderColor: '#ccc',
-        fillerColor: 'rgba(17, 100, 210, 0.2)',
-        handleStyle: {
-          color: '#1164d2',
-          borderColor: '#1164d2',
-        },
-        textStyle: {
-          color: '#999',
-        },
-        showDetail: false,
-        showDataShadow: true,
-        realtime: true,
-        filterMode: 'filter',
-      },
-    ],
-    series: [
-      {
-        name: '日K',
-        type: 'candlestick',
-        data: stockData1,
-        itemStyle: {
-          color: upColor,
-          color0: downColor,
-          borderColor: upColor,
-          borderColor0: downColor,
-        },
-      },
-      {
-        name: 'MA5',
-        type: 'line',
-        data: ma5,
-        smooth: true,
-        lineStyle: {
-          opacity: 0.8,
-          width: 1,
-          color: '#1E90FF',
-        },
-        symbol: 'none',
-      },
-      {
-        name: 'MA10',
-        type: 'line',
-        data: ma10,
-        smooth: true,
-        lineStyle: {
-          opacity: 0.8,
-          width: 1,
-          color: '#FFD700',
-        },
-        symbol: 'none',
-      },
-      {
-        name: 'MA20',
-        type: 'line',
-        data: ma20,
-        smooth: true,
-        lineStyle: {
-          opacity: 0.8,
-          width: 1,
-          color: '#9370DB',
-        },
-        symbol: 'none',
-      },
-      {
-        name: 'MA30',
-        type: 'line',
-        data: ma30,
-        smooth: true,
-        lineStyle: {
-          opacity: 0.8,
-          width: 1,
-          color: '#00CED1',
-        },
-        symbol: 'none',
-      },
-      {
-        name: '成交量',
-        type: 'bar',
-        xAxisIndex: 1,
-        yAxisIndex: 1,
-        data: props.data[0].data.map((item, index) => {
-          const isUp = stockData1[index][1] >= stockData1[index][0]
-          return {
-            value: item.vol,
-            itemStyle: {
-              color: isUp ? upColor : downColor,
-              opacity: 0.7,
-            },
-          }
-        }),
-      },
-    ],
-  }
-  // 添加点击事件监听
   chart.on('click', (params) => {
     if (params.componentType === 'series') {
-      selectedVisible.value = true
-      const dataIndex = params.dataIndex
-      const originalData = props.data[0].data[dataIndex]
-      const klineData = stockData1[dataIndex]
-
-      selectedData.value = {
-        date: dayjs(originalData.trade_date).format(DateFormat.DAY),
-        open: klineData[0],
-        close: klineData[1],
-        low: klineData[2],
-        high: klineData[3],
-        volume: originalData.vol,
-        ma5: calculateMA(5, stockData1)[dataIndex],
-        ma10: calculateMA(10, stockData1)[dataIndex],
-        ma20: calculateMA(20, stockData1)[dataIndex],
-        ma30: calculateMA(30, stockData1)[dataIndex],
-      }
+      activeData.value = store.getStockData(params.dataIndex)
     }
   })
-
-  chart.setOption(option)
+  chart.setOption(config)
   return chart
 }
 function onClickContainer(e) {
   if (e.target.id === 'stock-chart-bar')
     return
-  selectedVisible.value = false
+  activeData.value = null
 }
-
 const ec = {
   onInit: initChart,
 }
@@ -377,11 +114,11 @@ const ec = {
 
     <!-- 时间周期选择器 -->
     <view class="period-selector">
-      <wd-segmented v-model:value="current" :options="list" />
+      <wd-segmented v-model:value="current" :options="Object.values(StockShowType)" />
     </view>
 
     <!-- 点击数据显示区域 -->
-    <view v-show="selectedVisible" class="selected-data-panel" @click.stop>
+    <view v-if="activeData" class="selected-data-panel" @click.stop>
       <view class="data-grid">
         <view class="data-row">
           <view class="data-item">
@@ -389,23 +126,23 @@ const ec = {
               日期
             </text>
             <text class="data-value">
-              {{ selectedData?.date || '--' }}
+              {{ activeData?.date || '--' }}
             </text>
           </view>
           <view class="data-item">
             <text class="data-label">
               开盘
             </text>
-            <text class="data-value" :class="selectedData?.open > selectedData?.close ? 'price-down' : 'price-up'">
-              {{ selectedData?.open || '--' }}
+            <text class="data-value" :class="activeData?.open > activeData?.close ? 'price-down' : 'price-up'">
+              {{ activeData?.open || '--' }}
             </text>
           </view>
           <view class="data-item">
             <text class="data-label">
               收盘
             </text>
-            <text class="data-value" :class="selectedData?.close > selectedData?.open ? 'price-up' : 'price-down'">
-              {{ selectedData?.close || '--' }}
+            <text class="data-value" :class="activeData?.close > activeData?.open ? 'price-up' : 'price-down'">
+              {{ activeData?.close || '--' }}
             </text>
           </view>
           <view class="data-item">
@@ -413,7 +150,7 @@ const ec = {
               最高
             </text>
             <text class="data-value">
-              {{ selectedData?.high || '--' }}
+              {{ activeData?.high || '--' }}
             </text>
           </view>
           <view class="data-item">
@@ -421,7 +158,7 @@ const ec = {
               最低
             </text>
             <text class="data-value">
-              {{ selectedData?.low || '--' }}
+              {{ activeData?.low || '--' }}
             </text>
           </view>
         </view>
@@ -431,7 +168,7 @@ const ec = {
               成交量
             </text>
             <text class="data-value">
-              {{ selectedData?.volume || '--' }}
+              {{ activeData?.vol || '--' }}
             </text>
           </view>
           <view class="data-item">
@@ -439,7 +176,7 @@ const ec = {
               MA5
             </text>
             <text class="data-value" style="color: #1E90FF;">
-              {{ selectedData?.ma5 || '--' }}
+              {{ activeData?.ma5 || '--' }}
             </text>
           </view>
           <view class="data-item">
@@ -447,7 +184,7 @@ const ec = {
               MA10
             </text>
             <text class="data-value" style="color: #FFD700;">
-              {{ selectedData?.ma10 || '--' }}
+              {{ activeData?.ma10 || '--' }}
             </text>
           </view>
           <view class="data-item">
@@ -455,7 +192,7 @@ const ec = {
               MA20
             </text>
             <text class="data-value" style="color: #9370DB;">
-              {{ selectedData?.ma20 || '--' }}
+              {{ activeData?.ma20 || '--' }}
             </text>
           </view>
           <view class="data-item">
@@ -463,7 +200,7 @@ const ec = {
               MA30
             </text>
             <text class="data-value" style="color: #00CED1;">
-              {{ selectedData?.ma30 || '--' }}
+              {{ activeData?.ma30 || '--' }}
             </text>
           </view>
         </view>

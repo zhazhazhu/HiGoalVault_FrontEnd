@@ -88,6 +88,7 @@
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@vue/runtime-core": "^3.5.21",
     "@vue/tsconfig": "^0.8.1",
+    "echarts": "^6.0.0",
     "sass": "^1.78.0",
     "unocss": "65.5.0",
     "unocss-preset-weapp": "^66.0.2",
