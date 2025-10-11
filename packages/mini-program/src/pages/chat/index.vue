@@ -43,9 +43,10 @@ websocketStore.receiveMessage((data) => {
   currentMessage.isLoading = true
   if (data.code === '200') {
     chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+      ...data.data,
       response: currentMessage.response += (data.data?.response || ''),
       message: currentMessage.message += (data.data?.message || ''),
-      data: data.data?.data ? data.data.data : null,
+      data: data.data?.data ? data.data.data : [],
       reference: data.data?.reference,
       queryId: data.data?.query_id,
     })

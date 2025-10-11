@@ -1,7 +1,8 @@
 <script lang='ts' setup>
 import type { StockData } from '.'
 import type { ChatMessageStock } from '@/api'
-import { computed, ref } from 'vue'
+import { useUUID } from '@higoal/hooks'
+import { computed, onMounted, ref } from 'vue'
 import echarts from '@/echarts'
 import { useStockChart } from '.'
 import { StockShowType } from './config'
@@ -14,6 +15,8 @@ const current = ref(StockShowType.DAY_K)
 const activeData = ref<StockData | null>(null)
 const { store, config } = useStockChart(props.data)
 const stockInfo = computed(() => store.data.value.stockInfo)
+const canvasId = `stock-chart-${useUUID()}`
+const chartCanvasInstance = ref()
 
 function initChart(canvas, width, height, dpr) {
   const chart = echarts.init(canvas, null, {
@@ -30,14 +33,22 @@ function initChart(canvas, width, height, dpr) {
   chart.setOption(config)
   return chart
 }
+
+function tryInitChart() {
+  if (chartCanvasInstance.value) {
+    chartCanvasInstance.value.init((canvas, width, height, dpr) => initChart(canvas, width, height, dpr))
+  }
+}
+
 function onClickContainer(e) {
-  if (e.target.id === 'stock-chart-bar')
+  if (e.target.id === canvasId)
     return
   activeData.value = null
 }
-const ec = {
-  onInit: initChart,
-}
+
+onMounted(() => {
+  tryInitChart()
+})
 </script>
 
 <template>
@@ -58,7 +69,7 @@ const ec = {
 
     <!-- 图表容器 -->
     <view class="chart-wrapper">
-      <ec-canvas id="stock-chart-bar" :canvas-id="`stock-chart-${Date.now()}`" :ec="ec" type="2d" />
+      <ec-canvas ref="chartCanvasInstance" :canvas-id="canvasId" :ec="{ lazyLoad: true }" type="2d" />
     </view>
   </view>
 </template>

@@ -107,7 +107,7 @@ export const useChatStore = defineStore('chat', {
         msgId: id,
         chatQueryAnswerList: [
           {
-            data: null,
+            data: [],
             message: '',
             reference: [],
             response: '',
@@ -128,7 +128,7 @@ export const useChatStore = defineStore('chat', {
     },
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
-        data: null,
+        data: [],
         message: '',
         reference: [],
         response: '',

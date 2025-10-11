@@ -68,7 +68,7 @@ export interface AnswerBefore {
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
   reference: ChatMessageReference[]
-  data: [ChatMessageStock] | null // 股票图数据
+  data: [ChatMessageStock] | [] // 股票图数据
   isLoading: boolean // 是否正在加载中
 }
 

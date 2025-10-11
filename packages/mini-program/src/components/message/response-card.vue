@@ -50,9 +50,7 @@ const htmlContent = computed(() => {
     <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
   </view>
 
-  <view v-if="data.data" :class="cs.m('stock')">
-    <stock :data="data.data" />
-  </view>
+  <stock v-if="data.data.length === 1" :data="data.data" />
 </template>
 
 <style lang='scss' scoped>
