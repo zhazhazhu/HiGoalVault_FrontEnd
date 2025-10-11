@@ -115,9 +115,11 @@ function getConverseHeight() {
       .exec()
   })
 }
-function onVoiceDone(text: string) {
+function onVoiceDone(text: string, immediate?: boolean) {
   model.value = text
   messageType.value = 'text'
+  if (immediate)
+    onConfirmMessage()
 }
 function onInputFocus(e) {
   console.log('input focus', e)

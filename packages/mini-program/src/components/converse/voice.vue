@@ -2,11 +2,11 @@
 import type RecordPopup from '~/components/record/popup.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { useClassesName, useUUID } from '@higoal/hooks'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useGlobalStore } from '@/store'
 
 const emit = defineEmits<{
-  (e: 'done', text: string): void
+  (e: 'done', text: string, immediate?: boolean): void
 }>()
 
 const cs = useClassesName('voice')
@@ -118,14 +118,13 @@ function onConfirm() {
   isRecording.value = false
   textRecognitionVisible.value = false
   isConnecting.value = false
-  emit('done', speechText.value)
+  emit('done', speechText.value, true)
   speechText.value = ''
 }
 function onCloseTextRecognition() {
   isRecording.value = false
   textRecognitionVisible.value = false
   isConnecting.value = false
-  emit('done', speechText.value)
   speechText.value = ''
 }
 
@@ -164,7 +163,6 @@ onLoad(async () => {
 <template>
   <root-portal>
     <RecordPopup ref="recordPopupRef" v-model="isRecording" :speech-text="speechText" :decibel="decibel" :focused-button="recordPopupFocusedButton" />
-    1
 
     <view v-show="textRecognitionVisible" class="w-screen h-screen fixed top-0 left-0 flex flex-col items-center justify-end z-10" :class="[cs.m('text-recognition-wrapper'), cs.is('transparent', isRecording)]">
       <view class="p-8% w-full h-70% box-border flex flex-col justify-between" :style="{ paddingBottom: globalStore.keyboardHeight ? `${globalStore.keyboardHeight + 30}px` : '8%' }">
