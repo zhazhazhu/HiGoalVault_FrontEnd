@@ -2,7 +2,7 @@
 import type { CommentResponse, Page, ReplyResponse } from '@/api'
 import { useClassesName, useUUID } from '@higoal/hooks'
 import dayjs from 'dayjs'
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
@@ -189,10 +189,13 @@ function resetComment() {
   resetCurrentReplying()
 }
 
-onMounted(() => {
-  reset()
-  getData()
-})
+watch(model, (val) => {
+  if (val) {
+    data.value = []
+    reset()
+    getData()
+  }
+}, { immediate: true })
 </script>
 
 <template>

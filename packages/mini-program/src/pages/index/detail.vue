@@ -50,6 +50,7 @@ async function onConfirm() {
   const res = await api.addComment({ commentContent: commentContent.value, contentId: data.value!.id })
   if (res.code === 200) {
     commentContent.value = ''
+    data.value!.commentCount++
   }
 }
 function openCommentPopup() {
