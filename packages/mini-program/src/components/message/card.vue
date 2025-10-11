@@ -254,7 +254,12 @@ function stopTextToSpeech() {
       <view :class="cs.m('model')">
         <message-response-card :data="currentAnswer" @long-press-content="openTooltips" />
 
-        <view v-show="currentAnswer.isLoading" class="i-eos-icons-three-dots-loading text-100rpx color-[var(--hi-primary-color)]" />
+        <view v-show="currentAnswer.isLoading" class="flex items-center gap-8px">
+          <view class="i-line-md-loading-twotone-loop text-40rpx" />
+          <text class="text-14px color-#333">
+            正在生成...
+          </text>
+        </view>
 
         <view v-show="!messageInject.share.value.isChecked && !readonly" :class="cs.e('operations')" class="flex items-center mt-18px gap-8px">
           <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
