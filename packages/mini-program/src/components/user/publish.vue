@@ -43,6 +43,7 @@ function loadData() {
 async function refreshData() {
   isRefreshing.value = true
   resetPage()
+  data.value = []
   await getData()
   isRefreshing.value = false
 }
