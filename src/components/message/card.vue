@@ -4,6 +4,7 @@ import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import type { MessageToolOperateType } from '@/types'
 import { computed, ref, watch } from 'vue'
 import { useCountDown } from 'wot-design-uni'
+import { useMessage } from 'wot-design-uni/components/wd-message-box'
 import { api, Truth } from '@/api'
 import { useClassesName, useUUID } from '@/composables'
 import { useMessageInject } from '@/composables/inject'
@@ -43,6 +44,7 @@ const { start, reset } = useCountDown({
     innerAudioContext.destroy()
   },
 })
+const messageBox = useMessage()
 
 innerAudioContext.onPlay(() => {
   console.log('音频开始播放')
@@ -164,20 +166,24 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
     case 'copy':
       onCopy()
       break
-    case 'delete': {
-      const res = await api.deleteChatMessageById(currentAnswer.value.queryId)
-      if (res.code === 200) {
-        if (currentAnswerIndex.value === 1) {
-          chatStore.messages = chatStore.messages.filter(item => item.msgId !== message.value.msgId)
+    case 'delete':
+      messageBox.confirm({
+        msg: '该对话内容将被删除无法恢复，若您之前主动分享过该对话，分享链接也将一并被删除',
+        title: '提示',
+      }).then(async () => {
+        const res = await api.deleteChatMessageById(currentAnswer.value.queryId)
+        if (res.code === 200) {
+          if (currentAnswerIndex.value === 1) {
+            chatStore.messages = chatStore.messages.filter(item => item.msgId !== message.value.msgId)
+          }
+          else {
+            message.value.chatQueryAnswerList = message.value.chatQueryAnswerList.filter(item => item.queryId !== currentAnswer.value.queryId)
+          }
+          uni.showToast({
+            title: '删除成功',
+          })
         }
-        else {
-          message.value.chatQueryAnswerList = message.value.chatQueryAnswerList.filter(item => item.queryId !== currentAnswer.value.queryId)
-        }
-        uni.showToast({
-          title: '删除成功',
-        })
-      }
-    }
+      })
       break
     case 'voice': {
       const content = markdownToPlainText(currentAnswer.value.response || '').substring(0, 100)
@@ -250,6 +256,7 @@ function stopTextToSpeech() {
 <template>
   <view :class="cs.m('wrapper')">
     <wd-toast />
+    <wd-message-box />
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
     <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" />
     <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" :message-text-to-speaking="messageTextToSpeaking" @operate="onMessageToolOperate" />
