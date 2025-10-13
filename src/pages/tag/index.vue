@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { GetPublishListByTagRequest, PublishMessageListResponse, Tag } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
-import { useClassesName } from '@/composables'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { TagType } from '.'
 
@@ -120,7 +120,7 @@ onLoad((option) => {
         </wd-button>
       </view>
 
-      <view class="flex items-center gap-50rpx mt-40rpx">
+      <view class="flex items-center gap-50rpx mt-40rpx sticky top-0 bg-[var(--hi-bg-color)] py-20rpx z-10">
         <view v-for="item, key in TagType" :key="key" class="text-28rpx font-500 color-#909090" :class="{ active: params.searchSort === key }" @click="changeTagType(key)">
           {{ item }}
         </view>
