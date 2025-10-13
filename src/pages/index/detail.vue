@@ -46,6 +46,12 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
   }
 }
 function gotoBack() {
+  // 如果路由历史栈没有数据,返回首页
+  if (getCurrentPages().length === 1) {
+    uni.redirectTo({ url: '/pages/index/index' })
+    return
+  }
+  // 如果是从消息列表进来的,返回消息列表
   uni.navigateBack()
 }
 async function onConfirm() {
