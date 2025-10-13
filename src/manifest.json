@@ -61,8 +61,9 @@
       }
     },
     "usingComponents": true,
-    // "lazyCodeLoading": "requiredComponents",
-    "__usePrivacyCheck__": true
+    "__usePrivacyCheck__": true,
+    "lazyCodeLoading": "requiredComponents",
+    "optimization": { "subPackages": true }
   },
   "mp-alipay": {
     "usingComponents": true
