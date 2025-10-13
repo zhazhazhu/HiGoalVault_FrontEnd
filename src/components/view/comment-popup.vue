@@ -24,6 +24,7 @@ const placeholder = ref('发表友善评论')
 const textareaInstance = ref()
 const isFocus = ref(false)
 const userStore = useUserStore()
+const refreshing = ref(false)
 
 async function getData() {
   isLoading.value = true
@@ -45,9 +46,11 @@ async function load() {
   getData()
 }
 async function refreshData() {
+  refreshing.value = true
   data.value = []
   reset()
   await getData()
+  refreshing.value = false
 }
 const currentOperating = ref<number | null>(null)
 const [currentReplying, resetCurrentReplying] = useResetRef<{
@@ -100,7 +103,7 @@ function createTemporaryReply(type: 'comment' | 'reply'): ReplyResponse {
     createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
   }
 }
-function putTemporaryComment(id) {
+function putTemporaryComment(id: string) {
   if (currentOperating.value === null) {
     total.value++
     data.value.unshift({
@@ -135,7 +138,6 @@ async function onConfirm() {
       const res = await api.addComment({ commentContent: commentContent.value, contentId: props.contentId })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
-        commentContent.value = ''
       }
     }
     else if (currentReplying.value.type === 'comment') {
@@ -146,7 +148,6 @@ async function onConfirm() {
       })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
-        commentContent.value = ''
       }
     }
     else if (currentReplying.value.type === 'reply') {
@@ -158,7 +159,6 @@ async function onConfirm() {
       })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
-        commentContent.value = ''
       }
     }
   }
@@ -196,7 +196,6 @@ function resetComment() {
 }
 function onBlur() {
   isFocus.value = false
-  resetComment()
 }
 
 watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
@@ -236,7 +235,10 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
         :show-scrollbar="false"
         :scroll-into-view="commentId"
         class="h-800rpx gap-20rpx py-32rpx"
+        :refresher-enabled="true"
+        :refresher-triggered="refreshing"
         @scrolltolower="load"
+        @refresherrefresh="refreshData"
       >
         <view-comment-card v-for="item, index in data" :id="item.comment.id" :key="item.comment.id" :current-comment-id="commentId" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
 
