@@ -2,9 +2,9 @@
 import type { Page, PublishMessageListResponse } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import { onShareAppMessage } from '@dcloudio/uni-app'
-import { useClassesName } from '@/composables'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 
@@ -154,24 +154,26 @@ onMounted(() => {
       @scrolltolower="loadData"
       @refresherrefresh="refreshData"
     >
-      <tabs
-        v-model="active"
-        editable
-        custom-content-class="mt-10px"
-        :custom-nav-class="cs.m('tab-nav')"
-        @edit="onClickSearch"
-        @tab-change="onTabChange"
-      >
-        <template #edit>
-          <wd-icon name="search" size="18" />
-        </template>
-        <tabs-item name="view" label="发现">
-          <ViewList v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
-        </tabs-item>
-        <tabs-item name="follow" label="关注">
-          <ViewList v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
-        </tabs-item>
-      </tabs>
+      <view>
+        <tabs
+          v-model="active"
+          editable
+          custom-content-class="mt-10px"
+          :custom-nav-class="cs.m('tab-nav')"
+          @edit="onClickSearch"
+          @tab-change="onTabChange"
+        >
+          <template #edit>
+            <wd-icon name="search" size="18" />
+          </template>
+          <tabs-item name="view" label="发现">
+            <ViewList v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
+          </tabs-item>
+          <tabs-item name="follow" label="关注">
+            <ViewList v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
+          </tabs-item>
+        </tabs>
+      </view>
     </scroll-view>
 
     <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)] px-32rpx">

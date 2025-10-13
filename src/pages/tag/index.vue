@@ -97,7 +97,7 @@ onLoad((option) => {
       enhanced
       enable-passive
       scroll-y
-      class="h-[calc(100vh-80px)] bg-[var(--hi-bg-color)] p-32rpx"
+      class="h-[calc(100vh-80px)] bg-[var(--hi-bg-color)] p-32rpx box-border"
       :lower-threshold="50"
       :show-scrollbar="false"
       @scrolltolower="load"
@@ -120,21 +120,23 @@ onLoad((option) => {
         </wd-button>
       </view>
 
-      <view class="flex items-center gap-50rpx mt-40rpx sticky top-0 bg-[var(--hi-bg-color)] py-20rpx z-10">
-        <view v-for="item, key in TagType" :key="key" class="text-28rpx font-500 color-#909090" :class="{ active: params.searchSort === key }" @click="changeTagType(key)">
-          {{ item }}
+      <view>
+        <view class="flex items-center gap-50rpx mt-40rpx sticky top-0 bg-[var(--hi-bg-color)] py-20rpx z-10">
+          <view v-for="item, key in TagType" :key="key" class="text-28rpx font-500 color-#909090" :class="{ active: params.searchSort === key }" @click="changeTagType(key)">
+            {{ item }}
+          </view>
         </view>
-      </view>
 
-      <view v-for="item, index in data" :id="`view-${item.id}`" :key="item.id" class="my-30rpx">
-        <ViewCard :data="item" @update:data="(newData) => data[index] = newData" />
-      </view>
+        <view v-for="item, index in data" :id="`view-${item.id}`" :key="item.id" class="my-30rpx">
+          <ViewCard :data="item" @update:data="(newData) => data[index] = newData" />
+        </view>
 
-      <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
-        <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
-        <text class="ml-20rpx text-24rpx">
-          {{ isFinish ? '没有更多了' : '加载中...' }}
-        </text>
+        <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
+          <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
+          <text class="ml-20rpx text-24rpx">
+            {{ isFinish ? '没有更多了' : '加载中...' }}
+          </text>
+        </view>
       </view>
     </scroll-view>
   </view>
