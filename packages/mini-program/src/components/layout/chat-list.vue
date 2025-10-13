@@ -18,20 +18,25 @@ const emit = defineEmits(['changeChat'])
 const cs = useClassesName('chat-list')
 const chatStore = useChatStore()
 const userStore = useUserStore()
-const [page] = useResetRef<Page>({
+const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 20,
   sort: 'createTime',
 })
 const message = useMessage()
+const isLoading = ref(false)
+const isFinish = ref(false)
+const isRefreshing = ref(false)
 
-async function getChatList() {
+async function getData() {
   const data = await api.getChatList({
     ...page.value,
     userId: userStore.userInfo!.id,
+  }).finally(() => {
+    isLoading.value = false
   })
   if (data.code === 200) {
-    chatStore.chats = data.result.records
+    chatStore.chats.push(...data.result.records)
   }
 }
 function formatTime(time: string, type: keyof ChatWithType) {
@@ -43,7 +48,7 @@ async function onCreateNewChat() {
     chatStore.currentChatId = data.result.chatId
   }
   emit('changeChat')
-  await getChatList()
+  await getData()
 }
 function onEditChat(item: Chat) {
   const input = ref(item.title)
@@ -73,6 +78,20 @@ function onDeleteChat(item: Chat) {
     chatStore.chats = chatStore.chats.filter(chat => chat.chatId !== item.chatId)
   })
 }
+function loadData() {
+  if (isLoading.value || isFinish.value)
+    return
+  isLoading.value = true
+  page.value.pageNumber!++
+  getData()
+}
+async function refreshData() {
+  isRefreshing.value = true
+  chatStore.chats = []
+  reset()
+  await getData()
+  isRefreshing.value = false
+}
 
 function onClickChat(item: Chat) {
   chatStore.currentChatId = item.chatId
@@ -80,7 +99,8 @@ function onClickChat(item: Chat) {
 }
 
 onMounted(() => {
-  getChatList()
+  reset()
+  getData()
 })
 </script>
 
@@ -99,9 +119,13 @@ onMounted(() => {
       enhanced
       enable-passive
       enable-flex
+      class="h-[calc(100vh-280px)] py-10px"
       :scroll-y="true"
       :show-scrollbar="false"
-      class="h-[calc(100vh-280px)] overflow-y-auto py-10px"
+      :refresher-enabled="true"
+      :refresher-triggered="isRefreshing"
+      @scrolltolower="loadData"
+      @refresherrefresh="refreshData"
     >
       <view v-for="chats, key of chatStore.chatWithType" :key="key" :class="cs.m('chat-type')">
         <view v-if="chats.length">
