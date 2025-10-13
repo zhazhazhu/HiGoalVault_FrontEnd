@@ -16,6 +16,7 @@ const [page, reset] = useResetRef<Page>({
   pageSize: 20,
 })
 const userStore = useUserStore()
+const isRefreshing = ref(false)
 
 async function getData() {
   const res = await api.getMyCommentedRepliedList({ ...page.value }).finally(() => {
@@ -26,7 +27,13 @@ async function getData() {
     isFinish.value = res.result.total <= data.value.length
   }
 }
-
+async function refreshData() {
+  isRefreshing.value = true
+  data.value = []
+  reset()
+  await getData()
+  isRefreshing.value = false
+}
 async function load() {
   if (isLoading.value || isFinish.value)
     return
@@ -85,7 +92,10 @@ onMounted(() => {
         class="h-[calc(100vh-100px)]"
         :class="cs.m('container')"
         :lower-threshold="50"
+        :refresher-enabled="true"
+        :refresher-triggered="isRefreshing"
         @scrolltolower="load"
+        @refresherrefresh="refreshData"
       >
         <view class="bg-white flex flex-col gap-20rpx py-32rpx">
           <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click="gotoContentDetail(item)">
