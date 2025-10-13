@@ -181,6 +181,7 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
           }
           uni.showToast({
             title: '删除成功',
+            icon: 'none',
           })
         }
       })
@@ -255,8 +256,10 @@ function stopTextToSpeech() {
 
 <template>
   <view :class="cs.m('wrapper')">
-    <wd-toast />
-    <wd-message-box />
+    <wd-root-portal>
+      <wd-toast />
+      <wd-message-box />
+    </wd-root-portal>
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
     <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" />
     <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" :message-text-to-speaking="messageTextToSpeaking" @operate="onMessageToolOperate" />
