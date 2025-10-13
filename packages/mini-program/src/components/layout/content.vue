@@ -43,7 +43,7 @@ onMounted(() => {
 <template>
   <view class="pt-110px w-85% px-16px box-border h-full flex flex-col justify-between relative">
     <view class="i-material-symbols-light-close-rounded size-30px absolute top-60px left-14px" @click="emit('close')" />
-    <tabs v-model="active" custom-class="flex-1" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
+    <tabs v-model="active" custom-class="flex-1" :sticky="false" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
       <template #edit>
         <template v-if="chatStore.chats.length > 0">
           <wd-button v-if="!isEdit" type="text">

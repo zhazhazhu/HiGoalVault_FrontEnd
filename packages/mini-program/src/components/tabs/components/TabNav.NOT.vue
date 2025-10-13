@@ -1,13 +1,14 @@
 <script lang='ts' setup>
 import type { Navs, TabChildrenProps } from '../tabs'
 import { useClassesName } from '@higoal/hooks'
-import { getCurrentInstance, inject, nextTick, onMounted, onUpdated, ref } from 'vue'
+import { getCurrentInstance, inject, nextTick, onMounted, ref } from 'vue'
 import { TABS_INJECTION_KEY } from '../tabs'
 
 defineProps<{
   navs: Navs[]
   customNavClass?: string
   editable?: boolean
+  sticky?: boolean
 }>()
 const emit = defineEmits<{
   (e: 'tabClick', tab: TabChildrenProps, ev: Event): void
@@ -50,28 +51,38 @@ defineExpose({
 </script>
 
 <template>
-  <view :class="[cs.m('container'), customNavClass]">
-    <view :class="cs.m('left')">
-      <view v-for="item in navs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
-        <view>
-          <text>{{ item.label }}</text>
-          <wd-icon v-if="item.icon" :name="item.icon" />
-        </view>
-        <view :class="cs.m('active-bar')">
-          <view class="arc-icon" />
+  <view :class="[cs.m('wrapper'), cs.is('sticky', sticky)]">
+    <view :class="[cs.m('container'), customNavClass]">
+      <view :class="cs.m('left')">
+        <view v-for="item in navs" :key="item.name" class="transition-all" :class="[cs.m('item'), cs.is('active', item.name === activeName)]" @click="handleTabClick(item, $event)">
+          <view>
+            <text>{{ item.label }}</text>
+            <wd-icon v-if="item.icon" :name="item.icon" />
+          </view>
+          <view :class="cs.m('active-bar')">
+            <view class="arc-icon" />
+          </view>
         </view>
       </view>
-    </view>
 
-    <view v-if="editable" :class="cs.m('right')">
-      <view @click="emit('edit', $event)">
-        <slot name="edit" />
+      <view v-if="editable" :class="cs.m('right')">
+        <view @click="emit('edit', $event)">
+          <slot name="edit" />
+        </view>
       </view>
     </view>
   </view>
 </template>
 
 <style lang='scss' scoped>
+.hi-tab-nav--wrapper.is-sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  background-color: var(--tab-nav-bg);
+}
 .hi-tab-nav--container {
   display: flex;
   justify-content: space-between;

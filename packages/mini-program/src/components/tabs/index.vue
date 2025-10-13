@@ -5,13 +5,17 @@ import { computed, ref } from 'vue'
 import TabNav from './components/TabNav.NOT.vue'
 import { useTabs } from './tabs'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue?: string | number
   customNavClass?: string
   customClass?: string
   customContentClass?: string
+  customStyle?: string
   editable?: boolean
-}>()
+  sticky?: boolean
+}>(), {
+  sticky: true,
+})
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string | number): void
   (e: 'tabChange', val?: string | number): void
@@ -30,8 +34,8 @@ function onTabClick(event: TabChildrenProps) {
 </script>
 
 <template>
-  <view :class="[cs.s(), customClass]">
-    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" @tab-click="onTabClick" @edit="$emit('edit', $event)">
+  <view :class="[cs.s(), customClass]" :style="customStyle">
+    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" :sticky="sticky" @tab-click="onTabClick" @edit="$emit('edit', $event)">
       <template #edit>
         <slot name="edit" />
       </template>
@@ -45,7 +49,7 @@ function onTabClick(event: TabChildrenProps) {
 
 <style lang='scss'>
 .hi-tabs {
-  --tab-nav-bg: white;
+  --tab-nav-bg: var(--hi-bg-color);
   --tab-nav-font-size: 34rpx;
   height: 100%;
 }
