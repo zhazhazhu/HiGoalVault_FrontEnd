@@ -38,6 +38,14 @@ function onClickOutside() {
   <wd-root-portal>
     <view v-if="visible" class="w-screen h-screen bg-transparent fixed top-0 left-0 z-99" @touchstart="onClickOutside">
       <view :class="cs.m('wrapper')" :style="wrapperStyle" @click.stop>
+        <view :class="cs.m('item')" @click.stop="onOperate('publish')">
+          <view class="share-icon bg-white size-40rpx" />
+          <text>发布</text>
+        </view>
+        <view :class="cs.m('item')" @click.stop="onOperate('share')">
+          <view class="wechat-icon bg-white size-40rpx" />
+          <text>分享</text>
+        </view>
         <view :class="cs.m('item')" @click.stop="onOperate('delete')">
           <view class="delete-float-menu-icon bg-white size-40rpx" />
           <text>删除</text>
@@ -59,7 +67,7 @@ function onClickOutside() {
           <text>复制</text>
         </view>
         <view :class="cs.m('item')" @click.stop="onOperate('excerptCopy')">
-          <view class="excerpt-copy-float-menu-icon bg-white size-40rpx" />
+          <view class="excerpt-copy-float-menu-icon bg-white size-36rpx" />
           <text>节选复制</text>
         </view>
       </view>
@@ -74,7 +82,7 @@ function onClickOutside() {
   color: white;
   z-index: 9999;
   width: 150px;
-  height: 200px;
+  height: 240px;
   border-radius: 30rpx;
   display: flex;
   flex-direction: column;

@@ -190,6 +190,12 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
     case 'excerptCopy':
       messageExcerptCopyPopupVisible.value = true
       break
+    case 'publish':
+      onPublish()
+      break
+    case 'share':
+      openSharePopup()
+      break
     default:
       break
   }
