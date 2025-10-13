@@ -2,6 +2,7 @@
 import { useClassesName } from '@/composables'
 import { useSearchStore } from '@/store'
 
+withDefaults(defineProps<{ placeholder?: string }>(), { placeholder: '搜索' })
 const emit = defineEmits<{
   (e: 'confirm', value: string): void
   (e: 'back'): void
@@ -25,7 +26,7 @@ function onConfirm() {
       <wd-input
         v-model="model"
         custom-class="w-full ml-20rpx"
-        placeholder="搜索"
+        :placeholder="placeholder"
         clearable
         no-border
         @confirm="onConfirm"
