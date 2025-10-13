@@ -99,6 +99,7 @@ function onClickChat(item: Chat) {
 }
 
 onMounted(() => {
+  chatStore.chats = []
   reset()
   getData()
 })
