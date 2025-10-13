@@ -70,7 +70,10 @@ function sendWaitingMessage() {
   })
 }
 
-async function onConfirmMessage() {
+async function onConfirmMessage(content?: string) {
+  if (content) {
+    model.value = content
+  }
   if (!model.value.trim().length)
     return
   const text = model.value.trim()
@@ -136,6 +139,10 @@ onMounted(async () => {
   }
   getConverseHeight()
 })
+
+defineExpose({
+  onConfirmMessage,
+})
 </script>
 
 <template>
@@ -165,7 +172,7 @@ onMounted(async () => {
           @blur="getConverseHeight"
           @linechange="onLineChange"
           @keyboardheightchange="onKeyboardHeightChange"
-          @confirm="onConfirmMessage"
+          @confirm="onConfirmMessage()"
         />
       </view>
 
@@ -175,7 +182,7 @@ onMounted(async () => {
 
       <view :class="cs.e('right')">
         <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" />
-        <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage" />
+        <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage()" />
         <view v-if="chatStore.isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
       </view>
     </view>

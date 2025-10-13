@@ -1,5 +1,6 @@
 <script lang='ts' setup>
 import type { Page } from '@/api'
+import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import { onShareAppMessage } from '@dcloudio/uni-app'
@@ -11,6 +12,7 @@ import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { useChatStore } from '@/store/chat'
 import { useWebsocketStore } from '@/store/websocket'
+import Start from './components/start.vue'
 
 const navbarInstance = ref<NavbarInstance>()
 const cs = useClassesName('messages')
@@ -30,6 +32,7 @@ const showSidebar = ref(false)
 const isFinish = ref(false)
 const websocketStore = useWebsocketStore()
 const messages = computed(() => chatStore.messages)
+const converseInstance = ref<InstanceType<typeof Converse>>()
 
 websocketStore.receiveMessage((data) => {
   console.log('onMessage', data)
@@ -162,7 +165,7 @@ onShareAppMessage(async ({ from }) => {
         :class="cs.m('scroll-view')"
         @scrolltolower="loadMessage"
       >
-        <view :class="cs.m('wrapper')" class="px-32rpx w-full">
+        <view v-if="messages.length > 0" class="w-full">
           <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" :key="item.msgId" :message="item" />
 
           <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
@@ -172,10 +175,14 @@ onShareAppMessage(async ({ from }) => {
             </text>
           </view>
         </view>
+
+        <view v-else :class="cs.m('wrapper')">
+          <Start @question="(val) => converseInstance?.onConfirmMessage(val)" />
+        </view>
       </scroll-view>
 
       <view class="px-32rpx">
-        <converse />
+        <converse ref="converseInstance" />
       </view>
     </container>
   </Layout>
@@ -186,11 +193,13 @@ onShareAppMessage(async ({ from }) => {
   transform: scaleY(-1);
   -webkit-transform: scaleY(-1);
 }
-.hi-message-card--wrapper {
+.hi-messages--wrapper {
   display: flex;
   flex-direction: column;
   transform: scaleY(-1);
   -webkit-transform: scaleY(-1);
+  padding: 0 32rpx;
+  width: 100%;
 }
 .hi-messages--loading {
   transform: scaleY(-1);

@@ -301,6 +301,8 @@ function stopTextToSpeech() {
   align-items: flex-end;
   transform: scaleY(-1);
   -webkit-transform: scaleY(-1);
+  padding: 0 32rpx;
+  width: 100%;
 }
 .hi-message-card--user {
   background: linear-gradient(270deg, #ff3b30 0%, #fc6146 100%);
