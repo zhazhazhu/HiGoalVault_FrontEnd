@@ -12,7 +12,7 @@ import { useChatStore, useGlobalStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
 import { markdownToPlainText } from '@/utils'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   message: ChatMessageAfter & Record<string, any>
   readonly?: boolean
   withAvatar?: boolean
@@ -93,6 +93,7 @@ const userInstance = ref<Element>()
 const check = ref(false)
 const chatStore = useChatStore()
 const websocketStore = useWebsocketStore()
+const showMessageButtons = computed(() => !messageInject.share.value.isChecked && !props.readonly && !currentAnswer.value.isLoading)
 
 function changeCheckbox({ value }: { value: boolean }) {
   if (value)
@@ -201,6 +202,8 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
       onPublish()
       break
     case 'share':
+      check.value = true
+      messageInject.share.value.ids.push(currentAnswer.value.queryId)
       openSharePopup()
       break
     default:
@@ -292,7 +295,7 @@ function stopTextToSpeech() {
           </text>
         </view>
 
-        <view v-show="!messageInject.share.value.isChecked && !readonly" :class="cs.e('operations')" class="flex items-center mt-18px gap-8px">
+        <view v-show="showMessageButtons" :class="cs.e('operations')" class="flex items-center mt-18px gap-8px">
           <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
           <view class="refresh-icon size-28px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
