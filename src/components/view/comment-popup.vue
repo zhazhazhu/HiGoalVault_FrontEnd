@@ -7,7 +7,7 @@ import { useClassesName, useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 
-const props = defineProps<{ contentId: string, commentId?: string }>()
+const props = defineProps<{ contentId: string, commentId?: string, isRefreshing?: boolean }>()
 const model = defineModel({ type: Boolean, default: false })
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
@@ -43,6 +43,11 @@ async function load() {
   isLoading.value = true
   page.value.pageNumber!++
   getData()
+}
+async function refreshData() {
+  data.value = []
+  reset()
+  await getData()
 }
 const currentOperating = ref<number | null>(null)
 const [currentReplying, resetCurrentReplying] = useResetRef<{
@@ -97,6 +102,7 @@ function createTemporaryReply(type: 'comment' | 'reply'): ReplyResponse {
 }
 function putTemporaryComment(id) {
   if (currentOperating.value === null) {
+    total.value++
     data.value.unshift({
       comment: {
         ...createTemporaryComment(),
@@ -193,11 +199,9 @@ function onBlur() {
   resetComment()
 }
 
-watch(model, (val) => {
-  if (val) {
-    data.value = []
-    reset()
-    getData()
+watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
+  if (model || isRefreshing) {
+    refreshData()
   }
 }, { immediate: true })
 </script>

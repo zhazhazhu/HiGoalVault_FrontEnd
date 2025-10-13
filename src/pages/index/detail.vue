@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { AnswerAfter, AnswerBefore, ChatMessageReference, PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
@@ -14,9 +14,11 @@ const messageContent = ref<AnswerAfter | null>(null)
 const commentVisible = ref(false)
 const userStore = useUserStore()
 const commentId = ref('')
+const contentId = ref('')
+const isRefreshing = ref(false)
 
-async function getData(id: string) {
-  const res = await api.getPublicMessageDetail({ contentId: id })
+async function getData() {
+  const res = await api.getPublicMessageDetail({ contentId: contentId.value })
   if (res.code === 200) {
     data.value = res.result
     if (res.result.chatQueryAnswerVO) {
@@ -71,6 +73,17 @@ async function onThumbsUp() {
     data.value!.likeCount = data.value!.isLike ? data.value!.likeCount + 1 : data.value!.likeCount - 1
   }
 }
+async function refreshData() {
+  isRefreshing.value = true
+  await getData()
+  isRefreshing.value = false
+}
+watch(commentVisible, (val) => {
+  if (!val) {
+    commentId.value = ''
+    getData()
+  }
+})
 
 onShareAppMessage(() => {
   return {
@@ -80,17 +93,18 @@ onShareAppMessage(() => {
 })
 
 onLoad((options) => {
+  contentId.value = options?.id || ''
   commentId.value = options?.commentId || ''
   if (commentId.value) {
     commentVisible.value = true
   }
-  getData(options?.id)
+  getData()
 })
 </script>
 
 <template>
   <view>
-    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" :comment-id="commentId" />
+    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" :comment-id="commentId" :is-refreshing="isRefreshing" />
 
     <Navbar title="详情" enable-left-slot>
       <template #left>
@@ -103,7 +117,10 @@ onLoad((options) => {
         scroll-y
         enhanced
         :show-scrollbar="false"
+        :refresher-enabled="true"
+        :refresher-triggered="isRefreshing"
         class="h-full overflow-y-auto pb-20rpx"
+        @refresherrefresh="refreshData"
       >
         <template v-if="data && messageContent">
           <ViewDetailCard v-if="data" :data="data" />
