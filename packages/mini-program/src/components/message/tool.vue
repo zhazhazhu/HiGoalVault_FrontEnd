@@ -46,14 +46,14 @@ function onClickOutside() {
           <view class="refresh-float-menu-icon bg-white size-40rpx" />
           <text>重新生成</text>
         </view>
-        <view v-if="!messageTextToSpeaking" :class="cs.m('item')" @click.stop="onOperate('voice')">
+        <!-- <view v-if="!messageTextToSpeaking" :class="cs.m('item')" @click.stop="onOperate('voice')">
           <view class="speaker-float-menu-icon bg-white size-40rpx" />
           <text>语音播放</text>
         </view>
         <view v-else :class="cs.m('item')" @click.stop="onOperate('stopVoice')">
           <view class="i-material-symbols-stop-rounded bg-white text-40rpx" />
           <text>停止播放</text>
-        </view>
+        </view> -->
         <view :class="cs.m('item')" @click.stop="onOperate('copy')">
           <view class="copy-float-menu-icon bg-white size-40rpx" />
           <text>复制</text>
