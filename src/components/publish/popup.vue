@@ -1,8 +1,8 @@
 <script lang='ts' setup>
 import type { AnswerAfter, PublishMessageRequest } from '@/api'
-import { useClassesName } from '@/composables'
 import { useToast } from 'wot-design-uni'
 import { api, PublishContentType, Truth } from '@/api'
+import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useGlobalStore } from '@/store'
 
@@ -75,6 +75,7 @@ function handleClose() {
           :auto-height="true"
           :cursor-spacing="120"
           :maxlength="100"
+          :show-confirm-bar="false"
           :custom-textarea-class="cs.m('textarea')"
           :custom-class="cs.m('textarea-container')"
           :placeholder-class="cs.m('textarea-placeholder')"
