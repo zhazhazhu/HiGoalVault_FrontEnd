@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { Navs, TabChildrenProps } from '../tabs'
-import { useClassesName } from '@/composables'
 import { getCurrentInstance, inject, nextTick, onMounted, ref } from 'vue'
+import { useClassesName } from '@/composables'
 import { TABS_INJECTION_KEY } from '../tabs'
 
 defineProps<{

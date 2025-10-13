@@ -2,9 +2,9 @@
 import type { ProfileStatistics, UserInfo } from '@/api'
 import type { UserCollectInstance, UserCommentInstance, UserLikeInstance, UserPublishInstance } from '@/components/user'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
-import { useClassesName } from '@/composables'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 
 const cs = useClassesName('user')

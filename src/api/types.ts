@@ -236,9 +236,12 @@ export interface ShareMessageRequest {
 }
 
 export interface FollowUserRequest {
-  followAction: boolean //	操作类型：true-关注，false-取消关注
-  followeeId: string //	被关注用户ID
-  followerId: string //	关注用户ID
+  // 操作类型：true-关注，false-取消关注
+  followAction: boolean
+  // 被关注用户ID
+  followeeId: string
+  // 关注用户ID
+  followerId: string
 }
 
 export interface AddCommentRequest {
@@ -320,10 +323,14 @@ export interface GlobalSearchResult {
 }
 
 export interface AddCommentReplyRequest {
-  commentId: string // 评论ID
-  replyContent: string //	回复内容
-  parentReplyId?: string // 父回复ID（对回复进行回复时使用）
-  replyToUserId?: string //	被回复用户ID
+  // 评论ID
+  commentId: string
+  // 回复内容
+  replyContent: string
+  // 父回复ID（对回复进行回复时使用）
+  parentReplyId?: string
+  // 被回复用户ID
+  replyToUserId?: string
 }
 
 export interface ProfileStatistics {

@@ -1,11 +1,11 @@
 <script lang='ts' setup>
 import type { Chat, Page } from '@/api'
 import type { ChatWithType } from '@/store'
-import { useClassesName } from '@/composables'
 import dayjs from 'dayjs'
 import { onMounted, ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
 import { useChatStore, useUserStore } from '@/store'

@@ -1,8 +1,8 @@
 import type { Component, ComponentInternalInstance, InjectionKey, Ref, VNode, VNodeNormalizedChildren } from 'vue'
 import type Tabs from './index.vue'
 import type TabItem from './item.vue'
-import { useUUID } from '@/composables'
 import { computed, getCurrentInstance, provide, ref, watch } from 'vue'
+import { useUUID } from '@/composables'
 
 type TabsProps = InstanceType<typeof Tabs>['$props']
 type TabsEmits = InstanceType<typeof Tabs>['$emit']

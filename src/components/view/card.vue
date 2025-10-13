@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse, Tag } from '@/api'
-import { useClassesName } from '@/composables'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 

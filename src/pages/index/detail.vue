@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { AnswerAfter, AnswerBefore, ChatMessageReference, PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
-import { useClassesName } from '@/composables'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 
 const data = ref<PublishMessageListResponse | null>(null)

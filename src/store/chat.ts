@@ -1,9 +1,8 @@
 import type { Ref } from 'vue'
 import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '../api'
-import { useUUID } from '@/composables'
 import { mergeWith } from 'lodash-es'
 import { defineStore } from 'pinia'
-import { useStoreRef } from '@/composables'
+import { useStoreRef, useUUID } from '@/composables'
 import { isThisMonth, isThisWeek, isToday } from '@/utils'
 import { Truth } from '../api'
 

@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { TabChildrenProps } from './tabs'
-import { useClassesName } from '@/composables'
 import { computed, ref } from 'vue'
+import { useClassesName } from '@/composables'
 import TabNav from './components/TabNav.NOT.vue'
 import { useTabs } from './tabs'
 

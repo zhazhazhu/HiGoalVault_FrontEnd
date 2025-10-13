@@ -1,6 +1,6 @@
 <script lang='ts' setup>
-import { useClassesName } from '@/composables'
 import { computed, getCurrentInstance } from 'vue'
+import { useClassesName } from '@/composables'
 
 const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null

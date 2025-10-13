@@ -1,8 +1,8 @@
 <script lang='ts' setup>
 import type { StockData } from '.'
 import type { ChatMessageStock } from '@/api'
-import { useUUID } from '@/composables'
 import { computed, onMounted, ref } from 'vue'
+import { useUUID } from '@/composables'
 import echarts from '@/echarts'
 import { useStockChart } from '.'
 import { StockShowType } from './config'

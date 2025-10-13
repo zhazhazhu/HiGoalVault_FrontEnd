@@ -1,6 +1,6 @@
 import type { AnswerAfter } from '../api'
-import { useUUID } from '@/composables'
 import { defineStore } from 'pinia'
+import { useUUID } from '@/composables'
 import { useUserStore } from './user'
 
 // 定义 Pinia Store 的状态接口

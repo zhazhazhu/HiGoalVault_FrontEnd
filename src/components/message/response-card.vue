@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
-import { useClassesName } from '@/composables'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref } from 'vue'
+import { useClassesName } from '@/composables'
 
 import 'highlight.js/styles/github.css'
 

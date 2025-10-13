@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { ChatMessageAfter } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
-import { useClassesName } from '@/composables'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useChatStore } from '@/store'
 
 const chatStore = useChatStore()

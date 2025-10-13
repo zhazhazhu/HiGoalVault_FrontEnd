@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { CommentResponse, Page, ReplyResponse } from '@/api'
-import { useClassesName, useUUID } from '@/composables'
 import dayjs from 'dayjs'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
+import { useClassesName, useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 

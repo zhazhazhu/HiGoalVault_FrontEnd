@@ -1,10 +1,10 @@
 <script lang='ts' setup>
 import type { AnswerBefore, Page } from '@/api'
-import { useClassesName } from '@/composables'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
+import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 

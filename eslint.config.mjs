@@ -10,4 +10,9 @@ export default antfu({
     'no-console': 'off',
     'ts/ban-ts-comment': 'off',
   },
+  ignores: [
+    '**/node_modules/**',
+    '**/dist/**',
+    'src/wxcomponents/**',
+  ],
 })

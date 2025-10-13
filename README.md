@@ -17,7 +17,6 @@ curl https://ni-bz9c.vercel.app/install.sh | bash && ni
 ```
 you see [ni](https://github.com/zhazhazhu/ni)
 
-
 # start
 
 - 运行dev(更多命令请查看package.json)

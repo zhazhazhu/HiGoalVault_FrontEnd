@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useGlobalStore, useUserStore } from '@/store'
 
 interface Props {

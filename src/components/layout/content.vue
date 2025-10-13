@@ -1,8 +1,8 @@
 <script lang='ts' setup>
 import type { Tag } from '@/api'
-import { useClassesName } from '@/composables'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
 
 const emit = defineEmits<{

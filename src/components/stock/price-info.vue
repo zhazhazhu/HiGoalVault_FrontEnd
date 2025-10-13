@@ -11,28 +11,28 @@ const priceItems = computed(() => [
   {
     label: '开盘',
     value: props.stockInfo.open,
-    class: 'value'
+    class: 'value',
   },
   {
     label: '最高',
     value: props.stockInfo.high,
-    class: 'value price-up'
+    class: 'value price-up',
   },
   {
     label: '最低',
     value: props.stockInfo.low,
-    class: 'value price-down'
+    class: 'value price-down',
   },
   {
     label: '成交量',
     value: `${(props.stockInfo.totalVolume / 10000).toFixed(2)}万`,
-    class: 'value'
+    class: 'value',
   },
   {
     label: '持仓量',
     value: `${(props.stockInfo.openInterest / 10000).toFixed(2)}万`,
-    class: 'value'
-  }
+    class: 'value',
+  },
 ])
 </script>
 

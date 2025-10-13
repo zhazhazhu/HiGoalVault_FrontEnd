@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
-import { useUUID } from '@/composables'
 import dayjs from 'dayjs'
 import { onMounted } from 'vue'
 import { api } from '@/api'
+import { useUUID } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
 
 const props = defineProps<{

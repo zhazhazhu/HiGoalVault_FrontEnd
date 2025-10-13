@@ -1,6 +1,6 @@
 <script lang='ts' setup>
-import { useClassesName } from '@/composables'
 import { computed } from 'vue'
+import { useClassesName } from '@/composables'
 import { useGlobalStore } from '@/store'
 
 const props = defineProps<{

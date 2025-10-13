@@ -1,8 +1,8 @@
 <script lang='ts' setup>
 import type RecordPopup from '~/components/record/popup.vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { useClassesName, useUUID } from '@/composables'
 import { ref } from 'vue'
+import { useClassesName, useUUID } from '@/composables'
 import { useGlobalStore } from '@/store'
 
 const emit = defineEmits<{

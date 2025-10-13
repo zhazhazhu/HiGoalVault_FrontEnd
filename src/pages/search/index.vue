@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import { onLoad } from '@dcloudio/uni-app'
-import { useClassesName } from '@/composables'
 import { ref } from 'vue'
+import { useClassesName } from '@/composables'
 import { useSearchStore } from '@/store'
 
 const cs = useClassesName('search')

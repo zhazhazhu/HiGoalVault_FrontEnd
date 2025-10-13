@@ -1,8 +1,8 @@
 <script lang='ts' setup>
-import { useClassesName } from '@/composables'
 import { computed, ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
+import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 
 const user = useUserStore()
