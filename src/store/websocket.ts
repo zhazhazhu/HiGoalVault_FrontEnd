@@ -167,7 +167,7 @@ export const useWebsocketStore = defineStore('websocket', {
               code: '100007',
               data: {
                 ...data,
-                msgId: data.msgId || useUUID(32),
+                msgId: data.msgId,
                 runId: data.runId || useUUID(32),
                 clientType: data.clientType || ClientType.WECHAT_MP,
                 accessToken: data.accessToken || userStore.accessToken,

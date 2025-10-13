@@ -33,6 +33,7 @@ const isFinish = ref(false)
 const websocketStore = useWebsocketStore()
 const messages = computed(() => chatStore.messages)
 const converseInstance = ref<InstanceType<typeof Converse>>()
+const newMessageId = ref('')
 
 websocketStore.receiveMessage((data) => {
   console.log('onMessage', data)
@@ -44,7 +45,9 @@ websocketStore.receiveMessage((data) => {
     return
 
   currentMessage.isLoading = true
-  if (data.code === '200') {
+  if (data.code === '200' && data.type === 'message') {
+    newMessageId.value = data.data?.msg_id
+
     chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
       ...data.data,
       response: currentMessage.response += (data.data?.response || ''),
@@ -57,10 +60,19 @@ websocketStore.receiveMessage((data) => {
     scrollToTop()
   }
   if (data.type === 'stream-end') {
+    // 更新当前的messageID
+    if (newMessageId.value) {
+      const current = chatStore.messages.find(item => item.msgId === chatStore.currentTemporaryMessageId)!
+      current.msgId = newMessageId.value
+      chatStore.currentTemporaryMessageId = newMessageId.value
+      newMessageId.value = ''
+    }
+
     currentMessage.isLoading = false
     // 清空当前runId
     chatStore.currentRunId = ''
     chatStore.isReplying = false
+    console.log('chatStore', chatStore.messages)
   }
 })
 
