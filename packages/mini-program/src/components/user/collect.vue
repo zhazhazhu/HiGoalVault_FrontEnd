@@ -38,7 +38,7 @@ async function getData() {
     userId: userStore.userInfo!.id,
   })
   if (res.code === 200) {
-    data.value.push(...res.result.records)
+    data.value.push(...res.result.records.map(item => ({ ...item, isCollect: Truth.TRUE })))
     total.value = res.result.total
     isLoading.value = false
     isFinish.value = data.value.length >= total.value
