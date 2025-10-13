@@ -17,16 +17,18 @@ const [page, resetPage] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
 })
+const isRefreshing = ref(false)
 
 async function getData() {
   isLoading.value = true
   const res = await api.getPublishList({
     authorId: props.userId || userStore.userInfo!.id,
     ...page.value,
+  }).finally(() => {
+    isLoading.value = false
   })
   if (res.code === 200) {
     data.value.push(...res.result.records)
-    isLoading.value = false
     isFinish.value = res.result.records.length <= res.result.size
   }
 }
@@ -38,6 +40,12 @@ function loadData() {
   page.value.pageNumber!++
   getData()
 }
+async function refreshData() {
+  isRefreshing.value = true
+  resetPage()
+  await getData()
+  isRefreshing.value = false
+}
 
 onMounted(() => {
   resetPage()
@@ -46,6 +54,7 @@ onMounted(() => {
 
 defineExpose({
   loadData,
+  refreshData,
 })
 </script>
 

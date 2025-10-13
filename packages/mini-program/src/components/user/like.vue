@@ -12,6 +12,7 @@ const [page, resetPage] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
 })
+const isRefreshing = ref(false)
 
 async function getData() {
   isLoading.value = true
@@ -33,6 +34,12 @@ function loadData() {
   page.value.pageNumber!++
   getData()
 }
+async function refreshData() {
+  isRefreshing.value = true
+  resetPage()
+  await getData()
+  isRefreshing.value = false
+}
 
 onMounted(() => {
   resetPage()
@@ -42,6 +49,7 @@ onMounted(() => {
 defineExpose({
   total,
   loadData,
+  refreshData,
 })
 </script>
 

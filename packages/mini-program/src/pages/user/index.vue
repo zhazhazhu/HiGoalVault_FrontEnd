@@ -19,6 +19,7 @@ const userComment = ref<UserCommentInstance>()
 const userLike = ref<UserLikeInstance>()
 const userCollect = ref<UserCollectInstance>()
 const interactActiveTab = ref<'liked' | 'collected'>('liked')
+const isRefreshing = ref(false)
 
 async function getData() {
   if (userId.value) {
@@ -49,6 +50,15 @@ async function loadData() {
       userCollect.value?.loadData()
       break
   }
+}
+async function refreshData() {
+  isRefreshing.value = true
+  await getData()
+  await userPublish.value?.refreshData()
+  await userComment.value?.refreshData()
+  await userLike.value?.refreshData()
+  await userCollect.value?.refreshData()
+  isRefreshing.value = false
 }
 function onClickInteractTab(tab: 'liked' | 'collected') {
   interactActiveTab.value = tab
@@ -118,7 +128,10 @@ onLoad((options) => {
       scroll-y
       enhanced
       :show-scrollbar="false"
+      :refresher-enabled="true"
+      :refresher-triggered="isRefreshing"
       @scrolltolower="loadData"
+      @refresherrefresh="refreshData"
     >
       <view class="flex items-center justify-between gap-20rpx">
         <view class="flex items-center gap-10rpx">
