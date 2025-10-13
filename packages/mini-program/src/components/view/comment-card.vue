@@ -1,11 +1,11 @@
 <script lang='ts' setup>
 import type { CommentResponse, Page, ReplyResponse } from '@/api'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { formatCommentDate } from '@/utils'
 
-defineProps<{
+const props = defineProps<{
   currentCommentId?: string
 }>()
 
@@ -15,6 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const data = defineModel('data', { type: Object as () => CommentResponse, required: true })
+const commentId = ref(props.currentCommentId || '')
 
 const remainReplyTotal = computed(() => data.value.totalReplies - data.value.replies.length)
 const [page, reset] = useResetRef<Page>({
@@ -41,15 +42,23 @@ async function onLikeComment(comment: CommentResponse['comment']) {
 function onReply(reply: ReplyResponse) {
   emit('replyReply', reply)
 }
+function commentIdCounter() {
+  if (data.value.comment.id === commentId.value) {
+    setTimeout(() => {
+      commentId.value = ''
+    }, 1000)
+  }
+}
 
 onMounted(() => {
   reset()
+  commentIdCounter()
 })
 </script>
 
 <template>
   <view class="flex flex-col gap-24rpx w-full mb-24rpx">
-    <view class="flex flex-col gap-14rpx p-14rpx rounded-20rpx" :class="{ 'bg-#e4e9f5a8': data.comment.id === currentCommentId }">
+    <view class="flex flex-col gap-14rpx p-14rpx rounded-20rpx comment-card" :class="{ active: data.comment.id === commentId }">
       <view class="flex items-center gap-10rpx">
         <wd-img round mode="aspectFill" :src="data.comment.face || 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" width="52rpx" height="52rpx" />
         <view class="text-28rpx color-#666666">
@@ -88,4 +97,14 @@ onMounted(() => {
   </view>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.comment-card {
+  background-color: white;
+}
+.comment-card.active {
+  background-color: #e4e9f5a8;
+}
+.comment-card {
+  transition: background-color 1s;
+}
+</style>

@@ -163,7 +163,7 @@ async function onConfirm() {
 }
 function onReplyComment(comment: CommentResponse['comment'], index: number) {
   currentOperating.value = index
-  placeholder.value = `@${comment.nickName || 'Unknown'}`
+  placeholder.value = `回复 @${comment.nickName || 'Unknown'}`
   currentReplying.value = {
     type: 'comment',
     comment,
@@ -173,7 +173,7 @@ function onReplyComment(comment: CommentResponse['comment'], index: number) {
 }
 function onReplyReply(reply: ReplyResponse, index: number) {
   currentOperating.value = index
-  placeholder.value = `@${reply.nickName || 'Unknown'}`
+  placeholder.value = `回复 @${reply.nickName || 'Unknown'}`
   currentReplying.value = {
     type: 'reply',
     comment: null,
