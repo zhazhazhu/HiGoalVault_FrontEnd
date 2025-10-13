@@ -1,8 +1,8 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
 import type { MessageToolOperateType } from '@/types'
-import { useClassesName } from '@/composables'
 import { computed } from 'vue'
+import { useClassesName } from '@/composables'
 import { useGlobalStore } from '@/store'
 
 const props = defineProps<{

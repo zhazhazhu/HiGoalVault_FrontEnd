@@ -240,6 +240,11 @@ function getPublishListByTag(query: GetPublishListByTagRequest) {
   return http(API.GET_PUBLISH_BY_TAG).post<PublishMessageListResponseWithPage>(query)
 }
 
+// 删除聊天
+function deleteChatMessageById(queryId: string) {
+  return http(API.DELETE_CHAT_MESSAGE_BY_ID).post<boolean>({ queryId })
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -282,4 +287,5 @@ export const api = {
   checkTagFollow,
   followTag,
   getPublishListByTag,
+  deleteChatMessageById,
 }

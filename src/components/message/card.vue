@@ -1,27 +1,29 @@
 <script lang='ts' setup>
+import type { PropType } from 'vue'
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import type { MessageToolOperateType } from '@/types'
-import { useClassesName, useUUID } from '@/composables'
 import { computed, ref, watch } from 'vue'
 import { useCountDown } from 'wot-design-uni'
 import { api, Truth } from '@/api'
+import { useClassesName, useUUID } from '@/composables'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore, useGlobalStore } from '@/store'
 import { useWebsocketStore } from '@/store/websocket'
 import { markdownToPlainText } from '@/utils'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   message: ChatMessageAfter & Record<string, any>
   readonly?: boolean
   withAvatar?: boolean
 }>(), {
   readonly: false,
 })
+const message = defineModel('message', { type: Object as PropType<ChatMessageAfter & Record<string, any>>, required: true })
 
 const messageInject = useMessageInject()
 const cs = useClassesName('message-card')
-const currentAnswerIndex = ref(props.message.chatQueryAnswerList.length)
-const currentAnswer = computed(() => props.message.chatQueryAnswerList[currentAnswerIndex.value - 1])
+const currentAnswerIndex = ref(message.value.chatQueryAnswerList.length)
+const currentAnswer = computed(() => message.value.chatQueryAnswerList[currentAnswerIndex.value - 1])
 const publishVisible = ref(false)
 const messageToolRect = ref({
   x: 0,
@@ -81,7 +83,7 @@ async function initQCloudAIVoice() {
   }
 }
 
-watch(() => props.message.chatQueryAnswerList.length, (val) => {
+watch(() => message.value.chatQueryAnswerList.length, (val) => {
   currentAnswerIndex.value = val
 })
 
@@ -112,10 +114,10 @@ function onReference(item: ChatMessageReference) {
 
 function onRefresh() {
   chatStore.currentRunId = useUUID(32)
-  chatStore.currentTemporaryMessageId = props.message.msgId
+  chatStore.currentTemporaryMessageId = message.value.msgId
   chatStore.isReplying = true
-  websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: props.message.msgId, query: props.message.query }).then(() => {
-    chatStore.pushTemporaryMessage(props.message.msgId)
+  websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: message.value.msgId, query: message.value.query }).then(() => {
+    chatStore.pushTemporaryMessage(message.value.msgId)
   })
 }
 function onCopy() {
@@ -162,7 +164,20 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
     case 'copy':
       onCopy()
       break
-    case 'delete':
+    case 'delete': {
+      const res = await api.deleteChatMessageById(currentAnswer.value.queryId)
+      if (res.code === 200) {
+        if (currentAnswerIndex.value === 1) {
+          chatStore.messages = chatStore.messages.filter(item => item.msgId !== message.value.msgId)
+        }
+        else {
+          message.value.chatQueryAnswerList = message.value.chatQueryAnswerList.filter(item => item.queryId !== currentAnswer.value.queryId)
+        }
+        uni.showToast({
+          title: '删除成功',
+        })
+      }
+    }
       break
     case 'voice': {
       const content = markdownToPlainText(currentAnswer.value.response || '').substring(0, 100)
@@ -270,10 +285,10 @@ function stopTextToSpeech() {
               <view class="i-material-symbols-arrow-back-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
             </view>
             <view>
-              {{ currentAnswerIndex }}/{{ props.message.chatQueryAnswerList.length }}
+              {{ currentAnswerIndex }}/{{ message.chatQueryAnswerList.length }}
             </view>
             <view class="size-30px flex items-center justify-center">
-              <view class="i-material-symbols-arrow-forward-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : props.message.chatQueryAnswerList.length" />
+              <view class="i-material-symbols-arrow-forward-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
             </view>
           </view>
           <view class="flex-1" />

@@ -40,4 +40,5 @@ export enum API {
   CHECK_TAG_FOLLOW = '/buyer/tag/follow/follow/check',
   FOLLOW_TAG = '/buyer/tag/follow/follow',
   GET_PUBLISH_BY_TAG = '/buyer/member/my/content/tagByPage',
+  DELETE_CHAT_MESSAGE_BY_ID = '/buyer/chatQuery/delChatQueryAnswerByQueryId',
 }
