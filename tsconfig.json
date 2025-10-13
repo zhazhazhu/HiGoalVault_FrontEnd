@@ -2,13 +2,21 @@
   "compilerOptions": {
     "target": "ES2020",
     "jsx": "preserve",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    /* mini-program */
+    "lib": ["esnext", "dom"],
     "useDefineForClassFields": true,
+    "baseUrl": ".",
     "module": "ESNext",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"],
+      "~/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
+    "types": ["@dcloudio/types", "@types/weixin-app", "wot-design-uni/global", "./components", "node"],
     "allowImportingTsExtensions": true,
 
     /* Linting */
@@ -18,9 +26,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
+    "sourceMap": true,
     "isolatedModules": true,
     "skipLibCheck": true
   },
   "references": [{ "path": "./tsconfig.node.json" }],
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.NOT.vue", "components.d.ts", "plugins.d.ts"]
 }

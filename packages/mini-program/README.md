@@ -1,1 +1,0 @@
-## HiGoal mini program
