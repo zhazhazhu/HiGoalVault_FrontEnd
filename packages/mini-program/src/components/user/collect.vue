@@ -15,6 +15,7 @@ const isFinish = ref(false)
 const [page, resetPage] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
+  sort: 'createTime',
 })
 const total = ref(0)
 const userStore = useUserStore()

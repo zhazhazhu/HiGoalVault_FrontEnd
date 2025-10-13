@@ -10,6 +10,7 @@ const isFinish = ref(false)
 const [page, resetPage] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
+  sort: 'createTime',
 })
 const isRefreshing = ref(false)
 
