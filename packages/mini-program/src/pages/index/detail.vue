@@ -19,7 +19,9 @@ async function getData(id: string) {
   const res = await api.getPublicMessageDetail({ contentId: id })
   if (res.code === 200) {
     data.value = res.result
-    messageContent.value = transformMessage(res.result.chatQueryAnswerVO)
+    if (res.result.chatQueryAnswerVO) {
+      messageContent.value = transformMessage(res.result.chatQueryAnswerVO)
+    }
   }
 }
 function transformMessage(message: AnswerBefore): AnswerAfter {
@@ -96,7 +98,7 @@ onLoad((options) => {
       </template>
     </Navbar>
 
-    <Container>
+    <Container v-if="data?.chatQueryAnswerVO !== null">
       <scroll-view
         scroll-y
         enhanced
@@ -151,6 +153,11 @@ onLoad((options) => {
         </view>
       </view>
     </Container>
+    <wd-status-tip v-else tip="内容已删除">
+      <template #image>
+        <view class="i-material-symbols-content-paste-off text-100rpx" />
+      </template>
+    </wd-status-tip>
   </view>
 </template>
 
