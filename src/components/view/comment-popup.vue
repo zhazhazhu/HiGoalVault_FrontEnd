@@ -188,6 +188,10 @@ function resetComment() {
   placeholder.value = '发表友善评论'
   resetCurrentReplying()
 }
+function onBlur() {
+  isFocus.value = false
+  resetComment()
+}
 
 watch(model, (val) => {
   if (val) {
@@ -259,6 +263,7 @@ watch(model, (val) => {
             :custom-class="cs.m('textarea-container')"
             :placeholder-class="cs.m('textarea-placeholder')"
             @focus="isFocus = true"
+            @blur="onBlur"
             @confirm="onConfirm"
           />
         </view>
