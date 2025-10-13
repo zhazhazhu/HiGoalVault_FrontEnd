@@ -15,14 +15,16 @@ const toast = useToast()
 const globalStore = useGlobalStore()
 
 const [form, reset] = useResetRef<PublishMessageRequest>({
-  queryId: props.message.queryId,
-  title: props.message.query,
+  queryId: '',
+  title: '',
   content: '',
   privacy: Truth.FALSE,
   contentType: PublishContentType.Text,
 })
 
 async function onPublish() {
+  form.value.queryId = props.message.queryId
+  form.value.title = props.message.query
   try {
     const data = await api.addPublishMessage(form.value)
     if (data.code === 200) {

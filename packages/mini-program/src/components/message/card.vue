@@ -267,13 +267,13 @@ function stopTextToSpeech() {
           <view class="copy-icon size-30px" @click="onCopy" />
           <view class="flex items-center text-14px gap-8px">
             <view class="size-30px flex items-center justify-center">
-              <view class="i-material-symbols-arrow-back-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex - 1 : 1" />
+              <view class="i-material-symbols-arrow-back-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
             </view>
             <view>
               {{ currentAnswerIndex }}/{{ props.message.chatQueryAnswerList.length }}
             </view>
             <view class="size-30px flex items-center justify-center">
-              <view class="i-material-symbols-arrow-forward-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex + 1 : props.message.chatQueryAnswerList.length" />
+              <view class="i-material-symbols-arrow-forward-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === props.message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < props.message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : props.message.chatQueryAnswerList.length" />
             </view>
           </view>
           <view class="flex-1" />
