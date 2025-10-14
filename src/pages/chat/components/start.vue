@@ -12,18 +12,18 @@ const defineQuestion = [
 
 <template>
   <view class="pt-40rpx pb-20rpx">
-    <view class="font-500 text-40rpx">
+    <view class="font-500 text-50rpx">
       Hi~ I'm HiGoal AI
     </view>
-    <view class="font-500 text-26rpx mt-20rpx">
+    <view class="font-500 text-28rpx mt-20rpx color-#333">
       你身边的智能助手，可以为你答疑解惑、尽情创作， 快来点击以下任一功能体验吧～
     </view>
-    <wd-divider dashed />
+    <wd-divider dashed custom-style="padding: 0" />
     <view class="text-24rpx color-gray">
       你可以这样问
     </view>
     <view class="flex flex-col gap-20rpx mt-20rpx">
-      <view v-for="item in defineQuestion" :key="item" class="w-fit px-20rpx py-10rpx bg-white rounded-12rpx color-green-7 font-500 text-26rpx" @click="emit('question', item)">
+      <view v-for="item in defineQuestion" :key="item" class="w-fit px-20rpx py-14rpx bg-white rounded-12rpx color-green-7 font-500 text-28rpx" @click="emit('question', item)">
         {{ item }}
       </view>
     </view>
