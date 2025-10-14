@@ -197,6 +197,10 @@ function resetComment() {
 function onBlur() {
   isFocus.value = false
 }
+function onDeleteComment(index: number) {
+  data.value.splice(index, 1)
+  total.value--
+}
 
 watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
   if (model || isRefreshing) {
@@ -240,7 +244,17 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
         @scrolltolower="load"
         @refresherrefresh="refreshData"
       >
-        <view-comment-card v-for="item, index in data" :id="item.comment.id" :key="item.comment.id" :current-comment-id="commentId" :data="item" @update:data="(val) => data[index] = val" @reply-comment="onReplyComment($event, index)" @reply-reply="onReplyReply($event, index)" />
+        <view-comment-card
+          v-for="item, index in data"
+          :id="item.comment.id"
+          :key="item.comment.id"
+          :current-comment-id="commentId"
+          :data="item"
+          @update:data="(val) => data[index] = val"
+          @reply-comment="onReplyComment($event, index)"
+          @reply-reply="onReplyReply($event, index)"
+          @delete-comment="onDeleteComment(index)"
+        />
 
         <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
           <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />

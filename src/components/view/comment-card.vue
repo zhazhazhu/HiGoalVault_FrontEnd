@@ -1,8 +1,10 @@
 <script lang='ts' setup>
 import type { CommentResponse, Page, ReplyResponse } from '@/api'
 import { computed, onMounted, ref } from 'vue'
+import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
+import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 
 const props = defineProps<{
@@ -12,10 +14,14 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'replyComment', comment: CommentResponse['comment']): void
   (e: 'replyReply', reply: ReplyResponse): void
+  (e: 'deleteComment', comment: CommentResponse['comment']): void
 }>()
 
+const userStore = useUserStore()
+const message = useMessage()
 const data = defineModel('data', { type: Object as () => CommentResponse, required: true })
 const commentId = ref(props.currentCommentId || '')
+const isSelf = computed(() => userStore.userInfo?.id === data.value.comment.commenterId)
 
 const remainReplyTotal = computed(() => data.value.totalReplies - data.value.replies.length)
 const [page, reset] = useResetRef<Page>({
@@ -46,8 +52,28 @@ function commentIdCounter() {
   if (data.value.comment.id === commentId.value) {
     setTimeout(() => {
       commentId.value = ''
-    }, 1000)
+    }, 500)
   }
+}
+function onDeleteComment() {
+  message.confirm({
+    msg: '该评论内容将被删除无法恢复',
+    title: '提示',
+  }).then(async () => {
+    const res = await api.deleteCommentById(data.value.comment.id)
+    if (res.result === true) {
+      uni.showToast({
+        title: '删除成功',
+        icon: 'none',
+      })
+      emit('deleteComment', data.value.comment)
+    }
+  })
+}
+function onDeleteReply(ids: string[], index: number) {
+  data.value.replies.splice(index, 1)
+  data.value.replies = data.value.replies.filter(item => !ids.includes(item.id))
+  data.value.totalReplies -= ids.length
 }
 
 onMounted(() => {
@@ -57,6 +83,9 @@ onMounted(() => {
 </script>
 
 <template>
+  <wd-root-portal>
+    <wd-message-box />
+  </wd-root-portal>
   <view class="flex flex-col gap-24rpx w-full mb-24rpx">
     <view class="flex flex-col gap-14rpx p-14rpx rounded-20rpx comment-card" :class="{ active: data.comment.id === commentId }">
       <view class="flex items-center gap-10rpx">
@@ -75,8 +104,11 @@ onMounted(() => {
           <view class="text-#8E8E93 text-20rpx">
             发表于 {{ formatCommentDate(data.comment.createTime) }}
           </view>
-          <view class="text-#333333 text-20rpx" @click="emit('replyComment', data.comment)">
+          <view v-if="!isSelf" class="text-#333333 text-20rpx" @click="emit('replyComment', data.comment)">
             回复
+          </view>
+          <view v-else class="text-#333333 text-20rpx" @click="onDeleteComment">
+            删除
           </view>
         </view>
 
@@ -88,7 +120,7 @@ onMounted(() => {
     </view>
 
     <view v-if="data.totalReplies > 0" class="bg-#F1F1F1 rounded-14rpx p-26rpx flex flex-col gap-40rpx">
-      <ViewReplyCard v-for="item, index in data.replies" :key="item.id" :data="item" :comment="data.comment" @update:data="(val) => data.replies[index] = val" @reply-click="onReply" />
+      <ViewReplyCard v-for="item, index in data.replies" :key="item.id" :data="item" :comment="data.comment" @update:data="(val) => data.replies[index] = val" @reply-click="onReply" @delete-reply="onDeleteReply($event, index)" />
 
       <view v-if="data.totalReplies > data.replies.length" class="text-#333333 text-20rpx" @click="onLoadReply(data.comment)">
         展开{{ remainReplyTotal > 10 ? '10' : remainReplyTotal }}条

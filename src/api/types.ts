@@ -435,3 +435,9 @@ export interface GetPublishListByTagRequest extends Page {
   tagId: string
   searchSort: 'SMART' | 'LAST' | 'HOT'
 }
+
+export interface DeleteReplyRequest {
+  commentId?: string
+  replyId?: string
+  parentReplyId?: string
+}

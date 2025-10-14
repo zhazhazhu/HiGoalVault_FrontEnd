@@ -1,6 +1,9 @@
 <script lang='ts' setup>
 import type { CommentResponse, ReplyResponse } from '@/api'
+import { computed } from 'vue'
+import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
+import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 
 defineProps<{
@@ -8,8 +11,13 @@ defineProps<{
 }>()
 const emit = defineEmits<{
   (e: 'replyClick', data: ReplyResponse): void
+  (e: 'deleteReply', data: string[]): void
 }>()
 const data = defineModel('data', { type: Object as () => ReplyResponse, required: true })
+const userStore = useUserStore()
+const isSelf = computed(() => userStore.userInfo?.id === data.value.replierId)
+const message = useMessage()
+
 function onReplyClick(data: ReplyResponse) {
   emit('replyClick', data)
 }
@@ -19,6 +27,25 @@ async function onLikeReply(data: ReplyResponse) {
     data.isLike = !data.isLike
     data.likeCount = data.isLike ? data.likeCount + 1 : data.likeCount - 1
   }
+}
+function onDeleteReply(data: ReplyResponse) {
+  message.confirm({
+    msg: '该回复内容将被删除无法恢复',
+    title: '提示',
+  }).then(async () => {
+    const res = await api.deleteReplyById({
+      replyId: data.id,
+      commentId: data.commentId,
+      parentReplyId: data.parentReplyId || undefined,
+    })
+    if (res.code === 200) {
+      uni.showToast({
+        title: '删除成功',
+        icon: 'none',
+      })
+      emit('deleteReply', res.result)
+    }
+  })
 }
 </script>
 
@@ -47,8 +74,11 @@ async function onLikeReply(data: ReplyResponse) {
         <view class="text-#8E8E93 text-20rpx">
           {{ formatCommentDate(data.createTime) }}
         </view>
-        <view class="text-#333333 text-20rpx" @click="onReplyClick(data)">
+        <view v-if="!isSelf" class="text-#333333 text-20rpx" @click="onReplyClick(data)">
           回复
+        </view>
+        <view v-else class="text-#333333 text-20rpx" @click="onDeleteReply(data)">
+          删除
         </view>
       </view>
       <view class="flex items-center gap-6rpx color-#666" @click="onLikeReply(data)">

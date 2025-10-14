@@ -11,6 +11,7 @@ import type {
   CommentListRequest,
   CommentListResponse,
   CommentResponseRequired,
+  DeleteReplyRequest,
   FollowTag,
   FollowUserRequest,
   GenerateStsTempKeyResponse,
@@ -245,6 +246,16 @@ function deleteChatMessageById(queryId: string) {
   return http(API.DELETE_CHAT_MESSAGE_BY_ID).post<boolean>({ queryId })
 }
 
+// 删除评论
+function deleteCommentById(commentId: string) {
+  return http(API.DELETE_COMMENT_BY_ID).post<boolean>({ commentId })
+}
+
+// 删除回复
+function deleteReplyById(query: DeleteReplyRequest) {
+  return http(API.DELETE_REPLY_BY_ID).post<string[]>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -288,4 +299,6 @@ export const api = {
   followTag,
   getPublishListByTag,
   deleteChatMessageById,
+  deleteCommentById,
+  deleteReplyById,
 }
