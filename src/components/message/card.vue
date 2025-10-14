@@ -278,7 +278,7 @@ function stopTextToSpeech() {
       @change="changeCheckbox"
     >
       <view v-if="withAvatar" class="flex items-center gap-20rpx mb-10px">
-        <wd-img :src="message.face" round :width="26" :height="26" />
+        <wd-img :src="message.face" round mode="aspectFill" :width="26" :height="26" />
         <view>{{ message.nickName }}</view>
       </view>
       <view ref="userInstance" :class="cs.m('user')">
