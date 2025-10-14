@@ -2,8 +2,8 @@ import type { StockChartStore } from '.'
 import { toValue } from 'vue'
 
 export enum StockChartStyleConfig {
-  UP_COLOR = '#ec0000',
-  DOWN_COLOR = '#00da3c',
+  UP_COLOR = '#e50000ff',
+  DOWN_COLOR = '#008e28ff',
 }
 
 export const StockShowType = {
@@ -72,9 +72,6 @@ export function generateStockChartConfig(store: StockChartStore): echarts.EChart
     yAxis: [
       {
         scale: true,
-        splitArea: {
-          show: true,
-        },
       },
       {
         scale: true,
@@ -181,22 +178,23 @@ export function generateStockChartConfig(store: StockChartStore): echarts.EChart
         },
         symbol: 'none',
       },
-      {
-        name: '成交量',
-        type: 'bar',
-        xAxisIndex: 1,
-        yAxisIndex: 1,
-        data: stockChartData.map((item) => {
-          const isUp = item[1] >= item[0]
-          return {
-            value: item[4],
-            itemStyle: {
-              color: isUp ? StockChartStyleConfig.UP_COLOR : StockChartStyleConfig.DOWN_COLOR,
-              opacity: 0.7,
-            },
-          }
-        }),
-      },
+      // {
+      //   name: '成交量',
+      //   type: 'bar',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   barWidth: 10,
+      //   data: stockChartData.map((item) => {
+      //     const isUp = item[1] >= item[0]
+      //     return {
+      //       value: item[3],
+      //       itemStyle: {
+      //         color: isUp ? StockChartStyleConfig.UP_COLOR : StockChartStyleConfig.DOWN_COLOR,
+      //         opacity: 1,
+      //       },
+      //     }
+      //   }),
+      // },
     ],
   }
 }
