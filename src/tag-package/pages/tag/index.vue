@@ -20,6 +20,7 @@ const data = ref<PublishMessageListResponse[]>([])
 const isLoading = ref(false)
 const isFinish = ref(false)
 const checkFollowTag = ref(false)
+const isRefreshing = ref(false)
 
 async function getTag(id: string) {
   const res = await api.getTagById(id)
@@ -55,7 +56,14 @@ async function followTag(action: boolean) {
     uni.showToast({ title: res.message, icon: 'none' })
   }
 }
-
+async function refreshData() {
+  isRefreshing.value = true
+  reset()
+  params.value.tagId = tagId.value
+  data.value = []
+  await getData()
+  isRefreshing.value = false
+}
 function gotoBack() {
   uni.navigateBack()
 }
@@ -100,7 +108,10 @@ onLoad((option) => {
       class="h-[calc(100vh-80px)] bg-[var(--hi-bg-color)] p-32rpx box-border"
       :lower-threshold="50"
       :show-scrollbar="false"
+      :refresher-enabled="true"
+      :refresher-triggered="isRefreshing"
       @scrolltolower="load"
+      @refresherrefresh="refreshData"
     >
       <view class="flex items-start justify-between">
         <view>
