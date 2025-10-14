@@ -18,7 +18,12 @@ function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
 function onConfirm() {
-  uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}&userId=${userId.value}` })
+  if (userId.value) {
+    uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}&userId=${userId.value}` })
+  }
+  else {
+    uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}` })
+  }
   searchText.value = ''
 }
 function onGotoBack() {
