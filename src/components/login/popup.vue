@@ -8,6 +8,7 @@ const model = defineModel({ type: Boolean, default: false })
 const isAgreed = ref(false)
 const userStore = useUserStore()
 const phoneOpentype = 'getPhoneNumber|agreePrivacyAuthorization' as any
+const isLoading = ref(false)
 
 function handleClose() {
   model.value = false
@@ -19,8 +20,11 @@ async function onGetPhoneNumber(e) {
     return
 
   try {
+    isLoading.value = true
     const res = await uni.login()
-    const data = await api.autoLoginByPhone({ code: res.code, phoneCode })
+    const data = await api.autoLoginByPhone({ code: res.code, phoneCode }).finally(() => {
+      isLoading.value = false
+    })
     if (data.code === 200) {
       userStore.auth = {
         ...data.result,
@@ -104,6 +108,7 @@ function handleAgreePrivacyAuthorization() {
               :round="false"
               block
               size="large"
+              :loading="isLoading"
               @getphonenumber="onGetPhoneNumber"
               @agreeprivacyauthorization="handleAgreePrivacyAuthorization"
             >
