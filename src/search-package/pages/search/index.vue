@@ -18,7 +18,7 @@ function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
 function onConfirm() {
-  uni.navigateTo({ url: `/pages/search/result?keyWord=${searchText.value}&userId=${userId.value}` })
+  uni.navigateTo({ url: `/search-package/pages/search/result?keyWord=${searchText.value}&userId=${userId.value}` })
   searchText.value = ''
 }
 function onGotoBack() {
@@ -39,7 +39,7 @@ function onCloseSearchHistory(index: number) {
 }
 function onTagClick(val: string) {
   searchStore.addSearchHistory(val)
-  uni.navigateTo({ url: `/pages/search/result?keyWord=${val}&userId=${userId.value}` })
+  uni.navigateTo({ url: `/search-package/pages/search/result?keyWord=${val}&userId=${userId.value}` })
 }
 
 onLoad((options) => {

@@ -58,7 +58,7 @@ function gotoContentDetail(item: MyCommentedRepliedListResponse) {
   uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}` })
 }
 function gotoUser(id: string) {
-  uni.navigateTo({ url: `/pages/user/index?id=${id}` })
+  uni.navigateTo({ url: `/user-package/pages/user/index?id=${id}` })
 }
 function gotoContentComment(item: MyCommentedRepliedListResponse) {
   uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}&commentId=${item.commentId}` })

@@ -82,10 +82,10 @@ async function onFollowUser(followAction: 'follow' | 'unfollow') {
   }
 }
 function gotoSearch() {
-  uni.navigateTo({ url: `/pages/search/index?userId=${userId.value}` })
+  uni.navigateTo({ url: `/search-package/pages/search/index?userId=${userId.value}` })
 }
 function gotoMessage() {
-  uni.navigateTo({ url: '/pages/user/message' })
+  uni.navigateTo({ url: '/user-package/pages/user/message' })
 }
 
 onShareAppMessage(({ target, from }) => {

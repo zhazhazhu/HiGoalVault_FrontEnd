@@ -29,10 +29,10 @@ function gotoUser() {
   if (props.disableToUser) {
     return
   }
-  uni.navigateTo({ url: `/pages/user/index?id=${data.value.memberId}` })
+  uni.navigateTo({ url: `/user-package/pages/user/index?id=${data.value.memberId}` })
 }
 function onClickTag({ id }: { id: string }) {
-  uni.navigateTo({ url: `/pages/tag/index?id=${id}` })
+  uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
 }
 </script>
 

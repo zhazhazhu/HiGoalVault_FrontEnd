@@ -114,7 +114,7 @@ function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
 function onClickSearch() {
-  uni.navigateTo({ url: '/pages/search/index' })
+  uni.navigateTo({ url: '/search-package/pages/search/index' })
 }
 
 onShareAppMessage(({ target, from }) => {
@@ -135,7 +135,7 @@ onMounted(() => {
   getData()
   // uni.navigateTo({ url: '/pages/chat/index' })
   // uni.navigateTo({ url: '/pages/index/detail?id=1972913302560460801' })
-  // uni.navigateTo({ url: '/pages/user/message' })
+  // uni.navigateTo({ url: '/user-package/pages/user/message' })
 })
 </script>
 

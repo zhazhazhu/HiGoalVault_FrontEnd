@@ -26,13 +26,13 @@ function onEditChatList() {
   isEdit.value = !isEdit.value
 }
 function gotoSettings() {
-  uni.navigateTo({ url: '/pages/settings/index' })
+  uni.navigateTo({ url: '/settings-package/pages/settings/index' })
 }
 function gotoUser() {
-  uni.navigateTo({ url: '/pages/user/index' })
+  uni.navigateTo({ url: '/user-package/pages/user/index' })
 }
 function onClickTag(tag: Tag) {
-  uni.navigateTo({ url: `/pages/tag/index?id=${tag.id}` })
+  uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${tag.id}` })
 }
 
 onMounted(() => {

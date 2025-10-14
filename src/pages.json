@@ -15,13 +15,6 @@
       }
     },
     {
-      "path": "pages/user/index",
-      "style": {
-        "navigationBarTitleText": "个人中心",
-        "disableScroll": true
-      }
-    },
-    {
       "path": "pages/chat/index",
       "style": {
         "navigationBarTitleText": "对话",
@@ -34,48 +27,70 @@
         "navigationBarTitleText": "分享",
         "disableScroll": true
       }
+    }
+  ],
+  "subpackages": [
+    {
+      "root": "settings-package",
+      "pages": [
+        {
+          "path": "pages/settings/index",
+          "style": {
+            "navigationBarTitleText": "设置",
+            "disableScroll": true
+          }
+        }
+      ]
     },
     {
-      "path": "pages/search/index",
-      "style": {
-        "navigationBarTitleText": "搜索",
-        "disableScroll": true
-      }
+      "root": "user-package",
+      "pages": [
+        {
+          "path": "pages/user/index",
+          "style": {
+            "navigationBarTitleText": "个人中心",
+            "disableScroll": true
+          }
+        },
+        {
+          "path": "pages/user/message",
+          "style": {
+            "navigationBarTitleText": "用户消息",
+            "disableScroll": true
+          }
+        }
+      ]
     },
     {
-      "path": "pages/search/result",
-      "style": {
-        "navigationBarTitleText": "搜索结果",
-        "disableScroll": true
-      }
+      "root": "search-package",
+      "pages": [
+        {
+          "path": "pages/search/index",
+          "style": {
+            "navigationBarTitleText": "搜索",
+            "disableScroll": true
+          }
+        },
+        {
+          "path": "pages/search/result",
+          "style": {
+            "navigationBarTitleText": "搜索结果",
+            "disableScroll": true
+          }
+        }
+      ]
     },
     {
-      "path": "pages/settings/index",
-      "style": {
-        "navigationBarTitleText": "设置",
-        "disableScroll": true
-      }
-    },
-    {
-      "path": "pages/user/message",
-      "style": {
-        "navigationBarTitleText": "用户消息",
-        "disableScroll": true
-      }
-    },
-    {
-      "path": "pages/tag/index",
-      "style": {
-        "navigationBarTitleText": "标签",
-        "disableScroll": true
-      }
-    },
-    {
-      "path": "pages/test/index",
-      "style": {
-        "navigationBarTitleText": "测试",
-        "disableScroll": true
-      }
+      "root": "tag-package",
+      "pages": [
+        {
+          "path": "pages/tag/index",
+          "style": {
+            "navigationBarTitleText": "标签",
+            "disableScroll": true
+          }
+        }
+      ]
     }
   ],
   "entryPagePath": "pages/index/index",
