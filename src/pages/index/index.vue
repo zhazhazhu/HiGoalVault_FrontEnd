@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Page, PublishMessageListResponse } from '@/api'
 import type Converse from '@/components/converse/index.vue'
-import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
+import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -125,6 +125,13 @@ onShareAppMessage(({ target, from }) => {
   }
   return {
     title: '分享',
+    path: '/pages/index/index',
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: 'HiGoal AI',
     path: '/pages/index/index',
   }
 })
