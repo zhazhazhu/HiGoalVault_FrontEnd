@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { AnswerBefore, Page } from '@/api'
+import type { AnswerAfter, Page } from '@/api'
 import hljs from 'highlight.js'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { onMounted, ref } from 'vue'
@@ -19,7 +19,7 @@ const [page, resetPage] = useResetRef<Page>({
 })
 const total = ref(0)
 const userStore = useUserStore()
-const data = ref<AnswerBefore[]>([])
+const data = ref<AnswerAfter[]>([])
 const cs = useClassesName('collected-message-list')
 const md = new MarkdownIt({
   html: true,
@@ -40,7 +40,10 @@ async function getData() {
     userId: userStore.userInfo!.id,
   })
   if (res.code === 200) {
-    data.value.push(...res.result.records.map(item => ({ ...item, isCollect: Truth.TRUE })))
+    data.value.push(...res.result.records.map((item) => {
+      const data = JSON.parse(item.data || '') || []
+      return { ...item, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [] } as AnswerAfter
+    }))
     total.value = res.result.total
     isLoading.value = false
     isFinish.value = data.value.length >= total.value
@@ -97,6 +100,9 @@ defineExpose({
       <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
         <rich-text :class="cs.e('rich-text')" :nodes="md.render(item.response || '')" space="ensp" />
       </view>
+
+      <stock v-if="item.data.length === 1" :data="item.data" preview />
+
       <view class="flex items-center justify-between">
         <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">
           {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
