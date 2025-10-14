@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
 import dayjs from 'dayjs'
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { api } from '@/api'
 import { useUUID } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
@@ -45,9 +45,9 @@ function gotoUser() {
   uni.navigateTo({ url: `/user-package/pages/user/index?id=${props.data!.memberId}` })
 }
 
-onMounted(() => {
+watch(() => props.data, () => {
   checkFollowUser()
-})
+}, { immediate: true })
 </script>
 
 <template>
