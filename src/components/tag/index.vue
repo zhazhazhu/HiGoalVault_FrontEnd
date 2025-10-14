@@ -23,7 +23,7 @@ const cs = useClassesName('tag')
 .hi-tag--container {
   width: auto;
   border-radius: 8rpx;
-  padding: 10rpx 22rpx;
+  padding: 6rpx 18rpx;
   display: inline-flex;
   align-items: center;
   justify-content: center;

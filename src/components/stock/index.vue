@@ -9,6 +9,7 @@ import { StockShowType } from './config'
 
 const props = defineProps<{
   data: [ChatMessageStock]
+  preview?: boolean
 }>()
 
 const current = ref(StockShowType.DAY_K)
@@ -60,20 +61,22 @@ onMounted(() => {
     <!-- 价格信息面板 -->
     <StockPriceInfo v-if="stockInfo" :stock-info="stockInfo" />
 
-    <!-- 时间周期选择器 -->
-    <view class="period-selector">
-      <wd-segmented v-model:value="current" :options="Object.values(StockShowType)" />
-    </view>
+    <template v-if="!preview">
+      <!-- 时间周期选择器 -->
+      <view class="period-selector">
+        <wd-segmented v-model:value="current" :options="Object.values(StockShowType)" />
+      </view>
 
-    <!-- 点击数据显示区域 -->
-    <view v-if="activeData">
-      <StockSelectedDataPanel :data="activeData" />
-    </view>
+      <!-- 点击数据显示区域 -->
+      <view v-if="activeData">
+        <StockSelectedDataPanel :data="activeData" />
+      </view>
 
-    <!-- 图表容器 -->
-    <view class="chart-wrapper">
-      <ec-canvas :id="chartId" ref="chartCanvasInstance" :canvas-id="canvasId" :ec="{ lazyLoad: true }" type="2d" />
-    </view>
+      <!-- 图表容器 -->
+      <view class="chart-wrapper">
+        <ec-canvas :id="chartId" ref="chartCanvasInstance" :canvas-id="canvasId" :ec="{ lazyLoad: true }" type="2d" />
+      </view>
+    </template>
   </view>
 </template>
 

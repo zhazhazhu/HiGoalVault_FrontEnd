@@ -1,5 +1,6 @@
 <script lang='ts' setup>
-import type { PublishMessageListResponse, Tag } from '@/api'
+import type { AnswerAfter, PublishMessageListResponse, Tag } from '@/api'
+import { computed } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
@@ -11,6 +12,7 @@ const props = defineProps<{
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
 const userStore = useUserStore()
+const stockData = computed<AnswerAfter['data']>(() => data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : [])
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
@@ -67,6 +69,8 @@ function onClickTag({ id }: { id: string }) {
         #{{ item.tagName }}
       </Tag>
     </view>
+
+    <stock v-if="stockData.length === 1" :data="stockData" preview />
 
     <view class="flex items-center color-#666 gap-30rpx">
       <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
