@@ -1,17 +1,15 @@
-import { useUserStore } from '@/store'
+import { useGlobalStore, useUserStore } from '@/store'
 
 const navigateMethods = ['navigateTo', 'redirectTo', 'navigateBack', 'switchTab']
 export function navigationInterceptor() {
   const userStore = useUserStore()
+  const globalStore = useGlobalStore()
 
   navigateMethods.forEach((method) => {
     uni.addInterceptor(method, {
       invoke: () => {
         if (!userStore.isLogin) {
-          uni.showToast({
-            title: '请先登录',
-            icon: 'none',
-          })
+          globalStore.showLoginPopup = true
         }
         return userStore.isLogin
       },

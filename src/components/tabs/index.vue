@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   customStyle?: string
   editable?: boolean
   sticky?: boolean
+  tabClick?: (val?: string | number) => boolean | void
 }>(), {
   sticky: true,
 })
@@ -35,7 +36,7 @@ function onTabClick(event: TabChildrenProps) {
 
 <template>
   <view :class="[cs.s(), customClass]" :style="customStyle">
-    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" :sticky="sticky" @tab-click="onTabClick" @edit="$emit('edit', $event)">
+    <TabNav ref="tabNavInstance" :navs="navs" :editable="editable" :custom-nav-class="customNavClass" :tab-click="tabClick" :sticky="sticky" @tab-click="onTabClick" @edit="$emit('edit', $event)">
       <template #edit>
         <slot name="edit" />
       </template>

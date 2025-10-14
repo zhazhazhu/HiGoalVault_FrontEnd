@@ -4,11 +4,12 @@ import { getCurrentInstance, inject, nextTick, onMounted, ref } from 'vue'
 import { useClassesName } from '@/composables'
 import { TABS_INJECTION_KEY } from '../tabs'
 
-defineProps<{
+const props = defineProps<{
   navs: Navs[]
   customNavClass?: string
   editable?: boolean
   sticky?: boolean
+  tabClick?: (val?: string | number) => boolean | void
 }>()
 const emit = defineEmits<{
   (e: 'tabClick', tab: TabChildrenProps, ev: Event): void
@@ -17,6 +18,12 @@ const emit = defineEmits<{
 const { activeName } = inject(TABS_INJECTION_KEY)!
 const cs = useClassesName('tab-nav')
 function handleTabClick(tab: TabChildrenProps, ev: Event) {
+  if (props.tabClick) {
+    const result = props.tabClick(tab.name)
+    if (result === false) {
+      return
+    }
+  }
   if (tab.name !== undefined) {
     activeName.value = tab.name || 0
   }

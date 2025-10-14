@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { useChatStore, useUserStore } from '@/store'
+import { useChatStore, useGlobalStore, useUserStore } from '@/store'
 
 interface Data {
   data: PublishMessageListResponse[]
@@ -42,6 +42,7 @@ const [data, resetData] = useResetRef<Record<'view' | 'follow', Data>>({
 })
 const userStore = useUserStore()
 const chatStore = useChatStore()
+const globalStore = useGlobalStore()
 const converseHeight = ref(0)
 
 async function getData() {
@@ -88,13 +89,10 @@ function loadFollowData() {
   getFollowData()
 }
 
-function onTabChange() {
+function onTabClick() {
   if (!userStore.isLogin) {
-    active.value = 'view'
-    uni.showToast({
-      title: '请先登录',
-      icon: 'none',
-    })
+    globalStore.showLoginPopup = true
+    return false
   }
 }
 
@@ -165,8 +163,8 @@ onShow(() => {
           editable
           custom-content-class="mt-10px"
           :custom-nav-class="cs.m('tab-nav')"
+          :tab-click="onTabClick"
           @edit="onClickSearch"
-          @tab-change="onTabChange"
         >
           <template #edit>
             <wd-icon name="search" size="18" />

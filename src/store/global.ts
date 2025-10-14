@@ -10,6 +10,7 @@ interface Status {
   hasKeyboard: boolean
   keyboardHeight: number
   stsTempConfig: Ref<GenerateStsTempKeyResponse | null>
+  showLoginPopup: boolean
 }
 
 export const useGlobalStore = defineStore('global', {
@@ -18,6 +19,7 @@ export const useGlobalStore = defineStore('global', {
     hasKeyboard: false,
     keyboardHeight: 0,
     stsTempConfig: useStoreRef('Q_CLOUD_AI_VOICE', null),
+    showLoginPopup: false,
   }),
   actions: {
     syncStatusBarHeight() {

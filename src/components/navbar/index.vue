@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useGlobalStore, useUserStore } from '@/store'
 
 interface Props {
@@ -21,7 +21,6 @@ const slots = defineSlots<{
   right?: () => any
 }>()
 
-const show = ref(false)
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
 
@@ -33,17 +32,8 @@ function changeBgColor(color: string) {
   navbarStyle.value['--bg-color'] = color
 }
 function handleClick() {
-  show.value = !show.value
+  globalStore.showLoginPopup = !globalStore.showLoginPopup
 }
-
-// watch(show, (show) => {
-//   if (show) {
-//     changeBgColor('#FF3B30')
-//   }
-//   else {
-//     changeBgColor('#FFFFFF')
-//   }
-// })
 
 defineExpose({
   changeBgColor,
@@ -52,7 +42,7 @@ defineExpose({
 
 <template>
   <view class="navbar__container" :style="navbarStyle">
-    <login-popup v-model="show" />
+    <login-popup v-model="globalStore.showLoginPopup" />
     <view class="navbar__status" :style="{ '--status-bar-height': `${globalStore.windowInfo?.statusBarHeight}px` }" />
     <view class="navbar__content">
       <view class="navbar__content__left">
