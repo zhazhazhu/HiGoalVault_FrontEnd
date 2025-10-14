@@ -1,8 +1,8 @@
+import type { UserConfig } from 'vite'
 import { resolve } from 'node:path'
 import Uni from '@dcloudio/vite-plugin-uni'
 import Components from '@uni-helper/vite-plugin-uni-components'
 import { WotResolver } from '@uni-helper/vite-plugin-uni-components/resolvers'
-
 import UniKuRoot from '@uni-ku/root'
 import { defineConfig } from 'vite'
 
@@ -33,5 +33,5 @@ export default defineConfig(async () => {
     resolve: {
       alias: [{ find: '~/', replacement: `${resolve(__dirname, 'src')}/` }],
     },
-  }
+  } as UserConfig
 })
