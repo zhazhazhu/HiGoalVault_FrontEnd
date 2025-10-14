@@ -21,7 +21,7 @@ export interface UserInfo {
 }
 
 export interface Page {
-  keyWord?: string
+  keyword?: string
   pageSize?: number
   pageNumber?: number
   sort?: string

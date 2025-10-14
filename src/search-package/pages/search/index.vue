@@ -18,7 +18,7 @@ function onChangeChat() {
   uni.navigateTo({ url: '/pages/chat/index' })
 }
 function onConfirm() {
-  uni.navigateTo({ url: `/search-package/pages/search/result?keyWord=${searchText.value}&userId=${userId.value}` })
+  uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}&userId=${userId.value}` })
   searchText.value = ''
 }
 function onGotoBack() {
@@ -39,7 +39,12 @@ function onCloseSearchHistory(index: number) {
 }
 function onTagClick(val: string) {
   searchStore.addSearchHistory(val)
-  uni.navigateTo({ url: `/search-package/pages/search/result?keyWord=${val}&userId=${userId.value}` })
+  if (userId.value) {
+    uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${val}&userId=${userId.value}` })
+  }
+  else {
+    uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${val}` })
+  }
 }
 
 onLoad((options) => {

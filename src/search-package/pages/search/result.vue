@@ -9,21 +9,24 @@ const showSidebar = ref(false)
 const isLoading = ref(false)
 const isFinish = ref(false)
 const data = ref<PublishMessageListResponse[]>([])
-const [page] = useResetRef<Page>({
+const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
   sort: '',
-  keyWord: '',
+  keyword: '',
 })
 const userId = ref('')
+const isRefreshing = ref(false)
+const keyword = ref('')
 
-watch(() => page.value.keyWord, (val) => {
+watch(keyword, (val) => {
   if (val === '') {
     uni.navigateBack()
   }
 })
 
 async function getData() {
+  page.value.keyword = keyword.value
   if (!userId.value) {
     const res = await api.globalSearch({ ...page.value, searchSort: 'HOT' }).finally(() => {
       isLoading.value = false
@@ -54,7 +57,13 @@ function loadData() {
   page.value.pageNumber!++
   getData()
 }
-
+async function refreshData() {
+  isRefreshing.value = true
+  data.value = []
+  reset()
+  await getData()
+  isRefreshing.value = false
+}
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
 }
@@ -64,14 +73,20 @@ function onChangeChat() {
 function onGotoBack() {
   uni.navigateBack()
 }
+function onConfirm() {
+  reset()
+  data.value = []
+  getData()
+}
 
 onMounted(() => {
+  reset()
   getData()
 })
 
 onLoad((options) => {
-  page.value.keyWord = options?.keyWord || ''
-  userId.value = options?.userId || ''
+  keyword.value = options?.keyword || ''
+  userId.value = options?.userId ? options?.userId : ''
 })
 </script>
 
@@ -79,13 +94,19 @@ onLoad((options) => {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
     <Container custom-class="px-32rpx">
-      <SearchHead v-model="page.keyWord!" @back="onGotoBack" />
+      <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
 
-      <view class="h-[calc(100%-190px)] mt-20px">
+      <scroll-view
+        scroll-y
+        enhanced
+        :show-scrollbar="false"
+        :refresher-enabled="true"
+        :refresher-triggered="isRefreshing"
+        class="h-[calc(100%-80px)] mt-20px"
+        @refresherrefresh="refreshData"
+      >
         <ViewList :data="data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
-      </view>
-
-      <Converse />
+      </scroll-view>
     </Container>
   </Layout>
 </template>
