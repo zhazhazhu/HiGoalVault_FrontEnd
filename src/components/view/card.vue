@@ -64,8 +64,8 @@ function onClickTag({ id }: { id: string }) {
     </view>
 
     <!-- 标签区域 - 超出一行隐藏 -->
-    <view class="flex gap-20rpx overflow-hidden">
-      <Tag v-for="item in data?.tags" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
+    <view class="flex flex-row gap-20rpx overflow-hidden">
+      <Tag v-for="item in data?.tags.slice(0, 3)" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
         #{{ item.tagName }}
       </Tag>
     </view>
