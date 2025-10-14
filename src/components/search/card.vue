@@ -82,7 +82,7 @@ onUpdated(() => {
           @click="onTagClick(item)"
         >
           <text>{{ item }}</text>
-          <view class="i-material-symbols-light-cancel absolute -top-6px -right-6px text-36rpx" :class="{ hidden: !enableClose }" @click="onClose(index, item)" />
+          <view class="i-material-symbols-light-cancel absolute -top-6px -right-6px text-36rpx" :class="{ hidden: !enableClose }" @click.stop="onClose(index, item)" />
         </view>
       </view>
       <view

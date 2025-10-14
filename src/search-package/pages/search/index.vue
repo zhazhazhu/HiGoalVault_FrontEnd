@@ -70,7 +70,7 @@ onLoad((options) => {
           >
             <template #edit>
               <view v-if="!removeSearchHistoryVisible" class="i-material-symbols-light-delete-outline" />
-              <wd-button v-else type="primary" size="small">
+              <wd-button v-else type="primary" plain size="small">
                 完成
               </wd-button>
             </template>
