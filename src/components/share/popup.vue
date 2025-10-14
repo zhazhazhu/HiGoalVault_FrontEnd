@@ -1,16 +1,25 @@
 <script lang='ts' setup>
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 import { messageInjectKey } from '@/composables/inject'
 
 const model = defineModel({ type: Boolean, default: false })
-
 const messageInject = inject(messageInjectKey)
+const openType = computed(() => messageInject?.share.value.ids.length ? 'share' : '')
+
+function onShare() {
+  if (messageInject?.share.value.ids.length === 0) {
+    uni.showToast({
+      title: '请选择要分享的消息',
+      icon: 'none',
+    })
+  }
+}
 </script>
 
 <template>
   <wd-popup v-model="model" root-portal position="bottom" :modal="false" safe-area-inset-bottom custom-class="rounded-t-20px">
     <view class="h-150px flex items-center justify-center flex-col">
-      <button open-type="share" :data-ids="messageInject?.share.value.ids" class="share-btn">
+      <button :open-type="openType" :data-ids="messageInject?.share.value.ids" class="share-btn" @click="onShare">
         <view class="share-wechat-icon" />
         <text>分享好友</text>
       </button>
