@@ -130,6 +130,7 @@ provide(messageInjectKey, {
 onMounted(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
+  chatStore.messages = []
   getMessage()
   // uni.navigateTo({ url: '/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })

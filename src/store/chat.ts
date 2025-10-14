@@ -1,10 +1,12 @@
 import type { Ref } from 'vue'
 import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '../api'
+import dayjs from 'dayjs'
 import { mergeWith } from 'lodash-es'
 import { defineStore } from 'pinia'
 import { useStoreRef, useUUID } from '@/composables'
 import { isThisMonth, isThisWeek, isToday } from '@/utils'
 import { Truth } from '../api'
+import { useUserStore } from './user'
 
 interface WaitingMessageTask {
   query: string
@@ -151,6 +153,16 @@ export const useChatStore = defineStore('chat', {
           }
         }
       }
+    },
+    putTemporaryChat(chatId: string) {
+      const userStore = useUserStore()
+      this.chats.unshift({
+        chatId,
+        title: '新对话',
+        userId: userStore.userInfo?.id || '',
+        createTime: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+        updateTime: dayjs().format('YYYY/MM/DD HH:mm:ss'),
+      })
     },
   },
 })

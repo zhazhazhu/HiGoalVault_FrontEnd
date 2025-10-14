@@ -125,8 +125,6 @@ function onVoiceDone(text: string, immediate?: boolean) {
     onConfirmMessage()
 }
 function onInputFocus(e) {
-  console.log('input focus', e)
-
   cursorPosition.value = model.value.length
 }
 

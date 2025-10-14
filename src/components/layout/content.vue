@@ -5,6 +5,9 @@ import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
 
+defineProps<{
+  showSidebar: boolean
+}>()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'changeChat'): void
@@ -67,7 +70,7 @@ onMounted(() => {
         </view>
       </tabs-item>
       <tabs-item name="chat" label="对话">
-        <LayoutChatList :is-edit="isEdit" @change-chat="$emit('changeChat')" />
+        <LayoutChatList :show-sidebar="showSidebar" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
       </tabs-item>
     </tabs>
 

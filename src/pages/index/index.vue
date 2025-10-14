@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Page, PublishMessageListResponse } from '@/api'
 import type Converse from '@/components/converse/index.vue'
-import { onShareAppMessage } from '@dcloudio/uni-app'
+import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { useUserStore } from '@/store'
+import { useChatStore, useUserStore } from '@/store'
 
 interface Data {
   data: PublishMessageListResponse[]
@@ -41,6 +41,7 @@ const [data, resetData] = useResetRef<Record<'view' | 'follow', Data>>({
   },
 })
 const userStore = useUserStore()
+const chatStore = useChatStore()
 const converseHeight = ref(0)
 
 async function getData() {
@@ -136,6 +137,10 @@ onMounted(() => {
   // uni.navigateTo({ url: '/pages/chat/index' })
   // uni.navigateTo({ url: '/pages/index/detail?id=1972913302560460801' })
   // uni.navigateTo({ url: '/user-package/pages/user/message' })
+})
+
+onShow(() => {
+  chatStore.currentChatId = ''
 })
 </script>
 

@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { AnswerAfter, PublishMessageListResponse, Tag } from '@/api'
+import type { AnswerAfter, PublishMessageListResponse } from '@/api'
 import { computed } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'

@@ -23,7 +23,7 @@ function onChangeChat() {
 <template>
   <view :class="[cs.m('container'), cs.is('open', model)]" class="h-screen overflow-hidden">
     <view :class="cs.m('wrapper')">
-      <LayoutContent @close="onClose" @change-chat="onChangeChat" />
+      <LayoutContent :show-sidebar="model" @close="onClose" @change-chat="onChangeChat" />
     </view>
     <view :class="cs.m('content')">
       <view :class="cs.e('content-mask')" @click.stop="onClose" />

@@ -2,7 +2,7 @@
 import type { Chat, Page } from '@/api'
 import type { ChatWithType } from '@/store'
 import dayjs from 'dayjs'
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -10,8 +10,9 @@ import { useResetRef } from '@/composables/useResetRef'
 import { DateZhCN } from '@/constants'
 import { useChatStore, useUserStore } from '@/store'
 
-defineProps<{
+const props = defineProps<{
   isEdit: boolean
+  showSidebar: boolean
 }>()
 
 const emit = defineEmits(['changeChat'])
@@ -27,6 +28,12 @@ const message = useMessage()
 const isLoading = ref(false)
 const isFinish = ref(false)
 const isRefreshing = ref(false)
+
+watch(() => props.showSidebar, (val) => {
+  if (val) {
+    init()
+  }
+}, { immediate: true })
 
 async function getData() {
   const data = await api.getChatList({
@@ -92,17 +99,15 @@ async function refreshData() {
   await getData()
   isRefreshing.value = false
 }
-
+function init() {
+  chatStore.chats = []
+  reset()
+  getData()
+}
 function onClickChat(item: Chat) {
   chatStore.currentChatId = item.chatId
   emit('changeChat')
 }
-
-onMounted(() => {
-  chatStore.chats = []
-  reset()
-  getData()
-})
 </script>
 
 <template>
