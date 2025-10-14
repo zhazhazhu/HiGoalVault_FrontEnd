@@ -56,7 +56,7 @@ onLoad((options) => {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
     <Container custom-class="px-32rpx">
-      <SearchHead v-model="searchText" :placeholder="userId ? '搜索我的内容' : '搜索'" @confirm="onConfirm" @back="onGotoBack" />
+      <SearchHead v-model="searchText" :placeholder="userId ? '搜索用户内容' : '搜索'" @confirm="onConfirm" @back="onGotoBack" />
 
       <view :class="cs.m('content')">
         <view :class="cs.m('lately-search')">
