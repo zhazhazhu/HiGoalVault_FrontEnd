@@ -4,6 +4,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { useClassesName, useUUID } from '@/composables'
 import { useGlobalStore } from '@/store'
+import { checkPermission } from '@/utils/wx'
 
 const emit = defineEmits<{
   (e: 'done', text: string, immediate?: boolean): void
@@ -42,7 +43,6 @@ record.onFrameRecorded((res) => {
     decibel.value = mappedAmplitude
   }
 })
-
 function onTouchStart() {
   recordPopupFocusedButton.value = 'microphone'
   isRecording.value = true
@@ -90,7 +90,11 @@ function onTouchMove(event) {
     }
   }).exec()
 }
-function start() {
+async function start() {
+  const status = await checkPermission('scope.record')
+  if (!status) {
+    return
+  }
   const config: QCloudAIVoiceSpeechRecognizerManagerStartParams = {
     secretkey: globalStore.stsTempConfig?.tmpSecretKey || '',
     secretid: globalStore.stsTempConfig?.tmpSecretId || '',
