@@ -34,6 +34,7 @@ declare module 'vue' {
     Tabs: typeof import('./src/components/tabs/index.vue')['default']
     TabsItem: typeof import('./src/components/tabs/item.vue')['default']
     Tag: typeof import('./src/components/tag/index.vue')['default']
+    UniEcharts: typeof import('uni-echarts')['default']
     UserCollect: typeof import('./src/components/user/collect.vue')['default']
     UserComment: typeof import('./src/components/user/comment.vue')['default']
     UserLike: typeof import('./src/components/user/like.vue')['default']

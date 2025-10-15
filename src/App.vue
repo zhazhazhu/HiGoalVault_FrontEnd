@@ -14,24 +14,24 @@ watch(() => userStore.accessToken, async (val) => {
   }
 })
 
+globalStore.syncStatusBarHeight()
+globalStore.syncKeyboardHeight()
+userStore.getUserInfo()
+
+uni.getPrivacySetting({
+  success: (res) => {
+    console.log('getPrivacySetting success', res)
+    userStore.privacySettings = {
+      needAuthorization: res.needAuthorization,
+      privacyContractName: res.privacyContractName,
+    }
+  },
+  fail: (err) => {
+    console.log('getPrivacySetting fail', err)
+  },
+})
+
 onLaunch(async () => {
-  globalStore.syncStatusBarHeight()
-  globalStore.syncKeyboardHeight()
-  userStore.getUserInfo()
-
-  uni.getPrivacySetting({
-    success: (res) => {
-      console.log('getPrivacySetting success', res)
-      userStore.privacySettings = {
-        needAuthorization: res.needAuthorization,
-        privacyContractName: res.privacyContractName,
-      }
-    },
-    fail: (err) => {
-      console.log('getPrivacySetting fail', err)
-    },
-  })
-
   if (userStore.accessTokenExpired)
     await userStore.refreshAccessToken()
 })

@@ -1,9 +1,14 @@
 <script lang='ts' setup>
+import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { StockData } from '.'
 import type { ChatMessageStock } from '@/api'
-import { computed, onMounted, ref } from 'vue'
-import { useUUID } from '@/composables'
-import echarts from '@/echarts'
+import { onReady } from '@dcloudio/uni-app'
+import { CandlestickChart, LineChart } from 'echarts/charts'
+import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } from 'echarts/components'
+import * as echarts from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { provideEcharts } from 'uni-echarts/shared'
+import { computed, ref, shallowRef } from 'vue'
 import { useStockChart } from '.'
 import { StockShowType } from './config'
 
@@ -12,49 +17,35 @@ const props = defineProps<{
   preview?: boolean
 }>()
 
+provideEcharts(echarts)
+
+echarts.use([
+  DatasetComponent,
+  GridComponent,
+  LegendComponent,
+  CanvasRenderer,
+  DataZoomComponent,
+  LineChart,
+  CandlestickChart,
+])
+
 const current = ref(StockShowType.DAY_K)
 const activeData = ref<StockData | null>(null)
 const { store, config } = useStockChart(props.data)
 const stockInfo = computed(() => store.data.value.stockInfo)
-const chartId = `stock-chart-${useUUID()}`
-const canvasId = `stock-canvas-${useUUID()}`
-const chartCanvasInstance = ref()
+const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 
-function initChart(canvas, width, height, dpr) {
-  const chart = echarts.init(canvas, null, {
-    width,
-    height,
-    devicePixelRatio: dpr, // 像素比
-  })
-  canvas.setChart(chart)
-  chart.on('click', (params) => {
+onReady(() => {
+  chartCanvasInstance.value?.chart?.on('click', (params) => {
     if (params.componentType === 'series') {
       activeData.value = store.getStockData(params.dataIndex)
     }
   })
-  chart.setOption(config)
-  return chart
-}
-
-function tryInitChart() {
-  if (chartCanvasInstance.value) {
-    chartCanvasInstance.value.init((canvas, width, height, dpr) => initChart(canvas, width, height, dpr))
-  }
-}
-
-function onClickContainer(e) {
-  if (e.target.id === chartId)
-    return
-  activeData.value = null
-}
-
-onMounted(() => {
-  tryInitChart()
 })
 </script>
 
 <template>
-  <view class="stock-chart-container" @click="onClickContainer">
+  <view class="stock-chart-container">
     <!-- 股票基本信息 -->
     <StockHeader v-if="stockInfo" :stock-info="stockInfo" />
 
@@ -74,7 +65,7 @@ onMounted(() => {
 
       <!-- 图表容器 -->
       <view class="chart-wrapper">
-        <ec-canvas :id="chartId" ref="chartCanvasInstance" :canvas-id="canvasId" :ec="{ lazyLoad: true }" type="2d" />
+        <uni-echarts ref="chartCanvasInstance" custom-class="h-300px" :option="config" />
       </view>
     </template>
   </view>

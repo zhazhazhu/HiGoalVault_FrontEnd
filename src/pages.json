@@ -100,8 +100,6 @@
     "navigationBarTextStyle": "black",
     // #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
     "usingComponents": {
-      "ec-canvas": "/wxcomponents/ec-canvas/ec-canvas",
-      "wxml-to-canvas": "/wxcomponents/wxml-to-canvas/index"
     }
     // #endif
   }

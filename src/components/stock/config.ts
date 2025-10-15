@@ -1,3 +1,4 @@
+import type { EChartsOption } from 'echarts'
 import type { StockChartStore } from '.'
 import { toValue } from 'vue'
 
@@ -13,7 +14,7 @@ export const StockShowType = {
   MONTH_K: '月K',
 }
 
-export function generateStockChartConfig(store: StockChartStore): echarts.EChartsOption {
+export function generateStockChartConfig(store: StockChartStore): EChartsOption {
   const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = toValue(store.data)
   return {
     legend: {
