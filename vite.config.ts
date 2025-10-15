@@ -6,7 +6,6 @@ import { WotResolver } from '@uni-helper/vite-plugin-uni-components/resolvers'
 import Optimization from '@uni-ku/bundle-optimizer'
 import UniKuRoot from '@uni-ku/root'
 import { UniEchartsResolver } from 'uni-echarts/resolver'
-import { UniEcharts } from 'uni-echarts/vite'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
@@ -28,7 +27,6 @@ export default defineConfig(async () => {
         directoryAsNamespace: true,
         resolvers: [WotResolver(), UniEchartsResolver()],
       }),
-      UniEcharts(),
       Optimization(),
       UniKuRoot(),
       Jsx(),

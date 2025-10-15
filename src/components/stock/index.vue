@@ -1,8 +1,8 @@
 <script lang='ts' setup>
+import type { ECElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { StockData } from '.'
 import type { ChatMessageStock } from '@/api'
-import { onReady } from '@dcloudio/uni-app'
 import { CandlestickChart, LineChart } from 'echarts/charts'
 import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } from 'echarts/components'
 import * as echarts from 'echarts/core'
@@ -35,13 +35,11 @@ const { store, config } = useStockChart(props.data)
 const stockInfo = computed(() => store.data.value.stockInfo)
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 
-onReady(() => {
-  chartCanvasInstance.value?.chart?.on('click', (params) => {
-    if (params.componentType === 'series') {
-      activeData.value = store.getStockData(params.dataIndex)
-    }
-  })
-})
+function handleChartClick(params: ECElementEvent) {
+  if (params.componentType === 'series') {
+    activeData.value = store.getStockData(params.dataIndex)
+  }
+}
 </script>
 
 <template>
@@ -65,7 +63,7 @@ onReady(() => {
 
       <!-- 图表容器 -->
       <view class="chart-wrapper">
-        <uni-echarts ref="chartCanvasInstance" custom-class="h-300px" :option="config" />
+        <uni-echarts ref="chartCanvasInstance" custom-class="h-300px" :option="config" @click="handleChartClick" />
       </view>
     </template>
   </view>

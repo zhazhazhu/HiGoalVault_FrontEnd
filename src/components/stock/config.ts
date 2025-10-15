@@ -30,60 +30,21 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         color: 'transparent',
       },
     },
-    grid: [
-      {
-        left: '8%',
-        right: '8%',
-        top: '15%',
-        height: '50%',
-      },
-      {
-        left: '8%',
-        right: '8%',
-        top: '70%',
-        height: '16%',
-      },
-    ],
+    grid: {
+      bottom: 80,
+    },
     xAxis: [
       {
         type: 'category',
         data: categoryData,
-        boundaryGap: false,
-        axisLine: { onZero: false },
-        splitLine: { show: false },
-        min: 'dataMin',
-        max: 'dataMax',
-        axisPointer: {
-          z: 100,
-        },
-      },
-      {
-        type: 'category',
-        gridIndex: 1,
-        data: categoryData,
-        boundaryGap: false,
-        axisLine: { onZero: false },
-        axisTick: { show: false },
-        splitLine: { show: false },
-        axisLabel: { show: false },
-        min: 'dataMin',
-        max: 'dataMax',
+        axisLine: { lineStyle: { color: '#8392A5' } },
       },
     ],
-    yAxis: [
-      {
-        scale: true,
-      },
-      {
-        scale: true,
-        gridIndex: 1,
-        splitNumber: 2,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { show: false },
-      },
-    ],
+    yAxis: {
+      scale: true,
+      axisLine: { lineStyle: { color: '#8392A5' } },
+      splitLine: { show: false },
+    },
     dataZoom: [
       {
         type: 'inside',

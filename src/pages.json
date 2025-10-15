@@ -99,8 +99,7 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "navigationBarTextStyle": "black",
     // #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
-    "usingComponents": {
-    }
+    "usingComponents": {}
     // #endif
   }
 }
