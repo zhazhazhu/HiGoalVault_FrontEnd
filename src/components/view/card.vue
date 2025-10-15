@@ -101,5 +101,6 @@ function onClickTag({ id }: { id: string }) {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
+  border: 1px solid #ffaeae26;
 }
 </style>
