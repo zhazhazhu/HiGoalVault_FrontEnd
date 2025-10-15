@@ -111,7 +111,7 @@ onMounted(() => {
                   </view>
                 </view>
                 <view class="text-22rpx color-gray-4">
-                  回复了你的评论 {{ formatCommentDate(item.createTime) }}
+                  {{ item.commentType === 1 ? '评论了你的内容' : '回复了你的评论' }} {{ formatCommentDate(item.createTime) }}
                 </view>
 
                 <view class="font-500 text-28rpx color-#333 mt-6px">
@@ -126,7 +126,7 @@ onMounted(() => {
               </view>
             </view>
 
-            <view class="flex justify-end gap-50rpx ">
+            <view v-if="item.commentStatus" class="flex justify-end gap-50rpx">
               <view class="flex items-center gap-6rpx" @click.stop="gotoContentComment(item)">
                 <view class="comment-icon bg-#666 size-46rpx" />
                 <view class="text-24rpx color-#666">
