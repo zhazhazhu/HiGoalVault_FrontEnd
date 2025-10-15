@@ -26,14 +26,7 @@ export function checkPermission(key: keyof UniApp.AuthSetting): Promise<boolean>
             cancelText: '取消',
             success: (modalRes) => {
               if (modalRes.confirm) {
-                uni.openSetting({
-                  success: (settingRes) => {
-                    resolve(settingRes.authSetting[key] === true)
-                  },
-                  fail: () => {
-                    resolve(false)
-                  },
-                })
+                uni.openSetting()
               }
               else {
                 resolve(false)
@@ -44,9 +37,6 @@ export function checkPermission(key: keyof UniApp.AuthSetting): Promise<boolean>
         else {
           uni.authorize({
             scope: key,
-            success: () => {
-              resolve(true)
-            },
             fail: () => {
               uni.showToast({
                 title: '授权失败',

@@ -43,7 +43,12 @@ record.onFrameRecorded((res) => {
     decibel.value = mappedAmplitude
   }
 })
-function onTouchStart() {
+async function onTouchStart() {
+  const status = await checkPermission('scope.record')
+  if (!status) {
+    console.log('麦克风需要授权')
+    return
+  }
   recordPopupFocusedButton.value = 'microphone'
   isRecording.value = true
   start()
@@ -91,10 +96,6 @@ function onTouchMove(event) {
   }).exec()
 }
 async function start() {
-  const status = await checkPermission('scope.record')
-  if (!status) {
-    return
-  }
   const config: QCloudAIVoiceSpeechRecognizerManagerStartParams = {
     secretkey: globalStore.stsTempConfig?.tmpSecretKey || '',
     secretid: globalStore.stsTempConfig?.tmpSecretId || '',
