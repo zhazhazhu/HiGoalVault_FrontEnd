@@ -404,7 +404,7 @@ export interface MyCommentedRepliedListResponse {
   commentId: string // 评论id
   contentId: string // 帖子id
   content: string // 帖子内容
-  commentStatus: 0 | 1 // 评论状态 0 已删除 1 正常
+  commentStatus: boolean// 评论状态
   commentType: 0 | 1 // 评论类型 1 评论 2 回复
   face: string // 发帖人头像
   commenterId: string // 发帖人id

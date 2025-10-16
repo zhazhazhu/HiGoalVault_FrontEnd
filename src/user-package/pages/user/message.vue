@@ -102,8 +102,8 @@ onMounted(() => {
             <view class="flex gap-10rpx">
               <wd-img :src="item.face" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.commenterId)" />
               <view class="flex flex-col gap-4rpx">
-                <view class="flex items-center gap-10rpx" @click.stop="gotoUser(item.commenterId)">
-                  <view class="text-34rpx color-#333 font-500">
+                <view class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.commenterId)">
+                  <view class="text-26rpx color-#333 font-500">
                     {{ item.nickName }}
                   </view>
                   <view class="text-22rpx color-#8E8E93">
@@ -114,15 +114,18 @@ onMounted(() => {
                   {{ item.commentType === 1 ? '评论了你的内容' : '回复了你的评论' }} {{ formatCommentDate(item.createTime) }}
                 </view>
 
-                <view class="font-500 text-28rpx color-#333 mt-6px">
+                <view class="font-500 text-28rpx color-#07173D mt-6px" :class="{ 'line-through color-#666666!': !item.commentStatus }">
                   {{ item.commentContent }}
                 </view>
               </view>
             </view>
 
             <view class="bg-[var(--hi-bg-color)] p-20rpx rounded-12rpx">
-              <view class="text-40rpx font-500">
+              <view class="text-34rpx font-500">
                 {{ item.title }}
+              </view>
+              <view class="text-24rpx font-500 color-gray-7 mt-6px">
+                {{ item.content }}
               </view>
             </view>
 
