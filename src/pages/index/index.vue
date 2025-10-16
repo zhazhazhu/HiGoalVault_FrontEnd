@@ -18,6 +18,7 @@ const cs = useClassesName('home')
 const showSidebar = ref(false)
 const refreshing = ref(false)
 const active = ref('view')
+const scrollTop = ref(0.0001) // 设置0无效，需设置一个很小的值
 const [data, resetData] = useResetRef<Record<'view' | 'follow', Data>>({
   view: {
     data: [],
@@ -94,6 +95,7 @@ function onTabClick() {
     globalStore.showLoginPopup = true
     return false
   }
+  scrollTop.value += 0.0001
 }
 
 function loadData() {
@@ -147,6 +149,7 @@ onMounted(() => {
   // uni.navigateTo({ url: '/pages/chat/index' })
   // uni.navigateTo({ url: '/pages/index/detail?id=1972913302560460801' })
   // uni.navigateTo({ url: '/user-package/pages/user/message' })
+  // uni.navigateTo({ url: '/pages/index/detail?id=1976543634471948290&commentId=1978636734338154497' })
 })
 
 onShow(() => {
@@ -163,6 +166,8 @@ onShow(() => {
       :style="{ paddingBottom: `${converseHeight + 10}px` }"
       scroll-y
       enhanced
+      scroll-with-animation
+      :scroll-top="scrollTop"
       :show-scrollbar="false"
       :refresher-enabled="true"
       :refresher-triggered="refreshing"
