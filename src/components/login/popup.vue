@@ -15,12 +15,13 @@ function handleClose() {
 }
 
 async function onGetPhoneNumber(e) {
+  isLoading.value = true
+
   const phoneCode = e?.code
   if (!phoneCode)
     return
 
   try {
-    isLoading.value = true
     const res = await uni.login()
     const data = await api.autoLoginByPhone({ code: res.code, phoneCode }).finally(() => {
       isLoading.value = false
