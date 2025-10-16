@@ -29,11 +29,13 @@ const textareaInstance = ref()
 const isFocus = ref(false)
 const userStore = useUserStore()
 const refreshing = ref(false)
+const currentCommentId = ref('')
 
 async function getCurrentCommentData() {
   if (props.currentComment?.commentId && props.currentComment.commentType !== null) {
     const commentRes = await api.getCommentOrReplyById(props.currentComment as any)
     if (commentRes.code === 200) {
+      currentCommentId.value = commentRes.result.comment.id
       data.value.unshift(commentRes.result)
     }
   }
@@ -45,7 +47,7 @@ async function getData() {
   })
   if (res.code === 200) {
     total.value = res.result.total
-    const list = res.result.records.filter(item => item.comment.id !== props.currentComment?.commentId)
+    const list = res.result.records.filter(item => item.comment.id !== currentCommentId.value)
     data.value.push(...list)
     isFinish.value = res.result.total <= data.value.length
   }
@@ -260,7 +262,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
           v-for="item, index in data"
           :id="item.comment.id"
           :key="item.comment.id"
-          :current-comment-id="currentComment?.commentId ? data[0].comment.id : ''"
+          :current-comment-id="currentCommentId"
           :data="item"
           @update:data="(val) => data[index] = val"
           @reply-comment="onReplyComment($event, index)"
