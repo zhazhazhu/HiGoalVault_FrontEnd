@@ -13,7 +13,7 @@ const emit = defineEmits<{
   (e: 'changeChat'): void
 }>()
 const cs = useClassesName('sidebar-content')
-const active = ref('chat')
+const active = ref('browse')
 const userStore = useUserStore()
 const chatStore = useChatStore()
 const isEdit = ref(false)
