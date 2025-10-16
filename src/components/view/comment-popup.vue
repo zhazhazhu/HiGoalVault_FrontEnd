@@ -6,6 +6,7 @@ import { api } from '@/api'
 import { useClassesName, useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
+import { formatCommentOrThumbUpCount } from '@/utils'
 
 const props = defineProps<{ contentId: string, commentId?: string, isRefreshing?: boolean }>()
 const model = defineModel({ type: Boolean, default: false })
@@ -225,7 +226,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
             评论
           </text>
           <text class="color-#666">
-            {{ total }}
+            {{ formatCommentOrThumbUpCount(total) }}
           </text>
         </view>
 

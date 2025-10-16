@@ -113,3 +113,21 @@ export function markdownToPlainText(markdownText: string): string {
 
   return plainText
 }
+
+export function formatCommentOrThumbUpCount(count?: number) {
+  if (!count) {
+    return '0'
+  }
+  else if (count < 100) {
+    return count.toString()
+  }
+  else if (count < 200) {
+    return '100+'
+  }
+  else if (count < 1000) {
+    return '200+'
+  }
+  else if (count > 1000) {
+    return '1000+'
+  }
+}

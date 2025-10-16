@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
-import { formatCommentDate } from '@/utils'
+import { formatCommentDate, formatCommentOrThumbUpCount } from '@/utils'
 
 const props = defineProps<{
   disableToUser?: boolean
@@ -80,13 +80,13 @@ function onClickTag({ id }: { id: string }) {
       <view class="flex items-center">
         <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" @click.stop="onThumbsUp" />
         <view class="text-26rpx">
-          {{ data.likeCount }}
+          {{ formatCommentOrThumbUpCount(data.likeCount) }}
         </view>
       </view>
       <view class="flex items-center">
         <view class="comment-icon bg-#666 size-46rpx" />
         <view class="text-26rpx">
-          {{ data.commentCount }}
+          {{ formatCommentOrThumbUpCount(data.commentCount) }}
         </view>
       </view>
     </view>

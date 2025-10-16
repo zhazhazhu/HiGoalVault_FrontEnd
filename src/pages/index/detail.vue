@@ -5,6 +5,7 @@ import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
+import { formatCommentOrThumbUpCount } from '@/utils'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const cs = useClassesName('detail')
@@ -164,13 +165,13 @@ onLoad((options) => {
           <view class="flex flex-col items-center" @click="openCommentPopup">
             <view class="comment-icon size-60rpx" />
             <text class="text-22rpx color-gray-6 font-bold">
-              {{ data?.commentCount }}
+              {{ formatCommentOrThumbUpCount(data?.commentCount) }}
             </text>
           </view>
           <view class="flex flex-col items-center" @click="onThumbsUp">
             <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLike }" />
             <text class="text-22rpx color-gray-6 font-bold">
-              {{ data?.likeCount }}
+              {{ formatCommentOrThumbUpCount(data?.likeCount) }}
             </text>
           </view>
         </view>
