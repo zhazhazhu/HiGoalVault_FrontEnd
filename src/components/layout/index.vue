@@ -1,4 +1,5 @@
 <script lang='ts' setup>
+import { ref } from 'vue'
 import { useClassesName } from '@/composables'
 
 const emit = defineEmits<{
@@ -6,6 +7,7 @@ const emit = defineEmits<{
 }>()
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('layout')
+const isConnected = ref(true)
 
 function onClose() {
   if (model.value) {
@@ -18,6 +20,10 @@ function onChangeChat() {
   }
   emit('changeChat')
 }
+uni.onNetworkStatusChange((res) => {
+  console.log('网络状态变化', res)
+  isConnected.value = res.isConnected
+})
 </script>
 
 <template>
@@ -25,9 +31,22 @@ function onChangeChat() {
     <view :class="cs.m('wrapper')">
       <LayoutContent :show-sidebar="model" @close="onClose" @change-chat="onChangeChat" />
     </view>
-    <view :class="cs.m('content')">
+    <view v-if="isConnected" :class="cs.m('content')">
       <view :class="cs.e('content-mask')" @click.stop="onClose" />
       <slot />
+    </view>
+    <view v-else :class="cs.m('content')">
+      <view class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <view class="flex flex-col items-center gap-10rpx">
+          <view class="i-hugeicons-cellular-network-offline text-80rpx color-[var(--hi-primary-color)]" />
+          <view class="text-xl color-gray-7">
+            网络异常
+          </view>
+          <view class="text-sm color-gray-5">
+            请检查网络是否正常
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </template>
