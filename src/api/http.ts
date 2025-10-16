@@ -79,4 +79,25 @@ const http: Launcher = (url, options) => {
   }
 }
 
-export { http }
+interface RetryOptions {
+  retryCount?: number
+  retryDelay?: number
+  retryCondition?: (err: any) => boolean
+}
+function retry<T>(request: Promise<RequestResult<T>>, options: RetryOptions = {}): Promise<RequestResult<T>> {
+  return retryPromise(request, options)
+}
+function retryPromise<T>(request: Promise<RequestResult<T>>, options: RetryOptions = {}): Promise<RequestResult<T>> {
+  return Promise.resolve(request).catch((err) => {
+    if (options.retryCount && options.retryCount > 0) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(retryPromise(request, options))
+        }, options.retryDelay || 1000)
+      })
+    }
+    throw err
+  })
+}
+
+export { http, retry }
