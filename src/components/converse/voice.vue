@@ -58,13 +58,17 @@ function onTouchEnd() {
   if (recordPopupFocusedButton.value === 'cancel') {
     speechText.value = ''
   }
-
-  if (recordPopupFocusedButton.value !== 'text') {
-    recordPopupFocusedButton.value = null
-  }
-
   isRecording.value = false
-  stop()
+  if (!isConnecting.value) {
+    console.log('未连接，无需停止')
+    return
+  }
+  speechRecognizerManager.stop()
+  record.stop()
+  isConnecting.value = false
+  if (recordPopupFocusedButton.value !== 'cancel') {
+    emit('done', speechText.value)
+  }
 }
 function onTouchMove(event) {
   const touch = event.touches[0]
@@ -109,16 +113,6 @@ async function start() {
   voiceId.value = useUUID(32)
   speechRecognizerManager.start(config, voiceId.value)
 }
-function stop() {
-  if (!isConnecting.value) {
-    console.log('未连接，无需停止')
-    return
-  }
-  speechRecognizerManager.stop()
-  record.stop()
-  isConnecting.value = false
-  emit('done', speechText.value)
-}
 function onConfirm() {
   isRecording.value = false
   textRecognitionVisible.value = false
@@ -154,9 +148,13 @@ onLoad(async () => {
     console.log('OnRecognitionComplete', res)
   }
   speechRecognizerManager.OnRecognitionResultChange = (res) => {
-    speechText.value = String(res.result?.voice_text_str || '')
+    console.log('OnRecognitionResultChange', res.result?.voice_text_str)
+    if (res.result?.voice_text_str) {
+      speechText.value = String(res.result?.voice_text_str || '')
+    }
   }
   speechRecognizerManager.OnSentenceEnd = (res) => {
+    console.log('OnSentenceEnd', res.result?.voice_text_str)
     speechText.value = String(res.result?.voice_text_str || '')
   }
   speechRecognizerManager.OnError = (res) => {
