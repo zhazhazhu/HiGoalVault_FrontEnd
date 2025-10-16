@@ -18,8 +18,14 @@ async function onGetPhoneNumber(e) {
   isLoading.value = true
 
   const phoneCode = e?.code
-  if (!phoneCode)
+  if (!phoneCode) {
+    uni.showToast({
+      title: '获取手机号失败',
+      icon: 'none',
+    })
+    isLoading.value = false
     return
+  }
 
   try {
     const res = await uni.login()
