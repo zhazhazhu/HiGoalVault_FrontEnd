@@ -1,5 +1,6 @@
 import type { UserConfig } from 'vite'
 import { resolve } from 'node:path'
+import process from 'node:process'
 import Uni from '@dcloudio/vite-plugin-uni'
 import Components from '@uni-helper/vite-plugin-uni-components'
 import { WotResolver } from '@uni-helper/vite-plugin-uni-components/resolvers'
@@ -8,10 +9,13 @@ import UniKuRoot from '@uni-ku/root'
 import { UniEchartsResolver } from 'uni-echarts/resolver'
 import { defineConfig } from 'vite'
 
+console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
   const UnoCss = await import('unocss/vite').then(i => i.default)
   const Jsx = await import('@vitejs/plugin-vue-jsx').then(i => i.default)
+  const UniEcharts = await import('uni-echarts/vite').then(i => i.UniEcharts)
 
   return {
     plugins: [
@@ -27,11 +31,12 @@ export default defineConfig(async () => {
         directoryAsNamespace: true,
         resolvers: [WotResolver(), UniEchartsResolver()],
       }),
+      UniEcharts(),
       Optimization(),
       UniKuRoot(),
       Jsx(),
-      Uni(),
       UnoCss(),
+      Uni(),
     ],
     resolve: {
       alias: [{ find: '~/', replacement: `${resolve(__dirname, 'src')}/` }],
