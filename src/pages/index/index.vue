@@ -115,6 +115,11 @@ function onChangeChat() {
 function onClickSearch() {
   uni.navigateTo({ url: '/search-package/pages/search/index' })
 }
+function onConverseTap() {
+  if (!userStore.isLogin) {
+    globalStore.showLoginPopup = true
+  }
+}
 
 onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
@@ -187,7 +192,7 @@ onShow(() => {
     </scroll-view>
 
     <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)] px-32rpx">
-      <Converse @resize="handleResize" />
+      <Converse :disabled="!userStore.isLogin" @resize="handleResize" @tap="onConverseTap" />
     </view>
   </Layout>
 </template>

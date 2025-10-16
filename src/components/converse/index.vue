@@ -7,8 +7,9 @@ import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
 import { useWebsocketStore } from '@/store/websocket'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   placeholder?: string
+  disabled?: boolean
 }>(), {
   placeholder: '你的金融助理，有什么问题可以咨询我',
 })
@@ -101,6 +102,9 @@ function onAddSource() {
   sourceActionShow.value = true
 }
 function onMessageTypeChange() {
+  if (props.disabled) {
+    return
+  }
   messageType.value = messageType.value === 'text' ? 'voice' : 'text'
 }
 
@@ -159,7 +163,7 @@ defineExpose({
           auto-height
           confirm-type="send"
           placeholder-style="color: #666; line-height: 28px;"
-          :disabled="chatStore.isReplying"
+          :disabled="chatStore.isReplying || disabled"
           :placeholder="placeholder"
           :show-confirm-bar="false"
           :adjust-position="false"
