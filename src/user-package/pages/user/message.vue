@@ -61,7 +61,7 @@ function gotoUser(id: string) {
   uni.navigateTo({ url: `/user-package/pages/user/index?id=${id}` })
 }
 function gotoContentComment(item: MyCommentedRepliedListResponse) {
-  uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}&commentId=${item.commentId}` })
+  uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
 }
 function gotoBack() {
   uni.navigateBack()

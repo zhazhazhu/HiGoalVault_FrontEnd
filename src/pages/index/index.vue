@@ -149,7 +149,7 @@ onMounted(() => {
   // uni.navigateTo({ url: '/pages/chat/index' })
   // uni.navigateTo({ url: '/pages/index/detail?id=1972913302560460801' })
   // uni.navigateTo({ url: '/user-package/pages/user/message' })
-  // uni.navigateTo({ url: '/pages/index/detail?id=1976543634471948290&commentId=1978636734338154497' })
+  // uni.navigateTo({ url: '/pages/index/detail?id=1976543634471948290&commentId=1978636734338154497&commentType=1' })
 })
 
 onShow(() => {

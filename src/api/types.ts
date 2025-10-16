@@ -405,7 +405,7 @@ export interface MyCommentedRepliedListResponse {
   contentId: string // 帖子id
   content: string // 帖子内容
   commentStatus: boolean// 评论状态
-  commentType: 0 | 1 // 评论类型 1 评论 2 回复
+  commentType: 1 | 2 // 评论类型 1 评论 2 回复
   face: string // 发帖人头像
   commenterId: string // 发帖人id
   nickName: string // 发帖人昵称
@@ -440,4 +440,9 @@ export interface DeleteReplyRequest {
   commentId?: string
   replyId?: string
   parentReplyId?: string
+}
+
+export interface GetCommentOrReplyByIdRequest {
+  commentId: string
+  commentType: 1 | 2 // 评论类型 1 评论 2 回复
 }

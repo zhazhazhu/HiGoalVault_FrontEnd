@@ -8,7 +8,10 @@ import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
 
-const props = defineProps<{ contentId: string, commentId?: string, isRefreshing?: boolean }>()
+const props = defineProps<{ contentId: string, currentComment?: {
+  commentId: string
+  commentType: 1 | 2 | null
+}, isRefreshing?: boolean }>()
 const model = defineModel({ type: Boolean, default: false })
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
@@ -27,6 +30,14 @@ const isFocus = ref(false)
 const userStore = useUserStore()
 const refreshing = ref(false)
 
+async function getCurrentCommentData() {
+  if (props.currentComment?.commentId && props.currentComment.commentType !== null) {
+    const commentRes = await api.getCommentOrReplyById(props.currentComment as any)
+    if (commentRes.code === 200) {
+      data.value.unshift(commentRes.result)
+    }
+  }
+}
 async function getData() {
   isLoading.value = true
   const res = await api.getCommentList({ contentId: props.contentId, ...page.value }).finally(() => {
@@ -34,7 +45,8 @@ async function getData() {
   })
   if (res.code === 200) {
     total.value = res.result.total
-    data.value.push(...res.result.records)
+    const list = res.result.records.filter(item => item.comment.id !== props.currentComment?.commentId)
+    data.value.push(...list)
     isFinish.value = res.result.total <= data.value.length
   }
 }
@@ -50,6 +62,7 @@ async function refreshData() {
   refreshing.value = true
   data.value = []
   reset()
+  await getCurrentCommentData()
   await getData()
   refreshing.value = false
 }
@@ -236,10 +249,8 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
       <scroll-view
         scroll-y
         enhanced
-        enable-passive
         :show-scrollbar="false"
-        :scroll-into-view="commentId"
-        class="h-800rpx gap-20rpx py-32rpx"
+        class="h-800rpx gap-20rpx py-32rpx box-border"
         :refresher-enabled="true"
         :refresher-triggered="refreshing"
         @scrolltolower="load"
@@ -249,7 +260,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
           v-for="item, index in data"
           :id="item.comment.id"
           :key="item.comment.id"
-          :current-comment-id="commentId"
+          :current-comment-id="currentComment?.commentId ? data[0].comment.id : ''"
           :data="item"
           @update:data="(val) => data[index] = val"
           @reply-comment="onReplyComment($event, index)"

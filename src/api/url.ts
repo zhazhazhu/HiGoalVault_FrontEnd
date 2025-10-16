@@ -43,4 +43,5 @@ export enum API {
   DELETE_CHAT_MESSAGE_BY_ID = '/buyer/chatQuery/delChatQueryAnswerByQueryId',
   DELETE_COMMENT_BY_ID = '/buyer/content/comment/deleteCommentByCommentId',
   DELETE_REPLY_BY_ID = '/buyer/content/comment/reply/deleteRecursiveReplyByReplyId',
+  GET_COMMENT_OR_REPLY_BY_ID = '/buyer/content/comment/comments/getCommentWithRepliesByReplayId',
 }

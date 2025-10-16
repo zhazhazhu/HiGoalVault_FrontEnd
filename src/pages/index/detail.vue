@@ -4,6 +4,7 @@ import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
+import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
 
@@ -14,9 +15,12 @@ const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
 const commentVisible = ref(false)
 const userStore = useUserStore()
-const commentId = ref('')
 const contentId = ref('')
 const isRefreshing = ref(false)
+const [currentComment, resetCurrentComment] = useResetRef<{ commentId: string, commentType: 1 | 2 | null }>({
+  commentId: '',
+  commentType: null,
+})
 
 async function getData() {
   const res = await api.getPublicMessageDetail({ contentId: contentId.value })
@@ -87,7 +91,7 @@ async function refreshData() {
 }
 watch(commentVisible, (val) => {
   if (!val) {
-    commentId.value = ''
+    resetCurrentComment()
     getData()
   }
 })
@@ -101,8 +105,9 @@ onShareAppMessage(() => {
 
 onLoad((options) => {
   contentId.value = options?.id || ''
-  commentId.value = options?.commentId || ''
-  if (commentId.value) {
+  currentComment.value.commentId = options?.commentId || ''
+  currentComment.value.commentType = Number(options?.commentType) as (1 | 2) | null
+  if (options?.commentId) {
     commentVisible.value = true
   }
   getData()
@@ -111,7 +116,7 @@ onLoad((options) => {
 
 <template>
   <view>
-    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" :comment-id="commentId" :is-refreshing="isRefreshing" />
+    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" :current-comment="currentComment" :is-refreshing="isRefreshing" />
 
     <Navbar title="详情" enable-left-slot>
       <template #left>
