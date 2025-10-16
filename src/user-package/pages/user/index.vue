@@ -20,6 +20,7 @@ const userLike = ref<UserLikeInstance>()
 const userCollect = ref<UserCollectInstance>()
 const interactActiveTab = ref<'liked' | 'collected'>('liked')
 const isRefreshing = ref(false)
+const scrollTop = ref(0.001)
 
 async function getData() {
   if (userId.value) {
@@ -87,6 +88,9 @@ function gotoSearch() {
 function gotoMessage() {
   uni.navigateTo({ url: '/user-package/pages/user/message' })
 }
+function onTabChange() {
+  scrollTop.value += 0.001
+}
 
 onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
@@ -128,6 +132,7 @@ onLoad((options) => {
       scroll-y
       enhanced
       :show-scrollbar="false"
+      :scroll-top="scrollTop"
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @scrolltolower="loadData"
@@ -172,6 +177,7 @@ onLoad((options) => {
           editable
           :custom-class="cs.m('tabs')"
           :custom-nav-class="cs.m('tab-nav')"
+          @tab-change="onTabChange"
         >
           <template #edit>
             <view class="flex items-center gap-30rpx">
