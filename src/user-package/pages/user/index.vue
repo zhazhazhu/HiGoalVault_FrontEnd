@@ -2,6 +2,7 @@
 import type { ProfileStatistics, UserInfo } from '@/api'
 import type { UserCollectInstance, UserCommentInstance, UserLikeInstance, UserPublishInstance } from '@/components/user'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
+import { cloneDeep } from 'lodash-es'
 import { ref } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -30,9 +31,9 @@ async function getData() {
     }
   }
   else {
-    userInfo.value = userStore.userInfo
+    userInfo.value = cloneDeep(userStore.userInfo)
   }
-  const res2 = await api.getProfileStatistics(userId.value || userStore.userInfo!.id)
+  const res2 = await api.getProfileStatistics(userInfo.value?.id)
   if (res2.code === 200) {
     data.value = res2.result
   }
@@ -83,7 +84,7 @@ async function onFollowUser(followAction: 'follow' | 'unfollow') {
   }
 }
 function gotoSearch() {
-  uni.navigateTo({ url: `/search-package/pages/search/index?userId=${userId.value}` })
+  uni.navigateTo({ url: `/search-package/pages/search/index?userId=${userInfo.value?.id}` })
 }
 function gotoMessage() {
   uni.navigateTo({ url: '/user-package/pages/user/message' })
