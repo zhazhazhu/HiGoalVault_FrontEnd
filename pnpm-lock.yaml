@@ -74,12 +74,6 @@ importers:
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
-      marked:
-        specifier: ^16.3.0
-        version: 16.3.0
-      marked-highlight:
-        specifier: ^2.2.2
-        version: 2.2.2(marked@16.3.0)
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
@@ -98,9 +92,6 @@ importers:
       vue-i18n:
         specifier: ^9.14.5
         version: 9.14.5(vue@3.4.38(typescript@4.9.5))
-      widget-ui:
-        specifier: ^1.0.2
-        version: 1.0.2
       wot-design-uni:
         specifier: ^1.12.4
         version: 1.12.4(vue@3.4.38(typescript@4.9.5))

@@ -42,9 +42,7 @@ export default defineConfig(async () => {
       alias: [{ find: '~/', replacement: `${resolve(__dirname, 'src')}/` }],
     },
     optimizeDeps: {
-      exclude: [
-        'uni-echarts',
-      ],
+      exclude: ['uni-echarts', 'wot-design-uni'],
     },
   } as UserConfig
 })

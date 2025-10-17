@@ -1,4 +1,21 @@
 {
+  "easycom": {
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  },
+  "entryPagePath": "pages/index/index",
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "navigationBarTextStyle": "black",
+    // #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+    "usingComponents": {},
+    // #endif
+    "mp-weixin": {
+      "handleWebviewPreload": "auto"
+    }
+  },
   "pages": [ // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/index/index",
@@ -92,14 +109,5 @@
         }
       ]
     }
-  ],
-  "entryPagePath": "pages/index/index",
-  "globalStyle": {
-    "navigationStyle": "custom",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "navigationBarTextStyle": "black",
-    // #ifdef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
-    "usingComponents": {}
-    // #endif
-  }
+  ]
 }
