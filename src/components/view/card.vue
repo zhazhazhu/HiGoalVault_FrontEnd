@@ -73,7 +73,7 @@ function onDelete() {
         </text>
       </view>
 
-      <view class="flex items-center gap-10rpx">
+      <view class="flex items-center gap-16rpx">
         <view>{{ formatCommentDate(data.createTime) }}</view>
         <view v-if="enableDelete" class="flex items-center justify-center color-#ff756d w-30px h-24px bg-#fff0f0 rounded-4px" @click.stop="onDelete">
           <view class="i-material-symbols-delete-outline-rounded text-30rpx" />
