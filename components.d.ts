@@ -11,6 +11,7 @@ declare module 'vue' {
     Converse: typeof import('./src/components/converse/index.vue')['default']
     ConverseSourceAction: typeof import('./src/components/converse/source-action.vue')['default']
     ConverseVoice: typeof import('./src/components/converse/voice.vue')['default']
+    InputPopup: typeof import('./src/components/input/popup.vue')['default']
     Layout: typeof import('./src/components/layout/index.vue')['default']
     LayoutChatList: typeof import('./src/components/layout/chat-list.vue')['default']
     LayoutContent: typeof import('./src/components/layout/content.vue')['default']

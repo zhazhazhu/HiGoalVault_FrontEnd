@@ -157,3 +157,21 @@ page {
     display: none;
   }
 }
+
+.hi-input-popup--textarea {
+  --wot-textarea-fs: 14px;
+  --wot-cell-line-height: 24px;
+  height: 28px;
+}
+
+.hi-input-popup--textarea-container {
+  --wot-textarea-bg: #f3f3f3;
+  padding: 10px 20px !important;
+  border-radius: 12px;
+}
+
+.hi-input-popup--textarea-placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+  line-height: 24px;
+}

@@ -25,7 +25,6 @@ const isFinish = ref(false)
 const total = ref(0)
 const commentContent = ref('')
 const placeholder = ref('发表友善评论')
-const textareaInstance = ref()
 const isFocus = ref(false)
 const userStore = useUserStore()
 const refreshing = ref(false)
@@ -210,9 +209,6 @@ function resetComment() {
   placeholder.value = '发表友善评论'
   resetCurrentReplying()
 }
-function onBlur() {
-  isFocus.value = false
-}
 function onDeleteComment(index: number) {
   data.value.splice(index, 1)
   total.value--
@@ -280,24 +276,10 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
 
       <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx h-100rpx bg-white">
         <view class="rounded-12px flex-1 overflow-hidden">
-          <wd-textarea
-            ref="textareaInstance"
+          <input-popup
             v-model="commentContent"
-            clearable
-            no-border
-            show-word-limit
-            hold-keyboard
-            confirm-type="send"
-            :focus="isFocus"
             :placeholder="placeholder"
-            :auto-height="true"
-            :show-confirm-bar="false"
-            :cursor-spacing="120"
-            :custom-textarea-class="cs.m('textarea')"
-            :custom-class="cs.m('textarea-container')"
-            :placeholder-class="cs.m('textarea-placeholder')"
-            @focus="isFocus = true"
-            @blur="onBlur"
+            :popup-options="{ modal: false }"
             @confirm="onConfirm"
           />
         </view>

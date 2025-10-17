@@ -3,14 +3,11 @@ import type { AnswerAfter, AnswerBefore, ChatMessageReference, PublishMessageLis
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
-import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
 
 const data = ref<PublishMessageListResponse | null>(null)
-const cs = useClassesName('detail')
-const isFocus = ref(false)
 const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
 const commentVisible = ref(false)
@@ -149,21 +146,9 @@ onLoad((options) => {
           </button>
 
           <view class="rounded-12px flex-1 overflow-hidden">
-            <wd-textarea
+            <input-popup
               v-model="commentContent"
-              clearable
-              no-border
-              show-word-limit
-              hold-keyboard
               placeholder="发表友善评论"
-              confirm-type="send"
-              :auto-height="true"
-              :cursor-spacing="120"
-              :custom-textarea-class="cs.m('textarea')"
-              :custom-class="cs.m('textarea-container')"
-              :placeholder-class="cs.m('textarea-placeholder')"
-              @focus="isFocus = true"
-              @blur="isFocus = false"
               @confirm="onConfirm"
             />
           </view>
