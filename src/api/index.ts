@@ -263,6 +263,11 @@ function getCommentOrReplyById(query: GetCommentOrReplyByIdRequest) {
   return http(API.GET_COMMENT_OR_REPLY_BY_ID).post<CommentResponse>(query)
 }
 
+// 根据ID删除发布内容
+function deletePublishContentById(contentId: string) {
+  return http(API.DELETE_PUBLISH_CONTENT_BY_ID).post<boolean>({ contentId })
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -309,4 +314,5 @@ export const api = {
   deleteCommentById,
   deleteReplyById,
   getCommentOrReplyById,
+  deletePublishContentById,
 }

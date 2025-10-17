@@ -1,6 +1,7 @@
 <script lang='ts' setup>
 import type { AnswerAfter, PublishMessageListResponse } from '@/api'
 import { computed } from 'vue'
+import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
@@ -8,11 +9,16 @@ import { formatCommentDate, formatCommentOrThumbUpCount } from '@/utils'
 
 const props = defineProps<{
   disableToUser?: boolean
+  enableDelete?: boolean
+}>()
+const emit = defineEmits<{
+  (e: 'delete', id: string): void
 }>()
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
 const userStore = useUserStore()
 const stockData = computed<AnswerAfter['data']>(() => data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : [])
+const message = useMessage()
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
@@ -36,9 +42,28 @@ function gotoUser() {
 function onClickTag({ id }: { id: string }) {
   uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
 }
+function onDelete() {
+  message.confirm({
+    msg: '删除之后将无法恢复',
+    title: '提示',
+  }).then(async () => {
+    const res = await api.deletePublishContentById(data.value.id)
+    if (res.code === 200) {
+      emit('delete', data.value.id)
+      uni.showToast({
+        title: '删除成功',
+        icon: 'none',
+      })
+    }
+  })
+}
 </script>
 
 <template>
+  <wd-root-portal>
+    <wd-message-box />
+  </wd-root-portal>
+
   <view :class="cs.m('container')">
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center" @click="gotoUser">
@@ -48,8 +73,11 @@ function onClickTag({ id }: { id: string }) {
         </text>
       </view>
 
-      <view>
-        {{ formatCommentDate(data.createTime) }}
+      <view class="flex items-center gap-10rpx">
+        <view>{{ formatCommentDate(data.createTime) }}</view>
+        <view v-if="enableDelete" class="flex items-center justify-center color-#ff756d w-30px h-24px bg-#fff0f0 rounded-4px" @click.stop="onDelete">
+          <view class="i-material-symbols-delete-outline-rounded text-30rpx" />
+        </view>
       </view>
     </view>
 

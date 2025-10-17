@@ -44,4 +44,5 @@ export enum API {
   DELETE_COMMENT_BY_ID = '/buyer/content/comment/deleteCommentByCommentId',
   DELETE_REPLY_BY_ID = '/buyer/content/comment/reply/deleteRecursiveReplyByReplyId',
   GET_COMMENT_OR_REPLY_BY_ID = '/buyer/content/comment/comments/getCommentWithRepliesByReplayId',
+  DELETE_PUBLISH_CONTENT_BY_ID = '/buyer/content/publish/deleteContentByContentId',
 }

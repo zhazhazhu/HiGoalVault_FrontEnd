@@ -5,6 +5,7 @@ import { useClassesName } from '@/composables'
 defineProps<{
   isLoading: boolean
   isFinish: boolean
+  enableDelete?: boolean
 }>()
 const data = defineModel('data', { type: Array as () => PublishMessageListResponse[], required: true })
 const cs = useClassesName('view')
@@ -14,12 +15,15 @@ function gotoDetail(item: PublishMessageListResponse) {
     url: `/pages/index/detail?id=${item.id}`,
   })
 }
+function onDelete(index: number) {
+  data.value.splice(index, 1)
+}
 </script>
 
 <template>
   <view>
     <view v-for="item, index in data" :id="`view-${item.id}`" :key="index" :class="cs.m('card')" @click="gotoDetail(item)">
-      <ViewCard :data="item" @update:data="(newData) => data[index] = newData" />
+      <ViewCard :data="item" :enable-delete="enableDelete" @update:data="(newData) => data[index] = newData" @delete="onDelete(index)" />
     </view>
 
     <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">

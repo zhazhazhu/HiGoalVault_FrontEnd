@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
 import dayjs from 'dayjs'
-import { onMounted, watch } from 'vue'
+import { watch } from 'vue'
 import { api } from '@/api'
 import { useUUID } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
@@ -89,8 +89,13 @@ watch(() => props.data, () => {
       </Tag>
     </view>
 
-    <view class="text-22rpx color-#969696">
-      <text>发表于 {{ dayjs(data?.createTime).format('YY/MM/DD HH:mm') }}</text>
+    <view class="flex items-center gap-20rpx">
+      <text class="text-22rpx color-#969696">
+        发表于 {{ dayjs(data?.createTime).format('YY/MM/DD HH:mm') }}
+      </text>
+      <!-- <view v-if="data.memberId === userStore.userInfo?.id" class="text-#333333 text-22rpx" @click="onDeleteComment">
+        删除
+      </view> -->
     </view>
   </view>
 </template>
