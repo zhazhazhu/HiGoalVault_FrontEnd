@@ -11,9 +11,11 @@ const props = defineProps<{
   disableToUser?: boolean
   enableDelete?: boolean
 }>()
+
 const emit = defineEmits<{
   (e: 'delete', id: string): void
 }>()
+
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
 const userStore = useUserStore()
@@ -98,7 +100,7 @@ function onDelete() {
       </Tag>
     </view>
 
-    <stock v-if="stockData.length === 1" :data="stockData" preview />
+    <StockPreview v-if="stockData.length === 1" :data="stockData" />
 
     <view class="flex items-center color-#666 gap-30rpx">
       <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>

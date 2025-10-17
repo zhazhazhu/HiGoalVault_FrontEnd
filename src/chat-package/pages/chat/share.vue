@@ -28,7 +28,7 @@ function gotoHome() {
   uni.redirectTo({ url: '/pages/index/index' })
 }
 function gotoChat() {
-  uni.redirectTo({ url: '/pages/chat/index' })
+  uni.redirectTo({ url: '/chat-package/pages/chat/index' })
 }
 
 onLoad((options) => {

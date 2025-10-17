@@ -132,18 +132,18 @@ onMounted(() => {
   websocketStore.connectWebSocket()
   chatStore.messages = []
   getMessage()
-  // uni.navigateTo({ url: '/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
+  // uni.navigateTo({ url: '/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
 
 onShareAppMessage(async ({ from }) => {
   const result = {
     title: '快来看看我聊了啥～',
-    path: '/pages/chat/index',
+    path: '/chat-package/pages/chat/index',
   }
   if (from === 'button') {
     share.value.isChecked = false
     const data = await api.shareMessage({ queryIds: share.value.ids, userId: userStore.userInfo!.id })
-    result.path = `/pages/chat/share?id=${data.result.shareId}`
+    result.path = `/chat-package/pages/chat/share?id=${data.result.shareId}`
     share.value.ids = []
   }
   return result

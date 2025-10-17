@@ -1,8 +1,11 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import python from 'highlight.js/lib/languages/python'
+import typescript from 'highlight.js/lib/languages/typescript'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
-import { computed, ref } from 'vue'
+import { computed, defineAsyncComponent, ref } from 'vue'
 import { useClassesName } from '@/composables'
 
 import 'highlight.js/styles/github.css'
@@ -10,11 +13,14 @@ import 'highlight.js/styles/github.css'
 const props = defineProps<{
   data: AnswerAfter
 }>()
-
 const emit = defineEmits<{
   (e: 'longPressContent', val: any): void
 }>()
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('python', python)
 
+const Stock = defineAsyncComponent(() => import('@/components/stock/index.vue'))
 const cs = useClassesName('message-card')
 const viewDeepThink = ref(true)
 const md = new MarkdownIt({
@@ -50,7 +56,7 @@ const htmlContent = computed(() => {
     <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
   </view>
 
-  <stock v-if="data.data.length === 1" :data="data.data" />
+  <Stock v-if="data.data.length === 1" :data="data.data" />
 </template>
 
 <style lang='scss' scoped>

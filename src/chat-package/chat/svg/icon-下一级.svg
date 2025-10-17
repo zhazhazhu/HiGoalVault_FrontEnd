@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="15px" viewBox="0 0 16 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>下一级</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1对话-默认模式1" transform="translate(-28, -436)" fill="#8E8E93">
+            <g id="编组-4备份" transform="translate(16, 422)">
+                <g id="编组-5" transform="translate(12, 12)">
+                    <g id="下一级" transform="translate(0, 2)">
+                        <rect id="矩形" fill-opacity="0" x="0" y="0" width="16" height="15"></rect>
+                        <path d="M10.9680851,6.17427386 L3.88297873,6.17427386 L5.89361703,3.74688796 L5.19148937,3 L2,6.84647303 L5.22340425,10.5062241 L5.89361703,9.72199171 L3.78723405,7.3319502 L10.9680851,7.3319502 C12.1170213,7.3319502 13.0425532,8.41493775 13.0425532,9.75933609 L13.0425532,12 L14,12 L14,9.75933609 C14,7.78008297 12.6276596,6.17427385 10.9680851,6.17427386 Z" id="路径" stroke="#8E8E93" stroke-width="0.857142857" fill-rule="nonzero" transform="translate(8, 7.5) scale(-1, -1) translate(-8, -7.5)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

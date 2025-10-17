@@ -1,5 +1,5 @@
 import type { MaybeRef } from 'vue'
-import { cloneDeepWith } from 'lodash-es'
+import cloneDeepWith from 'lodash-es/cloneDeepWith'
 import { isRef, ref } from 'vue'
 
 export function useResetRef<T>(value: MaybeRef<T>) {

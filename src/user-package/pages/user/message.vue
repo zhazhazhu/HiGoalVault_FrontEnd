@@ -55,13 +55,13 @@ async function onThumbsUp(item: MyCommentedRepliedListResponse, index: number) {
   }
 }
 function gotoContentDetail(item: MyCommentedRepliedListResponse) {
-  uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}` })
+  uni.navigateTo({ url: `/detail-package/pages/detail/index?id=${item.contentId}` })
 }
 function gotoUser(id: string) {
   uni.navigateTo({ url: `/user-package/pages/user/index?id=${id}` })
 }
 function gotoContentComment(item: MyCommentedRepliedListResponse) {
-  uni.navigateTo({ url: `/pages/index/detail?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
+  uni.navigateTo({ url: `/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
 }
 function gotoBack() {
   uni.navigateBack()

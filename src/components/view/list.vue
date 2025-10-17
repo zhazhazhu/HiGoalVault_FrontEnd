@@ -12,7 +12,7 @@ const cs = useClassesName('view')
 
 function gotoDetail(item: PublishMessageListResponse) {
   uni.navigateTo({
-    url: `/pages/index/detail?id=${item.id}`,
+    url: `/detail-package/pages/detail/index?id=${item.id}`,
   })
 }
 function onDelete(index: number) {

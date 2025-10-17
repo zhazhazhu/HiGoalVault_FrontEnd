@@ -97,13 +97,13 @@ onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
     return {
       title: '快来看看我聊了啥～',
-      path: `/pages/chat/index?id=${target.dataset.id}`,
+      path: `/chat-package/pages/chat/index?id=${target.dataset.id}`,
     }
   }
   else {
     return {
       title: '快来看看我聊了啥～',
-      path: '/pages/chat/index',
+      path: '/chat-package/pages/chat/index',
     }
   }
 })

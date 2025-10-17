@@ -112,7 +112,7 @@ function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
 }
 function onChangeChat() {
-  uni.navigateTo({ url: '/pages/chat/index' })
+  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
 }
 function onClickSearch() {
   uni.navigateTo({ url: '/search-package/pages/search/index' })
@@ -127,7 +127,7 @@ onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
     return {
       title: '我发布了最新的行情，快来看看吧',
-      path: `/pages/index/detail?id=${target.dataset.id}`,
+      path: `/detail-package/pages/detail/index?id=${target.dataset.id}`,
     }
   }
   return {

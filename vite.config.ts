@@ -44,5 +44,17 @@ export default defineConfig(async () => {
     optimizeDeps: {
       exclude: ['uni-echarts', 'wot-design-uni'],
     },
+    build: {
+      // 启用压缩
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true, // 生产环境移除console
+          drop_debugger: true,
+        },
+      },
+      // 小程序不需要过度拆分chunk
+      chunkSizeWarningLimit: 2000,
+    },
   } as UserConfig
 })

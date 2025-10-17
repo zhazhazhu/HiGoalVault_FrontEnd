@@ -68,7 +68,7 @@ function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
 }
 function onChangeChat() {
-  uni.navigateTo({ url: '/pages/chat/index' })
+  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
 }
 function onGotoBack() {
   uni.navigateBack()

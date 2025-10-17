@@ -96,7 +96,7 @@ watch(commentVisible, (val) => {
 onShareAppMessage(() => {
   return {
     title: data.value?.title,
-    path: `/pages/index/detail?id=${data.value?.id}`,
+    path: `/detail-package/pages/detail/index?id=${data.value?.id}`,
   }
 })
 

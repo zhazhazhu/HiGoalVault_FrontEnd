@@ -101,7 +101,7 @@ defineExpose({
         <rich-text :class="cs.e('rich-text')" :nodes="md.render(item.response || '')" space="ensp" />
       </view>
 
-      <stock v-if="item.data.length === 1" :data="item.data" preview />
+      <StockPreview v-if="item.data.length === 1" :data="item.data" />
 
       <view class="flex items-center justify-between">
         <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">

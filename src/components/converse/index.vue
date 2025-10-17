@@ -52,7 +52,7 @@ async function waitConfirmMessage(text: string) {
     chatId: chatStore.currentChatId,
     runId: useUUID(32),
   }
-  uni.navigateTo({ url: '/pages/chat/index' })
+  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
 }
 
 function sendWaitingMessage() {

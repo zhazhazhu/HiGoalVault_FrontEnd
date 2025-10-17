@@ -30,6 +30,7 @@ declare module 'vue' {
     SharePopup: typeof import('./src/components/share/popup.vue')['default']
     Stock: typeof import('./src/components/stock/index.vue')['default']
     StockHeader: typeof import('./src/components/stock/header.vue')['default']
+    StockPreview: typeof import('./src/components/stock/preview.vue')['default']
     StockPriceInfo: typeof import('./src/components/stock/price-info.vue')['default']
     StockSelectedDataPanel: typeof import('./src/components/stock/selected-data-panel.vue')['default']
     Tabs: typeof import('./src/components/tabs/index.vue')['default']

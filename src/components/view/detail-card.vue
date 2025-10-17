@@ -36,7 +36,7 @@ async function onContinueTalk() {
     chatId: chatStore.currentChatId,
     runId: useUUID(32),
   }
-  uni.redirectTo({ url: '/pages/chat/index' })
+  uni.redirectTo({ url: '/chat-package/pages/chat/index' })
 }
 function onClickTag({ id }: { id: string }) {
   uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
