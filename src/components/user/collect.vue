@@ -1,6 +1,9 @@
 <script lang='ts' setup>
 import type { AnswerAfter, Page } from '@/api'
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import python from 'highlight.js/lib/languages/python'
+import typescript from 'highlight.js/lib/languages/typescript'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
@@ -9,6 +12,10 @@ import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 
 import 'highlight.js/styles/github.css'
+
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('python', python)
 
 const isLoading = ref(false)
 const isFinish = ref(false)
