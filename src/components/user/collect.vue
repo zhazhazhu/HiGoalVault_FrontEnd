@@ -4,7 +4,7 @@ import hljs from 'highlight.js/lib/core'
 import javascript from 'highlight.js/lib/languages/javascript'
 import python from 'highlight.js/lib/languages/python'
 import typescript from 'highlight.js/lib/languages/typescript'
-import MarkdownIt from 'markdown-it/dist/markdown-it.js'
+import MarkdownIt from 'markdown-it/dist/markdown-it.min.js'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
@@ -29,7 +29,7 @@ const userStore = useUserStore()
 const data = ref<AnswerAfter[]>([])
 const cs = useClassesName('collected-message-list')
 const md = new MarkdownIt({
-  html: true,
+  html: false,
   linkify: true,
   typographer: true,
   breaks: true,
