@@ -1,9 +1,4 @@
 {
-  "easycom": {
-    "custom": {
-      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
-    }
-  },
   "entryPagePath": "pages/index/index",
   "globalStyle": {
     "navigationStyle": "custom",
