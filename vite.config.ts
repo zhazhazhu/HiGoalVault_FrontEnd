@@ -32,11 +32,11 @@ export default defineConfig(async () => {
         resolvers: [WotResolver(), UniEchartsResolver()],
       }),
       UniEcharts(),
-      Optimization(),
       UniKuRoot(),
       Jsx(),
       UnoCss(),
       Uni(),
+      Optimization(),
     ],
     resolve: {
       alias: [{ find: '~/', replacement: `${resolve(__dirname, 'src')}/` }],

@@ -5,6 +5,7 @@ import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
+import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
 import { formatCommentDate, formatCommentOrThumbUpCount } from '@/utils'
 
 const props = defineProps<{

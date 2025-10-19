@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { StockData } from '.'
+import type { StockData } from '@/echarts'
 import { computed } from 'vue'
 
 const props = defineProps<{

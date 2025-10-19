@@ -1,16 +1,19 @@
 <script lang='ts' setup>
 import type { ECElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
-import type { StockData } from '.'
 import type { ChatMessageStock } from '@/api'
+import type { StockData } from '@/echarts'
 import { CandlestickChart, LineChart } from 'echarts/charts'
 import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } from 'echarts/components'
-import * as echarts from 'echarts/core'
+import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
 import { computed, ref, shallowRef } from 'vue'
-import { useStockChart } from '.'
-import { StockShowType } from './config'
+import { useStockChart } from '@/echarts'
+import { StockShowType } from '@/echarts/config'
+import StockHeader from './header.vue'
+import StockPriceInfo from './price-info.vue'
+import StockSelectedDataPanel from './selected-data-panel.vue'
 
 const props = defineProps<{
   data: [ChatMessageStock]

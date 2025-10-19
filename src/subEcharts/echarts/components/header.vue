@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { StockInfo } from '.'
+import type { StockInfo } from '@/echarts'
 
 defineProps<{
   stockInfo: StockInfo

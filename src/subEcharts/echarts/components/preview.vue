@@ -1,7 +1,9 @@
 <script lang='ts' setup>
 import type { ChatMessageStock } from '@/api'
 import { computed } from 'vue'
-import { useStockChart } from '.'
+import { useStockChart } from '@/echarts'
+import StockHeader from './header.vue'
+import StockPriceInfo from './price-info.vue'
 
 const props = defineProps<{
   data: [ChatMessageStock]

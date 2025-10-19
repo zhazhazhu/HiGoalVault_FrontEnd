@@ -6,3 +6,23 @@ declare module '*?async' {
   const component: any
   export = component
 }
+declare module '@/subEcharts/echarts/components/stock/index.vue?async' {
+  const component: typeof import('@/subEcharts/echarts/components/stock/index.vue')
+  export = component
+}
+declare module '@/subEcharts/echarts/components/stock/preview.vue?async' {
+  const component: typeof import('@/subEcharts/echarts/components/stock/preview.vue')
+  export = component
+}
+declare module '@/subEcharts/echarts/components/stock/stock.vue?async' {
+  const component: typeof import('@/subEcharts/echarts/components/stock/stock.vue')
+  export = component
+}
+declare module '@/subEcharts/echarts/components/stock.vue?async' {
+  const component: typeof import('@/subEcharts/echarts/components/stock.vue')
+  export = component
+}
+declare module '@/subEcharts/echarts/components/preview.vue?async' {
+  const component: typeof import('@/subEcharts/echarts/components/preview.vue')
+  export = component
+}

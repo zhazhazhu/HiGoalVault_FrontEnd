@@ -7,6 +7,7 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
 import { computed, ref } from 'vue'
 import { useClassesName } from '@/composables'
+import Stock from '@/subEcharts/echarts/components/stock.vue?async'
 
 import 'highlight.js/styles/github.css'
 
