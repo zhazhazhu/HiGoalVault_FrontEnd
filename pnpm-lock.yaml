@@ -180,6 +180,9 @@ importers:
       simple-git-hooks:
         specifier: ^2.13.1
         version: 2.13.1
+      terser:
+        specifier: ^5.44.0
+        version: 5.44.0
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
