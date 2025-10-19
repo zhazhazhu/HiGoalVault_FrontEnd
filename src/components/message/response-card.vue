@@ -5,7 +5,7 @@ import javascript from 'highlight.js/lib/languages/javascript'
 import python from 'highlight.js/lib/languages/python'
 import typescript from 'highlight.js/lib/languages/typescript'
 import MarkdownIt from 'markdown-it/dist/markdown-it.js'
-import { computed, defineAsyncComponent, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useClassesName } from '@/composables'
 
 import 'highlight.js/styles/github.css'
@@ -20,7 +20,6 @@ hljs.registerLanguage('javascript', javascript)
 hljs.registerLanguage('typescript', typescript)
 hljs.registerLanguage('python', python)
 
-const Stock = defineAsyncComponent(() => import('@/components/stock/index.vue'))
 const cs = useClassesName('message-card')
 const viewDeepThink = ref(true)
 const md = new MarkdownIt({
