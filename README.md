@@ -32,3 +32,11 @@ pnpm run build:mp-weixin
 - 打包产物在 dist/dev/mp-weixin
 
 - 在微信开发者工具中导入打包结果
+
+## 打包在微信开发者工具中
+
+1. 调试基础库： 3.10.0
+2. 启用将js编译成es5语法
+3. 启用上传代码时压缩代码
+
+![Wechat Developer Tools](/assets/image.png "Wechat Developer Tools")
