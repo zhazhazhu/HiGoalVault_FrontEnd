@@ -1,10 +1,10 @@
 <script lang='ts' setup>
 import type { AnswerAfter, Page } from '@/api'
-import MarkdownIt from 'markdown-it/dist/markdown-it.min.js'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
+import { marked } from '@/modules'
 import { useChatStore, useUserStore } from '@/store'
 
 const isLoading = ref(false)
@@ -19,16 +19,6 @@ const userStore = useUserStore()
 const chatStore = useChatStore()
 const data = ref<AnswerAfter[]>([])
 const cs = useClassesName('collected-message-list')
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  breaks: true,
-  // highlight(str, lang) {
-  //   const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
-  //   return html
-  // },
-})
 const isRefreshing = ref(false)
 
 async function getData() {
@@ -100,7 +90,7 @@ defineExpose({
         {{ item.query }}
       </view>
       <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
-        <rich-text :class="cs.e('rich-text')" :nodes="md.render(item.response || '')" space="ensp" />
+        <rich-text :class="cs.e('rich-text')" :nodes="marked.parse(item.response || '')" space="ensp" />
       </view>
 
       <StockPreview v-if="item.data.length === 1" :data="item.data" />

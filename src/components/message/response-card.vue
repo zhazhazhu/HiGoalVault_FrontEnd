@@ -1,32 +1,24 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
-import MarkdownIt from 'markdown-it/dist/markdown-it.min.js'
 import { computed, ref } from 'vue'
 import { useClassesName } from '@/composables'
-// import { hljs } from '@/modules'
+import { marked } from '@/modules'
 import Stock from '@/subEcharts/echarts/components/stock.vue?async'
 
 const props = defineProps<{
   data: AnswerAfter
 }>()
+
 const emit = defineEmits<{
   (e: 'longPressContent', val: any): void
 }>()
 
 const cs = useClassesName('message-card')
 const viewDeepThink = ref(true)
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  breaks: true,
-  // highlight(str, lang) {
-  //   const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
-  //   return html
-  // },
-})
+
 const htmlContent = computed(() => {
-  return md.render(props.data.response || '')
+  const content = marked.parse(props.data.response) as string
+  return content
 })
 </script>
 
@@ -73,5 +65,12 @@ const htmlContent = computed(() => {
 .hi-message-card__rich-text {
   color: #333333;
   line-height: 48rpx;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-width: 100%;
+  :deep(.hljs) {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
 }
 </style>

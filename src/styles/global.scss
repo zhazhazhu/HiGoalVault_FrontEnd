@@ -3,6 +3,7 @@
 @use '@/static/navbar/index.scss' as *;
 @use '@/static/home/index.scss' as *;
 @use '@/static/user/index.scss' as *;
+@use 'highlight.js/styles/github.css' as *;
 
 view,
 :before,
