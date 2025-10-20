@@ -71,6 +71,7 @@ function onBlur() {
         'modelValue': visible,
         'position': 'bottom',
         'lazyRender': true,
+        'duration': 100,
         'onUpdate:modelValue': (value: boolean) => { visible = value },
         'onClose': handleClose,
         'onBefore-leave': handleBeforeLeave,
@@ -103,7 +104,7 @@ function onBlur() {
           />
         </view>
 
-        <wd-button v-bind="{ type: 'primary', size: 'small', ...buttonOptions }">
+        <wd-button v-bind="{ type: 'primary', size: 'small', round: false, customClass: 'rounded-8px', ...buttonOptions }">
           {{ buttonText }}
         </wd-button>
       </view>
