@@ -39,8 +39,11 @@ function createRequestPromiseFactory<T>(type: LauncherOptions['method'], url: st
               title: String((res.data as any).message || '请求失败'),
               icon: 'none',
             })
+            reject(res)
           }
-          resolve(res.data as any)
+          else {
+            resolve(res.data as any)
+          }
         },
         fail(err) {
           // uni.request 的 fail 只会在网络错误/超时等情况下触发
