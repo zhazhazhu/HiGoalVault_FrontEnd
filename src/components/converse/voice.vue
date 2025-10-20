@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type RecordPopup from '~/components/record/popup.vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useClassesName, useUUID } from '@/composables'
 import { useGlobalStore } from '@/store'
 import { checkPermission } from '@/utils/wx'
@@ -17,15 +17,16 @@ const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
 const globalStore = useGlobalStore()
 const qCloudAIVoice = requirePlugin('QCloudAIVoice')
 const speechRecognizerManager = qCloudAIVoice.realtimeRecognition()
-const isConnecting = ref(false)
+const isConnected = ref(false)
 const speechText = ref('')
 const record = uni.getRecorderManager()
 const voiceId = ref('')
 const decibel = ref(0)
 const textRecognitionVisible = ref(false)
+const isTouched = ref(false)
 
 record.onFrameRecorded((res) => {
-  if (res.frameBuffer && isConnecting.value) {
+  if (res.frameBuffer && isConnected.value) {
     speechRecognizerManager.write(res.frameBuffer)
     const audioData = new Int16Array(res.frameBuffer)
 
@@ -43,29 +44,49 @@ record.onFrameRecorded((res) => {
     decibel.value = mappedAmplitude
   }
 })
+watch(() => [isRecording.value, isConnected.value], ([isRecording, isConnected]) => {
+  if (!isRecording || !isConnected) {
+    record.stop()
+    speechRecognizerManager.stop()
+  }
+})
 async function onTouchStart() {
+  isTouched.value = false
   const status = await checkPermission('scope.record')
   if (!status) {
-    console.log('麦克风需要授权')
+    uni.showToast({
+      title: '请允许录音权限',
+      icon: 'none',
+    })
+    return
+  }
+  if (isTouched.value) {
     return
   }
   recordPopupFocusedButton.value = 'microphone'
   isRecording.value = true
   start()
 }
-
 function onTouchEnd() {
+  isTouched.value = true
+  if (!isConnected.value) {
+    uni.showToast({
+      title: '按住时间太短',
+      icon: 'none',
+    })
+    isRecording.value = false
+    isConnected.value = false
+    return
+  }
   if (recordPopupFocusedButton.value === 'cancel') {
     speechText.value = ''
   }
   isRecording.value = false
-  if (!isConnecting.value) {
+  if (!isConnected.value) {
     console.log('未连接，无需停止')
     return
   }
-  speechRecognizerManager.stop()
-  record.stop()
-  isConnecting.value = false
+  isConnected.value = false
   if (recordPopupFocusedButton.value !== 'cancel') {
     emit('done', speechText.value)
   }
@@ -116,14 +137,14 @@ async function start() {
 function onConfirm() {
   isRecording.value = false
   textRecognitionVisible.value = false
-  isConnecting.value = false
+  isConnected.value = false
   emit('done', speechText.value, true)
   speechText.value = ''
 }
 function onCloseTextRecognition() {
   isRecording.value = false
   textRecognitionVisible.value = false
-  isConnecting.value = false
+  isConnected.value = false
   speechText.value = ''
 }
 
@@ -134,7 +155,7 @@ onLoad(async () => {
     return
 
   speechRecognizerManager.OnRecognitionStart = () => {
-    isConnecting.value = true
+    isConnected.value = true
     record.start({
       sampleRate: 16000,
       numberOfChannels: 1,
@@ -165,7 +186,7 @@ onLoad(async () => {
 
 <template>
   <root-portal>
-    <RecordPopup ref="recordPopupRef" v-model="isRecording" :speech-text="speechText" :decibel="decibel" :focused-button="recordPopupFocusedButton" />
+    <RecordPopup ref="recordPopupRef" v-model="isRecording" :is-connecting="isConnected" :speech-text="speechText" :decibel="decibel" :focused-button="recordPopupFocusedButton" />
 
     <view v-show="textRecognitionVisible" class="w-screen h-screen fixed top-0 left-0 flex flex-col items-center justify-end z-10" :class="[cs.m('text-recognition-wrapper'), cs.is('transparent', isRecording)]">
       <view class="p-8% w-full h-70% box-border flex flex-col justify-between" :style="{ paddingBottom: globalStore.keyboardHeight ? `${globalStore.keyboardHeight + 30}px` : '8%' }">

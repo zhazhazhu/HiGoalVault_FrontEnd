@@ -6,6 +6,7 @@ const props = defineProps<{
   focusedButton: 'cancel' | 'microphone' | 'text' | null
   speechText: string
   decibel: number
+  isConnecting: boolean
 }>()
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('record')
@@ -41,7 +42,12 @@ defineExpose({
     @close="handleClose"
   >
     <view :class="cs.m('container')">
-      <RecordWave :visible="model" :decibel="decibel" />
+      <template v-if="isConnecting">
+        <RecordWave :visible="model" :decibel="decibel" />
+      </template>
+      <view v-else class="w-200px h-50px flex items-center justify-center">
+        <view class="i-line-md-loading-twotone-loop text-20px" />
+      </view>
 
       <text :class="cs.e('description')">
         {{ text }}
