@@ -78,6 +78,11 @@ function changeTagType(key: any) {
   params.value.searchSort = key
   getData()
 }
+function gotoDetail(item: PublishMessageListResponse) {
+  uni.navigateTo({
+    url: `/detail-package/pages/detail/index?id=${item.id}`,
+  })
+}
 
 onLoad((option) => {
   if (!option?.id)
@@ -138,7 +143,7 @@ onLoad((option) => {
           </view>
         </view>
 
-        <view v-for="item, index in data" :id="`view-${item.id}`" :key="item.id" class="my-30rpx">
+        <view v-for="item, index in data" :id="`view-${item.id}`" :key="item.id" class="my-30rpx" @click="gotoDetail(item)">
           <ViewCard :data="item" @update:data="(newData) => data[index] = newData" />
         </view>
 
