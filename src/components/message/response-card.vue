@@ -1,15 +1,10 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
-import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/javascript'
-import python from 'highlight.js/lib/languages/python'
-import typescript from 'highlight.js/lib/languages/typescript'
 import MarkdownIt from 'markdown-it/dist/markdown-it.min.js'
 import { computed, ref } from 'vue'
 import { useClassesName } from '@/composables'
+// import { hljs } from '@/modules'
 import Stock from '@/subEcharts/echarts/components/stock.vue?async'
-
-import 'highlight.js/styles/github.css'
 
 const props = defineProps<{
   data: AnswerAfter
@@ -17,9 +12,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'longPressContent', val: any): void
 }>()
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('typescript', typescript)
-hljs.registerLanguage('python', python)
 
 const cs = useClassesName('message-card')
 const viewDeepThink = ref(true)
@@ -28,10 +20,10 @@ const md = new MarkdownIt({
   linkify: true,
   typographer: true,
   breaks: true,
-  highlight(str, lang) {
-    const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
-    return html
-  },
+  // highlight(str, lang) {
+  //   const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
+  //   return html
+  // },
 })
 const htmlContent = computed(() => {
   return md.render(props.data.response || '')

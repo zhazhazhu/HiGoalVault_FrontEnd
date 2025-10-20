@@ -1,21 +1,11 @@
 <script lang='ts' setup>
 import type { AnswerAfter, Page } from '@/api'
-import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/javascript'
-import python from 'highlight.js/lib/languages/python'
-import typescript from 'highlight.js/lib/languages/typescript'
 import MarkdownIt from 'markdown-it/dist/markdown-it.min.js'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
-
-import 'highlight.js/styles/github.css'
-
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('typescript', typescript)
-hljs.registerLanguage('python', python)
 
 const isLoading = ref(false)
 const isFinish = ref(false)
@@ -29,14 +19,14 @@ const userStore = useUserStore()
 const data = ref<AnswerAfter[]>([])
 const cs = useClassesName('collected-message-list')
 const md = new MarkdownIt({
-  html: false,
+  html: true,
   linkify: true,
   typographer: true,
   breaks: true,
-  highlight(str, lang) {
-    const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
-    return html
-  },
+  // highlight(str, lang) {
+  //   const html = hljs.highlight(str, { language: lang || 'txt', ignoreIllegals: true }).value
+  //   return html
+  // },
 })
 const isRefreshing = ref(false)
 
