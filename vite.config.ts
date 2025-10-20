@@ -48,8 +48,8 @@ export default defineConfig(async () => {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true, // 生产环境移除console
-          drop_debugger: true, // 生产环境移除debugger
+          drop_console: process.env.NODE_ENV === 'production', // 生产环境移除console
+          drop_debugger: process.env.NODE_ENV === 'production', // 生产环境移除debugger
         },
       },
     },
