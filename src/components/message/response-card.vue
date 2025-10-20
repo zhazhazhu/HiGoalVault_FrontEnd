@@ -48,7 +48,7 @@ const htmlContent = computed(() => {
     <rich-text :class="cs.e('rich-text')" :nodes="htmlContent" space="ensp" />
   </view>
 
-  <Stock v-if="data.data.length === 1" :data="data.data" />
+  <Stock v-if="data?.data?.length === 1" :data="data?.data" />
 </template>
 
 <style lang='scss' scoped>
