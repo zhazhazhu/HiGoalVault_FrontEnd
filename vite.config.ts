@@ -12,7 +12,7 @@ import { defineConfig } from 'vite'
 console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => {
+export default defineConfig(async ({ command }) => {
   const UnoCss = await import('unocss/vite').then(i => i.default)
   const Jsx = await import('@vitejs/plugin-vue-jsx').then(i => i.default)
   const UniEcharts = await import('uni-echarts/vite').then(i => i.UniEcharts)
@@ -44,12 +44,12 @@ export default defineConfig(async () => {
     optimizeDeps: {
       exclude: ['uni-echarts', 'wot-design-uni'],
     },
-    build: {
+    build: command === 'serve' ? undefined : {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: process.env.NODE_ENV === 'production', // 生产环境移除console
-          drop_debugger: process.env.NODE_ENV === 'production', // 生产环境移除debugger
+          drop_console: true, // 生产环境移除console
+          drop_debugger: true, // 生产环境移除debugger
         },
       },
     },
