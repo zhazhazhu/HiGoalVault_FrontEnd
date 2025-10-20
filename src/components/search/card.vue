@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import { getCurrentInstance, nextTick, onMounted, onUpdated, ref } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   title: string
   editIcon?: string
   data: string[]
@@ -45,11 +45,13 @@ function toggleExpand() {
 function onEdit() {
   emit('editClick')
 }
-function onClose(index: number, val: string) {
-  emit('close', index, val)
-}
-function onTagClick(val: string) {
-  emit('tagClick', val)
+function onTagClick(val: string, index: number) {
+  if (!props.enableClose) {
+    emit('tagClick', val)
+  }
+  else {
+    emit('close', index, val)
+  }
 }
 
 // 在组件挂载和数据更新后检查是否溢出
@@ -79,10 +81,10 @@ onUpdated(() => {
           v-for="item, index in data"
           :key="item"
           class="text-26rpx color-#666 rounded-12rpx bg-#E4E4E4 py-16rpx px-30rpx relative"
-          @click="onTagClick(item)"
+          @click="onTagClick(item, index)"
         >
           <text>{{ item }}</text>
-          <view class="i-material-symbols-light-cancel absolute -top-6px -right-6px text-36rpx" :class="{ hidden: !enableClose }" @click.stop="onClose(index, item)" />
+          <view class="i-material-symbols-light-cancel absolute -top-6px -right-6px text-36rpx" :class="{ hidden: !enableClose }" />
         </view>
       </view>
       <view
