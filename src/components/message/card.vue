@@ -342,7 +342,7 @@ function stopTextToSpeech() {
   background: linear-gradient(270deg, #ff3b30 0%, #fc6146 100%);
   color: #fff;
   padding: 10px 16px;
-  font-size: 16px;
+  font-size: 17px;
   border-radius: 12px 12px 0px 12px;
   width: fit-content;
   margin-bottom: 10px;
@@ -352,7 +352,7 @@ function stopTextToSpeech() {
   padding: 10px 16px;
   border-radius: 12px;
   width: fit-content;
-  font-size: 16px;
+  font-size: 17px;
   color: #121212;
   line-height: 20px;
   margin-bottom: 10px;
