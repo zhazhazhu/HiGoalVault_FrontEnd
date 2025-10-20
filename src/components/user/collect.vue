@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { useUserStore } from '@/store'
+import { useChatStore, useUserStore } from '@/store'
 
 const isLoading = ref(false)
 const isFinish = ref(false)
@@ -16,6 +16,7 @@ const [page, resetPage] = useResetRef<Page>({
 })
 const total = ref(0)
 const userStore = useUserStore()
+const chatStore = useChatStore()
 const data = ref<AnswerAfter[]>([])
 const cs = useClassesName('collected-message-list')
 const md = new MarkdownIt({
@@ -75,6 +76,10 @@ async function refreshData() {
   await getData()
   isRefreshing.value = false
 }
+function onGotoMessage(item: AnswerAfter) {
+  chatStore.currentChatId = item.chatId
+  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+}
 
 onMounted(() => {
   resetPage()
@@ -90,7 +95,7 @@ defineExpose({
 
 <template>
   <view>
-    <view v-for="item, index in data" :key="item.queryId" :class="cs.m('card')">
+    <view v-for="item, index in data" :key="item.queryId" :class="cs.m('card')" @click="onGotoMessage(item)">
       <view class="text-36rpx font-bold">
         {{ item.query }}
       </view>

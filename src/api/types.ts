@@ -64,6 +64,7 @@ export interface AnswerBefore {
   runId: string
   isCollect: Truth // 是否收藏
   messageTimeLong: number // 消息时间 毫秒级
+  chatId: string
 }
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
