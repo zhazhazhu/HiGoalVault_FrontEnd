@@ -24,28 +24,38 @@ const defaultOptions: LauncherOptions = {
   },
 }
 
-function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: LauncherOptions['method'], url: string, options: UniOptions, data?: LauncherOptions['data']): Promise<RequestResult<T>> {
-  return new Promise((resolve, reject) => {
-    uni.request({
-      url: baseUrl + url,
-      method: type,
-      data,
-      ...options,
-      success(res) {
-        if (res.statusCode === 400) {
-          uni.showToast({
-            title: String((res.data as any).message || '请求失败'),
-            icon: 'none',
-          })
-        }
-        resolve(res.data as any)
-      },
-      fail(err) {
-        console.log('request', err)
-        reject(err)
-      },
+function createRequestPromiseFactory<T>(type: LauncherOptions['method'], url: string, options: UniOptions, data?: LauncherOptions['data']): () => Promise<RequestResult<T>> {
+  // 返回一个函数，每次调用都会生成一个新的 Promise（即发起一个新的请求）
+  return () => {
+    return new Promise((resolve, reject) => {
+      uni.request({
+        url: baseUrl + url,
+        method: type,
+        data,
+        ...options,
+        success(res) {
+          if (res.statusCode >= 400) {
+            uni.showToast({
+              title: String((res.data as any).message || '请求失败'),
+              icon: 'none',
+            })
+          }
+          resolve(res.data as any)
+        },
+        fail(err) {
+          // uni.request 的 fail 只会在网络错误/超时等情况下触发
+          console.error('uni.request fail:', err)
+          reject(err) // 此时触发重试
+        },
+      })
     })
-  })
+  }
+}
+
+function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: LauncherOptions['method'], url: string, options: UniOptions, data?: LauncherOptions['data']): Promise<RequestResult<T>> {
+  const requestFactory = createRequestPromiseFactory<T>(type, url, options, data)
+
+  return retry(requestFactory, { retryCount: 20, retryDelay: 3000 })
 }
 
 export type Launcher = (url: string, options?: UniOptions) => {
@@ -82,22 +92,38 @@ const http: Launcher = (url, options) => {
 interface RetryOptions {
   retryCount?: number
   retryDelay?: number
-  retryCondition?: (err: any) => boolean
 }
-function retry<T>(request: Promise<RequestResult<T>>, options: RetryOptions = {}): Promise<RequestResult<T>> {
-  return retryPromise(request, options)
+/**
+ * 重试函数，接收一个返回 Promise 的函数 (Promise Factory)
+ * @param promiseFactory 每次调用都会发起一个新的 uni.request 请求
+ * @param options 重试选项
+ */
+function retry<T>(promiseFactory: () => Promise<RequestResult<T>>, options: RetryOptions = {}): Promise<RequestResult<T>> {
+  return retryPromise(promiseFactory, options)
 }
-function retryPromise<T>(request: Promise<RequestResult<T>>, options: RetryOptions = {}): Promise<RequestResult<T>> {
-  return Promise.resolve(request).catch((err) => {
-    if (options.retryCount && options.retryCount > 0) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(retryPromise(request, options))
-        }, options.retryDelay || 1000)
-      })
-    }
-    throw err
-  })
+function retryPromise<T>(promiseFactory: () => Promise<RequestResult<T>>, options: RetryOptions = {}): Promise<RequestResult<T>> {
+  return promiseFactory()
+    .then((res) => {
+      return res
+    })
+    .catch((err) => {
+      if (options.retryCount && options.retryCount > 0) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            console.warn(`请求失败，正在重试（剩余 ${options.retryCount} 次）...`)
+            // 递归调用，并传入递减的重试次数
+            resolve(retryPromise(promiseFactory, {
+              retryCount: options.retryCount ? options.retryCount - 1 : undefined,
+              retryDelay: options.retryDelay,
+            }))
+          }, options.retryDelay || 1000)
+        })
+      }
+      else {
+        console.error('请求达到最大重试次数，最终失败。', err)
+        throw err
+      }
+    })
 }
 
 export { http, retry }
