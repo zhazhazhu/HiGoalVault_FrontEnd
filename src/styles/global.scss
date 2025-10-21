@@ -177,3 +177,11 @@ page {
   font-size: 14px;
   line-height: 24px;
 }
+
+.hi-message-card__rich-text {
+  color: #333333;
+  line-height: 48rpx;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-width: 100%;
+}

@@ -66,4 +66,32 @@ export function renderMarkdown(text: string = '') {
   return html
 }
 
+export const testContent = `
+# h1
+## h2
+### h3
+#### h4
+##### h5
+###### h6
+
+[link](https://github.com/yunjey/markdown-it-katex)
+
+> blockquote
+
+- list item 1
+- list item 2
+- list item 3
+
+1. list item 1
+2. list item 2
+3. list item 3
+
+\`\`\`javascript
+function test() {
+  console.log('hello world!');
+  return true;
+}
+\`\`\`
+`
+
 export { marked }
