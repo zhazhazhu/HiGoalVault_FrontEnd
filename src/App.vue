@@ -39,10 +39,6 @@ onShow(() => {
   if (userStore.isLogin)
     websocket.connectWebSocket()
 })
-onHide(() => {
-  if (userStore.isLogin)
-    websocket.closeWebSocket()
-})
 </script>
 
 <style lang="scss">
