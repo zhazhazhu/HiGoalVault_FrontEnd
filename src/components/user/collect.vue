@@ -30,7 +30,7 @@ async function getData() {
   })
   if (res.code === 200) {
     data.value.push(...res.result.records.map((item) => {
-      const data = JSON.parse(item.data || '') || []
+      const data = useJsonParse(item.data || '[]') || []
       const steps = useJsonParse<ChatSteps[]>(item.steps)
       return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [] } as AnswerAfter
     }))
