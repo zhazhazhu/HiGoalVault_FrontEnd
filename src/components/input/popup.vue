@@ -104,7 +104,7 @@ function onBlur() {
           />
         </view>
 
-        <wd-button v-bind="{ type: 'primary', size: 'small', round: false, customClass: 'rounded-8px', ...buttonOptions }">
+        <wd-button v-bind="{ type: 'primary', size: 'small', round: false, customClass: 'rounded-8px', onConfirm, ...buttonOptions }">
           {{ buttonText }}
         </wd-button>
       </view>

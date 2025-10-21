@@ -23,7 +23,7 @@ const defineQuestion = [
       你可以这样问
     </view>
     <view class="flex flex-col gap-20rpx mt-20rpx">
-      <view v-for="item in defineQuestion" :key="item" class="w-fit px-20rpx py-14rpx bg-white rounded-12rpx color-green-7 font-500 text-28rpx" @click="emit('question', item)">
+      <view v-for="item in defineQuestion" :key="item" class="w-fit px-20rpx py-14rpx bg-white rounded-12rpx color-#ff3b3b font-500 text-28rpx" @click="emit('question', item)">
         {{ item }}
       </view>
     </view>
