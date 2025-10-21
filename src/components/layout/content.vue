@@ -62,9 +62,14 @@ onMounted(() => {
           <view class="text-34rpx font-bold text-h1-color">
             热门
           </view>
-          <view class="flex flex-col gap-10px ml-10px">
+          <view v-if="popularTags?.length > 0" class="flex flex-col gap-10px ml-10px">
             <view v-for="item in popularTags" :key="item.id" class="text-30rpx text-h2-color" @click="onClickTag(item)">
               {{ item.tagName }}
+            </view>
+          </view>
+          <view v-else>
+            <view class="text-26rpx color-gray-6">
+              暂无热门标签
             </view>
           </view>
         </view>
