@@ -62,7 +62,7 @@ function handleClose() {
   <root-portal>
     <wd-toast />
   </root-portal>
-  <wd-popup v-model="model" position="bottom" :close-on-click-modal="false" root-portal custom-style="border-radius: 20px;" @click-modal="handleClose">
+  <wd-popup v-model="model" position="bottom" :close-on-click-modal="false" root-portal custom-class="rounded-t-20px" @click-modal="handleClose">
     <view class="p-20px pb-40px">
       <view class="rounded-12px overflow-hidden mb-20px">
         <wd-textarea

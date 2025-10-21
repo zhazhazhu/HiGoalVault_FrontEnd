@@ -14,14 +14,12 @@ const content = computed(() => markdownToPlainText(props.message.response))
 <template>
   <wd-popup
     v-model="model"
-    title="长按复制节选内容"
     position="bottom"
     root-portal
-    safe-area-inset-bottom
     :close-on-click-modal="false"
-    custom-style="border-radius: 20px;"
+    custom-class="rounded-t-20px;"
   >
-    <view class="min-h-200rpx max-h-800rpx flex flex-col">
+    <view class="h-500px flex flex-col">
       <view class="w-full py-20px text-center">
         长按复制节选内容
       </view>
@@ -30,7 +28,7 @@ const content = computed(() => markdownToPlainText(props.message.response))
         enhanced
         :scroll-y="true"
         :show-scrollbar="false"
-        class="h-[calc(100%-50rpx)] overflow-y-auto py-10px flex-1"
+        class="h-[calc(500px-120px)]"
       >
         <view class="px-20px">
           <text :user-select="true">
@@ -38,7 +36,7 @@ const content = computed(() => markdownToPlainText(props.message.response))
           </text>
         </view>
       </scroll-view>
-      <view class="w-full h-50rpx text-center b-t-1px b-solid b-gray-2 py-20rpx" @click="model = false">
+      <view class="w-full text-center b-t-1px b-solid b-gray-2 py-20rpx" @click="model = false">
         取 消
       </view>
     </view>

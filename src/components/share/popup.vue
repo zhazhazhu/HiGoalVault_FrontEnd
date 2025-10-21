@@ -26,10 +26,10 @@ function onGenerateImage() {
         <view class="share-wechat-icon" />
         <text>分享好友</text>
       </button>
-      <button :data-ids="messageInject?.share.value.ids" class="share-btn" @click="onGenerateImage">
+      <!-- <button :data-ids="messageInject?.share.value.ids" class="share-btn" @click="onGenerateImage">
         <view class="share-wechat-icon" />
         <text>生成图片</text>
-      </button>
+      </button> -->
     </view>
   </wd-popup>
 </template>
