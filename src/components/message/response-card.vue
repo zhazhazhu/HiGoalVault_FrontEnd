@@ -68,9 +68,5 @@ const htmlContent = computed(() => {
   white-space: pre-wrap;
   word-break: break-all;
   max-width: 100%;
-  :deep(.hljs) {
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
 }
 </style>

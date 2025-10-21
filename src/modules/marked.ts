@@ -23,6 +23,11 @@ marked.use({
   gfm: true,
   breaks: true,
   renderer: {
+    code({ text, lang }) {
+      const language = lang || 'plaintext'
+
+      return `<pre class="prose-pre"><code class="hljs language-${language}">${text}</code></pre>`
+    },
     heading({ tokens, depth }) {
       const text = this.parser.parseInline(tokens)
       return `<h${depth} class="prose-h${depth}">${text}</h${depth}>`
