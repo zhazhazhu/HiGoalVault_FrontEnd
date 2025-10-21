@@ -65,12 +65,21 @@ export interface AnswerBefore {
   isCollect: Truth // 是否收藏
   messageTimeLong: number // 消息时间 毫秒级
   chatId: string
+  steps: string
 }
 
-export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data'> {
+export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps'> {
   reference: ChatMessageReference[]
   data: [ChatMessageStock] | [] // 股票图数据
   isLoading: boolean // 是否正在加载中
+  steps: ChatSteps[]
+}
+
+export interface ChatSteps {
+  node: string
+  message: string
+  thinking: string | null
+  finished: boolean
 }
 
 export interface ChatMessageAfter extends Omit<ChatMessageBefore, 'chatQueryAnswerList'> {

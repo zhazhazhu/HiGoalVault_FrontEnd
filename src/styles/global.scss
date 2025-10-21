@@ -4,6 +4,7 @@
 @use '@/static/home/index.scss' as *;
 @use '@/static/user/index.scss' as *;
 @use 'highlight.js/styles/github.css' as *;
+@use './markdown.scss' as *;
 
 view,
 :before,
@@ -175,16 +176,4 @@ page {
   color: #9ca3af;
   font-size: 14px;
   line-height: 24px;
-}
-
-.prose-pre {
-  background-color: #f4f7fa;
-  border-radius: 8px;
-  padding: 10px;
-  margin: 10px 0;
-  .hljs {
-    background-color: transparent;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
 }

@@ -1,111 +1,69 @@
-import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/javascript'
-import python from 'highlight.js/lib/languages/python'
-import typescript from 'highlight.js/lib/languages/typescript'
-import { Marked } from 'marked'
-import { markedHighlight } from 'marked-highlight'
+import { marked } from 'marked'
+import { hljs } from './highlight'
 
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('typescript', typescript)
-hljs.registerLanguage('python', python)
-
-const marked = new Marked(markedHighlight({
-  emptyLangClass: 'hljs',
-  langPrefix: 'hljs language-',
-  highlight(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-    return hljs.highlight(code, { language }).value
-  },
-}))
-
-// 给每个标签加上class
 marked.use({
   gfm: true,
   breaks: true,
+  headerIds: false,
+  mangle: false,
   renderer: {
-    code({ text, lang }) {
-      const language = lang || 'plaintext'
-
-      return `<pre class="prose-pre"><code class="hljs language-${language}">${text}</code></pre>`
+    code(code: string, lang: string) {
+      return `<pre class='md-pre'><p class='code-title'>${lang}</p><code class='hljs language-${lang}'>${hljs.highlight(code, { language: lang }).value}</code></pre>`
     },
-    heading({ tokens, depth }) {
-      const text = this.parser.parseInline(tokens)
-      return `<h${depth} class="prose-h${depth}">${text}</h${depth}>`
+    heading(text: string, level: number) {
+      return `<h${level} class='md-h${level}'>${text}</h${level}>`
     },
-    paragraph({ tokens }) {
-      const text = this.parser.parseInline(tokens)
-      return `<p class="prose-p">${text}</p>`
+    paragraph(text: string) {
+      return `<p class='md-p'>${text}</p>`
     },
-    strong({ tokens }) {
-      const text = this.parser.parseInline(tokens)
-      return `<strong class="prose-strong">${text}</strong>`
+    blockquote(quote: string) {
+      return `<blockquote class='md-blockquote'>${quote}</blockquote>`
     },
-    em({ tokens }) {
-      const text = this.parser.parseInline(tokens)
-      return `<em class="prose-em">${text}</em>`
+    link(href: string, title: string, text: string) {
+      return `<a href='${href}' title='${title}' class='md-a'>${text}</a>`
     },
-    codespan({ text }) {
-      return `<code class="prose-code">${text}</code>`
+    image(href: string, title: string, text: string) {
+      return `<img src='${href}' alt='${text}' title='${title}' class='md-img'>`
     },
-    blockquote({ tokens }) {
-      const body = this.parser.parse(tokens)
-      return `<blockquote class="prose-blockquote">${body}</blockquote>`
+    strong(text: string) {
+      return `<strong class='md-strong'>${text}</strong>`
     },
-    list(token) {
-      const type = token.ordered ? 'ol' : 'ul'
-      const startAttr = token.ordered && token.start !== 1 ? ` start="${token.start}"` : ''
-      // 遍历每个列表项，手动构建 HTML
-      let body = ''
-      for (const item of token.items) {
-        const itemContent = this.parser.parse(item.tokens)
-        body += `<li class="prose-li">${itemContent}</li>`
-      }
-      return `<${type} class="prose-${type}"${startAttr}>${body}</${type}>`
+    em(text: string) {
+      return `<em class='md-em'>${text}</em>`
     },
-    link({ href, title, tokens }) {
-      const text = this.parser.parseInline(tokens)
-      const titleAttr = title ? ` title="${title}"` : ''
-      return `<a class="prose-a" href="${href}"${titleAttr}>${text}</a>`
+    list(body: string, ordered: boolean, start: number) {
+      const listType = ordered ? 'ol' : 'ul'
+      const startAttr = ordered && start !== 1 ? ` start='${start}'` : ''
+      return `<${listType} class='md-${listType}'${startAttr}>${body}</${listType}>`
     },
-    image({ href, title, text }) {
-      const titleAttr = title ? ` title="${title}"` : ''
-      return `<img class="prose-img" src="${href}" alt="${text}"${titleAttr} />`
+    listitem(text: string, task: boolean, checked: boolean) {
+      return `<li class='md-li' ${task ? `class='md-li' ${checked ? 'checked' : ''}` : ''}>${text}</li>`
     },
-    table(token) {
-      let header = '<tr class="prose-tr">'
-      for (const cell of token.header) {
-        const content = this.parser.parseInline(cell.tokens)
-        const align = cell.align ? ` align="${cell.align}"` : ''
-        header += `<th class="prose-th"${align}>${content}</th>`
-      }
-      header += '</tr>'
-
-      let body = ''
-      for (const row of token.rows) {
-        body += '<tr class="prose-tr">'
-        for (const cell of row) {
-          const content = this.parser.parseInline(cell.tokens)
-          const align = cell.align ? ` align="${cell.align}"` : ''
-          body += `<td class="prose-td"${align}>${content}</td>`
-        }
-        body += '</tr>'
-      }
-
-      return `<table class="prose-table"><thead>${header}</thead><tbody>${body}</tbody></table>`
+    table(header, body) {
+      return `<table class='md-table'><thead>${header}</thead><tbody>${body}</tbody></table>`
     },
-    tablecell(token) {
-      const content = this.parser.parseInline(token.tokens)
-      const type = token.header ? 'th' : 'td'
-      const align = token.align ? ` align="${token.align}"` : ''
-      return `<${type} class="prose-${type}"${align}>${content}</${type}>`
+    tablerow(content) {
+      return `<tr class='md-tr'>${content}</tr>`
+    },
+    tablecell(content, flags) {
+      const isHeader = flags.header
+      const cellTag = isHeader ? 'th' : 'td'
+      const cellClass = isHeader ? 'md-th' : 'md-td'
+      const alignAttr = flags.align ? ` align='${flags.align}'` : ''
+      return `<${cellTag} class='${cellClass}'${alignAttr}>${content}</${cellTag}>`
     },
     hr() {
-      return '<hr class="prose-hr" />'
+      return `<hr class='md-hr'>`
     },
     br() {
-      return '<br class="prose-br" />'
+      return `<br class='md-br'>`
     },
   },
 })
+
+export function renderMarkdown(text: string = '') {
+  const html = marked(text)
+  return html
+}
 
 export { marked }

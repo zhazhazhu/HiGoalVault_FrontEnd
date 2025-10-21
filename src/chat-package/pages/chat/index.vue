@@ -47,15 +47,58 @@ websocketStore.receiveMessage((data) => {
   currentMessage.isLoading = true
   if (data.code === '200' && data.type === 'message') {
     newMessageId.value = data.data?.msg_id
-
-    chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-      ...data.data,
-      response: currentMessage.response += (data.data?.response || ''),
-      message: currentMessage.message += (data.data?.message || ''),
-      data: data.data?.data ? data.data.data : [],
-      reference: data.data?.reference,
-      queryId: data.data?.query_id,
-    })
+    const currentNode = data.data?.node || ''
+    const isNewNode = currentMessage.steps[currentMessage.steps.length - 1]?.node !== currentNode
+    /**
+     * 思考步骤阶段
+     * 1. 添加新的步骤
+     * 如果上一个node不同，则添加新的步骤
+     * 2. 修改旧的步骤
+     * 如果上一个node相同，则修改旧的步骤
+     */
+    if (data.data?.stage === 'thinking' || data.data?.stage === 'node begin') {
+      if (isNewNode) {
+        chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+          steps: [
+            ...currentMessage.steps.map(item => ({ ...item, finished: true })),
+            {
+              node: data.data?.node,
+              message: (data.data?.message as unknown as string),
+              thinking: data.data?.thinking || '',
+              finished: false,
+            },
+          ],
+        })
+      }
+      else {
+        chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+          steps: [
+            ...currentMessage.steps.map((item) => {
+              if (item.node === currentNode) {
+                return {
+                  ...item,
+                  thinking: item.thinking + data.data?.thinking || '',
+                }
+              }
+              return item
+            }),
+          ],
+        })
+      }
+    }
+    else if (data.data?.stage === 'stream' || data.data?.stage === 'node end') {
+      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+        ...data.data,
+        steps: currentMessage.steps.map(item => ({
+          ...item,
+          finished: true,
+        })),
+        response: currentMessage.response += (data.data?.response || ''),
+        data: data.data?.data ? data.data.data : [],
+        reference: data.data?.reference,
+        queryId: data.data?.query_id,
+      })
+    }
 
     scrollToTop()
   }

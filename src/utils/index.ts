@@ -131,3 +131,14 @@ export function formatCommentOrThumbUpCount(count?: number) {
     return '1000+'
   }
 }
+
+export type Awaitable<T> = T | Promise<T>
+
+export function useJsonParse<T>(val: string): T | null | undefined {
+  try {
+    return JSON.parse(val) as T
+  }
+  catch (e) {
+    console.log('parse json error cause', e)
+  }
+}

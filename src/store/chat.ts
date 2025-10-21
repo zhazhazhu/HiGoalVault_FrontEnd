@@ -1,10 +1,9 @@
 import type { Ref } from 'vue'
-import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference } from '../api'
+import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps } from '../api'
 import dayjs from 'dayjs'
-import mergeWith from 'lodash-es/mergeWith'
 import { defineStore } from 'pinia'
 import { useStoreRef, useUUID } from '@/composables'
-import { isThisMonth, isThisWeek, isToday } from '@/utils'
+import { isThisMonth, isThisWeek, isToday, useJsonParse } from '@/utils'
 import { Truth } from '../api'
 import { useUserStore } from './user'
 
@@ -77,20 +76,28 @@ export const useChatStore = defineStore('chat', {
     transformMessage(message: ChatMessageBefore): ChatMessageAfter {
       const answerAfter = message.chatQueryAnswerList.map((item) => {
         let reference: ChatMessageReference[] = []
-        let data: any = null
+        let data: [ChatMessageStock] | [] = []
+        let steps: ChatSteps[] = []
+        if (item.data) {
+          data = useJsonParse(item.data) || []
+        }
         if (item.reference) {
-          try {
-            reference = JSON.parse(item.reference)
-            data = JSON.parse(item.data || '{}')
-          }
-          catch (error) {
-            console.log('transformMessage error', error)
-          }
+          reference = useJsonParse(item.reference) || []
+        }
+        if (item.steps) {
+          steps = useJsonParse(item.steps) || []
+          steps = steps.map((item) => {
+            return {
+              ...item,
+              finished: true,
+            }
+          })
         }
         return {
           ...item,
           reference,
           data,
+          steps,
           isLoading: false,
         }
       })
@@ -108,8 +115,9 @@ export const useChatStore = defineStore('chat', {
         msgId: id,
         chatQueryAnswerList: [
           {
-            data: [],
             message: '',
+            data: [],
+            steps: [],
             reference: [],
             response: '',
             ts: '',
@@ -119,6 +127,7 @@ export const useChatStore = defineStore('chat', {
             isCollect: Truth.FALSE,
             isLoading: true,
             messageTimeLong: 0,
+            chatId: '',
           },
         ],
         ...message,
@@ -130,7 +139,7 @@ export const useChatStore = defineStore('chat', {
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
         data: [],
-        message: '',
+        steps: [],
         reference: [],
         response: '',
         ts: '',
@@ -140,6 +149,8 @@ export const useChatStore = defineStore('chat', {
         isCollect: Truth.FALSE,
         isLoading: false,
         messageTimeLong: 0,
+        chatId: '',
+        message: '',
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)
@@ -148,7 +159,10 @@ export const useChatStore = defineStore('chat', {
       for (let i = 0; i < this.messages.length; i++) {
         for (let j = 0; j < this.messages[i].chatQueryAnswerList.length; j++) {
           if (this.messages[i].chatQueryAnswerList[j].runId === runId) {
-            this.messages[i].chatQueryAnswerList[j] = mergeWith(this.messages[i].chatQueryAnswerList[j], answer)
+            this.messages[i].chatQueryAnswerList[j] = {
+              ...this.messages[i].chatQueryAnswerList[j],
+              ...answer,
+            }
             break
           }
         }

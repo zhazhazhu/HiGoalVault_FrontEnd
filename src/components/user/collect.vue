@@ -1,11 +1,12 @@
 <script lang='ts' setup>
-import type { AnswerAfter, Page } from '@/api'
+import type { AnswerAfter, ChatSteps, Page } from '@/api'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { marked } from '@/modules'
 import { useChatStore, useUserStore } from '@/store'
+import { useJsonParse } from '@/utils'
 
 const isLoading = ref(false)
 const isFinish = ref(false)
@@ -30,7 +31,8 @@ async function getData() {
   if (res.code === 200) {
     data.value.push(...res.result.records.map((item) => {
       const data = JSON.parse(item.data || '') || []
-      return { ...item, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [] } as AnswerAfter
+      const steps = useJsonParse<ChatSteps[]>(item.steps)
+      return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [] } as AnswerAfter
     }))
     total.value = res.result.total
     isLoading.value = false
@@ -90,7 +92,7 @@ defineExpose({
         {{ item.query }}
       </view>
       <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
-        <rich-text :class="cs.e('rich-text')" :nodes="marked.parse(item.response || '')" space="ensp" />
+        <rich-text :class="cs.e('rich-text')" :nodes="marked(item.response || '')" space="ensp" />
       </view>
 
       <StockPreview v-if="item.data.length === 1" :data="item.data" />

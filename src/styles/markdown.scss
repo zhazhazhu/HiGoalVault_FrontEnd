@@ -1,0 +1,16 @@
+.markdown-body .md-pre {
+  background-color: #f4f7fa;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  .hljs {
+    background-color: transparent;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .code-title {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 10px;
+  }
+}

@@ -288,7 +288,7 @@ function stopTextToSpeech() {
       <view :class="cs.m('model')">
         <message-response-card :data="currentAnswer" @long-press-content="openTooltips" />
 
-        <view v-show="currentAnswer.isLoading" class="flex items-center gap-8px">
+        <view v-show="currentAnswer.isLoading" class="flex items-center gap-8px my-10px">
           <view class="i-line-md-loading-twotone-loop text-40rpx" />
           <text class="text-14px color-#333">
             正在生成...
