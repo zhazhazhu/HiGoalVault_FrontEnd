@@ -1,11 +1,11 @@
 <script lang='ts' setup>
-import type { AnswerAfter, AnswerBefore, ChatMessageReference, PublishMessageListResponse } from '@/api'
+import type { AnswerAfter, AnswerBefore, ChatMessageReference, ChatMessageStock, ChatSteps, PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
-import { formatCommentOrThumbUpCount } from '@/utils'
+import { formatCommentOrThumbUpCount, useJsonParse } from '@/utils'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const commentContent = ref('')
@@ -30,20 +30,28 @@ async function getData() {
 }
 function transformMessage(message: AnswerBefore): AnswerAfter {
   let reference: ChatMessageReference[] = []
-  let data: any = null
+  let data: [ChatMessageStock] | [] = []
+  let steps: ChatSteps[] = []
+  if (message.data) {
+    data = useJsonParse(message.data) || []
+  }
   if (message.reference) {
-    try {
-      reference = JSON.parse(message.reference || '[]')
-      data = JSON.parse(message.data || '{}')
-    }
-    catch (error) {
-      console.log('transformMessage error', error)
-    }
+    reference = useJsonParse(message.reference) || []
+  }
+  if (message.steps) {
+    steps = useJsonParse(message.steps) || []
+    steps = steps.map((message) => {
+      return {
+        ...message,
+        finished: true,
+      }
+    })
   }
   return {
     ...message,
     reference,
     data,
+    steps,
     isLoading: false,
   }
 }
