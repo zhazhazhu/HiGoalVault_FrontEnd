@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { marked } from '@/modules'
+import { renderMarkdown } from '@/modules'
 import { useChatStore, useUserStore } from '@/store'
 import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
 import { useJsonParse } from '@/utils'
@@ -98,7 +98,7 @@ defineExpose({
         </view>
       </view>
       <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
-        <rich-text :class="cs.e('rich-text')" :nodes="marked(item.response || '')" space="ensp" />
+        <rich-text :class="cs.e('rich-text')" :nodes="renderMarkdown(item.response || '')" space="ensp" />
       </view>
 
       <StockPreview v-if="item.data.length === 1" :data="item.data" />
