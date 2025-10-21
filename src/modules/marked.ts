@@ -62,7 +62,7 @@ marked.use({
 })
 
 export function renderMarkdown(text: string = '') {
-  const html = marked(text)
+  const html = marked(text || '')
   return html
 }
 
