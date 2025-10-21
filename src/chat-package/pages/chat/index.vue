@@ -103,6 +103,13 @@ websocketStore.receiveMessage((data) => {
     scrollToTop()
   }
   if (data.type === 'stream-end') {
+    chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+      steps: currentMessage.steps.map(item => ({
+        ...item,
+        finished: true,
+      })),
+      isLoading: false,
+    })
     // 更新当前的messageID
     if (newMessageId.value) {
       const current = chatStore.messages.find(item => item.msgId === chatStore.currentTemporaryMessageId)!
