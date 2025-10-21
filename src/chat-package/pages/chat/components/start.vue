@@ -4,9 +4,9 @@ const emit = defineEmits<{
 }>()
 
 const defineQuestion = [
-  '某股今日走势如何？',
-  '这只股能买入吗？',
-  '请分析最新财报。',
+  '秋天水果价格变化趋势',
+  '沥青去年九月的价格',
+  '平安最近股价',
 ]
 </script>
 
