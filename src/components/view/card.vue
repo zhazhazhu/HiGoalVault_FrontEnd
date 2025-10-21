@@ -92,10 +92,13 @@ function onDelete() {
 
     <view>
       <wd-text :text="data.title" color="#121212" size="32rpx" bold />
+      <view class="text-24rpx color-#696969 py-10rpx">
+        {{ data.chatQueryAnswerVO?.summary }}
+      </view>
     </view>
 
     <!-- 标签区域 - 超出一行隐藏 -->
-    <view class="flex flex-row gap-20rpx overflow-hidden">
+    <view v-if="data.tags.length" class="flex flex-row gap-20rpx overflow-hidden">
       <Tag v-for="item in data?.tags.slice(0, 3)" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
         #{{ item.tagName }}
       </Tag>

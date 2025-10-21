@@ -66,6 +66,7 @@ export interface AnswerBefore {
   messageTimeLong: number // 消息时间 毫秒级
   chatId: string
   steps: string
+  summary: string
 }
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps'> {
@@ -226,6 +227,7 @@ export interface PublishMessageListResponse {
   queryId: string // 问题id
   isLike: boolean // 是否点赞
   title: string // 标题
+  summary: string // 内容摘要
   shareCount: number // 分享数量
   viewCount: number // 阅读数量
   nickName: string // 发布人昵称

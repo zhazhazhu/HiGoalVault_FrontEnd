@@ -6,6 +6,7 @@ import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { marked } from '@/modules'
 import { useChatStore, useUserStore } from '@/store'
+import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
 import { useJsonParse } from '@/utils'
 
 const isLoading = ref(false)
@@ -88,8 +89,13 @@ defineExpose({
 <template>
   <view>
     <view v-for="item, index in data" :key="item.queryId" :class="cs.m('card')" @click="onGotoMessage(item)">
-      <view class="text-36rpx font-bold">
-        {{ item.query }}
+      <view>
+        <view class="text-36rpx font-bold">
+          {{ item.query }}
+        </view>
+        <view class="text-24rpx color-#696969 py-10rpx">
+          {{ item.summary }}
+        </view>
       </view>
       <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
         <rich-text :class="cs.e('rich-text')" :nodes="marked(item.response || '')" space="ensp" />
