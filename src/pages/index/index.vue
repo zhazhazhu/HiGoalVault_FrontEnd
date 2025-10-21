@@ -47,9 +47,7 @@ const globalStore = useGlobalStore()
 const converseHeight = ref(0)
 
 async function getData() {
-  const viewPromise = getViewData()
-  const followPromise = getFollowData()
-  await Promise.all([viewPromise, followPromise])
+  await Promise.all(userStore.isLogin ? [getViewData(), getFollowData()] : [getViewData()])
 }
 async function refreshData() {
   refreshing.value = true

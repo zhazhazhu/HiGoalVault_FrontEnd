@@ -36,7 +36,7 @@ const cs = useClassesName('message-card')
           <template v-if="item.finished && !item.thinking">
             <text>完成</text>
           </template>
-          <rich-text v-else :class="cs.e('rich-text')" :nodes="renderMarkdown(item.thinking || '')" space="ensp" />
+          <rich-text v-else class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(item.thinking || '')" space="ensp" />
         </template>
       </wd-step>
     </wd-steps>
@@ -67,12 +67,5 @@ const cs = useClassesName('message-card')
   flex-direction: column;
   border-left: 1px solid #e5e5e5;
   padding-left: 10px;
-}
-.hi-message-card__rich-text {
-  color: #333333;
-  line-height: 48rpx;
-  white-space: pre-wrap;
-  word-break: break-all;
-  max-width: 100%;
 }
 </style>

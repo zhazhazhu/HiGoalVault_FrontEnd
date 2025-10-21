@@ -1,6 +1,7 @@
 <script lang='ts' setup>
 import { ref } from 'vue'
 import { useClassesName } from '@/composables'
+import { useUserStore } from '@/store'
 
 const emit = defineEmits<{
   (e: 'changeChat'): void
@@ -8,6 +9,7 @@ const emit = defineEmits<{
 const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('layout')
 const isConnected = ref(true)
+const userStore = useUserStore()
 
 function onClose() {
   if (model.value) {
@@ -20,15 +22,11 @@ function onChangeChat() {
   }
   emit('changeChat')
 }
-uni.onNetworkStatusChange((res) => {
-  console.log('网络状态变化', res)
-  isConnected.value = res.isConnected
-})
 </script>
 
 <template>
   <view :class="[cs.m('container'), cs.is('open', model)]" class="h-screen overflow-hidden">
-    <view :class="cs.m('wrapper')">
+    <view v-if="userStore.isLogin" :class="cs.m('wrapper')">
       <LayoutContent :show-sidebar="model" @close="onClose" @change-chat="onChangeChat" />
     </view>
     <view v-if="isConnected" :class="cs.m('content')">

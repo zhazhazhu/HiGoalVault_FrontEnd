@@ -1,5 +1,3 @@
-export interface LauncherOptions extends Partial<UniApp.RequestOptions> {}
-
 export enum Code {
   SUCCESS = 200,
 }
@@ -12,19 +10,22 @@ export interface RequestResult<T> {
 
 export type Key = 'uni' | 'test'
 
-export type UniOptions = Partial<UniApp.RequestOptions>
+export type UniOptions = Partial<UniApp.RequestOptions> & {
+  retry?: boolean
+}
 
 export type TestOptions = Partial<{ js: string }>
 
 export const baseUrl = 'https://higoall.com:9443/api/v1'
 
-const defaultOptions: LauncherOptions = {
+const defaultOptions: UniOptions = {
   header: {
     'Content-Type': 'application/json',
   },
+  retry: true,
 }
 
-function createRequestPromiseFactory<T>(type: LauncherOptions['method'], url: string, options: UniOptions, data?: LauncherOptions['data']): () => Promise<RequestResult<T>> {
+function createRequestPromiseFactory<T>(type: UniOptions['method'], url: string, options: UniOptions, data?: UniOptions['data']): () => Promise<RequestResult<T>> {
   // 返回一个函数，每次调用都会生成一个新的 Promise（即发起一个新的请求）
   return () => {
     return new Promise((resolve, reject) => {
@@ -35,10 +36,7 @@ function createRequestPromiseFactory<T>(type: LauncherOptions['method'], url: st
         ...options,
         success(res) {
           if (res.statusCode >= 400) {
-            uni.showToast({
-              title: String((res.data as any).message || '请求失败'),
-              icon: 'none',
-            })
+            console.error('backend error status:', res.statusCode)
             reject(res)
           }
           else {
@@ -55,10 +53,14 @@ function createRequestPromiseFactory<T>(type: LauncherOptions['method'], url: st
   }
 }
 
-function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: LauncherOptions['method'], url: string, options: UniOptions, data?: LauncherOptions['data']): Promise<RequestResult<T>> {
+function createRequest<T = UniApp.RequestSuccessCallbackResult['data']>(type: UniOptions['method'], url: string, options: UniOptions, data?: UniOptions['data']): Promise<RequestResult<T>> {
   const requestFactory = createRequestPromiseFactory<T>(type, url, options, data)
-
-  return retry(requestFactory, { retryCount: 20, retryDelay: 3000 })
+  if (options.retry) {
+    return retry(requestFactory, { retryCount: 20, retryDelay: 3000 })
+  }
+  else {
+    return requestFactory()
+  }
 }
 
 export type Launcher = (url: string, options?: UniOptions) => {
@@ -74,13 +76,13 @@ const http: Launcher = (url, options) => {
   function get<T>() {
     return createRequest<T>('GET', url, _options)
   }
-  function post<T>(data: LauncherOptions['data']) {
+  function post<T>(data: UniOptions['data']) {
     return createRequest<T>('POST', url, _options, data)
   }
-  function put<T>(data: LauncherOptions['data']) {
+  function put<T>(data: UniOptions['data']) {
     return createRequest<T>('PUT', url, _options, data)
   }
-  function deleteRequest<T>(data: LauncherOptions['data']) {
+  function deleteRequest<T>(data: UniOptions['data']) {
     return createRequest<T>('DELETE', url, _options, data)
   }
 
