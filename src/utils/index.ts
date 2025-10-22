@@ -142,3 +142,34 @@ export function useJsonParse<T>(val: string): T | null | undefined {
     console.log('parse json error cause', e)
   }
 }
+
+/**
+ *
+ * @param seconds 接受一个秒数
+ * @returns 返回时分秒,如果秒数小于60,则返回秒数,如果秒数大于60并且小于3600,则返回分秒,如果秒数大于3600,则返回时分秒
+ */
+export function formatSeconds(seconds: number) {
+  // 取整秒数
+  const totalSeconds = Math.floor(seconds)
+
+  // 小于60秒,直接返回秒数
+  if (totalSeconds < 60) {
+    return `${totalSeconds}秒`
+  }
+
+  // 计算分钟和秒数
+  const minutes = Math.floor(totalSeconds / 60)
+  const remainingSeconds = totalSeconds % 60
+
+  // 小于3600秒(60分钟),返回分秒
+  if (totalSeconds < 3600) {
+    return `${minutes}分${remainingSeconds}秒`
+  }
+
+  // 大于等于3600秒,返回时分秒
+  const hours = Math.floor(totalSeconds / 3600)
+  const remainingMinutes = Math.floor((totalSeconds % 3600) / 60)
+  const finalSeconds = totalSeconds % 60
+
+  return `${hours}小时${remainingMinutes}分${finalSeconds}秒`
+}

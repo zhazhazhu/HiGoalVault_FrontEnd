@@ -56,6 +56,7 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
     stockData,
     steps,
     isLoading: false,
+    showSteps: false,
   }
 }
 function gotoBack() {

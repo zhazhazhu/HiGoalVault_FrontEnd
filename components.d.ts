@@ -60,5 +60,6 @@ declare module 'vue' {
     WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
     WdTextarea: typeof import('wot-design-uni/components/wd-textarea/wd-textarea.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']
+    WdTransition: typeof import('wot-design-uni/components/wd-transition/wd-transition.vue')['default']
   }
 }

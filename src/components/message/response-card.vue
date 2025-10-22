@@ -3,6 +3,7 @@ import type { AnswerAfter } from '@/api'
 import { useClassesName } from '@/composables'
 import { renderMarkdown } from '@/modules'
 import Stock from '@/subEcharts/echarts/components/stock.vue?async'
+import { formatSeconds } from '@/utils'
 
 defineProps<{
   data: AnswerAfter
@@ -10,6 +11,7 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: 'longPressContent', val: any): void
+  (e: 'clickSteps'): void
 }>()
 
 const cs = useClassesName('message-card')
@@ -17,29 +19,45 @@ const cs = useClassesName('message-card')
 
 <template>
   <view :class="cs.e('messages')">
-    <wd-steps vertical>
-      <wd-step
-        v-for="item in data.steps"
-        :key="item.node"
-        :title="item.message"
-        :status="item.finished ? 'finished' : 'process'"
-      >
-        <template #icon>
-          <template v-if="item.finished">
-            <wd-icon name="check-circle-filled" size="22px" color="var(--hi-primary-color)" />
+    <view class="b-b-1px b-gray-2 pt-10px pb-20px flex justify-between items-center mb-10px" @click="emit('clickSteps')">
+      <view class="color-#c36622 text-16px gap-6px flex items-center font-500">
+        <view class="i-famicons-logo-react text-20px" />
+        <view>
+          深度思考
+        </view>
+        <view class="color-gray text-14px font-400">
+          {{ formatSeconds(data.messageTimeLong / 1000) }}
+        </view>
+      </view>
+
+      <view :class="data.showSteps ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
+    </view>
+
+    <wd-transition :show="data.showSteps" name="fade">
+      <wd-steps vertical>
+        <wd-step
+          v-for="item in data.steps"
+          :key="item.node"
+          :title="item.message"
+          :status="item.finished ? 'finished' : 'process'"
+        >
+          <template #icon>
+            <template v-if="item.finished">
+              <wd-icon name="check-circle-filled" size="22px" color="var(--hi-primary-color)" />
+            </template>
+            <template v-else>
+              <view class="i-line-md-loading-twotone-loop text-22px inline-block" />
+            </template>
           </template>
-          <template v-else>
-            <view class="i-line-md-loading-twotone-loop text-22px inline-block" />
+          <template #description>
+            <template v-if="item.finished && !item.thinking">
+              <text>完成</text>
+            </template>
+            <rich-text v-else class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(item.thinking || '')" space="ensp" />
           </template>
-        </template>
-        <template #description>
-          <template v-if="item.finished && !item.thinking">
-            <text>完成</text>
-          </template>
-          <rich-text v-else class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(item.thinking || '')" space="ensp" />
-        </template>
-      </wd-step>
-    </wd-steps>
+        </wd-step>
+      </wd-steps>
+    </wd-transition>
   </view>
 
   <Stock v-if="data.stockData?.length === 1" :data="data.stockData" />

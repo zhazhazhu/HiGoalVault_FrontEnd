@@ -286,7 +286,11 @@ function stopTextToSpeech() {
       </view>
 
       <view :class="cs.m('model')">
-        <message-response-card :data="currentAnswer" @long-press-content="openTooltips" />
+        <message-response-card
+          :data="currentAnswer"
+          @click-steps="currentAnswer.showSteps = !currentAnswer.showSteps"
+          @long-press-content="openTooltips"
+        />
 
         <view v-show="currentAnswer.isLoading" class="flex items-center gap-8px my-10px">
           <view class="i-line-md-loading-twotone-loop text-40rpx" />

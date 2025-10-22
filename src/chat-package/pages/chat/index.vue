@@ -9,6 +9,7 @@ import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { messageInjectKey } from '@/composables/inject'
 import { useResetRef } from '@/composables/useResetRef'
+import { useTimeCount } from '@/composables/useTimeCount'
 import { useUserStore } from '@/store'
 import { useChatStore } from '@/store/chat'
 import { useWebsocketStore } from '@/store/websocket'
@@ -35,6 +36,13 @@ const websocketStore = useWebsocketStore()
 const messages = computed(() => chatStore.messages)
 const converseInstance = ref<InstanceType<typeof Converse>>()
 const newMessageId = ref('')
+const { start, reset, onChange } = useTimeCount()
+
+onChange((count) => {
+  chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+    messageTimeLong: count,
+  })
+})
 
 websocketStore.receiveMessage((data) => {
   console.log('onMessage', data)
@@ -58,8 +66,10 @@ websocketStore.receiveMessage((data) => {
      * 如果上一个node相同，则修改旧的步骤
      */
     if (data.data?.stage === 'thinking' || data.data?.stage === 'node begin') {
+      start()
       if (isNewNode) {
         chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+          showSteps: true,
           steps: [
             ...currentMessage.steps.map(item => ({ ...item, finished: true })),
             {
@@ -88,6 +98,10 @@ websocketStore.receiveMessage((data) => {
       }
     }
     else if (data.data?.stage === 'stream') {
+      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+        showSteps: false,
+      })
+      reset()
       if (currentMessage.data) {
         const stockData = useJsonParse<[ChatMessageStock]>(currentMessage.data.analysis_data) || []
         chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
@@ -118,7 +132,15 @@ websocketStore.receiveMessage((data) => {
     scrollToTop()
   }
   if (data.type === 'stream-end') {
+    reset()
+    if (currentMessage.data) {
+      const stockData = useJsonParse<[ChatMessageStock]>(currentMessage.data.analysis_data) || []
+      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+        stockData,
+      })
+    }
     chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+      showSteps: false,
       steps: currentMessage.steps.map(item => ({
         ...item,
         finished: true,

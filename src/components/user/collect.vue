@@ -34,7 +34,7 @@ async function getData() {
       const data = useJsonParse<AnswerAfter['data']>(item.data || '{}')
       const stockData = useJsonParse(data?.analysis_data || '[]')
       const steps = useJsonParse<ChatSteps[]>(item.steps || '[]') || []
-      return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [], stockData } as AnswerAfter
+      return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [], stockData, showSteps: false } as AnswerAfter
     }))
     total.value = res.result.total
     isLoading.value = false

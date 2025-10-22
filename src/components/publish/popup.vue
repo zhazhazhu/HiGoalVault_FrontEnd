@@ -83,9 +83,10 @@ function handleClose() {
       </view>
 
       <view class="flex items-center justify-between">
-        <wd-checkbox v-model="form.privacy" :true-value="Truth.TRUE" :false-value="Truth.FALSE">
+        <!-- <wd-checkbox v-model="form.privacy" :true-value="Truth.TRUE" :false-value="Truth.FALSE">
           仅自己可见
-        </wd-checkbox>
+        </wd-checkbox> -->
+        <view class="flex-1" />
 
         <wd-button type="primary" :round="false" :disabled="!form.content" @click="onPublish">
           发布

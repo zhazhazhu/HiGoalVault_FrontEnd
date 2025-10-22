@@ -77,6 +77,7 @@ export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | '
   isLoading: boolean // 是否正在加载中
   steps: ChatSteps[]
   stockData: [ChatMessageStock] | [] // 股票图数据
+  showSteps: boolean // 是否显示步骤
 }
 
 export interface ChatSteps {
