@@ -47,6 +47,9 @@ function handleChartClick(params: ECElementEvent) {
 
 <template>
   <view class="stock-chart-container">
+    <view class="text-13px color-#ff1e1e mb-10px">
+      这是查询到的行情数据：
+    </view>
     <!-- 股票基本信息 -->
     <StockHeader v-if="stockInfo" :stock-info="stockInfo" />
 

@@ -26,6 +26,6 @@ const stockInfo = computed(() => store.data.value.stockInfo)
 .stock-chart-container {
   background-color: #fff;
   overflow: hidden;
-  margin: 12px 0;
+  margin-top: 12px;
 }
 </style>
