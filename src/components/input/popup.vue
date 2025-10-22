@@ -9,6 +9,7 @@ import { useClassesName } from '@/composables'
 type PopupProps = ExtractPropTypes<typeof popupProps>
 
 const props = withDefaults(defineProps<{
+  visible?: boolean
   placeholder?: string
   buttonText?: string
   popupOptions?: Partial<PopupProps>
@@ -23,7 +24,7 @@ const emit = defineEmits<{
   (e: 'confirm', value: string): void
 }>()
 const input = defineModel({ type: String, default: '' })
-const visible = ref(false)
+const visible = defineModel('visible', { type: Boolean, default: false })
 const cs = useClassesName('input-popup')
 const isFocus = ref(false)
 const textareaOptions = computed<Partial<TextareaProps>>(() => ({
@@ -104,7 +105,7 @@ function onBlur() {
           />
         </view>
 
-        <wd-button v-bind="{ type: 'primary', size: 'small', round: false, customClass: 'rounded-8px', onConfirm, ...buttonOptions }">
+        <wd-button v-bind="{ type: 'primary', size: 'small', round: false, customClass: 'rounded-8px', onClick: onConfirm, ...buttonOptions }">
           {{ buttonText }}
         </wd-button>
       </view>

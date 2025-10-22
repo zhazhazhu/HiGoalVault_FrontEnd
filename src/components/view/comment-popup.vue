@@ -278,6 +278,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
         <view class="rounded-12px flex-1 overflow-hidden">
           <input-popup
             v-model="commentContent"
+            v-model:visible="isFocus"
             :placeholder="placeholder"
             :popup-options="{ modal: false }"
             @confirm="onConfirm"
