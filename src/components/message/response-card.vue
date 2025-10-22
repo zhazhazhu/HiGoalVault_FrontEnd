@@ -54,7 +54,7 @@ const cs = useClassesName('message-card')
             <template v-if="item.finished && !item.thinking?.trim()">
               <text>完成</text>
             </template>
-            <rich-text v-else class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(item.thinking || '')" space="ensp" />
+            <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.thinking || '')" />
           </template>
         </wd-step>
       </wd-steps>
@@ -64,7 +64,7 @@ const cs = useClassesName('message-card')
   <Stock v-if="data.stockData?.length === 1" :data="data.stockData" />
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e)">
-    <rich-text class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(data.response)" space="ensp" />
+    <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" />
   </view>
 
   <view v-if="data.label?.length && enableLabel" class="flex flex-row flex-wrap gap-10rpx">

@@ -36,6 +36,8 @@ declare module 'vue' {
     UserComment: typeof import('./src/components/user/comment.vue')['default']
     UserLike: typeof import('./src/components/user/like.vue')['default']
     UserPublish: typeof import('./src/components/user/publish.vue')['default']
+    UvParse: typeof import('./src/components/uv-parse/index.vue')['default']
+    UvParseNodeNode: typeof import('./src/components/uv-parse/node/node.vue')['default']
     ViewCard: typeof import('./src/components/view/card.vue')['default']
     ViewCommentCard: typeof import('./src/components/view/comment-card.vue')['default']
     ViewCommentPopup: typeof import('./src/components/view/comment-popup.vue')['default']

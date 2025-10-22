@@ -100,7 +100,7 @@ defineExpose({
         </view>
       </view>
       <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
-        <rich-text :class="cs.e('rich-text')" :nodes="renderMarkdown(item.response || '')" space="ensp" />
+        <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.response || '')" />
       </view>
 
       <StockPreview v-if="item.stockData.length === 1" :data="item.stockData" />
