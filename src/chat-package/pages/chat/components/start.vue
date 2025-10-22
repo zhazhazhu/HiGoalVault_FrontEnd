@@ -5,7 +5,7 @@ const emit = defineEmits<{
 
 const defineQuestion = [
   '秋天水果价格变化趋势',
-  '沥青去年九月的价格',
+  '九月份沥青2512价格',
   '平安最近股价',
 ]
 </script>
