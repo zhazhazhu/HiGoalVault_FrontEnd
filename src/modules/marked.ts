@@ -2,14 +2,24 @@ import { marked } from 'marked'
 import { hljs } from './highlight'
 
 marked.use({
+  highlight: (code, lang) => {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return `<pre class='md-pre'><p class='code-title'>${lang}</p><code class="hljs language-${lang}">${
+          hljs.highlight(code, { language: lang, ignoreIllegals: true }).value
+        }</code></pre>`
+      }
+      catch {
+        console.log('hljs error')
+      }
+    }
+    return hljs.highlightAuto(code).value
+  },
   gfm: true,
   breaks: true,
   headerIds: false,
   mangle: false,
   renderer: {
-    code(code: string, lang: string) {
-      return `<pre class='md-pre'><p class='code-title'>${lang}</p><code class='hljs language-${lang}'>${hljs.highlight(code, { language: lang }).value}</code></pre>`
-    },
     heading(text: string, level: number) {
       return `<h${level} class='md-h${level}'>${text}</h${level}>`
     },
