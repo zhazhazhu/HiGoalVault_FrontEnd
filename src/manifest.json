@@ -55,8 +55,6 @@
     "resizable": true,
     "setting": {
       "urlCheck": false,
-      "es6": false,
-      "swc": true,
       "postcss": true,
       "minified": true,
       "minifyWXSS": true,
