@@ -55,9 +55,11 @@ page {
 }
 .hi-message-card--checkbox-text {
   --wot-checkbox-label-margin: 20px;
+  width: 100%;
 }
 
 .hi-message-card--checkbox-message {
+  width: 100%;
   background-color: #f3f3f3;
   --wot-checkbox-margin: 0;
 }

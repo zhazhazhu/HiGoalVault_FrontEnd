@@ -355,7 +355,7 @@ function stopTextToSpeech() {
   background-color: #fff;
   padding: 10px 16px;
   border-radius: 12px;
-  width: fit-content;
+  width: 100%;
   font-size: 17px;
   color: #121212;
   line-height: 20px;
