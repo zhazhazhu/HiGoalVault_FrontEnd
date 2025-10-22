@@ -105,7 +105,7 @@ defineExpose({
       <StockPreview v-if="item.stockData.length === 1" :data="item.stockData" />
 
       <view class="flex items-center justify-between">
-        <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">
+        <view class="text-24rpx font-500 color-#666" @click.stop="collect(item.queryId, index)">
           {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
         </view>
         <button open-type="share" class="share-btn contents" :data-id="item.queryId">
