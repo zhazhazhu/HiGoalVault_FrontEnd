@@ -146,7 +146,7 @@ onLoad((options) => {
         <template v-if="data && messageContent">
           <ViewDetailCard v-if="data" :data="data" />
           <view class="bg-white p-32rpx mt-10rpx">
-            <MessageResponseCard :data="messageContent" />
+            <MessageResponseCard :data="messageContent" @click-steps="messageContent.showSteps = !messageContent.showSteps" />
           </view>
         </template>
       </scroll-view>
