@@ -176,7 +176,7 @@ onLoad(async () => {
   }
   speechRecognizerManager.OnSentenceEnd = (res) => {
     console.log('OnSentenceEnd', res.result?.voice_text_str)
-    speechText.value = String(res.result?.voice_text_str || '')
+    // speechText.value = String(res.result?.voice_text_str || '')
   }
   speechRecognizerManager.OnError = (res) => {
     console.log('OnError', res)
