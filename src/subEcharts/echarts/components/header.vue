@@ -1,32 +1,43 @@
 <script lang='ts' setup>
 import type { StockInfo } from '@/echarts'
+import { computed } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   stockInfo: StockInfo
 }>()
+
+const formattedChange = computed(() => {
+  const value = Number(props.stockInfo.change)
+  return Number.isNaN(value) ? props.stockInfo.change : value.toFixed(5).replace(/\.?0+$/, '')
+})
+
+const formattedChangePercent = computed(() => {
+  const value = Number(props.stockInfo.changePercent)
+  return Number.isNaN(value) ? props.stockInfo.changePercent : value.toFixed(5).replace(/\.?0+$/, '')
+})
 </script>
 
 <template>
-  <view class="stock-header">
-    <view class="stock-title-section">
-      <text class="stock-name">
+  <view class="flex justify-between items-start mb-32rpx pb-24rpx border-b-2rpx border-#f0f0f0">
+    <view class="flex flex-col gap-8rpx">
+      <text class="text-36rpx font-600 color-#333">
         {{ stockInfo.name || '股票名称' }}
       </text>
-      <text class="stock-code">
+      <text class="text-28rpx color-#666">
         {{ stockInfo.code || '000000' }}
       </text>
     </view>
 
-    <view class="stock-price-section">
-      <text class="current-price" :class="{ 'price-up': stockInfo.isUp, 'price-down': !stockInfo.isUp }">
+    <view class="flex flex-col items-end gap-8rpx">
+      <text class="text-36rpx font-700" :class="[stockInfo.isUp ? 'color-#ec0000' : 'color-#00da3c']">
         ¥{{ stockInfo.currentPrice }}
       </text>
-      <view class="price-change">
-        <text class="change-amount" :class="{ 'price-up': stockInfo.isUp, 'price-down': !stockInfo.isUp }">
-          {{ stockInfo.isUp ? '+' : '' }}{{ stockInfo.change }}
+      <view class="flex gap-16rpx items-center">
+        <text class="text-28rpx font-500" :class="[stockInfo.isUp ? 'color-#ec0000' : 'color-#00da3c']">
+          {{ stockInfo.isUp ? '+' : '' }}{{ formattedChange }}
         </text>
-        <text class="change-percent" :class="{ 'price-up': stockInfo.isUp, 'price-down': !stockInfo.isUp }">
-          {{ stockInfo.isUp ? '+' : '' }}{{ stockInfo.changePercent }}%
+        <text class="text-28rpx font-500" :class="[stockInfo.isUp ? 'color-#ec0000' : 'color-#00da3c']">
+          {{ stockInfo.isUp ? '+' : '' }}{{ formattedChangePercent }}%
         </text>
       </view>
     </view>
@@ -34,59 +45,4 @@ defineProps<{
 </template>
 
 <style lang='scss' scoped>
-.stock-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
-}
-.stock-title-section {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.stock-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-}
-
-.stock-code {
-  font-size: 14px;
-  color: #666;
-}
-.stock-price-section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.current-price {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.price-change {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.change-amount,
-.change-percent {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.price-up {
-  color: #ec0000;
-}
-
-.price-down {
-  color: #00da3c;
-}
 </style>
