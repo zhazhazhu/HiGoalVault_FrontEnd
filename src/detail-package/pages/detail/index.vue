@@ -30,10 +30,12 @@ async function getData() {
 }
 function transformMessage(message: AnswerBefore): AnswerAfter {
   let reference: ChatMessageReference[] = []
-  let data: [ChatMessageStock] | [] = []
+  let data: AnswerAfter['data'] = { analysis_data: '' }
+  let stockData: [ChatMessageStock] | [] = []
   let steps: ChatSteps[] = []
   if (message.data) {
-    data = useJsonParse(message.data) || []
+    data = useJsonParse(message.data) || { analysis_data: '' }
+    stockData = useJsonParse(data.analysis_data) || []
   }
   if (message.reference) {
     reference = useJsonParse(message.reference) || []
@@ -51,6 +53,7 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
     ...message,
     reference,
     data,
+    stockData,
     steps,
     isLoading: false,
   }

@@ -71,9 +71,12 @@ export interface AnswerBefore {
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps'> {
   reference: ChatMessageReference[]
-  data: [ChatMessageStock] | [] // 股票图数据
+  data: {
+    analysis_data: string // 股票图数据
+  }
   isLoading: boolean // 是否正在加载中
   steps: ChatSteps[]
+  stockData: [ChatMessageStock] | [] // 股票图数据
 }
 
 export interface ChatSteps {

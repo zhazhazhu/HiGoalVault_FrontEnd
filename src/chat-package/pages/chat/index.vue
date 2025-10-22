@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { Page } from '@/api'
+import type { ChatMessageStock, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
@@ -12,6 +12,7 @@ import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { useChatStore } from '@/store/chat'
 import { useWebsocketStore } from '@/store/websocket'
+import { useJsonParse } from '@/utils'
 import Start from './components/start.vue'
 
 const navbarInstance = ref<NavbarInstance>()
@@ -63,7 +64,7 @@ websocketStore.receiveMessage((data) => {
             ...currentMessage.steps.map(item => ({ ...item, finished: true })),
             {
               node: data.data?.node,
-              message: (data.data?.message as unknown as string),
+              message: data.data?.message,
               thinking: data.data?.thinking || '',
               finished: false,
             },
@@ -86,7 +87,13 @@ websocketStore.receiveMessage((data) => {
         })
       }
     }
-    else if (data.data?.stage === 'stream' || data.data?.stage === 'node end') {
+    else if (data.data?.stage === 'stream') {
+      if (currentMessage.data) {
+        const stockData = useJsonParse<[ChatMessageStock]>(currentMessage.data.analysis_data) || []
+        chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+          stockData,
+        })
+      }
       chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
         ...data.data,
         steps: currentMessage.steps.map(item => ({
@@ -94,7 +101,15 @@ websocketStore.receiveMessage((data) => {
           finished: true,
         })),
         response: currentMessage.response += (data.data?.response || ''),
-        data: data.data?.data ? data.data.data : [],
+        reference: data.data?.reference,
+        queryId: data.data?.query_id,
+      })
+    }
+    else if (data.data?.stage === 'node end') {
+      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+        ...data.data,
+        data: data.data.data,
+        response: currentMessage.response += (data.data?.response || ''),
         reference: data.data?.reference,
         queryId: data.data?.query_id,
       })

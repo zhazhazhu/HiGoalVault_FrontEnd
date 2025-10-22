@@ -31,9 +31,10 @@ async function getData() {
   })
   if (res.code === 200) {
     data.value.push(...res.result.records.map((item) => {
-      const data = useJsonParse(item.data || '[]') || []
+      const data = useJsonParse<AnswerAfter['data']>(item.data || '{}')
+      const stockData = useJsonParse(data?.analysis_data || '[]')
       const steps = useJsonParse<ChatSteps[]>(item.steps || '[]') || []
-      return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [] } as AnswerAfter
+      return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [], stockData } as AnswerAfter
     }))
     total.value = res.result.total
     isLoading.value = false
@@ -101,7 +102,7 @@ defineExpose({
         <rich-text :class="cs.e('rich-text')" :nodes="renderMarkdown(item.response || '')" space="ensp" />
       </view>
 
-      <StockPreview v-if="item.data.length === 1" :data="item.data" />
+      <StockPreview v-if="item.stockData.length === 1" :data="item.stockData" />
 
       <view class="flex items-center justify-between">
         <view class="text-24rpx font-500 color-#666" @click="collect(item.queryId, index)">

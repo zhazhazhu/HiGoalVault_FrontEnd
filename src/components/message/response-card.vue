@@ -42,11 +42,11 @@ const cs = useClassesName('message-card')
     </wd-steps>
   </view>
 
+  <Stock v-if="data.stockData?.length === 1" :data="data.stockData" />
+
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e)">
     <rich-text class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(data.response)" space="ensp" />
   </view>
-
-  <Stock v-if="data?.data?.length === 1" :data="data?.data" />
 </template>
 
 <style lang='scss' scoped>

@@ -1,12 +1,12 @@
 <script lang='ts' setup>
-import type { AnswerAfter, PublishMessageListResponse } from '@/api'
+import type { AnswerAfter, ChatMessageStock, PublishMessageListResponse } from '@/api'
 import { computed } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
-import { formatCommentDate, formatCommentOrThumbUpCount } from '@/utils'
+import { formatCommentDate, formatCommentOrThumbUpCount, useJsonParse } from '@/utils'
 
 const props = defineProps<{
   disableToUser?: boolean
@@ -20,7 +20,11 @@ const emit = defineEmits<{
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
 const userStore = useUserStore()
-const stockData = computed<AnswerAfter['data']>(() => data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : [])
+const stockData = computed(() => {
+  const _data: AnswerAfter['data'] = data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : { analysis_data: '' }
+  const stockData = useJsonParse<[ChatMessageStock] | []>(_data.analysis_data || '[]') || []
+  return stockData
+})
 const message = useMessage()
 
 async function onThumbsUp() {

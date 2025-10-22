@@ -76,10 +76,12 @@ export const useChatStore = defineStore('chat', {
     transformMessage(message: ChatMessageBefore): ChatMessageAfter {
       const answerAfter = message.chatQueryAnswerList.map((item) => {
         let reference: ChatMessageReference[] = []
-        let data: [ChatMessageStock] | [] = []
+        let data: AnswerAfter['data'] = { analysis_data: '' }
+        let stockData: [ChatMessageStock] | [] = []
         let steps: ChatSteps[] = []
         if (item.data) {
-          data = useJsonParse(item.data) || []
+          data = useJsonParse(item.data) || { analysis_data: '' }
+          stockData = useJsonParse(data.analysis_data) || []
         }
         if (item.reference) {
           reference = useJsonParse(item.reference) || []
@@ -97,6 +99,7 @@ export const useChatStore = defineStore('chat', {
           ...item,
           reference,
           data,
+          stockData,
           steps,
           isLoading: false,
         }
@@ -116,7 +119,7 @@ export const useChatStore = defineStore('chat', {
         chatQueryAnswerList: [
           {
             message: '',
-            data: [],
+            data: { analysis_data: '' },
             steps: [],
             reference: [],
             response: '',
@@ -129,6 +132,7 @@ export const useChatStore = defineStore('chat', {
             messageTimeLong: 0,
             chatId: '',
             summary: '',
+            stockData: [],
           },
         ],
         ...message,
@@ -139,7 +143,8 @@ export const useChatStore = defineStore('chat', {
     },
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
-        data: [],
+        data: { analysis_data: '' },
+        stockData: [],
         steps: [],
         reference: [],
         response: '',
