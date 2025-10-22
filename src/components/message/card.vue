@@ -111,7 +111,13 @@ watch(() => messageInject.share.value.isChecked, (val) => {
 function onReference(item: ChatMessageReference) {
   uni.setClipboardData({
     data: item.url,
-    showToast: true,
+    showToast: false,
+    success() {
+      uni.showToast({
+        title: '链接已复制',
+        icon: 'none',
+      })
+    },
   })
 }
 
