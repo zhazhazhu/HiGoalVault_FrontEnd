@@ -50,7 +50,7 @@ const cs = useClassesName('message-card')
             </template>
           </template>
           <template #description>
-            <template v-if="item.finished && !item.thinking">
+            <template v-if="item.finished && !item.thinking?.trim()">
               <text>完成</text>
             </template>
             <rich-text v-else class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(item.thinking || '')" space="ensp" />
