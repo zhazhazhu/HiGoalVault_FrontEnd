@@ -33,6 +33,7 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
   let data: AnswerAfter['data'] = { analysis_data: '' }
   let stockData: [ChatMessageStock] | [] = []
   let steps: ChatSteps[] = []
+  let label: string[] = []
   if (message.data) {
     data = useJsonParse(message.data) || { analysis_data: '' }
     stockData = useJsonParse(data.analysis_data) || []
@@ -49,12 +50,16 @@ function transformMessage(message: AnswerBefore): AnswerAfter {
       }
     })
   }
+  if (message.label) {
+    label = useJsonParse(message.label) || []
+  }
   return {
     ...message,
     reference,
     data,
     stockData,
     steps,
+    label,
     isLoading: false,
     showSteps: false,
   }

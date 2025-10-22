@@ -287,6 +287,7 @@ function stopTextToSpeech() {
 
       <view :class="cs.m('model')">
         <message-response-card
+          enable-label
           :data="currentAnswer"
           @click-steps="currentAnswer.showSteps = !currentAnswer.showSteps"
           @long-press-content="openTooltips"

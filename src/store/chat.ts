@@ -79,6 +79,7 @@ export const useChatStore = defineStore('chat', {
         let data: AnswerAfter['data'] = { analysis_data: '' }
         let stockData: [ChatMessageStock] | [] = []
         let steps: ChatSteps[] = []
+        let label: string[] = []
         if (item.data) {
           data = useJsonParse(item.data) || { analysis_data: '' }
           stockData = useJsonParse(data.analysis_data) || []
@@ -95,12 +96,16 @@ export const useChatStore = defineStore('chat', {
             }
           })
         }
+        if (item.label) {
+          label = useJsonParse(item.label) || []
+        }
         return {
           ...item,
           reference,
           data,
           stockData,
           steps,
+          label,
           isLoading: false,
           showSteps: false,
         }
@@ -135,6 +140,7 @@ export const useChatStore = defineStore('chat', {
             summary: '',
             stockData: [],
             showSteps: false,
+            label: [],
           },
         ],
         ...message,
@@ -161,6 +167,7 @@ export const useChatStore = defineStore('chat', {
         message: '',
         summary: '',
         showSteps: false,
+        label: [],
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)

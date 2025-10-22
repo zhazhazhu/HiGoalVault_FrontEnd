@@ -67,9 +67,10 @@ export interface AnswerBefore {
   chatId: string
   steps: string
   summary: string
+  label: string | null // 标签
 }
 
-export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps'> {
+export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps' | 'label'> {
   reference: ChatMessageReference[]
   data: {
     analysis_data: string // 股票图数据
@@ -78,6 +79,7 @@ export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | '
   steps: ChatSteps[]
   stockData: [ChatMessageStock] | [] // 股票图数据
   showSteps: boolean // 是否显示步骤
+  label: string[]
 }
 
 export interface ChatSteps {

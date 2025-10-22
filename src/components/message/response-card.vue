@@ -7,6 +7,7 @@ import { formatSeconds } from '@/utils'
 
 defineProps<{
   data: AnswerAfter
+  enableLabel?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -64,6 +65,12 @@ const cs = useClassesName('message-card')
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e)">
     <rich-text class="markdown-body" :class="cs.e('rich-text')" :nodes="renderMarkdown(data.response)" space="ensp" />
+  </view>
+
+  <view v-if="data.label?.length && enableLabel" class="flex flex-row flex-wrap gap-10rpx">
+    <Tag v-for="item, index in data?.label" :key="index" type="primary" class="flex-shrink-0">
+      #{{ item }}
+    </Tag>
   </view>
 </template>
 
