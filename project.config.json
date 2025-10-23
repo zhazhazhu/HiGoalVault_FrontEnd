@@ -1,18 +1,11 @@
 {
   "setting": {
-    "es6": true,
+    "urlCheck": false,
     "postcss": true,
     "minified": true,
-    "uglifyFileName": false,
-    "enhance": true,
-    "packNpmRelationList": [],
-    "babelSetting": {
-      "ignore": [],
-      "disablePlugins": [],
-      "outputPath": ""
-    },
-    "useCompilerPlugins": false,
-    "minifyWXML": true
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "ignoreUploadUnusedFiles": true
   },
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
@@ -21,5 +14,6 @@
     "include": []
   },
   "appid": "wx938c4df402aa04f9",
+  "projectname": "HiGoal AI",
   "editorSetting": {}
 }

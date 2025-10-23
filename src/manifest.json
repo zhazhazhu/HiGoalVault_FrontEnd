@@ -52,7 +52,6 @@
   "mp-weixin": {
     "appid": "wx938c4df402aa04f9",
     "projectname": "HiGoal AI",
-    "resizable": true,
     "setting": {
       "urlCheck": false,
       "postcss": true,
