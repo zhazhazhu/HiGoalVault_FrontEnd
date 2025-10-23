@@ -34,7 +34,7 @@ const cs = useClassesName('message-card')
       <view :class="data.showSteps ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
     </view>
 
-    <wd-transition :show="data.showSteps" name="fade">
+    <wd-transition :show="data.showSteps" name="fade" :duration="50">
       <wd-steps vertical>
         <wd-step
           v-for="item in data.steps"
