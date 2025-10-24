@@ -5,13 +5,11 @@ import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
 
-defineProps<{
-  showSidebar: boolean
-}>()
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'changeChat'): void
 }>()
+const model = defineModel({ type: Boolean, required: true })
 const cs = useClassesName('sidebar-content')
 const active = ref('browse')
 const userStore = useUserStore()
@@ -32,6 +30,7 @@ function gotoSettings() {
   uni.navigateTo({ url: '/settings-package/pages/settings/index' })
 }
 function gotoUser() {
+  model.value = false
   uni.navigateTo({ url: '/user-package/pages/user/index' })
 }
 function onClickTag(tag: Tag) {
@@ -75,7 +74,7 @@ onMounted(() => {
         </view>
       </tabs-item>
       <tabs-item name="chat" label="对话">
-        <LayoutChatList :show-sidebar="showSidebar" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
+        <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
       </tabs-item>
     </tabs>
 

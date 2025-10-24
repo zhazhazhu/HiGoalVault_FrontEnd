@@ -27,7 +27,7 @@ function onChangeChat() {
 <template>
   <view :class="[cs.m('container'), cs.is('open', model)]" class="h-screen overflow-hidden">
     <view v-if="userStore.isLogin" :class="cs.m('wrapper')">
-      <LayoutContent :show-sidebar="model" @close="onClose" @change-chat="onChangeChat" />
+      <LayoutContent v-model="model" @close="onClose" @change-chat="onChangeChat" />
     </view>
     <view v-if="isConnected" :class="cs.m('content')">
       <view :class="cs.e('content-mask')" @click.stop="onClose" />

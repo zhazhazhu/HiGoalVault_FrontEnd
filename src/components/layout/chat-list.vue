@@ -80,7 +80,7 @@ function onDeleteChat(item: Chat) {
     api.deleteChat(item.chatId)
     if (chatStore.currentChatId === item.chatId) {
       chatStore.currentChatId = ''
-      emit('changeChat')
+      chatStore.messages = []
     }
     chatStore.chats = chatStore.chats.filter(chat => chat.chatId !== item.chatId)
   })

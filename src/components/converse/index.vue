@@ -33,6 +33,15 @@ const messageInject = useMessageInject()
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
 
+function init() {
+  // 确保 WebSocket 连接已建立
+  websocketStore.connectWebSocket()
+
+  if (chatStore.waitingMessageTask) {
+    sendWaitingMessage()
+  }
+  getConverseHeight()
+}
 function onLineChange(e) {
   cursorSpacing.value = 20 + e.height
   getConverseHeight()
@@ -41,7 +50,7 @@ function onLineChange(e) {
 function onKeyboardHeightChange(e) {
   converseContainerStyle.value.paddingBottom = `${e.height + 10}px`
 }
-
+const pages = getCurrentPages()
 async function waitConfirmMessage(text: string) {
   const data = await api.addChat()
   if (data.code === 200) {
@@ -49,10 +58,15 @@ async function waitConfirmMessage(text: string) {
   }
   chatStore.waitingMessageTask = {
     query: text,
-    chatId: chatStore.currentChatId,
+    chatId: data.result.chatId,
     runId: useUUID(32),
   }
-  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+  if (pages[pages.length - 1].route === 'chat-package/pages/chat/index') {
+    sendWaitingMessage()
+  }
+  else {
+    uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+  }
 }
 
 function sendWaitingMessage() {
@@ -132,14 +146,8 @@ function onInputFocus(e) {
   cursorPosition.value = model.value.length
 }
 
-onMounted(async () => {
-  // 确保 WebSocket 连接已建立
-  websocketStore.connectWebSocket()
-
-  if (chatStore.waitingMessageTask) {
-    sendWaitingMessage()
-  }
-  getConverseHeight()
+onMounted(() => {
+  init()
 })
 
 defineExpose({
