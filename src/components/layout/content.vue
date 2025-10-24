@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { Tag } from '@/api'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
@@ -16,6 +16,10 @@ const userStore = useUserStore()
 const chatStore = useChatStore()
 const isEdit = ref(false)
 const popularTags = ref<Tag[]>([])
+
+watch(() => [model.value, active.value], () => {
+  isEdit.value = false
+})
 
 async function getData() {
   const res = await api.getPopularTags()
