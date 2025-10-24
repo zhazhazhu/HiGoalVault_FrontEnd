@@ -37,7 +37,7 @@ function createRequestPromiseFactory<T>(type: UniOptions['method'], url: string,
         success(res) {
           if (res.statusCode >= 400) {
             console.error('backend error status:', res.statusCode)
-            reject(res)
+            resolve(res.data as any)
           }
           else {
             resolve(res.data as any)
