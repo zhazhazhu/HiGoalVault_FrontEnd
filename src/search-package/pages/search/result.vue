@@ -2,7 +2,7 @@
 import type { SearchTab } from '.'
 import type { GlobalSearchRequest, GlobalSearchResult, UserCenterSearchRequest } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { SEARCH_TABS } from '.'
@@ -126,6 +126,15 @@ onLoad((options) => {
   keyword.value = options?.keyword || ''
   userId.value = options?.userId ? options?.userId : ''
 })
+
+onMounted(() => {
+  if (!userId.value) {
+    data.value = []
+    page.value.pageNumber = 1
+    page.value.pageSize = 10
+    getData()
+  }
+})
 </script>
 
 <template>
@@ -148,11 +157,13 @@ onLoad((options) => {
         <view class="mb-10px sticky top-0 left-0 z-10 bg-[var(--hi-bg-color)]">
           <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
 
-          <wd-tabs custom-class="wd-tabs-transparent" @change="onTabChange">
-            <block v-for="item in SEARCH_TABS" :key="item.value">
-              <wd-tab :title="item.name" :name="item.value" />
-            </block>
-          </wd-tabs>
+          <view v-if="userId">
+            <wd-tabs custom-class="wd-tabs-transparent" @change="onTabChange">
+              <block v-for="item in SEARCH_TABS" :key="item.value">
+                <wd-tab :title="item.name" :name="item.value" />
+              </block>
+            </wd-tabs>
+          </view>
         </view>
 
         <view>

@@ -17,11 +17,23 @@ const transformData = computed(() => props.data.map((item) => {
     chatQueryAnswerVO: item.chatQueryAnswerVO ? chatStore.transformAnswer(item.chatQueryAnswerVO) : null,
   }
 }))
+
+function onClickContent(item: typeof transformData['value'][number]) {
+  if (item.opType === 0) {
+    uni.navigateTo({
+      url: `/detail-package/pages/detail/index?id=${item.memberContentForClientVO.id}`,
+    })
+  }
+  else {
+    chatStore.currentChatId = item.chatId
+    uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+  }
+}
 </script>
 
 <template>
   <view>
-    <view v-for="item in transformData" :key="item.chatId" :class="cs.m('container')">
+    <view v-for="item in transformData" :key="item.chatId" :class="cs.m('container')" @click="onClickContent(item)">
       <ViewCard v-if="item.opType === 0" :data="item.memberContentForClientVO" />
       <MessagePreview v-else :data="item.chatQueryAnswerVO!" />
     </view>
