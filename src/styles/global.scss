@@ -188,3 +188,10 @@ page {
   word-break: break-all;
   max-width: 100%;
 }
+
+.wd-tabs-transparent {
+  background: transparent !important;
+  .wd-tabs__nav {
+    background-color: transparent !important;
+  }
+}

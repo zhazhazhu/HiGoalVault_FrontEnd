@@ -35,7 +35,7 @@ function onConfirm() {
         <wd-icon name="search" color="#fff" />
       </view>
     </view>
-    <view class="i-uil-camera size-25px" />
+    <!-- <view class="i-uil-camera size-25px" /> -->
   </view>
 </template>
 

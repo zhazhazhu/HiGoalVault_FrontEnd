@@ -25,8 +25,10 @@ function onConfirm() {
     uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}` })
   }
   searchText.value = ''
+  removeSearchHistoryVisible.value = false
 }
 function onGotoBack() {
+  removeSearchHistoryVisible.value = false
   uni.navigateBack({ delta: 999 })
 }
 function onOperate(type: 'delete') {

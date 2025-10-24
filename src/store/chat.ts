@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { AnswerAfter, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps } from '../api'
+import type { AnswerAfter, AnswerBefore, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps } from '../api'
 import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
 import { useStoreRef, useUUID } from '@/composables'
@@ -74,46 +74,47 @@ export const useChatStore = defineStore('chat', {
   },
   actions: {
     transformMessage(message: ChatMessageBefore): ChatMessageAfter {
-      const answerAfter = message.chatQueryAnswerList.map((item) => {
-        let reference: ChatMessageReference[] = []
-        let data: AnswerAfter['data'] = { analysis_data: '' }
-        let stockData: [ChatMessageStock] | [] = []
-        let steps: ChatSteps[] = []
-        let label: string[] = []
-        if (item.data) {
-          data = useJsonParse(item.data) || { analysis_data: '' }
-          stockData = useJsonParse(data.analysis_data) || []
-        }
-        if (item.reference) {
-          reference = useJsonParse(item.reference) || []
-        }
-        if (item.steps) {
-          steps = useJsonParse(item.steps) || []
-          steps = steps.map((item) => {
-            return {
-              ...item,
-              finished: true,
-            }
-          })
-        }
-        if (item.label) {
-          label = useJsonParse(item.label) || []
-        }
-        return {
-          ...item,
-          reference,
-          data,
-          stockData,
-          steps,
-          label,
-          isLoading: false,
-          showSteps: false,
-        }
-      })
+      const answerAfter = message.chatQueryAnswerList.map(item => this.transformAnswer(item))
 
       return {
         ...message,
         chatQueryAnswerList: answerAfter,
+      }
+    },
+    transformAnswer(answer: AnswerBefore): AnswerAfter {
+      let reference: ChatMessageReference[] = []
+      let data: AnswerAfter['data'] = { analysis_data: '' }
+      let stockData: [ChatMessageStock] | [] = []
+      let steps: ChatSteps[] = []
+      let label: string[] = []
+      if (answer.data) {
+        data = useJsonParse(answer.data) || { analysis_data: '' }
+        stockData = useJsonParse(data.analysis_data) || []
+      }
+      if (answer.reference) {
+        reference = useJsonParse(answer.reference) || []
+      }
+      if (answer.steps) {
+        steps = useJsonParse(answer.steps) || []
+        steps = steps.map((answer) => {
+          return {
+            ...answer,
+            finished: true,
+          }
+        })
+      }
+      if (answer.label) {
+        label = useJsonParse(answer.label) || []
+      }
+      return {
+        ...answer,
+        reference,
+        data,
+        stockData,
+        steps,
+        label,
+        isLoading: false,
+        showSteps: false,
       }
     },
     createTemporaryMessage(message?: Partial<ChatMessageAfter>): ChatMessageAfter {

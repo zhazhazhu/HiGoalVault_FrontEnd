@@ -328,7 +328,9 @@ export interface ReplyResponse {
 
 export interface GlobalSearchRequest extends Page {
   userId?: string
-  searchSort: 'SMART' | 'LAST' | 'HOT'
+  searchSort?: 'SMART' | 'LAST' | 'HOT'
+  searchContentRange?: 'ALL' | 'CONTENT_PUBLISH' | 'CONTENT_COMMENT' | 'ACTION'
+  searchActionRange?: 'ALL' | 'CONTENT_LIKE' | 'CHAT_COLLECT'
 }
 
 export interface GlobalSearchResultResponse extends PageResult {
@@ -336,8 +338,10 @@ export interface GlobalSearchResultResponse extends PageResult {
 }
 
 export interface GlobalSearchResult {
-  chatQuery: ChatMessageBefore
+  chatId: string
+  chatQuery: AnswerBefore
   memberContentForClientVO: PublishMessageListResponse
+  opType: 0 | 1 // 操作类型：0-内容，1-对话问答
 }
 
 export interface AddCommentReplyRequest {
@@ -390,10 +394,7 @@ export interface LikeReplyRequest {
   likeAction: boolean // 操作类型：true-点赞，false-取消点赞
 }
 
-export interface UserCenterSearchRequest extends Page {
-  userId?: string
-  searchSort: 'SMART' | 'LAST' | 'HOT'
-}
+export interface UserCenterSearchRequest extends GlobalSearchRequest {}
 
 export interface GenerateStsTempKeyResponse {
   expiredTime: number // 过期时间

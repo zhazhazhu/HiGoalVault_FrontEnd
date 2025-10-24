@@ -1,19 +1,23 @@
 <script lang='ts' setup>
-import type { Page, PublishMessageListResponse } from '@/api'
+import type { SearchTab } from '.'
+import type { GlobalSearchRequest, GlobalSearchResult, UserCenterSearchRequest } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
 import { onMounted, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
+import { SEARCH_TABS } from '.'
+import ResultList from './result-list.vue'
 
 const showSidebar = ref(false)
 const isLoading = ref(false)
 const isFinish = ref(false)
-const data = ref<PublishMessageListResponse[]>([])
-const [page, reset] = useResetRef<Page>({
+const data = ref<GlobalSearchResult[]>([])
+const [page, reset] = useResetRef<GlobalSearchRequest | UserCenterSearchRequest>({
   pageNumber: 1,
   pageSize: 10,
-  sort: '',
   keyword: '',
+  searchContentRange: 'ALL',
+  searchActionRange: 'ALL',
 })
 const userId = ref('')
 const isRefreshing = ref(false)
@@ -33,7 +37,7 @@ async function getData() {
     })
     if (res.code === 200) {
       res.result.records.forEach((item) => {
-        data.value.push(item.memberContentForClientVO)
+        data.value.push(item)
       })
       isFinish.value = res.result.total <= data.value.length
     }
@@ -44,7 +48,7 @@ async function getData() {
     })
     if (res.code === 200) {
       res.result.records.forEach((item) => {
-        data.value.push(item.memberContentForClientVO)
+        data.value.push(item)
       })
       isFinish.value = res.result.total <= data.value.length
     }
@@ -78,6 +82,30 @@ function onConfirm() {
   data.value = []
   getData()
 }
+function onTabChange({ name }: { name: SearchTab }) {
+  data.value = []
+  reset()
+  switch (name) {
+    case 'ALL':
+      page.value.searchContentRange = 'ALL'
+      break
+    case 'CONTENT_PUBLISH':
+      page.value.searchContentRange = 'CONTENT_PUBLISH'
+      break
+    case 'CONTENT_COMMENT':
+      page.value.searchContentRange = 'CONTENT_COMMENT'
+      break
+    case 'CONTENT_LIKE':
+      page.value.searchContentRange = 'ACTION'
+      page.value.searchActionRange = 'CONTENT_LIKE'
+      break
+    case 'CHAT_COLLECT':
+      page.value.searchContentRange = 'ACTION'
+      page.value.searchActionRange = 'CHAT_COLLECT'
+      break
+  }
+  getData()
+}
 
 onMounted(() => {
   reset()
@@ -94,18 +122,28 @@ onLoad((options) => {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
     <Container custom-class="px-32rpx">
-      <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
+      <view class="mb-10px">
+        <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
+
+        <wd-tabs custom-class="wd-tabs-transparent" @change="onTabChange">
+          <block v-for="item in SEARCH_TABS" :key="item.value">
+            <wd-tab :title="item.name" :name="item.value" />
+          </block>
+        </wd-tabs>
+      </view>
 
       <scroll-view
         scroll-y
         enhanced
+        enable-passive
+        class="h-[calc(100%-120px)]"
         :show-scrollbar="false"
         :refresher-enabled="true"
         :refresher-triggered="isRefreshing"
-        class="h-[calc(100%-80px)] mt-20px"
+        @scrolltolower="loadData"
         @refresherrefresh="refreshData"
       >
-        <ViewList :data="data" :is-loading="isLoading" :is-finish="isFinish" @load="loadData" />
+        <ResultList :data="data" :is-loading="isLoading" :is-finish="isFinish" />
       </scroll-view>
     </Container>
   </Layout>

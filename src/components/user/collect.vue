@@ -4,9 +4,7 @@ import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { renderMarkdown } from '@/modules'
 import { useChatStore, useUserStore } from '@/store'
-import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
 import { useJsonParse } from '@/utils'
 
 const isLoading = ref(false)
@@ -90,30 +88,18 @@ defineExpose({
 
 <template>
   <view>
-    <view v-for="item, index in data" :key="item.queryId" :class="cs.m('card')" @click="onGotoMessage(item)">
-      <view>
-        <view class="text-36rpx font-bold">
-          {{ item.query }}
+    <MessagePreview v-for="item, index in data" :key="item.queryId" :data="item" @click="onGotoMessage(item)">
+      <template #actions>
+        <view class="flex items-center justify-between">
+          <view class="text-24rpx font-500 color-#666" @click.stop="collect(item.queryId, index)">
+            {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
+          </view>
+          <button open-type="share" class="share-btn contents" :data-id="item.queryId">
+            <view class="wechat-icon size-54rpx" />
+          </button>
         </view>
-        <view class="text-24rpx color-#696969 py-10rpx">
-          {{ item.summary }}
-        </view>
-      </view>
-      <view class="text-24rpx bg-[var(--hi-bg-color)] rounded-12rpx p-20rpx h-180rpx overflow-hidden">
-        <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.response || '')" />
-      </view>
-
-      <StockPreview v-if="item.stockData.length === 1" :data="item.stockData" />
-
-      <view class="flex items-center justify-between">
-        <view class="text-24rpx font-500 color-#666" @click.stop="collect(item.queryId, index)">
-          {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
-        </view>
-        <button open-type="share" class="share-btn contents" :data-id="item.queryId">
-          <view class="wechat-icon size-54rpx" />
-        </button>
-      </view>
-    </view>
+      </template>
+    </MessagePreview>
 
     <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
       <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
@@ -123,17 +109,3 @@ defineExpose({
     </view>
   </view>
 </template>
-
-<style lang='scss' scoped>
-.hi-collected-message-list--card {
-  background-color: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-.hi-collected-message-list--card + .hi-collected-message-list--card {
-  margin-top: 20rpx;
-}
-</style>
