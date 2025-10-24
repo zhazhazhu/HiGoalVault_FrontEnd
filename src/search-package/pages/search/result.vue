@@ -2,7 +2,7 @@
 import type { SearchTab } from '.'
 import type { GlobalSearchRequest, GlobalSearchResult, UserCenterSearchRequest } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { SEARCH_TABS } from '.'
@@ -41,6 +41,12 @@ async function getData() {
       })
       isFinish.value = res.result.total <= data.value.length
     }
+    else {
+      uni.showToast({
+        title: res.message,
+        icon: 'none',
+      })
+    }
   }
   else {
     const res = await api.userCenterSearch({ ...page.value, searchSort: 'HOT', userId: userId.value }).finally(() => {
@@ -51,6 +57,12 @@ async function getData() {
         data.value.push(item)
       })
       isFinish.value = res.result.total <= data.value.length
+    }
+    else {
+      uni.showToast({
+        title: res.message,
+        icon: 'none',
+      })
     }
   }
 }
