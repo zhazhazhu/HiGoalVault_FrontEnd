@@ -12,7 +12,7 @@ const showSidebar = ref(false)
 const isLoading = ref(false)
 const isFinish = ref(false)
 const data = ref<GlobalSearchResult[]>([])
-const [page, reset] = useResetRef<GlobalSearchRequest | UserCenterSearchRequest>({
+const [page] = useResetRef<GlobalSearchRequest | UserCenterSearchRequest>({
   pageNumber: 1,
   pageSize: 10,
   keyword: '',
@@ -64,7 +64,8 @@ function loadData() {
 async function refreshData() {
   isRefreshing.value = true
   data.value = []
-  reset()
+  page.value.pageNumber = 1
+  page.value.pageSize = 10
   await getData()
   isRefreshing.value = false
 }
@@ -78,13 +79,15 @@ function onGotoBack() {
   uni.navigateBack()
 }
 function onConfirm() {
-  reset()
+  page.value.pageNumber = 1
+  page.value.pageSize = 10
   data.value = []
   getData()
 }
 function onTabChange({ name }: { name: SearchTab }) {
   data.value = []
-  reset()
+  page.value.pageNumber = 1
+  page.value.pageSize = 10
   switch (name) {
     case 'ALL':
       page.value.searchContentRange = 'ALL'
@@ -107,11 +110,6 @@ function onTabChange({ name }: { name: SearchTab }) {
   getData()
 }
 
-onMounted(() => {
-  reset()
-  getData()
-})
-
 onLoad((options) => {
   keyword.value = options?.keyword || ''
   userId.value = options?.userId ? options?.userId : ''
@@ -121,31 +119,35 @@ onLoad((options) => {
 <template>
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
-    <Container custom-class="px-32rpx">
-      <view class="mb-10px">
-        <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
 
-        <wd-tabs custom-class="wd-tabs-transparent" @change="onTabChange">
-          <block v-for="item in SEARCH_TABS" :key="item.value">
-            <wd-tab :title="item.name" :name="item.value" />
-          </block>
-        </wd-tabs>
+    <scroll-view
+      scroll-into-view-alignment="end"
+      scroll-y
+      enhanced
+      enable-passive
+      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-93px)] box-border"
+      :show-scrollbar="false"
+      :refresher-enabled="true"
+      :refresher-triggered="isRefreshing"
+      @scrolltolower="loadData"
+      @refresherrefresh="refreshData"
+    >
+      <view>
+        <view class="mb-10px sticky top-0 left-0 z-10 bg-[var(--hi-bg-color)]">
+          <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
+
+          <wd-tabs custom-class="wd-tabs-transparent" @change="onTabChange">
+            <block v-for="item in SEARCH_TABS" :key="item.value">
+              <wd-tab :title="item.name" :name="item.value" />
+            </block>
+          </wd-tabs>
+        </view>
+
+        <view>
+          <ResultList :data="data" :is-loading="isLoading" :is-finish="isFinish" />
+        </view>
       </view>
-
-      <scroll-view
-        scroll-y
-        enhanced
-        enable-passive
-        class="h-[calc(100%-120px)]"
-        :show-scrollbar="false"
-        :refresher-enabled="true"
-        :refresher-triggered="isRefreshing"
-        @scrolltolower="loadData"
-        @refresherrefresh="refreshData"
-      >
-        <ResultList :data="data" :is-loading="isLoading" :is-finish="isFinish" />
-      </scroll-view>
-    </Container>
+    </scroll-view>
   </Layout>
 </template>
 

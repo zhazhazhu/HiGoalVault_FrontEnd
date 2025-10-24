@@ -339,7 +339,7 @@ export interface GlobalSearchResultResponse extends PageResult {
 
 export interface GlobalSearchResult {
   chatId: string
-  chatQuery: AnswerBefore
+  chatQueryAnswerVO: AnswerBefore
   memberContentForClientVO: PublishMessageListResponse
   opType: 0 | 1 // 操作类型：0-内容，1-对话问答
 }
