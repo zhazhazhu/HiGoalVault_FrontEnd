@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
+import StockPreview from '@/echarts/components/preview.vue?async'
 import { renderMarkdown } from '@/modules'
-import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
 
 defineProps<{
   data: AnswerAfter

@@ -4,8 +4,8 @@ import { computed } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
+import StockPreview from '@/echarts/components/preview.vue?async'
 import { useUserStore } from '@/store'
-import StockPreview from '@/subEcharts/echarts/components/preview.vue?async'
 import { formatCommentDate, formatCommentOrThumbUpCount, useJsonParse } from '@/utils'
 
 const props = defineProps<{

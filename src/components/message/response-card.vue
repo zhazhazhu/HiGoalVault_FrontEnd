@@ -1,8 +1,8 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
 import { useClassesName } from '@/composables'
+import Stock from '@/echarts/components/stock.vue?async'
 import { renderMarkdown } from '@/modules'
-import Stock from '@/subEcharts/echarts/components/stock.vue?async'
 import { formatSeconds } from '@/utils'
 
 defineProps<{
