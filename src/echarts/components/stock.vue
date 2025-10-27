@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { ECElementEvent } from 'echarts/core'
+import type { ECElementEvent, ElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { ChatMessageStock } from '@/api'
 import type { StockData } from '@/echarts'
@@ -43,6 +43,12 @@ function handleChartClick(params: ECElementEvent) {
     activeData.value = store.getStockData(params.dataIndex)
   }
 }
+
+function handleZRClick(params: ElementEvent) {
+  if (!params.target) {
+    activeData.value = null
+  }
+}
 </script>
 
 <template>
@@ -69,7 +75,7 @@ function handleChartClick(params: ECElementEvent) {
 
       <!-- 图表容器 -->
       <view class="chart-wrapper">
-        <uni-echarts ref="chartCanvasInstance" custom-class="h-300px" :option="config" @click="handleChartClick" />
+        <uni-echarts ref="chartCanvasInstance" custom-class="h-240px" :option="config" @click="handleChartClick" @zr:click="handleZRClick" />
       </view>
     </template>
   </view>
@@ -83,7 +89,7 @@ function handleChartClick(params: ECElementEvent) {
 }
 
 .chart-wrapper {
-  height: 300px;
+  height: 240px;
   width: 100%;
   overflow: hidden;
   margin-top: 16px;

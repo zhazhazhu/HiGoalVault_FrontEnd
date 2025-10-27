@@ -3,8 +3,8 @@ import type { StockChartStore } from '.'
 import { toValue } from 'vue'
 
 export enum StockChartStyleConfig {
-  UP_COLOR = '#e50000ff',
-  DOWN_COLOR = '#008e28ff',
+  UP_COLOR = '#e63434ff',
+  DOWN_COLOR = '#56ce78ff',
 }
 
 export const StockShowType = {
@@ -17,39 +17,60 @@ export const StockShowType = {
 export function generateStockChartConfig(store: StockChartStore): EChartsOption {
   const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = toValue(store.data)
   return {
-    legend: {
-      data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
-      top: 10,
-      itemWidth: 12,
-      itemHeight: 8,
-      itemGap: 8,
-      textStyle: {
-        fontSize: 11,
-      },
-      itemStyle: {
-        color: 'transparent',
-      },
-    },
+    // legend: {
+    //   data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
+    //   top: 10,
+    //   itemWidth: 12,
+    //   itemHeight: 8,
+    //   itemGap: 8,
+    //   textStyle: {
+    //     fontSize: 11,
+    //   },
+    //   itemStyle: {
+    //     color: 'transparent',
+    //   },
+    // },
     grid: {
-      bottom: 80,
+      left: 10,
+      right: 10,
+      top: 0,
+      bottom: 60,
+      outerBoundsContain: 'all',
     },
     xAxis: [
       {
         type: 'category',
         data: categoryData,
         axisLine: { lineStyle: { color: '#8392A5' } },
+        // splitLine: {
+        //   show: true,
+        //   lineStyle: {
+        //     color: '#8392A5',
+        //     opacity: 0.2,
+        //     type: 'dashed',
+        //   },
+        // },
       },
     ],
     yAxis: {
       scale: true,
+      splitNumber: 4,
       axisLine: { lineStyle: { color: '#8392A5' } },
-      splitLine: { show: false },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: '#8392A5',
+          opacity: 0.2,
+          type: 'dashed',
+        },
+      },
+      boundaryGap: [0, 0],
     },
     dataZoom: [
       {
         type: 'inside',
         xAxisIndex: [0, 1],
-        start: 70,
+        start: 0,
         end: 100,
         minSpan: 5,
         maxSpan: 100,
@@ -85,6 +106,7 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         name: '日K',
         type: 'candlestick',
         data: stockChartData,
+        barWidth: 5, // 固定K线宽度为5px
         itemStyle: {
           color: StockChartStyleConfig.UP_COLOR,
           color0: StockChartStyleConfig.DOWN_COLOR,
