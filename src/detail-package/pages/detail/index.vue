@@ -1,11 +1,11 @@
 <script lang='ts' setup>
-import type { AnswerAfter, AnswerBefore, ChatMessageReference, ChatMessageStock, ChatSteps, PublishMessageListResponse } from '@/api'
+import type { AnswerAfter, PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
-import { useUserStore } from '@/store'
-import { formatCommentOrThumbUpCount, useJsonParse } from '@/utils'
+import { useChatStore, useUserStore } from '@/store'
+import { formatCommentOrThumbUpCount } from '@/utils'
 
 const data = ref<PublishMessageListResponse | null>(null)
 const commentContent = ref('')
@@ -18,50 +18,15 @@ const [currentComment, resetCurrentComment] = useResetRef<{ commentId: string, c
   commentId: '',
   commentType: null,
 })
+const chatStore = useChatStore()
 
 async function getData() {
   const res = await api.getPublicMessageDetail({ contentId: contentId.value })
   if (res.code === 200) {
     data.value = res.result
     if (res.result.chatQueryAnswerVO) {
-      messageContent.value = transformMessage(res.result.chatQueryAnswerVO)
+      messageContent.value = chatStore.transformAnswer(res.result.chatQueryAnswerVO)
     }
-  }
-}
-function transformMessage(message: AnswerBefore): AnswerAfter {
-  let reference: ChatMessageReference[] = []
-  let data: AnswerAfter['data'] = { analysis_data: '' }
-  let stockData: [ChatMessageStock] | [] = []
-  let steps: ChatSteps[] = []
-  let label: string[] = []
-  if (message.data) {
-    data = useJsonParse(message.data) || { analysis_data: '' }
-    stockData = useJsonParse(data.analysis_data) || []
-  }
-  if (message.reference) {
-    reference = useJsonParse(message.reference) || []
-  }
-  if (message.steps) {
-    steps = useJsonParse(message.steps) || []
-    steps = steps.map((message) => {
-      return {
-        ...message,
-        finished: true,
-      }
-    })
-  }
-  if (message.label) {
-    label = useJsonParse(message.label) || []
-  }
-  return {
-    ...message,
-    reference,
-    data,
-    stockData,
-    steps,
-    label,
-    isLoading: false,
-    showSteps: false,
   }
 }
 function gotoBack() {

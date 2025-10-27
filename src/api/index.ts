@@ -17,6 +17,8 @@ import type {
   FollowUserRequest,
   GenerateStsTempKeyResponse,
   GetCommentOrReplyByIdRequest,
+  GetFinanceDataRequest,
+  GetFinanceDataResponse,
   GetPublishListByTagRequest,
   GlobalSearchRequest,
   GlobalSearchResultResponse,
@@ -268,6 +270,10 @@ function deletePublishContentById(contentId: string) {
   return http(API.DELETE_PUBLISH_CONTENT_BY_ID).post<boolean>({ contentId })
 }
 
+function getFinanceData(query: GetFinanceDataRequest) {
+  return http(API.GET_FINANCE_DATA).post<GetFinanceDataResponse>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -315,4 +321,5 @@ export const api = {
   deleteReplyById,
   getCommentOrReplyById,
   deletePublishContentById,
+  getFinanceData,
 }

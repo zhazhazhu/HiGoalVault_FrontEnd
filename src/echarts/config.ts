@@ -1,17 +1,44 @@
 import type { EChartsOption } from 'echarts'
 import type { StockChartStore } from '.'
 import { toValue } from 'vue'
+import { TimeGranularity } from '@/api'
 
 export enum StockChartStyleConfig {
   UP_COLOR = '#e63434ff',
   DOWN_COLOR = '#56ce78ff',
 }
 
-export const StockShowType = {
-  MINUTE: '分时',
-  DAY_K: '日K',
-  WEEK_K: '周K',
-  MONTH_K: '月K',
+type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
+
+export const timeGranularityOptions: TimeGranularityOptions = {
+  // [TimeGranularity['30MINS']]: {
+  //   key: TimeGranularity['30MINS'],
+  //   value: '30分',
+  // },
+  // [TimeGranularity['1HOUR']]: {
+  //   key: TimeGranularity['1HOUR'],
+  //   value: '1小时',
+  // },
+  [TimeGranularity.DAILY]: {
+    key: TimeGranularity.DAILY,
+    value: '日K',
+  },
+  [TimeGranularity['1MINS']]: {
+    key: TimeGranularity['1MINS'],
+    value: '1分',
+  },
+  [TimeGranularity['5MINS']]: {
+    key: TimeGranularity['5MINS'],
+    value: '5分',
+  },
+  [TimeGranularity.WEEKLY]: {
+    key: TimeGranularity.WEEKLY,
+    value: '周K',
+  },
+  [TimeGranularity.MONTHLY]: {
+    key: TimeGranularity.MONTHLY,
+    value: '月K',
+  },
 }
 
 export function generateStockChartConfig(store: StockChartStore): EChartsOption {
@@ -68,9 +95,10 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
     },
     dataZoom: [
       {
+        id: 'dataZoomInside',
         type: 'inside',
         xAxisIndex: [0, 1],
-        start: 0,
+        start: 60,
         end: 100,
         minSpan: 5,
         maxSpan: 100,
@@ -80,9 +108,10 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         preventDefaultMouseMove: false,
       },
       {
+        id: 'dataZoomSlider',
         type: 'slider',
         xAxisIndex: [0, 1],
-        start: 70,
+        start: 60,
         end: 100,
         height: 20,
         bottom: 10,

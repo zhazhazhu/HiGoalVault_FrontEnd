@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { AnswerAfter, AnswerBefore, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps } from '../api'
+import type { AnswerAfter, AnswerBefore, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps, DateParameterOfStock, ResolvedParam } from '../api'
 import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
 import { useStoreRef, useUUID } from '@/composables'
@@ -83,13 +83,18 @@ export const useChatStore = defineStore('chat', {
     },
     transformAnswer(answer: AnswerBefore): AnswerAfter {
       let reference: ChatMessageReference[] = []
-      let data: AnswerAfter['data'] = { analysis_data: '' }
+      let data: AnswerAfter['data'] = { analysis_data: '', resolved_params: { parameters: [] } }
       let stockData: [ChatMessageStock] | [] = []
       let steps: ChatSteps[] = []
       let label: string[] = []
+      let stockParameter: DateParameterOfStock = {
+        fromdate: '',
+        todate: '',
+      }
       if (answer.data) {
-        data = useJsonParse(answer.data) || { analysis_data: '' }
+        data = useJsonParse(answer.data) || { analysis_data: '', resolved_params: { parameters: [] } }
         stockData = useJsonParse(data.analysis_data) || []
+        stockParameter = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
       }
       if (answer.reference) {
         reference = useJsonParse(answer.reference) || []
@@ -111,6 +116,7 @@ export const useChatStore = defineStore('chat', {
         reference,
         data,
         stockData,
+        stockParameter,
         steps,
         label,
         isLoading: false,
@@ -126,7 +132,8 @@ export const useChatStore = defineStore('chat', {
         chatQueryAnswerList: [
           {
             message: '',
-            data: { analysis_data: '' },
+            data: { analysis_data: '', resolved_params: { parameters: [] } },
+            stockParameter: { fromdate: '', todate: '' },
             steps: [],
             reference: [],
             response: '',
@@ -152,7 +159,8 @@ export const useChatStore = defineStore('chat', {
     },
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
-        data: { analysis_data: '' },
+        data: { analysis_data: '', resolved_params: { parameters: [] } },
+        stockParameter: { fromdate: '', todate: '' },
         stockData: [],
         steps: [],
         reference: [],

@@ -74,12 +74,26 @@ export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | '
   reference: ChatMessageReference[]
   data: {
     analysis_data: string // 股票图数据
+    resolved_params: {
+      parameters: ResolvedParam[]
+    }
   }
   isLoading: boolean // 是否正在加载中
   steps: ChatSteps[]
   stockData: [ChatMessageStock] | [] // 股票图数据
+  stockParameter: DateParameterOfStock // 获取股票参数
   showSteps: boolean // 是否显示步骤
   label: string[]
+}
+
+export interface ResolvedParam {
+  name: string
+  value: any
+}
+
+export interface DateParameterOfStock {
+  fromdate: string
+  todate: string
 }
 
 export interface ChatSteps {
@@ -464,4 +478,27 @@ export interface DeleteReplyRequest {
 export interface GetCommentOrReplyByIdRequest {
   commentId: string
   commentType: 1 | 2 // 评论类型 1 评论 2 回复
+}
+
+export interface GetFinanceDataRequest extends Page {
+  startDateTime: string
+  endDateTime: string
+  transCode: string
+  timeGranularity: TimeGranularity
+}
+
+export enum TimeGranularity {
+  '1MINS' = '1MINS',
+  '5MINS' = '5MINS',
+  '30MINS' = '30MINS',
+  '50MINS' = '50MINS',
+  '1HOUR' = '1HOUR',
+  'DAILY' = 'DAILY',
+  '5DAILY' = '5DAILY',
+  'WEEKLY' = 'WEEKLY',
+  'MONTHLY' = 'MONTHLY',
+}
+
+export interface GetFinanceDataResponse extends PageResult {
+  records: ChatMessageStockData[]
 }

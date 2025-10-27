@@ -1,22 +1,25 @@
 <script lang='ts' setup>
 import type { ECElementEvent, ElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
-import type { ChatMessageStock } from '@/api'
+import type { ChatMessageStock, DateParameterOfStock } from '@/api'
 import type { StockData } from '@/echarts'
+import dayjs from 'dayjs'
 import { CandlestickChart, LineChart } from 'echarts/charts'
 import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } from 'echarts/components'
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
-import { computed, ref, shallowRef } from 'vue'
-import { useStockChart } from '@/echarts'
-import { StockShowType } from '@/echarts/config'
+import { computed, ref, shallowRef, watch } from 'vue'
+import { useLoadStockData, useStockChart } from '@/echarts'
+import { timeGranularityOptions } from '@/echarts/config'
+import { calculateMA } from '@/utils/stock'
 import StockHeader from './header.vue'
 import StockPriceInfo from './price-info.vue'
 import StockSelectedDataPanel from './selected-data-panel.vue'
 
 const props = defineProps<{
   data: [ChatMessageStock]
+  params: DateParameterOfStock
   preview?: boolean
 }>()
 
@@ -32,21 +35,126 @@ echarts.use([
   CandlestickChart,
 ])
 
-const current = ref(StockShowType.DAY_K)
+const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
 const activeData = ref<StockData | null>(null)
-const { store, config } = useStockChart(props.data)
+const { store, config, code } = useStockChart(props.data)
 const stockInfo = computed(() => store.data.value.stockInfo)
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
+const isLoadingMore = ref(false) // 加载更多数据的标志
+const hasMoreData = ref(true) // 是否还有更早的数据
+const { load, reset } = useLoadStockData({
+  date: props.params.fromdate,
+  type: currentTimeGranularity.value.key,
+})
 
+watch(currentTimeGranularity, () => {
+  chartCanvasInstance.value?.setOption({
+    xAxis: {
+      data: [],
+    },
+    series: [
+      { data: [] },
+      { data: [] },
+      { data: [] },
+      { data: [] },
+      { data: [] },
+    ],
+  })
+  reset()
+  hasMoreData.value = true
+  loadMoreData()
+})
+
+function handleSegmentChange(option) {
+  currentTimeGranularity.value = option
+}
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
     activeData.value = store.getStockData(params.dataIndex)
   }
 }
-
 function handleZRClick(params: ElementEvent) {
   if (!params.target) {
     activeData.value = null
+  }
+}
+
+// 监听 dataZoom 事件，当滑动到左边时加载更多数据
+function handleDataZoom(event: any) {
+  // 当滑动到最左边（start 接近 0）时触发加载
+  let start: number | null = null
+  if (event?.dataZoomId && event.dataZoomId === 'dataZoomSlider') {
+    start = event.start as number
+  }
+  else {
+    start = event?.batch?.[0].start as number
+  }
+
+  if (start !== null && start < 5 && !isLoadingMore.value && hasMoreData.value) {
+    loadMoreData()
+  }
+}
+
+// 加载更多历史数据
+async function loadMoreData() {
+  if (isLoadingMore.value || !hasMoreData.value)
+    return
+
+  isLoadingMore.value = true
+  uni.showLoading({ title: '加载中...' })
+
+  try {
+    // 计算新的时间范围（往前再加载100天）
+    const data = await load(code)
+
+    // 判断是否返回了数据
+    if (!data || data.length === 0) {
+      // 没有更多数据了
+      hasMoreData.value = false
+      uni.showToast({ title: '没有更早的数据了', icon: 'none' })
+      return
+    }
+
+    // 生成新数据
+    const newCategoryData = data.map(item => dayjs(item.trade_date || '').format('YYYY-MM-DD'))
+    const newStockChartData = data.map(item => [item.open, item.close, item.low, item.high])
+
+    // 获取当前图表数据
+    const currentOption = chartCanvasInstance.value?.getOption()
+    const currentXAxisData = currentOption?.xAxis?.[0]?.data || []
+    const currentSeriesData = currentOption?.series || []
+
+    // 合并数据（新数据放在前面）
+    const mergedCategoryData = [...newCategoryData, ...currentXAxisData]
+    const mergedStockData = [...newStockChartData, ...(currentSeriesData[0]?.data || [])]
+
+    // 重新计算均线
+    const newMa5 = calculateMA(5, mergedStockData)
+    const newMa10 = calculateMA(10, mergedStockData)
+    const newMa20 = calculateMA(20, mergedStockData)
+    const newMa30 = calculateMA(30, mergedStockData)
+
+    // 更新图表
+    chartCanvasInstance.value?.setOption({
+      xAxis: {
+        data: mergedCategoryData,
+      },
+      series: [
+        { data: mergedStockData },
+        { data: newMa5 },
+        { data: newMa10 },
+        { data: newMa20 },
+        { data: newMa30 },
+      ],
+    })
+  }
+  catch (error) {
+    console.error('加载更多数据失败:', error)
+    uni.showToast({ title: '加载失败', icon: 'none' })
+  }
+  finally {
+    isLoadingMore.value = false
+    uni.hideLoading()
   }
 }
 </script>
@@ -65,7 +173,7 @@ function handleZRClick(params: ElementEvent) {
     <template v-if="!preview">
       <!-- 时间周期选择器 -->
       <view class="period-selector">
-        <wd-segmented v-model:value="current" :options="Object.values(StockShowType)" />
+        <wd-segmented :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
       </view>
 
       <!-- 点击数据显示区域 -->
@@ -75,7 +183,14 @@ function handleZRClick(params: ElementEvent) {
 
       <!-- 图表容器 -->
       <view class="chart-wrapper">
-        <uni-echarts ref="chartCanvasInstance" custom-class="h-240px" :option="config" @click="handleChartClick" @zr:click="handleZRClick" />
+        <uni-echarts
+          ref="chartCanvasInstance"
+          custom-class="h-240px"
+          :option="config"
+          @click="handleChartClick"
+          @zr:click="handleZRClick"
+          @datazoom="handleDataZoom"
+        />
       </view>
     </template>
   </view>

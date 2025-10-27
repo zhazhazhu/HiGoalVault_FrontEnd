@@ -1,7 +1,10 @@
+import type { EChartsOption } from 'echarts'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
-import type { ChatMessageStock, ChatMessageStockData, ChatMessageStockMetadata } from '@/api'
+import type { ChatMessageStock, ChatMessageStockData, ChatMessageStockMetadata, Page } from '@/api'
 import dayjs from 'dayjs'
-import { computed, toValue } from 'vue'
+import { computed, ref, toValue } from 'vue'
+import { api, TimeGranularity } from '@/api'
+import { useResetRef } from '@/composables/useResetRef'
 import { calculateMA, DateFormat } from '@/utils/stock'
 import { generateStockChartConfig } from './config'
 
@@ -48,6 +51,7 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
   const [stock] = toValue(stockData)
   const data = computed(() => stock.data)
   const stockInfo = getStockInfo(data, stock.metadata)
+  const code = stock.metadata.symbol[0]
   const categoryData = computed(() => {
     return data.value.map((item) => {
       return dayjs(item.trade_date || '').format(DateFormat.DAY)
@@ -99,11 +103,12 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
     getStockData,
   }
 
-  const config = generateStockChartConfig(store)
+  const config = ref<EChartsOption>(generateStockChartConfig(store))
 
   return {
     store,
     config,
+    code,
   }
 }
 
@@ -129,4 +134,75 @@ function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, 
     low: Number(latestData.low.toFixed(2)),
     open: Number(latestData.open.toFixed(2)),
   }))
+}
+
+interface UseLoadStockDataOptions {
+  date: string
+  type: MaybeRefOrGetter<TimeGranularity>
+}
+
+export function useLoadStockData(options: UseLoadStockDataOptions) {
+  const [page, reset] = useResetRef({
+    pageNumber: 1,
+    pageSize: 100,
+  })
+
+  async function load(code?: string) {
+    if (!code)
+      return []
+    const [start, end] = updateDate(page.value, toValue(options.type), options.date)
+    const res = await api.getFinanceData({
+      startDateTime: start.format('YYYY-MM-DD HH:mm:ss'),
+      endDateTime: end.format('YYYY-MM-DD HH:mm:ss'),
+      transCode: code,
+      timeGranularity: toValue(options.type),
+    })
+
+    if (res.code === 200) {
+      page.value.pageNumber++
+      return res.result.records
+    }
+    return []
+  }
+
+  return {
+    load,
+    reset,
+  }
+}
+
+function updateDate(page: { pageNumber: number, pageSize: number }, type: TimeGranularity, date: string) {
+  const baseDate = dayjs(date)
+  const dateRange = [dayjs(), dayjs()] // [startDate, endDate]
+
+  switch (type) {
+    case TimeGranularity['1MINS']:
+      // 结束时间 = 基准时间 - (pageNumber - 1) * pageSize 分钟
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'minute')
+      // 开始时间 = 结束时间 - pageSize 分钟
+      dateRange[0] = dateRange[1].subtract(page.pageSize, 'minute')
+      break
+    case TimeGranularity['5MINS']:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 5, 'minute')
+      dateRange[0] = dateRange[1].subtract(page.pageSize * 5, 'minute')
+      break
+    case TimeGranularity['30MINS']:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 30, 'minute')
+      dateRange[0] = dateRange[1].subtract(page.pageSize * 30, 'minute')
+      break
+    case TimeGranularity.DAILY:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'day')
+      dateRange[0] = dateRange[1].subtract(page.pageSize, 'day')
+      break
+    case TimeGranularity.WEEKLY:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'week')
+      dateRange[0] = dateRange[1].subtract(page.pageSize, 'week')
+      break
+    case TimeGranularity.MONTHLY:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'month')
+      dateRange[0] = dateRange[1].subtract(page.pageSize, 'month')
+      break
+  }
+
+  return dateRange
 }
