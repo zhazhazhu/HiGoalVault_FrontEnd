@@ -37,7 +37,7 @@ const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
 const zoomStart = ref<number | null>(null)
 const zoomEnd = ref<number | null>(null)
-const { store, config } = useStockChart({
+const { store, config, stockInfo } = useStockChart({
   stockData: computed(() => stockData.value),
   code: props.params.code,
   timeGranularity: computed(() => currentTimeGranularity.value.key),
@@ -64,12 +64,12 @@ function handleSegmentChange(option) {
 }
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
-    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code, params.dataIndex)
+    stockInfo.value = getStockInfo(store.value.originalStockChartData, props.params.code, params.dataIndex)
   }
 }
 function handleZRClick(params: ElementEvent) {
   if (!params.target) {
-    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code)
+    stockInfo.value = getStockInfo(store.value.originalStockChartData, props.params.code)
   }
 }
 
@@ -113,17 +113,6 @@ async function loadMoreData() {
       return
     }
     stockData.value.unshift(...data)
-    await nextTick()
-    const delta = data.length
-    const maxIndex = Math.max(0, store.value.categoryData.length - 1)
-    const prevE = (zoomEnd.value ?? 0) as number
-    const endValue = Math.min(maxIndex, Number(prevE) + delta)
-    const startValue = Math.max(0, endValue - 50)
-    config.value.dataZoom.forEach((item) => {
-      item.endValue = endValue
-      item.startValue = startValue
-    })
-    config.value = { ...config.value }
   }
   catch (error) {
     console.error('加载更多数据失败:', error)
@@ -143,7 +132,7 @@ async function loadMoreData() {
     </view>
     <!-- 股票基本信息 -->
     <view class="my-16px">
-      <StockHeader v-if="store.stockInfo" :stock-info="store.stockInfo" />
+      <StockHeader v-if="stockInfo" :stock-info="stockInfo" />
     </view>
 
     <template v-if="!preview">

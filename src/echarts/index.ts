@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue'
 import type { ChatMessageStockData } from '@/api'
 import dayjs from 'dayjs'
-import { ref, toValue, watch } from 'vue'
+import { computed, ref, toValue, watch } from 'vue'
 import { api, TimeGranularity } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { calculateMA, DateFormat } from '@/utils/stock'
@@ -34,7 +34,6 @@ export interface StockInfo {
 }
 
 export interface StockChartStore {
-  stockInfo: StockInfo | null
   categoryData: string[]
   stockChartData: number[][]
   originalStockChartData: ChatMessageStockData[]
@@ -53,12 +52,13 @@ export interface UseStockChartOptions {
 }
 
 export function useStockChart(options: UseStockChartOptions) {
-  const stockChartData = toValue(options.stockData).map((item) => {
-    return [item.open, item.close, item.low, item.high]
-  })
-  const store = ref<StockChartStore>(
-    {
-      stockInfo: getStockInfo(toValue(options.stockData), options.code),
+  const stockInfo = ref(getStockInfo(toValue(options.stockData), options.code))
+
+  const store = computed<StockChartStore>(() => {
+    const stockChartData = toValue(options.stockData).map((item) => {
+      return [item.open, item.close, item.low, item.high]
+    })
+    return {
       categoryData: toValue(options.stockData).map((item) => {
         return dayjs(item.trade_date || '').format('YYYY-MM-DD')
       }),
@@ -68,7 +68,8 @@ export function useStockChart(options: UseStockChartOptions) {
       ma10: calculateMA(10, stockChartData),
       ma20: calculateMA(20, stockChartData),
       ma30: calculateMA(30, stockChartData),
-    },
+    }
+  },
   )
 
   function getStockData(store: StockChartStore, index: number): StockData {
@@ -86,33 +87,24 @@ export function useStockChart(options: UseStockChartOptions) {
 
   const config = ref(generateStockChartConfig(store, options))
 
-  watch<[ChatMessageStockData[], TimeGranularity]>(
-    () => [toValue(options.stockData).slice(), toValue(options.timeGranularity)],
-    ([newStockData, newTimeGranularity]) => {
-      const stockChartData = newStockData.map((item) => {
-        return [item.open, item.close, item.low, item.high]
-      })
-
-      if (!store.value.stockInfo) {
-        store.value.stockInfo = getStockInfo(newStockData, options.code)
+  watch<ChatMessageStockData[]>(
+    () => toValue(options.stockData).slice(),
+    (newStockData, oldStockData) => {
+      if (!stockInfo.value) {
+        stockInfo.value = getStockInfo(newStockData, options.code)
       }
-      store.value.categoryData = newStockData.map((item) => {
-        return dayjs(item.trade_date || '').format('YYYY-MM-DD')
-      })
-      store.value.stockChartData = stockChartData
-      store.value.originalStockChartData = newStockData
-      store.value.ma5 = calculateMA(5, stockChartData)
-      store.value.ma10 = calculateMA(10, stockChartData)
-      store.value.ma20 = calculateMA(20, stockChartData)
-      store.value.ma30 = calculateMA(30, stockChartData)
-
-      config.value.xAxis![0].axisLabel.formatter = (value: string) => xAxisFormat(value, newTimeGranularity)
-      config.value.xAxis![0].data = store.value.categoryData
-      config.value.series![0].data = stockChartData
-      config.value.series![1].data = store.value.ma5
-      config.value.series![2].data = store.value.ma10
-      config.value.series![3].data = store.value.ma20
-      config.value.series![4].data = store.value.ma30
+      if (newStockData.length !== oldStockData.length) {
+        config.value = generateStockChartConfig(store, options)
+        const delta = newStockData.length - oldStockData.length
+        const maxIndex = Math.max(0, store.value.categoryData.length - 1)
+        const prevE = (toValue(options.zoomEnd) ?? 0) as number
+        const endValue = Math.min(maxIndex, Number(prevE) + delta)
+        const startValue = Math.max(0, endValue - 50)
+        config.value.dataZoom.forEach((item) => {
+          item.endValue = endValue
+          item.startValue = startValue
+        })
+      }
     },
     { deep: true },
   )
@@ -120,6 +112,7 @@ export function useStockChart(options: UseStockChartOptions) {
   return {
     store,
     config,
+    stockInfo,
     getStockData,
   }
 }
