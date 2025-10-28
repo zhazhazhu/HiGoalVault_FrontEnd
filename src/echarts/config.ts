@@ -1,15 +1,13 @@
-import type { EChartsOption } from 'echarts'
 import type { StockChartStore } from '.'
 import dayjs from 'dayjs'
-import { toValue } from 'vue'
 import { TimeGranularity } from '@/api'
 
 export enum StockChartStyleConfig {
   UP_COLOR = '#e63434ff',
-  DOWN_COLOR = '#56ce78ff',
+  DOWN_COLOR = '#237b3cff',
 }
 
-type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
+type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '5MINS' | '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
 
 export const timeGranularityOptions: TimeGranularityOptions = {
   // [TimeGranularity['30MINS']]: {
@@ -20,17 +18,18 @@ export const timeGranularityOptions: TimeGranularityOptions = {
   //   key: TimeGranularity['1HOUR'],
   //   value: '1小时',
   // },
+
+  [TimeGranularity['1MINS']]: {
+    key: TimeGranularity['1MINS'],
+    value: '分时',
+  },
+  // [TimeGranularity['5MINS']]: {
+  //   key: TimeGranularity['5MINS'],
+  //   value: '5分',
+  // },
   [TimeGranularity.DAILY]: {
     key: TimeGranularity.DAILY,
     value: '日K',
-  },
-  [TimeGranularity['1MINS']]: {
-    key: TimeGranularity['1MINS'],
-    value: '1分',
-  },
-  [TimeGranularity['5MINS']]: {
-    key: TimeGranularity['5MINS'],
-    value: '5分',
   },
   [TimeGranularity.WEEKLY]: {
     key: TimeGranularity.WEEKLY,
@@ -40,24 +39,52 @@ export const timeGranularityOptions: TimeGranularityOptions = {
     key: TimeGranularity.MONTHLY,
     value: '月K',
   },
+  [TimeGranularity.YEAR]: {
+    key: TimeGranularity.YEAR,
+    value: '年K',
+  },
 }
 
-export function generateStockChartConfig(store: StockChartStore): EChartsOption {
-  const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = toValue(store.data)
+// eslint-disable-next-line unused-imports/no-unused-vars
+function xAxisInterval(index: number, value: string, categoryData: string[], timeGranularity: TimeGranularity) {
+  if (index === 0 || index === categoryData.length - 1)
+    return true
+  const prev = categoryData[index - 1]
+  if (timeGranularity === '1MINS')
+    return dayjs(value).hour() - dayjs(prev).hour() >= 2
+  else if (timeGranularity === 'DAILY')
+    return dayjs(value).month() - dayjs(prev).month() >= 1
+  else if (timeGranularity === 'WEEKLY')
+    return dayjs(value).month() - dayjs(prev).month() >= 3
+  else if (timeGranularity === 'MONTHLY')
+    return dayjs(value).month() - dayjs(prev).month() >= 6
+  else if (timeGranularity === 'YEAR')
+    return dayjs(value).year() - dayjs(prev).year() >= 30
+  else
+    return dayjs(value).month() - dayjs(prev).month() >= 1
+}
+
+export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
+  if (timeGranularity === '1MINS')
+    return dayjs(value).format('HH:mm')
+  else if (timeGranularity === 'DAILY')
+    return dayjs(value).format('M-DD')
+  else if (timeGranularity === 'WEEKLY')
+    return dayjs(value).format('YYYY-MM')
+  else if (timeGranularity === 'MONTHLY')
+    return dayjs(value).format('YYYY-MM')
+  else if (timeGranularity === 'YEAR')
+    return dayjs(value).format('YYYY')
+  else
+    return dayjs(value).format('M-DD')
+}
+
+export function generateStockChartConfig(this: StockChartStore, timeGranularity: TimeGranularity) {
+  const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = this
+  const total = categoryData.length
+  const endIndex = Math.max(0, total - 1)
+  const startIndex = Math.max(0, endIndex - 10)
   return {
-    // legend: {
-    //   data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
-    //   top: 10,
-    //   itemWidth: 12,
-    //   itemHeight: 8,
-    //   itemGap: 8,
-    //   textStyle: {
-    //     fontSize: 11,
-    //   },
-    //   itemStyle: {
-    //     color: 'transparent',
-    //   },
-    // },
     grid: {
       left: 10,
       right: 10,
@@ -71,30 +98,14 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         data: categoryData,
         axisLine: { lineStyle: { color: '#8392A5' } },
         axisLabel: {
-          formatter: (value: string) => dayjs(value).format('M-DD'),
-          interval: (index: number, value: string) => {
-            if (index === 0)
-              return true
-            const prev = categoryData[index - 1]
-            return dayjs(value).month() !== dayjs(prev).month()
-          },
+          formatter: (value: string) => xAxisFormat(value, timeGranularity),
+          // interval: (index: number, value: string) => {
+          //   return xAxisInterval(index, value, categoryData, timeGranularity)
+          // },
         },
-        axisTick: {
-          show: true,
-          interval: (index: number, value: string) => {
-            if (index === 0)
-              return true
-            const prev = categoryData[index - 1]
-            return dayjs(value).month() !== dayjs(prev).month()
-          },
-        },
-        // splitLine: {
+        // axisTick: {
         //   show: true,
-        //   lineStyle: {
-        //     color: '#8392A5',
-        //     opacity: 0.2,
-        //     type: 'dashed',
-        //   },
+        //   interval: (index: number, value: string) => xAxisInterval(index, value, categoryData, timeGranularity),
         // },
       },
     ],
@@ -102,6 +113,18 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
       scale: true,
       splitNumber: 4,
       axisLine: { lineStyle: { color: '#8392A5' } },
+      axisLabel: {
+        align: 'right', // 文本右对齐
+        margin: 20, // 可根据实际情况调整的右边距
+        inside: true,
+        color: '#616c7b79',
+        formatter: (value: number, index: number) => {
+          if (index === 0) {
+            return ''
+          }
+          return value
+        },
+      },
       splitLine: {
         show: true,
         lineStyle: {
@@ -117,10 +140,8 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         id: 'dataZoomInside',
         type: 'inside',
         xAxisIndex: [0, 1],
-        start: 60,
-        end: 100,
-        minSpan: 20,
-        maxSpan: 40,
+        startValue: startIndex,
+        endValue: endIndex,
         zoomOnMouseWheel: true,
         moveOnMouseMove: true,
         moveOnMouseWheel: true,
@@ -130,12 +151,11 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         id: 'dataZoomSlider',
         type: 'slider',
         xAxisIndex: [0, 1],
-        start: 60,
-        end: 100,
+        startValue: startIndex,
+        endValue: endIndex,
+        zoomLock: true,
         height: 20,
         bottom: 10,
-        minSpan: 20,
-        maxSpan: 40,
         borderColor: '#ccc',
         fillerColor: 'rgba(17, 100, 210, 0.2)',
         handleStyle: {
@@ -156,12 +176,12 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         name: '日K',
         type: 'candlestick',
         data: stockChartData,
-        barWidth: 2, // 固定K线宽度为5px
+        barMinWith: 3,
+        barMaxWith: 10,
         itemStyle: {
-          color: StockChartStyleConfig.UP_COLOR,
+          color: 'transparent',
           color0: StockChartStyleConfig.DOWN_COLOR,
           borderColor: StockChartStyleConfig.UP_COLOR,
-          borderColor0: StockChartStyleConfig.DOWN_COLOR,
         },
       },
       {

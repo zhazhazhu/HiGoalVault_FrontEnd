@@ -94,6 +94,8 @@ export interface ResolvedParam {
 export interface DateParameterOfStock {
   fromdate: string
   todate: string
+  name: string
+  code: string
 }
 
 export interface ChatSteps {
@@ -497,6 +499,7 @@ export enum TimeGranularity {
   '5DAILY' = '5DAILY',
   'WEEKLY' = 'WEEKLY',
   'MONTHLY' = 'MONTHLY',
+  'YEAR' = 'YEAR',
 }
 
 export interface GetFinanceDataResponse extends PageResult {

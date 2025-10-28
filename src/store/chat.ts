@@ -87,14 +87,25 @@ export const useChatStore = defineStore('chat', {
       let stockData: [ChatMessageStock] | [] = []
       let steps: ChatSteps[] = []
       let label: string[] = []
-      let stockParameter: DateParameterOfStock = {
+      const stockParameter: DateParameterOfStock = {
         fromdate: '',
         todate: '',
+        name: '',
+        code: '',
       }
       if (answer.data) {
         data = useJsonParse(answer.data) || { analysis_data: '', resolved_params: { parameters: [] } }
         stockData = useJsonParse(data.analysis_data) || []
-        stockParameter = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
+        const dateList = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
+        const code = data.resolved_params.parameters.find(item => item.name === 'future_symbol')?.value?.[0]
+        if (dateList) {
+          stockParameter.fromdate = dateList.fromdate
+          stockParameter.todate = dateList.todate
+        }
+        if (code) {
+          stockParameter.code = code
+          stockParameter.name = code
+        }
       }
       if (answer.reference) {
         reference = useJsonParse(answer.reference) || []
@@ -133,7 +144,7 @@ export const useChatStore = defineStore('chat', {
           {
             message: '',
             data: { analysis_data: '', resolved_params: { parameters: [] } },
-            stockParameter: { fromdate: '', todate: '' },
+            stockParameter: { fromdate: '', todate: '', name: '', code: '' },
             steps: [],
             reference: [],
             response: '',
@@ -160,7 +171,7 @@ export const useChatStore = defineStore('chat', {
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
         data: { analysis_data: '', resolved_params: { parameters: [] } },
-        stockParameter: { fromdate: '', todate: '' },
+        stockParameter: { fromdate: '', todate: '', name: '', code: '' },
         stockData: [],
         steps: [],
         reference: [],

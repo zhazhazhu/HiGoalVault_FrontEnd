@@ -61,7 +61,7 @@ const cs = useClassesName('message-card')
     </wd-transition>
   </view>
 
-  <Stock v-if="data.stockData?.length === 1" :data="data.stockData" :params="data.stockParameter" />
+  <Stock v-if="data.stockParameter.code" :params="data.stockParameter" />
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e)">
     <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" />

@@ -1,12 +1,11 @@
-import type { EChartsOption } from 'echarts'
-import type { ComputedRef, MaybeRefOrGetter } from 'vue'
-import type { ChatMessageStock, ChatMessageStockData, ChatMessageStockMetadata, Page } from '@/api'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ChatMessageStockData, ChatMessageStockMetadata } from '@/api'
 import dayjs from 'dayjs'
-import { computed, ref, toValue } from 'vue'
+import { ref, toValue, watch } from 'vue'
 import { api, TimeGranularity } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { calculateMA, DateFormat } from '@/utils/stock'
-import { generateStockChartConfig } from './config'
+import { generateStockChartConfig, xAxisFormat } from './config'
 
 export interface StockData extends ChatMessageStockData {
   date: string // 日期
@@ -34,83 +33,100 @@ export interface StockInfo {
 }
 
 export interface StockChartStore {
-  data: ComputedRef<{
-    stockInfo: StockInfo | null
-    categoryData: string[]
-    stockChartData: number[][]
-    ma5: Array<number | null>
-    ma10: Array<number | null>
-    ma20: Array<number | null>
-    ma30: Array<number | null>
-  }>
-  getStockData: (index: number) => StockData
+  stockInfo: StockInfo | null
+  categoryData: string[]
+  stockChartData: number[][]
+  originalStockChartData: ChatMessageStockData[]
+  ma5: Array<number | null>
+  ma10: Array<number | null>
+  ma20: Array<number | null>
+  ma30: Array<number | null>
 }
 
-export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]>, metadata: ChatMessageStockMetadata) {
-  const code = metadata.symbol[0]
-  const stockInfo = computed(() => getStockInfo(stockData, metadata))
-  const categoryData = computed(() => {
-    return toValue(stockData).map((item) => {
-      // 使用完整日期供 xAxis 做按月间隔与自定义格式化
+export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]>, code: string, timeGranularity: MaybeRefOrGetter<TimeGranularity>) {
+  const stockChartData = toValue(stockData).map((item) => {
+    return [item.open, item.close, item.low, item.high]
+  })
+  const store = ref<StockChartStore>({
+    stockInfo: getStockInfo(toValue(stockData), code),
+    categoryData: toValue(stockData).map((item) => {
       return dayjs(item.trade_date || '').format('YYYY-MM-DD')
-    })
-  })
-  const stockChartData = computed(() => {
-    return toValue(stockData).map((item) => {
-      return [item.open, item.close, item.low, item.high]
-    })
-  })
-  const ma5 = computed(() => {
-    return calculateMA(5, stockChartData.value)
-  })
-  const ma10 = computed(() => {
-    return calculateMA(10, stockChartData.value)
-  })
-  const ma20 = computed(() => {
-    return calculateMA(20, stockChartData.value)
-  })
-  const ma30 = computed(() => {
-    return calculateMA(30, stockChartData.value)
+    }),
+    stockChartData,
+    originalStockChartData: toValue(stockData),
+    ma5: calculateMA(5, stockChartData),
+    ma10: calculateMA(10, stockChartData),
+    ma20: calculateMA(20, stockChartData),
+    ma30: calculateMA(30, stockChartData),
   })
 
-  function getStockData(index: number): StockData {
-    const original = toValue(stockData)[index]
+  function getStockData(store: StockChartStore, index: number): StockData {
+    const original = toValue(store.originalStockChartData)[index]
 
     return {
       ...original,
       date: dayjs(original.trade_date || '').format(DateFormat.DAY),
-      ma5: ma5.value[index],
-      ma10: ma10.value[index],
-      ma20: ma20.value[index],
-      ma30: ma30.value[index],
+      ma5: store.ma5[index],
+      ma10: store.ma10[index],
+      ma20: store.ma20[index],
+      ma30: store.ma30[index],
     }
   }
 
-  const store = {
-    data: computed(() => {
-      return {
-        stockInfo: stockInfo.value || null,
-        categoryData: categoryData.value,
-        stockChartData: stockChartData.value,
-        ma5: ma5.value,
-        ma10: ma10.value,
-        ma20: ma20.value,
-        ma30: ma30.value,
-      }
-    }),
-    getStockData,
-  }
+  const config = ref(generateStockChartConfig.call(store.value, toValue(timeGranularity)))
 
-  const config = computed<EChartsOption>(() => generateStockChartConfig(store))
+  watch<[ChatMessageStockData[], TimeGranularity]>(
+    () => [toValue(stockData).slice(), toValue(timeGranularity)],
+    ([newStockData, newTimeGranularity], [oldStockData]) => {
+      const stockChartData = newStockData.map((item) => {
+        return [item.open, item.close, item.low, item.high]
+      })
+
+      if (!store.value.stockInfo) {
+        store.value.stockInfo = getStockInfo(newStockData, code)
+      }
+      store.value.categoryData = newStockData.map((item) => {
+        return dayjs(item.trade_date || '').format('YYYY-MM-DD')
+      })
+      store.value.stockChartData = stockChartData
+      store.value.originalStockChartData = newStockData
+      store.value.ma5 = calculateMA(5, stockChartData)
+      store.value.ma10 = calculateMA(10, stockChartData)
+      store.value.ma20 = calculateMA(20, stockChartData)
+      store.value.ma30 = calculateMA(30, stockChartData)
+
+      config.value.xAxis![0].axisLabel.formatter = (value: string) => xAxisFormat(value, newTimeGranularity)
+      config.value.xAxis![0].data = store.value.categoryData
+      config.value.series![0].data = stockChartData
+      config.value.series![1].data = store.value.ma5
+      config.value.series![2].data = store.value.ma10
+      config.value.series![3].data = store.value.ma20
+      config.value.series![4].data = store.value.ma30
+      const newStockDataSize = newStockData.length - oldStockData.length
+      if (oldStockData.length === 0) {
+        config.value.dataZoom.forEach((item) => {
+          item.endValue = Math.max(0, newStockDataSize - 1)
+          item.startValue = Math.max(0, item.endValue - 50)
+        })
+      }
+      else {
+        config.value.dataZoom.forEach((item) => {
+          item.startValue = Math.max(0, item.endValue + 50)
+        })
+      }
+    },
+    { deep: true },
+  )
 
   return {
     store,
     config,
     code,
+    getStockData,
   }
 }
 
-function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, metadata: ChatMessageStockMetadata): StockInfo | null {
+export function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, code: string): StockInfo | null {
   const stockData = toValue(stockChartData)
   const latestData = stockData[stockData.length - 1]
   const previousData = stockData[stockData.length - 2]
@@ -120,7 +136,7 @@ function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, 
   }
 
   return {
-    code: metadata.symbol[0],
+    code,
     currentPrice: Number(latestData.close.toFixed(2)),
     change: Number((latestData.close - previousData.close).toFixed(2)),
     changePercent: Number((latestData.close - previousData.close) / previousData.close),

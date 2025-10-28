@@ -8,7 +8,7 @@ import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } f
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, ref, shallowRef, watch, watchEffect } from 'vue'
 import { useLoadStockData, useStockChart } from '@/echarts'
 import { timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
@@ -16,11 +16,10 @@ import StockPriceInfo from './price-info.vue'
 import StockSelectedDataPanel from './selected-data-panel.vue'
 
 const props = defineProps<{
-  data: [ChatMessageStock]
   params: DateParameterOfStock
   preview?: boolean
 }>()
-console.log(props.data)
+
 provideEcharts(echarts)
 
 echarts.use([
@@ -36,14 +35,17 @@ echarts.use([
 const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
 const activeData = ref<StockData | null>(null)
 const stockData = ref<ChatMessageStockData[]>([])
-const { store, config, code } = useStockChart(stockData, props.data[0].metadata)
-const stockInfo = computed(() => store.data.value.stockInfo)
+const { store, config, code, getStockData } = useStockChart(stockData, props.params.code, computed(() => currentTimeGranularity.value.key))
+const stockInfo = computed(() => store.value.stockInfo)
+watchEffect(() => {
+  console.log(stockInfo.value, store.value)
+})
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
 const { load, reset } = useLoadStockData({
   date: props.params.todate,
-  type: currentTimeGranularity.value.key,
+  type: computed(() => currentTimeGranularity.value.key),
 })
 
 watch(currentTimeGranularity, () => {
@@ -58,7 +60,7 @@ function handleSegmentChange(option) {
 }
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
-    activeData.value = store.getStockData(params.dataIndex)
+    activeData.value = getStockData(store.value, params.dataIndex)
   }
 }
 function handleZRClick(params: ElementEvent) {
@@ -69,7 +71,6 @@ function handleZRClick(params: ElementEvent) {
 
 // 监听 dataZoom 事件，当滑动到左边时加载更多数据
 function handleDataZoom(event: any) {
-  // 当滑动到最左边（start 接近 0）时触发加载
   let start: number | null = null
   if (event?.dataZoomId && event.dataZoomId === 'dataZoomSlider') {
     start = event.start as number
@@ -78,7 +79,7 @@ function handleDataZoom(event: any) {
     start = event?.batch?.[0].start as number
   }
 
-  if (start !== null && start < 5 && !isLoadingMore.value && hasMoreData.value) {
+  if (start !== null && start < 10 && !isLoadingMore.value && hasMoreData.value) {
     loadMoreData()
   }
 }
@@ -89,11 +90,10 @@ async function loadMoreData() {
     return
 
   isLoadingMore.value = true
-  uni.showLoading({ title: '加载中...' })
+  // uni.showLoading({ title: '加载中...' })
 
   try {
-    const data = await load(code)
-
+    const data = await load(props.params.code || code)
     // 判断是否返回了数据
     if (!data || data.length === 0) {
       // 没有更多数据了
