@@ -27,7 +27,7 @@ const formattedChangePercent = computed(() => {
         <view class="text-24px font-500">
           {{ stockInfo.currentPrice }}
         </view>
-        <view class="flex">
+        <view class="flex gap-6px">
           <view class="text-12px">
             {{ formattedChange }}
           </view>
@@ -52,15 +52,15 @@ const formattedChangePercent = computed(() => {
       </view>
       <view class="text-12px  flex flex-col gap-8px">
         <view class="flex justify-between">
-          <view>开</view>
+          <view>开盘</view>
           <view class="font-500" :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
             {{ stockInfo.open }}
           </view>
         </view>
         <view class="flex justify-between">
-          <view>量</view>
+          <view>成交量</view>
           <view class="font-500">
-            {{ stockInfo.vol }}
+            {{ stockInfo.vol }}万
           </view>
         </view>
       </view>

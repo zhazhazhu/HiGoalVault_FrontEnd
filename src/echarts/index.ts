@@ -87,19 +87,48 @@ export function useStockChart(options: UseStockChartOptions) {
 
   const config = ref(generateStockChartConfig(store, options))
 
+  function resetConfigData() {
+    config.value = generateStockChartConfig(store, options)
+  }
+
   watch<ChatMessageStockData[]>(
     () => toValue(options.stockData).slice(),
     (newStockData, oldStockData) => {
       if (!stockInfo.value) {
         stockInfo.value = getStockInfo(newStockData, options.code)
       }
-      if (newStockData.length !== oldStockData.length) {
-        config.value = generateStockChartConfig(store, options)
-        const delta = newStockData.length - oldStockData.length
-        const maxIndex = Math.max(0, store.value.categoryData.length - 1)
-        const prevE = (toValue(options.zoomEnd) ?? 0) as number
-        const endValue = Math.min(maxIndex, Number(prevE) + delta)
-        const startValue = Math.max(0, endValue - 50)
+      // config.value = generateStockChartConfig(store, options)
+      const newPushStockData = newStockData.slice(oldStockData.length)
+      const stockChartData = newPushStockData.map((item) => {
+        return [item.open, item.close, item.low, item.high]
+      })
+      const categoryData = newPushStockData.map((item) => {
+        return dayjs(item.trade_date || '').format('YYYY-MM-DD')
+      })
+      const ma5 = calculateMA(5, stockChartData)
+      const ma10 = calculateMA(10, stockChartData)
+      const ma20 = calculateMA(20, stockChartData)
+      const ma30 = calculateMA(30, stockChartData)
+      config.value.xAxis[0].data.unshift(...categoryData)
+      config.value.series[0].data.unshift(...(stockChartData as any))
+      config.value.series[1].data.unshift(...ma5 as any)
+      config.value.series[2].data.unshift(...ma10 as any)
+      config.value.series[3].data.unshift(...ma20 as any)
+      config.value.series[4].data.unshift(...ma30 as any)
+      const delta = stockChartData.length
+      const defaultDataZoomEnd = Math.max(0, stockChartData.length - 1)
+      const defaultDataZoomStart = Math.max(0, defaultDataZoomEnd - 50)
+      const maxIndex = Math.max(0, store.value.categoryData.length - 1)
+      const prevE = (toValue(options.zoomEnd) ?? 0) as number
+      const endValue = Math.min(maxIndex, Number(prevE) + delta)
+      const startValue = Math.max(0, endValue - 50)
+      if (toValue(options.zoomEnd) === null) {
+        config.value.dataZoom.forEach((item) => {
+          item.endValue = defaultDataZoomEnd
+          item.startValue = defaultDataZoomStart
+        })
+      }
+      else {
         config.value.dataZoom.forEach((item) => {
           item.endValue = endValue
           item.startValue = startValue
@@ -114,6 +143,7 @@ export function useStockChart(options: UseStockChartOptions) {
     config,
     stockInfo,
     getStockData,
+    resetConfigData,
   }
 }
 

@@ -37,7 +37,7 @@ const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
 const zoomStart = ref<number | null>(null)
 const zoomEnd = ref<number | null>(null)
-const { store, config, stockInfo } = useStockChart({
+const { store, config, stockInfo, resetConfigData } = useStockChart({
   stockData: computed(() => stockData.value),
   code: props.params.code,
   timeGranularity: computed(() => currentTimeGranularity.value.key),
@@ -50,12 +50,18 @@ const { load, reset } = useLoadStockData({
   type: computed(() => currentTimeGranularity.value.key),
 })
 
+function preventScroll(e: TouchEvent) {
+  e.preventDefault()
+  e.stopPropagation()
+}
+
 watch(currentTimeGranularity, () => {
   stockData.value = []
   reset()
   hasMoreData.value = true
   zoomStart.value = null
   zoomEnd.value = null
+  resetConfigData()
   loadMoreData()
 }, { immediate: true })
 
@@ -142,7 +148,7 @@ async function loadMoreData() {
       </view>
 
       <!-- 图表容器 -->
-      <view class="chart-wrapper">
+      <view class="chart-wrapper" @touchmove.stop.prevent="preventScroll">
         <uni-echarts
           ref="chartCanvasInstance"
           custom-class="h-280px"

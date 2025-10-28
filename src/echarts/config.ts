@@ -87,8 +87,8 @@ export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
 
 export function generateStockChartConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
   const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = store.value
-  const startValue = Math.max(0, stockChartData.length - 1)
-  const endValue = Math.max(0, startValue - 50)
+  const endValue = Math.max(0, stockChartData.length - 1)
+  const startValue = Math.max(0, endValue - 50)
 
   return {
     grid: {
