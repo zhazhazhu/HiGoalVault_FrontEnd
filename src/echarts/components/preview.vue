@@ -9,7 +9,7 @@ const props = defineProps<{
   data: [ChatMessageStock]
 }>()
 
-const { store } = useStockChart(props.data)
+const { store } = useStockChart(props.data[0].data, props.data[0].metadata)
 const stockInfo = computed(() => store.data.value.stockInfo)
 </script>
 

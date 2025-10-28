@@ -21,8 +21,7 @@ export interface StockData extends ChatMessageStockData {
 }
 
 export interface StockInfo {
-  name: string // 股票名称
-  code: string // 股票代码
+  code: string // 股票名称
   currentPrice: number // 当前价格
   change: number // 涨跌值
   changePercent: number // 涨跌百分比
@@ -47,18 +46,17 @@ export interface StockChartStore {
   getStockData: (index: number) => StockData
 }
 
-export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
-  const [stock] = toValue(stockData)
-  const data = computed(() => stock.data)
-  const stockInfo = getStockInfo(data, stock.metadata)
-  const code = stock.metadata.symbol[0]
+export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]>, metadata: ChatMessageStockMetadata) {
+  const code = metadata.symbol[0]
+  const stockInfo = computed(() => getStockInfo(stockData, metadata))
   const categoryData = computed(() => {
-    return data.value.map((item) => {
-      return dayjs(item.trade_date || '').format(DateFormat.DAY)
+    return toValue(stockData).map((item) => {
+      // 使用完整日期供 xAxis 做按月间隔与自定义格式化
+      return dayjs(item.trade_date || '').format('YYYY-MM-DD')
     })
   })
   const stockChartData = computed(() => {
-    return data.value.map((item) => {
+    return toValue(stockData).map((item) => {
       return [item.open, item.close, item.low, item.high]
     })
   })
@@ -76,7 +74,7 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
   })
 
   function getStockData(index: number): StockData {
-    const original = data.value[index]
+    const original = toValue(stockData)[index]
 
     return {
       ...original,
@@ -91,7 +89,7 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
   const store = {
     data: computed(() => {
       return {
-        stockInfo: stockInfo?.value || null,
+        stockInfo: stockInfo.value || null,
         categoryData: categoryData.value,
         stockChartData: stockChartData.value,
         ma5: ma5.value,
@@ -103,7 +101,7 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
     getStockData,
   }
 
-  const config = ref<EChartsOption>(generateStockChartConfig(store))
+  const config = computed<EChartsOption>(() => generateStockChartConfig(store))
 
   return {
     store,
@@ -112,7 +110,7 @@ export function useStockChart(stockData: MaybeRefOrGetter<[ChatMessageStock]>) {
   }
 }
 
-function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, metadata: ChatMessageStockMetadata) {
+function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, metadata: ChatMessageStockMetadata): StockInfo | null {
   const stockData = toValue(stockChartData)
   const latestData = stockData[stockData.length - 1]
   const previousData = stockData[stockData.length - 2]
@@ -121,9 +119,8 @@ function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, 
     return null
   }
 
-  return computed<StockInfo>(() => ({
-    name: metadata.symbol?.[0],
-    code: metadata.symbol?.[1],
+  return {
+    code: metadata.symbol[0],
     currentPrice: Number(latestData.close.toFixed(2)),
     change: Number((latestData.close - previousData.close).toFixed(2)),
     changePercent: Number((latestData.close - previousData.close) / previousData.close),
@@ -133,7 +130,7 @@ function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, 
     high: Number(latestData.high.toFixed(2)),
     low: Number(latestData.low.toFixed(2)),
     open: Number(latestData.open.toFixed(2)),
-  }))
+  }
 }
 
 interface UseLoadStockDataOptions {
@@ -144,7 +141,7 @@ interface UseLoadStockDataOptions {
 export function useLoadStockData(options: UseLoadStockDataOptions) {
   const [page, reset] = useResetRef({
     pageNumber: 1,
-    pageSize: 100,
+    pageSize: 200,
   })
 
   async function load(code?: string) {

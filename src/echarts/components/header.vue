@@ -21,10 +21,7 @@ const formattedChangePercent = computed(() => {
   <view class="flex justify-between items-start mb-32rpx pb-24rpx border-b-2rpx border-#f0f0f0">
     <view class="flex flex-col gap-8rpx">
       <text class="text-36rpx font-600 color-#333">
-        {{ stockInfo.name || '股票名称' }}
-      </text>
-      <text class="text-28rpx color-#666">
-        {{ stockInfo.code || '000000' }}
+        {{ stockInfo.code || '股票代码' }}
       </text>
     </view>
 

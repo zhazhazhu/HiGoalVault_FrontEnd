@@ -1,5 +1,6 @@
 import type { EChartsOption } from 'echarts'
 import type { StockChartStore } from '.'
+import dayjs from 'dayjs'
 import { toValue } from 'vue'
 import { TimeGranularity } from '@/api'
 
@@ -69,6 +70,24 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         type: 'category',
         data: categoryData,
         axisLine: { lineStyle: { color: '#8392A5' } },
+        axisLabel: {
+          formatter: (value: string) => dayjs(value).format('M-DD'),
+          interval: (index: number, value: string) => {
+            if (index === 0)
+              return true
+            const prev = categoryData[index - 1]
+            return dayjs(value).month() !== dayjs(prev).month()
+          },
+        },
+        axisTick: {
+          show: true,
+          interval: (index: number, value: string) => {
+            if (index === 0)
+              return true
+            const prev = categoryData[index - 1]
+            return dayjs(value).month() !== dayjs(prev).month()
+          },
+        },
         // splitLine: {
         //   show: true,
         //   lineStyle: {
@@ -100,8 +119,8 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         xAxisIndex: [0, 1],
         start: 60,
         end: 100,
-        minSpan: 5,
-        maxSpan: 100,
+        minSpan: 20,
+        maxSpan: 40,
         zoomOnMouseWheel: true,
         moveOnMouseMove: true,
         moveOnMouseWheel: true,
@@ -115,6 +134,8 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         end: 100,
         height: 20,
         bottom: 10,
+        minSpan: 20,
+        maxSpan: 40,
         borderColor: '#ccc',
         fillerColor: 'rgba(17, 100, 210, 0.2)',
         handleStyle: {
@@ -135,7 +156,7 @@ export function generateStockChartConfig(store: StockChartStore): EChartsOption 
         name: '日K',
         type: 'candlestick',
         data: stockChartData,
-        barWidth: 5, // 固定K线宽度为5px
+        barWidth: 2, // 固定K线宽度为5px
         itemStyle: {
           color: StockChartStyleConfig.UP_COLOR,
           color0: StockChartStyleConfig.DOWN_COLOR,
