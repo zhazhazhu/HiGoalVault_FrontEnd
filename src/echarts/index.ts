@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import type { ChatMessageStockData, ChatMessageStockMetadata } from '@/api'
+import type { ChatMessageStockData } from '@/api'
 import dayjs from 'dayjs'
 import { ref, toValue, watch } from 'vue'
 import { api, TimeGranularity } from '@/api'
@@ -44,22 +44,32 @@ export interface StockChartStore {
   ma30: Array<number | null>
 }
 
-export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]>, code: string, timeGranularity: MaybeRefOrGetter<TimeGranularity>) {
-  const stockChartData = toValue(stockData).map((item) => {
+export interface UseStockChartOptions {
+  stockData: MaybeRefOrGetter<ChatMessageStockData[]>
+  code: string
+  timeGranularity: MaybeRefOrGetter<TimeGranularity>
+  zoomStart: MaybeRefOrGetter<number | null>
+  zoomEnd: MaybeRefOrGetter<number | null>
+}
+
+export function useStockChart(options: UseStockChartOptions) {
+  const stockChartData = toValue(options.stockData).map((item) => {
     return [item.open, item.close, item.low, item.high]
   })
-  const store = ref<StockChartStore>({
-    stockInfo: getStockInfo(toValue(stockData), code),
-    categoryData: toValue(stockData).map((item) => {
-      return dayjs(item.trade_date || '').format('YYYY-MM-DD')
-    }),
-    stockChartData,
-    originalStockChartData: toValue(stockData),
-    ma5: calculateMA(5, stockChartData),
-    ma10: calculateMA(10, stockChartData),
-    ma20: calculateMA(20, stockChartData),
-    ma30: calculateMA(30, stockChartData),
-  })
+  const store = ref<StockChartStore>(
+    {
+      stockInfo: getStockInfo(toValue(options.stockData), options.code),
+      categoryData: toValue(options.stockData).map((item) => {
+        return dayjs(item.trade_date || '').format('YYYY-MM-DD')
+      }),
+      stockChartData,
+      originalStockChartData: toValue(options.stockData),
+      ma5: calculateMA(5, stockChartData),
+      ma10: calculateMA(10, stockChartData),
+      ma20: calculateMA(20, stockChartData),
+      ma30: calculateMA(30, stockChartData),
+    },
+  )
 
   function getStockData(store: StockChartStore, index: number): StockData {
     const original = toValue(store.originalStockChartData)[index]
@@ -74,17 +84,17 @@ export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]
     }
   }
 
-  const config = ref(generateStockChartConfig.call(store.value, toValue(timeGranularity)))
+  const config = ref(generateStockChartConfig(store, options))
 
   watch<[ChatMessageStockData[], TimeGranularity]>(
-    () => [toValue(stockData).slice(), toValue(timeGranularity)],
-    ([newStockData, newTimeGranularity], [oldStockData]) => {
+    () => [toValue(options.stockData).slice(), toValue(options.timeGranularity)],
+    ([newStockData, newTimeGranularity]) => {
       const stockChartData = newStockData.map((item) => {
         return [item.open, item.close, item.low, item.high]
       })
 
       if (!store.value.stockInfo) {
-        store.value.stockInfo = getStockInfo(newStockData, code)
+        store.value.stockInfo = getStockInfo(newStockData, options.code)
       }
       store.value.categoryData = newStockData.map((item) => {
         return dayjs(item.trade_date || '').format('YYYY-MM-DD')
@@ -103,18 +113,6 @@ export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]
       config.value.series![2].data = store.value.ma10
       config.value.series![3].data = store.value.ma20
       config.value.series![4].data = store.value.ma30
-      const newStockDataSize = newStockData.length - oldStockData.length
-      if (oldStockData.length === 0) {
-        config.value.dataZoom.forEach((item) => {
-          item.endValue = Math.max(0, newStockDataSize - 1)
-          item.startValue = Math.max(0, item.endValue - 50)
-        })
-      }
-      else {
-        config.value.dataZoom.forEach((item) => {
-          item.startValue = Math.max(0, item.endValue + 50)
-        })
-      }
     },
     { deep: true },
   )
@@ -122,7 +120,6 @@ export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]
   return {
     store,
     config,
-    code,
     getStockData,
   }
 }
@@ -159,7 +156,7 @@ interface UseLoadStockDataOptions {
 export function useLoadStockData(options: UseLoadStockDataOptions) {
   const [page, reset] = useResetRef({
     pageNumber: 1,
-    pageSize: 500,
+    pageSize: 300,
   })
 
   async function load(code?: string) {

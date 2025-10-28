@@ -1,5 +1,7 @@
-import type { StockChartStore } from '.'
+import type { ComputedRef, Ref } from 'vue'
+import type { StockChartStore, UseStockChartOptions } from '.'
 import dayjs from 'dayjs'
+import { toValue } from 'vue'
 import { TimeGranularity } from '@/api'
 
 export enum StockChartStyleConfig {
@@ -83,11 +85,11 @@ export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
     return dayjs(value).format('M-DD')
 }
 
-export function generateStockChartConfig(this: StockChartStore, timeGranularity: TimeGranularity) {
-  const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = this
-  const total = categoryData.length
-  const endIndex = Math.max(0, total - 1)
-  const startIndex = Math.max(0, endIndex - 10)
+export function generateStockChartConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
+  const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = store.value
+  const startValue = Math.max(0, stockChartData.length - 1)
+  const endValue = Math.max(0, startValue - 50)
+
   return {
     grid: {
       left: 10,
@@ -102,7 +104,7 @@ export function generateStockChartConfig(this: StockChartStore, timeGranularity:
         data: categoryData,
         axisLine: { lineStyle: { color: '#8392A5' } },
         axisLabel: {
-          formatter: (value: string) => xAxisFormat(value, timeGranularity),
+          formatter: (value: string) => xAxisFormat(value, toValue(options.timeGranularity)),
           // interval: (index: number, value: string) => {
           //   return xAxisInterval(index, value, categoryData, timeGranularity)
           // },
@@ -144,19 +146,19 @@ export function generateStockChartConfig(this: StockChartStore, timeGranularity:
         id: 'dataZoomInside',
         type: 'inside',
         xAxisIndex: [0, 1],
-        startValue: startIndex,
-        endValue: endIndex,
+        startValue,
+        endValue,
         zoomOnMouseWheel: true,
         moveOnMouseMove: true,
         moveOnMouseWheel: true,
-        preventDefaultMouseMove: false,
+        preventDefaultMouseMove: true,
       },
       {
         id: 'dataZoomSlider',
         type: 'slider',
         xAxisIndex: [0, 1],
-        startValue: startIndex,
-        endValue: endIndex,
+        startValue,
+        endValue,
         zoomLock: true,
         height: 20,
         bottom: 10,

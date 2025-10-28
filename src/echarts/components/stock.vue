@@ -7,7 +7,7 @@ import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } f
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
-import { computed, ref, shallowRef, watch, watchEffect } from 'vue'
+import { computed, nextTick, ref, shallowRef, watch } from 'vue'
 import { getStockInfo, useLoadStockData, useStockChart } from '@/echarts'
 import { timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
@@ -31,11 +31,20 @@ echarts.use([
 
 const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
 const stockData = ref<ChatMessageStockData[]>([])
-const { store, config, code } = useStockChart(stockData, props.params.code, computed(() => currentTimeGranularity.value.key))
 
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
+const zoomStart = ref<number | null>(null)
+const zoomEnd = ref<number | null>(null)
+const { store, config } = useStockChart({
+  stockData: computed(() => stockData.value),
+  code: props.params.code,
+  timeGranularity: computed(() => currentTimeGranularity.value.key),
+  zoomStart: computed(() => zoomStart.value),
+  zoomEnd: computed(() => zoomEnd.value),
+})
+
 const { load, reset } = useLoadStockData({
   date: props.params.todate,
   type: computed(() => currentTimeGranularity.value.key),
@@ -45,6 +54,8 @@ watch(currentTimeGranularity, () => {
   stockData.value = []
   reset()
   hasMoreData.value = true
+  zoomStart.value = null
+  zoomEnd.value = null
   loadMoreData()
 }, { immediate: true })
 
@@ -53,24 +64,31 @@ function handleSegmentChange(option) {
 }
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
-    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code || code, params.dataIndex)
+    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code, params.dataIndex)
   }
 }
 function handleZRClick(params: ElementEvent) {
   if (!params.target) {
-    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code || code)
+    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code)
   }
 }
 
 // 监听 dataZoom 事件，当滑动到左边时加载更多数据
 function handleDataZoom(event: any) {
   let start: number | null = null
+  let end: number | null = null
   if (event?.dataZoomId && event.dataZoomId === 'dataZoomSlider') {
     start = event.start as number
+    end = event.end as number
   }
   else {
     start = event?.batch?.[0].start as number
+    end = event?.batch?.[0].end as number
   }
+
+  // 记录当前窗口位置用于加载后校正
+  zoomStart.value = typeof start === 'number' ? start : zoomStart.value
+  zoomEnd.value = typeof end === 'number' ? end : zoomEnd.value
 
   if (start !== null && start < 10 && !isLoadingMore.value && hasMoreData.value) {
     loadMoreData()
@@ -86,7 +104,7 @@ async function loadMoreData() {
   // uni.showLoading({ title: '加载中...' })
 
   try {
-    const data = await load(props.params.code || code)
+    const data = await load(props.params.code)
     // 判断是否返回了数据
     if (!data || data.length === 0) {
       // 没有更多数据了
@@ -95,6 +113,17 @@ async function loadMoreData() {
       return
     }
     stockData.value.unshift(...data)
+    await nextTick()
+    const delta = data.length
+    const maxIndex = Math.max(0, store.value.categoryData.length - 1)
+    const prevE = (zoomEnd.value ?? 0) as number
+    const endValue = Math.min(maxIndex, Number(prevE) + delta)
+    const startValue = Math.max(0, endValue - 50)
+    config.value.dataZoom.forEach((item) => {
+      item.endValue = endValue
+      item.startValue = startValue
+    })
+    config.value = { ...config.value }
   }
   catch (error) {
     console.error('加载更多数据失败:', error)
@@ -151,5 +180,7 @@ async function loadMoreData() {
   overflow: hidden;
   margin-top: 16px;
   position: relative;
+  /* H5 下限制只允许水平手势，减少垂直滚动 */
+  touch-action: pan-x;
 }
 </style>
