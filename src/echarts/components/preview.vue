@@ -2,7 +2,6 @@
 import type { ChatMessageStock } from '@/api'
 import { getStockInfo } from '@/echarts'
 import StockHeader from './header.vue'
-import StockPriceInfo from './price-info.vue'
 
 const props = defineProps<{
   data: [ChatMessageStock]
@@ -15,8 +14,6 @@ const stockInfo = getStockInfo(props.data[0].data, props.data[0].metadata.symbol
   <view v-if="stockInfo" class="stock-chart-container">
     <!-- 股票基本信息 -->
     <StockHeader :stock-info="stockInfo" />
-    <!-- 价格信息面板 -->
-    <StockPriceInfo :stock-info="stockInfo" />
   </view>
 </template>
 
@@ -24,6 +21,5 @@ const stockInfo = getStockInfo(props.data[0].data, props.data[0].metadata.symbol
 .stock-chart-container {
   background-color: #fff;
   overflow: hidden;
-  margin-top: 12px;
 }
 </style>

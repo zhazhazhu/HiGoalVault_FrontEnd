@@ -8,34 +8,61 @@ const props = defineProps<{
 
 const formattedChange = computed(() => {
   const value = Number(props.stockInfo.change)
-  return Number.isNaN(value) ? props.stockInfo.change : value.toFixed(5).replace(/\.?0+$/, '')
+  return Number.isNaN(value) ? props.stockInfo.change : value.toFixed(2).replace(/\.?0+$/, '')
 })
 
 const formattedChangePercent = computed(() => {
   const value = Number(props.stockInfo.changePercent)
-  return Number.isNaN(value) ? props.stockInfo.changePercent : value.toFixed(5).replace(/\.?0+$/, '')
+  return Number.isNaN(value) ? props.stockInfo.changePercent : value.toFixed(2).replace(/\.?0+$/, '')
 })
 </script>
 
 <template>
-  <view class="flex justify-between items-start mb-32rpx pb-24rpx border-b-2rpx border-#f0f0f0">
-    <view class="flex flex-col gap-8rpx">
-      <text class="text-36rpx font-600 color-#333">
-        {{ stockInfo.code || '股票代码' }}
-      </text>
+  <view>
+    <view class="text-14px color-#797979 mb-10px">
+      {{ stockInfo.code || '股票代码' }}
     </view>
-
-    <view class="flex flex-col items-end gap-8rpx">
-      <text class="text-36rpx font-700" :class="[stockInfo.isUp ? 'color-#ec0000' : 'color-#00da3c']">
-        ¥{{ stockInfo.currentPrice }}
-      </text>
-      <view class="flex gap-16rpx items-center">
-        <text class="text-28rpx font-500" :class="[stockInfo.isUp ? 'color-#ec0000' : 'color-#00da3c']">
-          {{ stockInfo.isUp ? '+' : '' }}{{ formattedChange }}
-        </text>
-        <text class="text-28rpx font-500" :class="[stockInfo.isUp ? 'color-#ec0000' : 'color-#00da3c']">
-          {{ stockInfo.isUp ? '+' : '' }}{{ formattedChangePercent }}%
-        </text>
+    <view class="grid grid-cols-3 gap-20px items-center">
+      <view :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
+        <view class="text-24px font-500">
+          {{ stockInfo.currentPrice }}
+        </view>
+        <view class="flex">
+          <view class="text-12px">
+            {{ formattedChange }}
+          </view>
+          <view class="text-12px">
+            {{ formattedChangePercent }}%
+          </view>
+        </view>
+      </view>
+      <view class="text-12px flex flex-col gap-8px">
+        <view class="flex justify-between">
+          <view>高</view>
+          <view class="font-500" :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
+            {{ stockInfo.high }}
+          </view>
+        </view>
+        <view class="flex justify-between">
+          <view>低</view>
+          <view class="font-500" :style="{ color: stockInfo.isUp ? '#ec4242' : '#2bb552' }">
+            {{ stockInfo.low }}
+          </view>
+        </view>
+      </view>
+      <view class="text-12px  flex flex-col gap-8px">
+        <view class="flex justify-between">
+          <view>开</view>
+          <view class="font-500" :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
+            {{ stockInfo.open }}
+          </view>
+        </view>
+        <view class="flex justify-between">
+          <view>量</view>
+          <view class="font-500">
+            {{ stockInfo.vol }}
+          </view>
+        </view>
       </view>
     </view>
   </view>

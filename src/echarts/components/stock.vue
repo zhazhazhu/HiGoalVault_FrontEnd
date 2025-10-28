@@ -1,19 +1,16 @@
 <script lang='ts' setup>
 import type { ECElementEvent, ElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
-import type { ChatMessageStock, ChatMessageStockData, DateParameterOfStock } from '@/api'
-import type { StockData } from '@/echarts'
+import type { ChatMessageStockData, DateParameterOfStock } from '@/api'
 import { CandlestickChart, LineChart } from 'echarts/charts'
 import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } from 'echarts/components'
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
 import { computed, ref, shallowRef, watch, watchEffect } from 'vue'
-import { useLoadStockData, useStockChart } from '@/echarts'
+import { getStockInfo, useLoadStockData, useStockChart } from '@/echarts'
 import { timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
-import StockPriceInfo from './price-info.vue'
-import StockSelectedDataPanel from './selected-data-panel.vue'
 
 const props = defineProps<{
   params: DateParameterOfStock
@@ -33,13 +30,9 @@ echarts.use([
 ])
 
 const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
-const activeData = ref<StockData | null>(null)
 const stockData = ref<ChatMessageStockData[]>([])
-const { store, config, code, getStockData } = useStockChart(stockData, props.params.code, computed(() => currentTimeGranularity.value.key))
-const stockInfo = computed(() => store.value.stockInfo)
-watchEffect(() => {
-  console.log(stockInfo.value, store.value)
-})
+const { store, config, code } = useStockChart(stockData, props.params.code, computed(() => currentTimeGranularity.value.key))
+
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
@@ -60,12 +53,12 @@ function handleSegmentChange(option) {
 }
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
-    activeData.value = getStockData(store.value, params.dataIndex)
+    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code || code, params.dataIndex)
   }
 }
 function handleZRClick(params: ElementEvent) {
   if (!params.target) {
-    activeData.value = null
+    store.value.stockInfo = getStockInfo(store.value.originalStockChartData, props.params.code || code)
   }
 }
 
@@ -120,20 +113,14 @@ async function loadMoreData() {
       这是查询到的行情数据：
     </view>
     <!-- 股票基本信息 -->
-    <StockHeader v-if="stockInfo" :stock-info="stockInfo" />
-
-    <!-- 价格信息面板 -->
-    <StockPriceInfo v-if="stockInfo" :stock-info="stockInfo" />
+    <view class="my-16px">
+      <StockHeader v-if="store.stockInfo" :stock-info="store.stockInfo" />
+    </view>
 
     <template v-if="!preview">
       <!-- 时间周期选择器 -->
       <view class="period-selector">
         <wd-segmented :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
-      </view>
-
-      <!-- 点击数据显示区域 -->
-      <view v-if="activeData">
-        <StockSelectedDataPanel :data="activeData" />
       </view>
 
       <!-- 图表容器 -->

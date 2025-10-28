@@ -5,6 +5,10 @@ import { TimeGranularity } from '@/api'
 export enum StockChartStyleConfig {
   UP_COLOR = '#e63434ff',
   DOWN_COLOR = '#237b3cff',
+  MA5_COLOR = '#007fff',
+  MA10_COLOR = '#FFD700',
+  MA20_COLOR = '#9370DB',
+  MA30_COLOR = '#00CED1',
 }
 
 type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '5MINS' | '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
@@ -192,7 +196,7 @@ export function generateStockChartConfig(this: StockChartStore, timeGranularity:
         lineStyle: {
           opacity: 0.8,
           width: 1,
-          color: '#1E90FF',
+          color: StockChartStyleConfig.MA5_COLOR,
         },
         symbol: 'none',
       },
@@ -204,7 +208,7 @@ export function generateStockChartConfig(this: StockChartStore, timeGranularity:
         lineStyle: {
           opacity: 0.8,
           width: 1,
-          color: '#FFD700',
+          color: StockChartStyleConfig.MA10_COLOR,
         },
         symbol: 'none',
       },
@@ -216,7 +220,7 @@ export function generateStockChartConfig(this: StockChartStore, timeGranularity:
         lineStyle: {
           opacity: 0.8,
           width: 1,
-          color: '#9370DB',
+          color: StockChartStyleConfig.MA20_COLOR,
         },
         symbol: 'none',
       },
@@ -228,7 +232,7 @@ export function generateStockChartConfig(this: StockChartStore, timeGranularity:
         lineStyle: {
           opacity: 0.8,
           width: 1,
-          color: '#00CED1',
+          color: StockChartStyleConfig.MA30_COLOR,
         },
         symbol: 'none',
       },

@@ -25,11 +25,12 @@ export interface StockInfo {
   change: number // 涨跌值
   changePercent: number // 涨跌百分比
   isUp: boolean // 是否上涨
-  totalVolume: number // 总成交量
   openInterest: number // 持仓量
   high: number // 最高价
   low: number // 最低价
   open: number // 开盘价
+  close: number // 收盘价
+  vol: number // 成交量
 }
 
 export interface StockChartStore {
@@ -126,10 +127,10 @@ export function useStockChart(stockData: MaybeRefOrGetter<ChatMessageStockData[]
   }
 }
 
-export function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, code: string): StockInfo | null {
+export function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, code: string, index?: number): StockInfo | null {
   const stockData = toValue(stockChartData)
-  const latestData = stockData[stockData.length - 1]
-  const previousData = stockData[stockData.length - 2]
+  const latestData = stockData[index !== undefined ? index : stockData.length - 1]
+  const previousData = stockData[index !== undefined ? index - 1 : stockData.length - 2]
 
   if (!latestData || !previousData) {
     return null
@@ -141,11 +142,12 @@ export function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockDa
     change: Number((latestData.close - previousData.close).toFixed(2)),
     changePercent: Number((latestData.close - previousData.close) / previousData.close),
     isUp: latestData.close > previousData.close,
-    totalVolume: Number(stockData.reduce((sum, item) => sum + item.vol, 0).toFixed(2)),
     openInterest: latestData.oi || 0,
     high: Number(latestData.high.toFixed(2)),
     low: Number(latestData.low.toFixed(2)),
     open: Number(latestData.open.toFixed(2)),
+    close: Number(latestData.close.toFixed(2)),
+    vol: Number(latestData.vol.toFixed(2)),
   }
 }
 
@@ -157,7 +159,7 @@ interface UseLoadStockDataOptions {
 export function useLoadStockData(options: UseLoadStockDataOptions) {
   const [page, reset] = useResetRef({
     pageNumber: 1,
-    pageSize: 200,
+    pageSize: 500,
   })
 
   async function load(code?: string) {
