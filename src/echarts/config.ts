@@ -11,6 +11,7 @@ export enum StockChartStyleConfig {
   MA10_COLOR = '#FFD700',
   MA20_COLOR = '#9370DB',
   MA30_COLOR = '#00CED1',
+  TIME_SERIES_COLOR = '#2c2c2cff',
 }
 
 type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '1MINS' | '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
@@ -86,6 +87,15 @@ export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
 }
 
 export function generateStockChartConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
+  if (toValue(options.timeGranularity) === '5MINS') {
+    return generateLineConfig(store, options)
+  }
+  else {
+    return generateKLineConfig(store, options)
+  }
+}
+
+export function generateKLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
   const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = store.value
   const endValue = Math.max(0, stockChartData.length - 1)
   const startValue = Math.max(0, endValue - 50)
@@ -288,6 +298,127 @@ export function generateStockChartConfig(store: Ref<StockChartStore>, options: U
       //     }
       //   }),
       // },
+    ],
+  }
+}
+
+export function generateLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
+  const { categoryData, stockChartData } = store.value
+  const endValue = Math.max(0, stockChartData.length - 1)
+  const startValue = Math.max(0, endValue - 50)
+
+  return {
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      // 仅显示十字线，不显示默认浮层内容
+      showContent: false,
+      // 由我们通过 dispatchAction 主动控制显示/隐藏
+      triggerOn: 'none',
+      axisPointer: {
+        type: 'cross',
+        snap: true,
+        label: {
+          show: true,
+          backgroundColor: '#616c7b',
+        },
+        crossStyle: {
+          color: '#8392A5',
+          width: 1,
+          type: 'dashed',
+        },
+      },
+    },
+    grid: {
+      left: 10,
+      right: 10,
+      top: 0,
+      bottom: 60,
+      outerBoundsContain: 'all',
+    },
+    xAxis: [
+      {
+        type: 'category',
+        data: categoryData,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        axisLabel: {
+          formatter: (value: string) => xAxisFormat(value, toValue(options.timeGranularity)),
+        },
+      },
+    ],
+    yAxis: {
+      scale: true,
+      splitNumber: 4,
+      axisLine: { lineStyle: { color: '#8392A5' } },
+      axisLabel: {
+        align: 'right', // 文本右对齐
+        margin: 20, // 可根据实际情况调整的右边距
+        inside: true,
+        color: '#616c7b79',
+        formatter: (value: number, index: number) => {
+          if (index === 0) {
+            return ''
+          }
+          return value
+        },
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: '#8392A5',
+          opacity: 0.2,
+          type: 'dashed',
+        },
+      },
+      boundaryGap: [0, 0],
+    },
+    dataZoom: [
+      {
+        id: 'dataZoomInside',
+        type: 'inside',
+        xAxisIndex: [0, 1],
+        startValue,
+        endValue,
+        zoomOnMouseWheel: true,
+        moveOnMouseMove: true,
+        moveOnMouseWheel: true,
+        preventDefaultMouseMove: true,
+      },
+      {
+        id: 'dataZoomSlider',
+        type: 'slider',
+        xAxisIndex: [0, 1],
+        startValue,
+        endValue,
+        zoomLock: true,
+        height: 20,
+        bottom: 10,
+        borderColor: '#ccc',
+        fillerColor: 'rgba(17, 100, 210, 0.2)',
+        handleStyle: {
+          color: '#1164d2',
+          borderColor: '#1164d2',
+        },
+        textStyle: {
+          color: '#999',
+        },
+        showDetail: false,
+        showDataShadow: true,
+        realtime: true,
+        filterMode: 'filter',
+      },
+    ],
+    series: [
+      {
+        name: '分时',
+        type: 'line',
+        data: stockChartData.map(item => item[1]),
+        showSymbol: false,
+        lineStyle: {
+          color: StockChartStyleConfig.TIME_SERIES_COLOR,
+          width: 1,
+        },
+      },
     ],
   }
 }

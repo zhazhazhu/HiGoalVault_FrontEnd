@@ -83,7 +83,6 @@ export function useStockChart(options: UseStockChartOptions) {
       if (!stockInfo.value) {
         stockInfo.value = getStockInfo(newStockData)
       }
-      // config.value = generateStockChartConfig(store, options)
       const newPushStockData = newStockData.slice(oldStockData.length)
       const stockChartData = newPushStockData.map((item) => {
         return [item.open, item.close, item.low, item.high]
@@ -95,11 +94,17 @@ export function useStockChart(options: UseStockChartOptions) {
         return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
       })
       config.value.xAxis[0].data.unshift(...categoryData)
-      config.value.series[0].data.unshift(...(stockChartData as any))
-      config.value.series[1].data = calculateMA(5, allStockChartData)
-      config.value.series[2].data = calculateMA(10, allStockChartData)
-      config.value.series[3].data = calculateMA(20, allStockChartData)
-      config.value.series[4].data = calculateMA(30, allStockChartData)
+      if (toValue(options.timeGranularity) === '5MINS') {
+        config.value.series[0].data.unshift(...(stockChartData.map(item => item[1])) as any)
+      }
+      else {
+        config.value.series[0].data.unshift(...(stockChartData as any))
+        config.value.series[1].data = calculateMA(5, allStockChartData)
+        config.value.series[2].data = calculateMA(10, allStockChartData)
+        config.value.series[3].data = calculateMA(20, allStockChartData)
+        config.value.series[4].data = calculateMA(30, allStockChartData)
+      }
+
       const delta = stockChartData.length
       const defaultDataZoomEnd = Math.max(0, stockChartData.length - 1)
       const defaultDataZoomStart = Math.max(0, defaultDataZoomEnd - 50)
