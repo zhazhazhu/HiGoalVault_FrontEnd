@@ -69,8 +69,7 @@ export function useStockChart(options: UseStockChartOptions) {
       ma20: calculateMA(20, stockChartData),
       ma30: calculateMA(30, stockChartData),
     }
-  },
-  )
+  })
 
   const config = ref(generateStockChartConfig(store, options))
 

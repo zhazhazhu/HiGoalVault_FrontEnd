@@ -3,7 +3,7 @@ import type { ECElementEvent, ElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { ChatMessageStockData, DateParameterOfStock } from '@/api'
 import { CandlestickChart, LineChart } from 'echarts/charts'
-import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } from 'echarts/components'
+import { AxisPointerComponent, DatasetComponent, DataZoomComponent, GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
@@ -27,6 +27,8 @@ echarts.use([
   DataZoomComponent,
   LineChart,
   CandlestickChart,
+  AxisPointerComponent,
+  TooltipComponent,
 ])
 
 const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
@@ -69,16 +71,26 @@ watch(currentTimeGranularity, () => {
 function handleSegmentChange(option) {
   currentTimeGranularity.value = option
 }
-function handleChartClick(params: ECElementEvent) {
-  if (params.componentType === 'series') {
-    stockInfo.value = getStockInfo(store.value.originalStockChartData, params.dataIndex)
-    selectedIndex.value = params.dataIndex
-  }
-}
+
+let timer: NodeJS.Timeout | null = null
+
 function handleZRClick(params: ElementEvent) {
-  if (!params.target) {
-    stockInfo.value = getStockInfo(store.value.originalStockChartData)
-    selectedIndex.value = null
+  // 若点击在网格区域，则根据像素位置映射到最近的数据索引
+  const idx = pickIndexByPixel(params)
+  if (idx !== null) {
+    selectedIndex.value = idx
+    stockInfo.value = getStockInfo(store.value.originalStockChartData, idx)
+    showCrossAtSelected()
+    // 清除之前的定时器
+    if (timer) {
+      clearTimeout(timer)
+    }
+    // 设置新的定时器，300ms 后隐藏十字线
+    timer = setTimeout(() => {
+      stockInfo.value = getStockInfo(store.value.originalStockChartData)
+      hideCross()
+      timer = null
+    }, 3000)
   }
 }
 
@@ -101,6 +113,11 @@ function handleDataZoom(event: any) {
 
   if (start !== null && start < 10 && !isLoadingMore.value && hasMoreData.value) {
     loadMoreData()
+  }
+
+  // 滑动期间如果存在选中点，则显示十字线固定于该点
+  if (selectedIndex.value != null) {
+    showCrossAtSelected()
   }
 }
 
@@ -132,6 +149,96 @@ function formatMA(v: number | null) {
     return '-'
   const n = Number(v)
   return Number.isNaN(n) ? '-' : n.toFixed(2).replace(/\.\?0+$/, '')
+}
+
+// 十字线显隐控制
+function showCrossAtSelected() {
+  const chart = chartCanvasInstance.value?.chart
+  const idx = selectedIndex.value
+  if (!chart || idx == null)
+    return
+  try {
+    chart.dispatchAction({
+      type: 'showTip',
+      seriesIndex: 0,
+      dataIndex: idx,
+    })
+  }
+  catch {
+    // ignore
+  }
+}
+
+function hideCross() {
+  const chart = chartCanvasInstance.value?.chart
+  if (!chart)
+    return
+  try {
+    selectedIndex.value = null
+    chart.dispatchAction({ type: 'hideTip' })
+    chart.dispatchAction({
+      type: 'updateAxisPointer',
+      currTrigger: 'leave',
+    })
+  }
+  catch {
+    // ignore
+  }
+}
+
+// 根据像素位置选择最近的索引
+function pickIndexByPixel(evt: ElementEvent): number | null {
+  const chart = chartCanvasInstance.value?.chart
+  if (!chart)
+    return null
+
+  // 兼容不同事件结构，优先使用 zrender 坐标，其次 offset，再用 client/page 计算相对坐标
+  const ev: any = (evt as any).event ?? evt
+  let ox: number | undefined = ev?.zrX ?? ev?.offsetX
+  let oy: number | undefined = ev?.zrY ?? ev?.offsetY
+  if (ox == null || oy == null) {
+    const dom = chart.getDom?.() as HTMLElement | undefined
+    const rect = dom?.getBoundingClientRect()
+    const cx = ev?.clientX ?? ev?.pageX
+    const cy = ev?.clientY ?? ev?.pageY
+    if (rect && cx != null && cy != null) {
+      ox = cx - rect.left
+      oy = cy - rect.top
+    }
+  }
+  if (ox == null || oy == null)
+    return null
+  const point: [number, number] = [ox, oy]
+
+  // 若不在主网格内，直接返回 null（避免误选坐标轴或滑块区域）
+  const inGrid = chart.containPixel({ gridIndex: 0 }, point as any)
+  if (!inGrid)
+    return null
+
+  // 将像素转换为坐标：优先 xAxisIndex，其次 grid，再次 seriesIndex
+  let xCoord: any = chart.convertFromPixel({ xAxisIndex: 0 }, point as any)
+  if (!xCoord) {
+    const gridCoord: any = chart.convertFromPixel({ gridIndex: 0 }, point as any)
+    xCoord = Array.isArray(gridCoord) ? gridCoord[0] : gridCoord
+  }
+  if (!xCoord) {
+    const seriesCoord: any = chart.convertFromPixel({ seriesIndex: 0 }, point as any)
+    xCoord = Array.isArray(seriesCoord) ? seriesCoord[0] : seriesCoord
+  }
+
+  const raw = Array.isArray(xCoord) ? xCoord[0] : xCoord
+  let idx: number | null = null
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    idx = Math.round(raw)
+  }
+  else if (typeof raw === 'string') {
+    const i = store.value.categoryData.indexOf(raw)
+    idx = i >= 0 ? i : null
+  }
+  if (idx == null || !Number.isFinite(idx))
+    return null
+  const max = Math.max(0, store.value.stockChartData.length - 1)
+  return Math.max(0, Math.min(idx, max))
 }
 
 // 加载更多历史数据
@@ -180,7 +287,7 @@ async function loadMoreData() {
         <wd-segmented :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
       </view>
 
-      <view class="flex gap-12px text-8px my-8px">
+      <view class="flex gap-12px text-8px my-8px" @click="hideCross">
         <text :style="{ color: StockChartStyleConfig.MA5_COLOR }">
           MA5: {{ formatMA(displayedMA.ma5) }}
         </text>
@@ -201,7 +308,6 @@ async function loadMoreData() {
           ref="chartCanvasInstance"
           custom-class="h-280px"
           :option="config"
-          @click="handleChartClick"
           @zr:click="handleZRClick"
           @datazoom="handleDataZoom"
         />

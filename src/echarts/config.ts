@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref } from 'vue'
+import type { Ref } from 'vue'
 import type { StockChartStore, UseStockChartOptions } from '.'
 import dayjs from 'dayjs'
 import { toValue } from 'vue'
@@ -91,6 +91,27 @@ export function generateStockChartConfig(store: Ref<StockChartStore>, options: U
   const startValue = Math.max(0, endValue - 50)
 
   return {
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      // 仅显示十字线，不显示默认浮层内容
+      showContent: false,
+      // 由我们通过 dispatchAction 主动控制显示/隐藏
+      triggerOn: 'none',
+      axisPointer: {
+        type: 'cross',
+        snap: true,
+        label: {
+          show: true,
+          backgroundColor: '#616c7b',
+        },
+        crossStyle: {
+          color: '#8392A5',
+          width: 1,
+          type: 'dashed',
+        },
+      },
+    },
     grid: {
       left: 10,
       right: 10,
@@ -109,6 +130,18 @@ export function generateStockChartConfig(store: Ref<StockChartStore>, options: U
           //   return xAxisInterval(index, value, categoryData, timeGranularity)
           // },
         },
+        // axisPointer: {
+        //   label: {
+        //     show: true,
+        //     formatter: (params: any) => {
+        //       const gran = toValue(options.timeGranularity)
+        //       const val = typeof params?.value === 'string'
+        //         ? params.value
+        //         : categoryData[Math.round(params?.value ?? 0)] ?? ''
+        //       return xAxisFormat(val, gran)
+        //     },
+        //   },
+        // },
         // axisTick: {
         //   show: true,
         //   interval: (index: number, value: string) => xAxisInterval(index, value, categoryData, timeGranularity),

@@ -83,7 +83,7 @@ function formatAmount(v: number | null) {
         <view class="flex justify-between">
           <view>量</view>
           <view class="font-500">
-            {{ formatAmount(stockInfo.vol) }}手
+            {{ formatAmount(stockInfo.vol) }}
           </view>
         </view>
         <view class="flex justify-between">
