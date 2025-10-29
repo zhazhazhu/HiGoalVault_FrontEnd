@@ -89,19 +89,18 @@ export function useStockChart(options: UseStockChartOptions) {
       const stockChartData = newPushStockData.map((item) => {
         return [item.open, item.close, item.low, item.high]
       })
+      const allStockChartData = newStockData.map((item) => {
+        return [item.open, item.close, item.low, item.high]
+      })
       const categoryData = newPushStockData.map((item) => {
         return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
       })
-      const ma5 = calculateMA(5, stockChartData)
-      const ma10 = calculateMA(10, stockChartData)
-      const ma20 = calculateMA(20, stockChartData)
-      const ma30 = calculateMA(30, stockChartData)
       config.value.xAxis[0].data.unshift(...categoryData)
       config.value.series[0].data.unshift(...(stockChartData as any))
-      config.value.series[1].data.unshift(...ma5 as any)
-      config.value.series[2].data.unshift(...ma10 as any)
-      config.value.series[3].data.unshift(...ma20 as any)
-      config.value.series[4].data.unshift(...ma30 as any)
+      config.value.series[1].data = calculateMA(5, allStockChartData)
+      config.value.series[2].data = calculateMA(10, allStockChartData)
+      config.value.series[3].data = calculateMA(20, allStockChartData)
+      config.value.series[4].data = calculateMA(30, allStockChartData)
       const delta = stockChartData.length
       const defaultDataZoomEnd = Math.max(0, stockChartData.length - 1)
       const defaultDataZoomStart = Math.max(0, defaultDataZoomEnd - 50)

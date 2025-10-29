@@ -7,9 +7,9 @@ import { DatasetComponent, DataZoomComponent, GridComponent, LegendComponent } f
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
-import { computed, nextTick, ref, shallowRef, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { getStockInfo, useLoadStockData, useStockChart } from '@/echarts'
-import { timeGranularityOptions } from '@/echarts/config'
+import { StockChartStyleConfig, timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
 
 const props = defineProps<{
@@ -37,6 +37,7 @@ const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
 const zoomStart = ref<number | null>(null)
 const zoomEnd = ref<number | null>(null)
+const selectedIndex = ref<number | null>(null)
 const { store, config, stockInfo, resetConfigData } = useStockChart({
   stockData: computed(() => stockData.value),
   code: props.params.code,
@@ -71,11 +72,13 @@ function handleSegmentChange(option) {
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
     stockInfo.value = getStockInfo(store.value.originalStockChartData, props.params.code, params.dataIndex)
+    selectedIndex.value = params.dataIndex
   }
 }
 function handleZRClick(params: ElementEvent) {
   if (!params.target) {
     stockInfo.value = getStockInfo(store.value.originalStockChartData, props.params.code)
+    selectedIndex.value = null
   }
 }
 
@@ -101,13 +104,43 @@ function handleDataZoom(event: any) {
   }
 }
 
+// 当前显示的索引（选中则用选中，否则用最新）
+const displayIndex = computed(() => {
+  const len = store.value.stockChartData.length
+  if (len <= 0)
+    return -1
+  const idx = selectedIndex.value ?? (len - 1)
+  return Math.max(0, Math.min(idx, len - 1))
+})
+
+// 当前显示的 MA 值
+const displayedMA = computed(() => {
+  const idx = displayIndex.value
+  if (idx < 0) {
+    return { ma5: null, ma10: null, ma20: null, ma30: null }
+  }
+  return {
+    ma5: store.value.ma5[idx],
+    ma10: store.value.ma10[idx],
+    ma20: store.value.ma20[idx],
+    ma30: store.value.ma30[idx],
+  }
+})
+
+function formatMA(v: number | null) {
+  if (v == null)
+    return '-'
+  const n = Number(v)
+  return Number.isNaN(n) ? '-' : n.toFixed(2).replace(/\.\?0+$/, '')
+}
+
 // 加载更多历史数据
 async function loadMoreData() {
   if (isLoadingMore.value || !hasMoreData.value)
     return
 
   isLoadingMore.value = true
-  // uni.showLoading({ title: '加载中...' })
+  chartCanvasInstance.value?.chart?.showLoading()
 
   try {
     const data = await load(props.params.code)
@@ -126,7 +159,7 @@ async function loadMoreData() {
   }
   finally {
     isLoadingMore.value = false
-    uni.hideLoading()
+    chartCanvasInstance.value?.chart?.hideLoading()
   }
 }
 </script>
@@ -145,6 +178,21 @@ async function loadMoreData() {
       <!-- 时间周期选择器 -->
       <view class="period-selector">
         <wd-segmented :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
+      </view>
+
+      <view class="flex gap-12px text-8px my-8px">
+        <text :style="{ color: StockChartStyleConfig.MA5_COLOR }">
+          MA5: {{ formatMA(displayedMA.ma5) }}
+        </text>
+        <text :style="{ color: StockChartStyleConfig.MA10_COLOR }">
+          MA10: {{ formatMA(displayedMA.ma10) }}
+        </text>
+        <text :style="{ color: StockChartStyleConfig.MA20_COLOR }">
+          MA20: {{ formatMA(displayedMA.ma20) }}
+        </text>
+        <text :style="{ color: StockChartStyleConfig.MA30_COLOR }">
+          MA30: {{ formatMA(displayedMA.ma30) }}
+        </text>
       </view>
 
       <!-- 图表容器 -->
@@ -173,7 +221,6 @@ async function loadMoreData() {
   height: 280px;
   width: 100%;
   overflow: hidden;
-  margin-top: 16px;
   position: relative;
   /* H5 下限制只允许水平手势，减少垂直滚动 */
   touch-action: pan-x;
