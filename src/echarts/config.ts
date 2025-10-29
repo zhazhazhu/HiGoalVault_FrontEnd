@@ -13,7 +13,7 @@ export enum StockChartStyleConfig {
   MA30_COLOR = '#00CED1',
 }
 
-type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '5MINS' | '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
+type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '1MINS' | '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
 
 export const timeGranularityOptions: TimeGranularityOptions = {
   // [TimeGranularity['30MINS']]: {
@@ -25,14 +25,14 @@ export const timeGranularityOptions: TimeGranularityOptions = {
   //   value: '1小时',
   // },
 
-  [TimeGranularity['1MINS']]: {
-    key: TimeGranularity['1MINS'],
+  // [TimeGranularity['1MINS']]: {
+  //   key: TimeGranularity['1MINS'],
+  //   value: '分时',
+  // },
+  [TimeGranularity['5MINS']]: {
+    key: TimeGranularity['5MINS'],
     value: '分时',
   },
-  // [TimeGranularity['5MINS']]: {
-  //   key: TimeGranularity['5MINS'],
-  //   value: '5分',
-  // },
   [TimeGranularity.DAILY]: {
     key: TimeGranularity.DAILY,
     value: '日K',
@@ -71,7 +71,7 @@ function xAxisInterval(index: number, value: string, categoryData: string[], tim
 }
 
 export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
-  if (timeGranularity === '1MINS')
+  if (timeGranularity === '5MINS')
     return dayjs(value).format('HH:mm')
   else if (timeGranularity === 'DAILY')
     return dayjs(value).format('M-DD')

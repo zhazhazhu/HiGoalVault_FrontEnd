@@ -4,8 +4,8 @@ import dayjs from 'dayjs'
 import { computed, ref, toValue, watch } from 'vue'
 import { api, TimeGranularity } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
-import { calculateMA, DateFormat } from '@/utils/stock'
-import { generateStockChartConfig, xAxisFormat } from './config'
+import { calculateMA } from '@/utils/stock'
+import { generateStockChartConfig } from './config'
 
 export interface StockData extends ChatMessageStockData {
   date: string // 日期
@@ -60,7 +60,7 @@ export function useStockChart(options: UseStockChartOptions) {
     })
     return {
       categoryData: toValue(options.stockData).map((item) => {
-        return dayjs(item.trade_date || '').format('YYYY-MM-DD')
+        return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
       }),
       stockChartData,
       originalStockChartData: toValue(options.stockData),
@@ -71,19 +71,6 @@ export function useStockChart(options: UseStockChartOptions) {
     }
   },
   )
-
-  function getStockData(store: StockChartStore, index: number): StockData {
-    const original = toValue(store.originalStockChartData)[index]
-
-    return {
-      ...original,
-      date: dayjs(original.trade_date || '').format(DateFormat.DAY),
-      ma5: store.ma5[index],
-      ma10: store.ma10[index],
-      ma20: store.ma20[index],
-      ma30: store.ma30[index],
-    }
-  }
 
   const config = ref(generateStockChartConfig(store, options))
 
@@ -103,7 +90,7 @@ export function useStockChart(options: UseStockChartOptions) {
         return [item.open, item.close, item.low, item.high]
       })
       const categoryData = newPushStockData.map((item) => {
-        return dayjs(item.trade_date || '').format('YYYY-MM-DD')
+        return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
       })
       const ma5 = calculateMA(5, stockChartData)
       const ma10 = calculateMA(10, stockChartData)
@@ -142,7 +129,6 @@ export function useStockChart(options: UseStockChartOptions) {
     store,
     config,
     stockInfo,
-    getStockData,
     resetConfigData,
   }
 }
@@ -179,25 +165,36 @@ interface UseLoadStockDataOptions {
 export function useLoadStockData(options: UseLoadStockDataOptions) {
   const [page, reset] = useResetRef({
     pageNumber: 1,
-    pageSize: 300,
+    pageSize: 200,
   })
-
-  async function load(code?: string) {
+  const result = ref<ChatMessageStockData[]>([])
+  async function load(code: string) {
     if (!code)
       return []
-    const [start, end] = updateDate(page.value, toValue(options.type), options.date)
-    const res = await api.getFinanceData({
-      startDateTime: start.format('YYYY-MM-DD HH:mm:ss'),
-      endDateTime: end.format('YYYY-MM-DD HH:mm:ss'),
-      transCode: code,
-      timeGranularity: toValue(options.type),
-    })
+    // 迭代请求，直到累计数据条数 >= pageSize 或无更多数据
+    while (result.value.length < page.value.pageSize) {
+      const [start, end] = updateDate(page.value, toValue(options.type), options.date)
+      const res = await api.getFinanceData({
+        startDateTime: start.format('YYYY-MM-DD HH:mm:ss'),
+        endDateTime: end.format('YYYY-MM-DD HH:mm:ss'),
+        transCode: code,
+        timeGranularity: toValue(options.type),
+      })
 
-    if (res.code === 200) {
+      if (res.code !== 200)
+        break
+
+      const records: ChatMessageStockData[] = Array.isArray(res.result?.records) ? res.result.records : []
+      if (records.length === 0)
+        break
+
+      result.value.push(...records)
       page.value.pageNumber++
-      return res.result.records
     }
-    return []
+
+    const _result = result.value.slice()
+    result.value = []
+    return _result
   }
 
   return {

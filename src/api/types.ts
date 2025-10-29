@@ -159,6 +159,8 @@ export interface ChatMessageStockData {
   create_time: string
   /** 交易日期 */
   trade_date: string
+  /** 交易时间 */
+  trade_time: string
   /** 是否删除标识 */
   is_delete: number
   /** 更新时间 */
