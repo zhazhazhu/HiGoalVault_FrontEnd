@@ -52,7 +52,7 @@ export interface UseStockChartOptions {
 }
 
 export function useStockChart(options: UseStockChartOptions) {
-  const stockInfo = ref(getStockInfo(toValue(options.stockData), options.code))
+  const stockInfo = ref(getStockInfo(options.stockData))
 
   const store = computed<StockChartStore>(() => {
     const stockChartData = toValue(options.stockData).map((item) => {
@@ -82,7 +82,7 @@ export function useStockChart(options: UseStockChartOptions) {
     () => toValue(options.stockData).slice(),
     (newStockData, oldStockData) => {
       if (!stockInfo.value) {
-        stockInfo.value = getStockInfo(newStockData, options.code)
+        stockInfo.value = getStockInfo(newStockData)
       }
       // config.value = generateStockChartConfig(store, options)
       const newPushStockData = newStockData.slice(oldStockData.length)
@@ -132,28 +132,11 @@ export function useStockChart(options: UseStockChartOptions) {
   }
 }
 
-export function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, code: string, index?: number): StockInfo | null {
+export function getStockInfo(stockChartData: MaybeRefOrGetter<ChatMessageStockData[]>, index?: number): ChatMessageStockData | null {
   const stockData = toValue(stockChartData)
-  const latestData = stockData[index !== undefined ? index : stockData.length - 1]
-  const previousData = stockData[index !== undefined ? index - 1 : stockData.length - 2]
+  const data = stockData[index !== undefined ? index : stockData.length - 1]
 
-  if (!latestData || !previousData) {
-    return null
-  }
-
-  return {
-    code,
-    currentPrice: Number(latestData.close.toFixed(2)),
-    change: Number((latestData.close - previousData.close).toFixed(2)),
-    changePercent: Number((latestData.close - previousData.close) / previousData.close),
-    isUp: latestData.close > previousData.close,
-    openInterest: latestData.oi || 0,
-    high: Number(latestData.high.toFixed(2)),
-    low: Number(latestData.low.toFixed(2)),
-    open: Number(latestData.open.toFixed(2)),
-    close: Number(latestData.close.toFixed(2)),
-    vol: Number(latestData.vol.toFixed(2)),
-  }
+  return data || null
 }
 
 interface UseLoadStockDataOptions {

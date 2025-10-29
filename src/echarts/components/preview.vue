@@ -7,7 +7,7 @@ const props = defineProps<{
   data: [ChatMessageStock]
 }>()
 
-const stockInfo = getStockInfo(props.data[0].data, props.data[0].metadata.symbol[0])
+const stockInfo = getStockInfo(props.data[0].data)
 </script>
 
 <template>

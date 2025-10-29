@@ -71,13 +71,13 @@ function handleSegmentChange(option) {
 }
 function handleChartClick(params: ECElementEvent) {
   if (params.componentType === 'series') {
-    stockInfo.value = getStockInfo(store.value.originalStockChartData, props.params.code, params.dataIndex)
+    stockInfo.value = getStockInfo(store.value.originalStockChartData, params.dataIndex)
     selectedIndex.value = params.dataIndex
   }
 }
 function handleZRClick(params: ElementEvent) {
   if (!params.target) {
-    stockInfo.value = getStockInfo(store.value.originalStockChartData, props.params.code)
+    stockInfo.value = getStockInfo(store.value.originalStockChartData)
     selectedIndex.value = null
   }
 }

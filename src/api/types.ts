@@ -165,6 +165,20 @@ export interface ChatMessageStockData {
   is_delete: number
   /** 更新时间 */
   update_time: string
+  /** 交易代码（新增） */
+  trans_code: string
+  /** 交易所代码（新增） */
+  exchange_code: string
+  /** 时区（新增） */
+  time_zone: string
+  /** 品种代码（新增） */
+  variety_code: string
+  /** 合约/期货类型（新增） */
+  fut_type: string
+  /** 前收盘价（新增） */
+  pre_close: number
+  /** 前结算价（新增） */
+  pre_settle: number | null
   /** 最高价 */
   high: number
   /** 成交量 */
@@ -177,10 +191,40 @@ export interface ChatMessageStockData {
   updated_by: string
   /** 持仓量 */
   oi: number
+  /** 持仓变化量（新增） */
+  oi_chg: number
   /** 收盘价 */
   close: number
   /** 开盘价 */
   open: number
+  /** 结算价（新增） */
+  settle: number
+  /** 涨跌额1（新增） */
+  change1: number | null
+  /** 涨跌额2（新增） */
+  change2: number | null
+  /** 涨跌幅（新增） */
+  change_rate: number
+  /** 交割结算价（新增） */
+  delv_settle: number
+  /** 涨停价（新增） */
+  up_limit: number | null
+  /** 跌停价（新增） */
+  down_limit: number | null
+  /** 保证金比例（新增） */
+  m_ratio: number | null
+  /** 经纪商（新增） */
+  broker: string
+  /** 成交量变化（新增） */
+  vol_chg: number
+  /** 多头持仓（新增） */
+  long_hld: number
+  /** 多头变化（新增） */
+  long_chg: number
+  /** 空头持仓（新增） */
+  short_hld: number
+  /** 空头变化（新增） */
+  short_chg: number
 }
 
 export interface ChatMessageReference {

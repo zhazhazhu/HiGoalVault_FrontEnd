@@ -1,31 +1,46 @@
 <script lang='ts' setup>
-import type { StockInfo } from '@/echarts'
+import type { ChatMessageStockData } from '@/api'
 import { computed } from 'vue'
 
 const props = defineProps<{
-  stockInfo: StockInfo
+  stockInfo: ChatMessageStockData
 }>()
-
+const isUp = computed(() => {
+  return props.stockInfo.close > props.stockInfo.pre_close
+})
 const formattedChange = computed(() => {
-  const value = Number(props.stockInfo.change)
-  return Number.isNaN(value) ? props.stockInfo.change : value.toFixed(2).replace(/\.?0+$/, '')
+  if (props.stockInfo?.close == null || props.stockInfo?.pre_close == null)
+    return '-'
+  return (props.stockInfo.close - props.stockInfo.pre_close).toFixed(2).replace(/\.?0+$/, '')
 })
-
 const formattedChangePercent = computed(() => {
-  const value = Number(props.stockInfo.changePercent)
-  return Number.isNaN(value) ? props.stockInfo.changePercent : value.toFixed(2).replace(/\.?0+$/, '')
+  if (props.stockInfo?.close == null || props.stockInfo?.pre_close == null)
+    return '-'
+  return ((props.stockInfo.close / props.stockInfo.pre_close) * 100).toFixed(2)
 })
+// 如果金额是百亿级别就返回亿，如果是万级别就返回万，否则返回原始金额
+function formatAmount(v: number | null) {
+  if (v == null)
+    return '-'
+  if (v >= 1e10)
+    return `${(v / 1e10).toFixed(2)}亿`
+  if (v >= 1e8)
+    return `${(v / 1e8).toFixed(2)}亿`
+  if (v >= 1e4)
+    return `${(v / 1e4).toFixed(2)}万`
+  return v.toFixed(2)
+}
 </script>
 
 <template>
   <view>
     <view class="text-14px color-#797979 mb-10px">
-      {{ stockInfo.code || '股票代码' }}
+      {{ stockInfo.ts_code || '股票代码' }}
     </view>
-    <view class="grid grid-cols-3 gap-20px items-center">
-      <view :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
+    <view class="grid grid-cols-4 gap-20px items-center">
+      <view :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
         <view class="text-24px font-500">
-          {{ stockInfo.currentPrice }}
+          {{ stockInfo.close }}
         </view>
         <view class="flex gap-6px">
           <view class="text-12px">
@@ -39,28 +54,42 @@ const formattedChangePercent = computed(() => {
       <view class="text-12px flex flex-col gap-8px">
         <view class="flex justify-between">
           <view>高</view>
-          <view class="font-500" :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
+          <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
             {{ stockInfo.high }}
           </view>
         </view>
         <view class="flex justify-between">
           <view>低</view>
-          <view class="font-500" :style="{ color: stockInfo.isUp ? '#ec4242' : '#2bb552' }">
+          <view class="font-500" :style="{ color: isUp ? '#ec4242' : '#2bb552' }">
             {{ stockInfo.low }}
           </view>
         </view>
       </view>
       <view class="text-12px  flex flex-col gap-8px">
         <view class="flex justify-between">
-          <view>开盘</view>
-          <view class="font-500" :style="{ color: stockInfo.isUp ? '#2bb552' : '#ec4242' }">
+          <view>开</view>
+          <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
             {{ stockInfo.open }}
           </view>
         </view>
         <view class="flex justify-between">
-          <view>成交量</view>
+          <view>换</view>
           <view class="font-500">
-            {{ stockInfo.vol }}万
+            -
+          </view>
+        </view>
+      </view>
+      <view class="text-12px  flex flex-col gap-8px">
+        <view class="flex justify-between">
+          <view>量</view>
+          <view class="font-500">
+            {{ formatAmount(stockInfo.vol) }}手
+          </view>
+        </view>
+        <view class="flex justify-between">
+          <view>额</view>
+          <view class="font-500">
+            {{ formatAmount(stockInfo.amount) }}
           </view>
         </view>
       </view>
