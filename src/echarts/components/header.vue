@@ -1,6 +1,7 @@
 <script lang='ts' setup>
-import type { ChatMessageStockData } from '@/api'
-import { computed } from 'vue'
+import type { ChatMessageStockData, GetFinanceBasicInfoResponse } from '@/api'
+import { computed, onMounted, ref } from 'vue'
+import { api } from '@/api'
 
 const props = defineProps<{
   stockInfo: ChatMessageStockData
@@ -30,12 +31,24 @@ function formatAmount(v: number | null) {
     return `${(v / 1e4).toFixed(2)}万`
   return v.toFixed(2)
 }
+
+const basicInfo = ref<GetFinanceBasicInfoResponse>()
+
+onMounted(async () => {
+  const res = await api.getFinanceBasicInfo(props.stockInfo.trans_code)
+  basicInfo.value = res.result
+})
 </script>
 
 <template>
   <view>
-    <view class="text-14px color-#797979 mb-10px">
-      {{ stockInfo.ts_code || '股票代码' }}
+    <view class="color-#797979 mb-10px">
+      <text class="text-14px mr-6px">
+        {{ basicInfo?.name || '股票名称' }}
+      </text>
+      <text class="text-12px">
+        {{ basicInfo?.transCode || '股票代码' }}
+      </text>
     </view>
     <view class="grid grid-cols-4 gap-20px items-center">
       <view :style="{ color: isUp ? '#2bb552' : '#ec4242' }">

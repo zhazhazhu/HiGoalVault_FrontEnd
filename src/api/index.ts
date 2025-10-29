@@ -17,6 +17,7 @@ import type {
   FollowUserRequest,
   GenerateStsTempKeyResponse,
   GetCommentOrReplyByIdRequest,
+  GetFinanceBasicInfoResponse,
   GetFinanceDataRequest,
   GetFinanceDataResponse,
   GetPublishListByTagRequest,
@@ -270,8 +271,14 @@ function deletePublishContentById(contentId: string) {
   return http(API.DELETE_PUBLISH_CONTENT_BY_ID).post<boolean>({ contentId })
 }
 
+// 获取金融数据
 function getFinanceData(query: GetFinanceDataRequest) {
   return http(API.GET_FINANCE_DATA).post<GetFinanceDataResponse>(query)
+}
+
+// 获取金融基本信息
+function getFinanceBasicInfo(transCode: string) {
+  return http(API.GET_FINANCE_BASIC_INFO).post<GetFinanceBasicInfoResponse>({ transCode })
 }
 
 // 创建 API 实例对象，保持向后兼容
@@ -322,4 +329,5 @@ export const api = {
   getCommentOrReplyById,
   deletePublishContentById,
   getFinanceData,
+  getFinanceBasicInfo,
 }

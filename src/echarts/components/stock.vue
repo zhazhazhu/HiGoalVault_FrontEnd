@@ -33,7 +33,6 @@ echarts.use([
 
 const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
 const stockData = ref<ChatMessageStockData[]>([])
-
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据

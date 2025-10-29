@@ -183,8 +183,6 @@ export interface ChatMessageStockData {
   high: number
   /** 成交量 */
   vol: number
-  /** 股票代码 */
-  ts_code: string
   /** 最低价 */
   low: number
   /** 更新者 */
@@ -550,4 +548,11 @@ export enum TimeGranularity {
 
 export interface GetFinanceDataResponse extends PageResult {
   records: ChatMessageStockData[]
+}
+
+export interface GetFinanceBasicInfoResponse {
+  transCode: string
+  exchange: string
+  symbol: string
+  name: string
 }
