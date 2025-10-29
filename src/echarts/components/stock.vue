@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { ECElementEvent, ElementEvent } from 'echarts/core'
+import type { ElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { ChatMessageStockData, DateParameterOfStock } from '@/api'
 import { CandlestickChart, LineChart } from 'echarts/charts'
@@ -39,6 +39,7 @@ const hasMoreData = ref(true) // 是否还有更早的数据
 const zoomStart = ref<number | null>(null)
 const zoomEnd = ref<number | null>(null)
 const selectedIndex = ref<number | null>(null)
+const isCrossDragActive = ref(false) // 长按后拖动十字光标的状态
 const { store, config, stockInfo, resetConfigData } = useStockChart({
   stockData: computed(() => stockData.value),
   code: props.params.code,
@@ -52,10 +53,7 @@ const { load, reset } = useLoadStockData({
   type: computed(() => currentTimeGranularity.value.key),
 })
 
-function preventScroll(e: TouchEvent) {
-  e.preventDefault()
-  e.stopPropagation()
-}
+// 移除旧的滚动拦截函数（已改为在长按拖动时按需阻止默认行为）
 
 watch(currentTimeGranularity, () => {
   stockData.value = []
@@ -106,7 +104,7 @@ function handleDataZoom(event: any) {
     end = event?.batch?.[0].end as number
   }
 
-  // 记录当前窗口位置用于加载后校正
+  // 记录当前窗口位置用于加载后校正（仅非拖动场景）
   zoomStart.value = typeof start === 'number' ? start : zoomStart.value
   zoomEnd.value = typeof end === 'number' ? end : zoomEnd.value
 
@@ -114,10 +112,13 @@ function handleDataZoom(event: any) {
     loadMoreData()
   }
 
-  // 滑动期间如果存在选中点，则显示十字线固定于该点
-  if (selectedIndex.value != null) {
-    showCrossAtSelected()
+  // 非拖动场景：滑动期间隐藏十字光标，并清空选中状态
+  if (timer) {
+    clearTimeout(timer)
+    timer = null
   }
+  selectedIndex.value = null
+  hideCross()
 }
 
 // 当前显示的索引（选中则用选中，否则用最新）
@@ -191,20 +192,10 @@ function pickIndexByPixel(evt: ElementEvent): number | null {
   if (!chart)
     return null
 
-  // 兼容不同事件结构，优先使用 zrender 坐标，其次 offset，再用 client/page 计算相对坐标
+  // 兼容不同事件结构，优先使用 zrender 坐标，其次 offset；不使用任何 DOM API
   const ev: any = (evt as any).event ?? evt
-  let ox: number | undefined = ev?.zrX ?? ev?.offsetX
-  let oy: number | undefined = ev?.zrY ?? ev?.offsetY
-  if (ox == null || oy == null) {
-    const dom = chart.getDom?.() as HTMLElement | undefined
-    const rect = dom?.getBoundingClientRect()
-    const cx = ev?.clientX ?? ev?.pageX
-    const cy = ev?.clientY ?? ev?.pageY
-    if (rect && cx != null && cy != null) {
-      ox = cx - rect.left
-      oy = cy - rect.top
-    }
-  }
+  const ox: number | undefined = ev?.zrX ?? ev?.offsetX
+  const oy: number | undefined = ev?.zrY ?? ev?.offsetY
   if (ox == null || oy == null)
     return null
   const point: [number, number] = [ox, oy]
@@ -238,6 +229,79 @@ function pickIndexByPixel(evt: ElementEvent): number | null {
     return null
   const max = Math.max(0, store.value.stockChartData.length - 1)
   return Math.max(0, Math.min(idx, max))
+}
+
+// 长按事件：激活拖动，使用 zrender 事件跟随与结束；长按期间禁用 dataZoom
+function handleLongPress(params: any) {
+  uni.vibrateShort()
+  if (timer) {
+    clearTimeout(timer)
+    timer = null
+  }
+  isCrossDragActive.value = true
+  chartCanvasInstance.value?.setOption({
+    dataZoom: [
+      { disabled: true },
+      { disabled: true },
+    ],
+  })
+  const ev = {
+    zrX: params.touches[0].x,
+    zrY: params.touches[0].y,
+  }
+  handleZRMouseMove(ev as any)
+}
+
+function handleZRMouseMove(params: ElementEvent) {
+  if (!isCrossDragActive.value)
+    return
+
+  const idx = pickIndexByPixel(params)
+  const chart = chartCanvasInstance.value?.chart
+  // 先根据像素移动 axisPointer（更稳定），再同步选中索引和信息
+  const ev: any = (params as any).event ?? params
+  const x: number | undefined = ev?.zrX ?? ev?.offsetX
+  const y: number | undefined = ev?.zrY ?? ev?.offsetY
+  if (x != null && y != null && chart?.containPixel({ gridIndex: 0 }, [x, y] as any)) {
+    try {
+      chart?.dispatchAction({
+        type: 'updateAxisPointer',
+        currTrigger: 'mousemove',
+        position: {
+          x,
+          y,
+        },
+      })
+    }
+    catch {
+      // ignore
+    }
+  }
+  if (idx !== null) {
+    selectedIndex.value = idx
+    stockInfo.value = getStockInfo(store.value.originalStockChartData, idx)
+    try {
+      chart?.dispatchAction({ type: 'showTip', seriesIndex: 0, dataIndex: idx })
+    }
+    catch {
+      // ignore
+    }
+  }
+}
+
+function handleZRMouseUp() {
+  if (!isCrossDragActive.value)
+    return
+  isCrossDragActive.value = false
+  chartCanvasInstance.value?.setOption({
+    dataZoom: [
+      { disabled: false },
+      { disabled: false },
+    ],
+  })
+  timer = setTimeout(() => {
+    hideCross()
+  }, 3000)
 }
 
 // 加载更多历史数据
@@ -302,13 +366,16 @@ async function loadMoreData() {
       </view>
 
       <!-- 图表容器 -->
-      <view class="chart-wrapper" @touchmove.stop.prevent="preventScroll">
+      <view class="chart-wrapper">
         <uni-echarts
           ref="chartCanvasInstance"
           custom-class="h-280px"
           :option="config"
           @zr:click="handleZRClick"
+          @zr:mousemove="handleZRMouseMove"
+          @zr:mouseup="handleZRMouseUp"
           @datazoom="handleDataZoom"
+          @native:longpress="handleLongPress"
         />
       </view>
     </template>
