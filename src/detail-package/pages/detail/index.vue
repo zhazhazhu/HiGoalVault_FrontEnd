@@ -103,7 +103,7 @@ onLoad((options) => {
       </template>
     </Navbar>
 
-    <Container v-if="data?.chatQueryAnswerVO !== null">
+    <Container>
       <scroll-view
         scroll-y
         enhanced
@@ -113,12 +113,17 @@ onLoad((options) => {
         class="h-full overflow-y-auto pb-20rpx"
         @refresherrefresh="refreshData"
       >
-        <template v-if="data && messageContent">
-          <ViewDetailCard v-if="data" :data="data" />
-          <view class="bg-white p-32rpx mt-10rpx">
-            <MessageResponseCard :data="messageContent" @click-steps="messageContent.showSteps = !messageContent.showSteps" />
-          </view>
-        </template>
+        <ViewDetailCard v-if="data" :data="data" />
+        <view v-if="messageContent !== null" class="bg-white p-32rpx mt-10rpx">
+          <MessageResponseCard :data="messageContent" @click-steps="messageContent.showSteps = !messageContent.showSteps" />
+        </view>
+        <view v-else class="mt-40px">
+          <wd-status-tip tip="内容已删除">
+            <template #image>
+              <view class="i-material-symbols-content-paste-off text-100rpx" />
+            </template>
+          </wd-status-tip>
+        </view>
       </scroll-view>
 
       <view class="h-200rpx bg-white px-32rpx pt-30rpx">
@@ -149,11 +154,6 @@ onLoad((options) => {
         </view>
       </view>
     </Container>
-    <wd-status-tip v-else tip="内容已删除">
-      <template #image>
-        <view class="i-material-symbols-content-paste-off text-100rpx" />
-      </template>
-    </wd-status-tip>
   </view>
 </template>
 
