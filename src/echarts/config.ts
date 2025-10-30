@@ -14,7 +14,7 @@ export enum StockChartStyleConfig {
   TIME_SERIES_COLOR = '#2c2c2cff',
 }
 
-type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '1MINS' | '30MINS' | '1HOUR' | '50MINS' | '5DAILY'>, { key: TimeGranularity, value: string }>
+type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '1MINS' | '30MINS' | '1HOUR' | '50MINS' | 'YEAR'>, { key: TimeGranularity, value: string }>
 
 export const timeGranularityOptions: TimeGranularityOptions = {
   // [TimeGranularity['30MINS']]: {
@@ -25,7 +25,6 @@ export const timeGranularityOptions: TimeGranularityOptions = {
   //   key: TimeGranularity['1HOUR'],
   //   value: '1小时',
   // },
-
   // [TimeGranularity['1MINS']]: {
   //   key: TimeGranularity['1MINS'],
   //   value: '分时',
@@ -46,10 +45,14 @@ export const timeGranularityOptions: TimeGranularityOptions = {
     key: TimeGranularity.MONTHLY,
     value: '月K',
   },
-  [TimeGranularity.YEAR]: {
-    key: TimeGranularity.YEAR,
-    value: '年K',
+  [TimeGranularity['5DAILY']]: {
+    key: TimeGranularity['5DAILY'],
+    value: '5日',
   },
+  // [TimeGranularity.YEAR]: {
+  //   key: TimeGranularity.YEAR,
+  //   value: '年K',
+  // },
 }
 
 // eslint-disable-next-line unused-imports/no-unused-vars

@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue'
 import type { ChatMessageStockData } from '@/api'
 import dayjs from 'dayjs'
-import { computed, ref, toValue, watch } from 'vue'
+import { computed, reactive, ref, toValue, watch } from 'vue'
 import { api, TimeGranularity } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
 import { calculateMA } from '@/utils/stock'
@@ -191,17 +191,18 @@ export function useLoadStockData(options: UseLoadStockDataOptions) {
 
 function updateDate(page: { pageNumber: number, pageSize: number }, type: TimeGranularity, date: string) {
   const baseDate = dayjs(date)
-  const dateRange = [dayjs(), dayjs()] // [startDate, endDate]
+  const now = dayjs()
+  const dateRange = [now, now] // [startDate, endDate]
 
   switch (type) {
     case TimeGranularity['1MINS']:
       // 结束时间 = 基准时间 - (pageNumber - 1) * pageSize 分钟
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'minute')
+      dateRange[1] = now.isSame(baseDate, 'day') ? now.subtract((page.pageNumber - 1) * page.pageSize, 'minute') : baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'minute')
       // 开始时间 = 结束时间 - pageSize 分钟
       dateRange[0] = dateRange[1].subtract(page.pageSize, 'minute')
       break
     case TimeGranularity['5MINS']:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 5, 'minute')
+      dateRange[1] = now.isSame(baseDate, 'day') ? now.subtract((page.pageNumber - 1) * page.pageSize * 5, 'minute') : baseDate.subtract((page.pageNumber - 1) * page.pageSize * 5, 'minute')
       dateRange[0] = dateRange[1].subtract(page.pageSize * 5, 'minute')
       break
     case TimeGranularity['30MINS']:
@@ -223,4 +224,87 @@ function updateDate(page: { pageNumber: number, pageSize: number }, type: TimeGr
   }
 
   return dateRange
+}
+
+export interface UsePollingStockDataOptions {
+  timeGranularity?: MaybeRefOrGetter<TimeGranularity>
+  interval?: number
+  code?: MaybeRefOrGetter<string>
+}
+
+const inlineDefaultOptions = {
+  timeGranularity: TimeGranularity['5MINS'],
+  interval: 3 * 1000,
+} as const
+
+export function usePollingStockDataService(options?: UsePollingStockDataOptions) {
+  const opts = { ...inlineDefaultOptions, ...options }
+  let timer: NodeJS.Timeout | null = null
+  const config = reactive({
+    timeRange: [dayjs(), dayjs()],
+  })
+  const data = ref<ChatMessageStockData[]>([])
+  switch (opts.timeGranularity) {
+    case TimeGranularity['1MINS']:
+      config.timeRange[0] = dayjs().subtract(1, 'minute')
+      break
+    case TimeGranularity['5MINS']:
+      config.timeRange[0] = dayjs().subtract(5, 'minute')
+      break
+    case TimeGranularity['30MINS']:
+      config.timeRange[0] = dayjs().subtract(30, 'minute')
+      break
+    case TimeGranularity.DAILY:
+      config.timeRange[0] = dayjs().subtract(1, 'day')
+      break
+    case TimeGranularity.WEEKLY:
+      config.timeRange[0] = dayjs().subtract(1, 'week')
+      break
+    case TimeGranularity.MONTHLY:
+      config.timeRange[0] = dayjs().subtract(1, 'month')
+      break
+    case TimeGranularity.YEAR:
+      config.timeRange[0] = dayjs().subtract(1, 'year')
+      break
+  }
+
+  function startPolling() {
+    const symbol = toValue(opts.code)
+    if (!symbol)
+      return
+    if (timer)
+      clearInterval(timer)
+    timer = setInterval(() => {
+      fetchData(symbol)
+    }, opts.interval)
+  }
+
+  async function fetchData(symbol: string) {
+    const res = await api.getFinanceData({
+      startDateTime: config.timeRange[0].format('YYYY-MM-DD HH:mm:ss'),
+      endDateTime: config.timeRange[1].format('YYYY-MM-DD HH:mm:ss'),
+      transCode: symbol,
+      timeGranularity: toValue(opts.timeGranularity),
+    })
+    if (res.code === 200) {
+      data.value = res.result?.records || []
+    }
+  }
+
+  function stopPolling() {
+    if (!timer)
+      return
+    clearInterval(timer)
+    timer = null
+  }
+
+  function onUpdateData(callback: (data: ChatMessageStockData[]) => void) {
+    callback(data.value)
+  }
+
+  return {
+    startPolling,
+    stopPolling,
+    onUpdateData,
+  }
 }

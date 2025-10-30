@@ -2,17 +2,20 @@
 import type { ElementEvent } from 'echarts/core'
 import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { ChatMessageStockData, DateParameterOfStock } from '@/api'
+import { onHide, onShow } from '@dcloudio/uni-app'
+import dayjs from 'dayjs'
 import { CandlestickChart, LineChart } from 'echarts/charts'
 import { AxisPointerComponent, DatasetComponent, DataZoomComponent, GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
-import { computed, ref, shallowRef, watch } from 'vue'
-import { getStockInfo, useLoadStockData, useStockChart } from '@/echarts'
+import { computed, onUnmounted, ref, shallowRef, watch } from 'vue'
+import { getStockInfo, useLoadStockData, usePollingStockDataService, useStockChart } from '@/echarts'
 import { StockChartStyleConfig, timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
 
 const props = defineProps<{
+  data?: ChatMessageStockData[]
   params: DateParameterOfStock
   preview?: boolean
 }>()
@@ -42,18 +45,34 @@ const selectedIndex = ref<number | null>(null)
 const isCrossDragActive = ref(false) // 长按后拖动十字光标的状态
 const { store, config, stockInfo, resetConfigData } = useStockChart({
   stockData: computed(() => stockData.value),
-  code: props.params.code,
   timeGranularity: computed(() => currentTimeGranularity.value.key),
   zoomStart: computed(() => zoomStart.value),
   zoomEnd: computed(() => zoomEnd.value),
+  code: props.params.code,
 })
-
 const { load, reset } = useLoadStockData({
   date: props.params.todate,
   type: computed(() => currentTimeGranularity.value.key),
 })
+const enablePolling = computed(() => {
+  return currentTimeGranularity.value.key === '5MINS' && dayjs(props.params.todate).isSame(dayjs(), 'day')
+})
+const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({ code: props.params.code })
 
-// 移除旧的滚动拦截函数（已改为在长按拖动时按需阻止默认行为）
+onUpdateData((data) => {
+  stockData.value.push(...data)
+})
+onShow(() => {
+  if (enablePolling.value) {
+    startPolling()
+  }
+})
+onHide(() => {
+  stopPolling()
+})
+onUnmounted(() => {
+  stopPolling()
+})
 
 watch(currentTimeGranularity, () => {
   stockData.value = []
@@ -63,6 +82,12 @@ watch(currentTimeGranularity, () => {
   zoomEnd.value = null
   resetConfigData()
   loadMoreData()
+  if (enablePolling.value) {
+    startPolling()
+  }
+  else {
+    stopPolling()
+  }
 }, { immediate: true })
 
 function handleSegmentChange(option) {
@@ -347,7 +372,7 @@ async function loadMoreData() {
     <template v-if="!preview">
       <!-- 时间周期选择器 -->
       <view class="period-selector">
-        <wd-segmented :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
+        <wd-segmented size="small" :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
       </view>
 
       <view class="flex gap-12px text-8px my-8px" @click="hideCross">
