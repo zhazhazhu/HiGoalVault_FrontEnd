@@ -72,6 +72,8 @@ async function waitConfirmMessage(text: string) {
 function sendWaitingMessage() {
   if (chatStore.waitingMessageTask === null)
     return
+  chatStore.isReplying = true
+
   websocketStore.sendMessage(chatStore.waitingMessageTask).then(() => {
     chatStore.createTemporaryMessage({
       query: chatStore.waitingMessageTask!.query,

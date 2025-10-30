@@ -34,7 +34,7 @@ async function onContinueTalk() {
   chatStore.waitingMessageTask = {
     query: props.data!.title,
     chatId: chatStore.currentChatId,
-    runId: useUUID(32),
+    runId: chatStore.currentRunId,
   }
   uni.redirectTo({ url: '/chat-package/pages/chat/index' })
 }
