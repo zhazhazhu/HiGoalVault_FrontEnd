@@ -19,7 +19,7 @@ const userInfo = computed({
 })
 
 function gotoHome() {
-  uni.redirectTo({ url: '/pages/index/index' })
+  uni.navigateBack()
 }
 function onLogout() {
   message
@@ -69,7 +69,6 @@ async function onUpdateNickname() {
       <template #left>
         <view class="flex items-center gap-20rpx" @click="gotoHome">
           <view class="i-material-symbols-arrow-back-ios-new-rounded text-44rpx" />
-          <view class="i-material-symbols-home-outline-rounded text-46rpx" />
         </view>
       </template>
     </Navbar>

@@ -107,6 +107,11 @@ onShareAppMessage(({ target, from }) => {
     }
   }
 })
+function gotoSetting() {
+  if (!userId.value) {
+    uni.navigateTo({ url: '/settings-package/pages/settings/index' })
+  }
+}
 
 onLoad((options) => {
   if (options?.id !== userStore.userInfo!.id) {
@@ -140,7 +145,7 @@ onLoad((options) => {
       @refresherrefresh="refreshData"
     >
       <view class="flex items-center justify-between gap-20rpx">
-        <view class="flex items-center gap-10rpx">
+        <view class="flex items-center gap-10rpx" @click="gotoSetting">
           <wd-img :src="userInfo?.face" round :width="60" :height="60" mode="aspectFill" />
           <view class="text-35rpx font-bold ml-10rpx">
             {{ userInfo?.nickName }}

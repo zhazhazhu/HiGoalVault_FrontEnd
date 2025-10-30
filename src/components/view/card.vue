@@ -44,7 +44,11 @@ function gotoUser() {
   if (props.disableToUser) {
     return
   }
-  uni.navigateTo({ url: `/user-package/pages/user/index?id=${data.value.memberId}` })
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  if (currentPage.route !== 'user-package/pages/user/index') {
+    uni.navigateTo({ url: `/user-package/pages/user/index?id=${data.value.memberId}` })
+  }
 }
 function onClickTag({ id }: { id: string }) {
   const pages = getCurrentPages()
@@ -82,7 +86,7 @@ function onDelete() {
 
   <view :class="cs.m('container')">
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
-      <view class="flex items-center" @click="gotoUser">
+      <view class="flex items-center" @click.stop="gotoUser">
         <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data.face" />
         <text class="ml-16rpx">
           {{ data.nickName }}
