@@ -128,8 +128,6 @@ websocketStore.receiveMessage((data) => {
         queryId: data.data?.query_id,
       })
     }
-
-    scrollToTop()
   }
   if (data.type === 'stream-end') {
     reset()
