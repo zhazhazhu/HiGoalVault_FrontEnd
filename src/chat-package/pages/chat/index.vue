@@ -99,7 +99,7 @@ websocketStore.receiveMessage((data) => {
     }
     else if (data.data?.stage === 'stream') {
       chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-        showSteps: false,
+        showSteps: !currentMessage.response,
       })
       reset()
       if (currentMessage.data) {
@@ -138,7 +138,7 @@ websocketStore.receiveMessage((data) => {
       })
     }
     chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-      showSteps: false,
+      showSteps: !currentMessage.response,
       steps: currentMessage.steps.map(item => ({
         ...item,
         finished: true,

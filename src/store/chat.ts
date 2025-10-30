@@ -131,7 +131,7 @@ export const useChatStore = defineStore('chat', {
         steps,
         label,
         isLoading: false,
-        showSteps: false,
+        showSteps: !answer.response,
       }
     },
     createTemporaryMessage(message?: Partial<ChatMessageAfter>): ChatMessageAfter {
