@@ -14,6 +14,7 @@ export function useTimeCount(options: UseTimeCountOptions = {}) {
     timer = null
   }
   function reset() {
+    changeCallback = null
     stop()
     count.value = 0
   }

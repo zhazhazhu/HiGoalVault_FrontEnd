@@ -88,7 +88,7 @@ websocketStore.receiveMessage((data) => {
               if (item.node === currentNode) {
                 return {
                   ...item,
-                  thinking: item.thinking + data.data?.thinking || '',
+                  thinking: data.data?.thinking ? item.thinking + data.data?.thinking : item.thinking,
                 }
               }
               return item
