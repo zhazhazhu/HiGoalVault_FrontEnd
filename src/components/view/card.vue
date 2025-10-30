@@ -47,6 +47,15 @@ function gotoUser() {
   uni.navigateTo({ url: `/user-package/pages/user/index?id=${data.value.memberId}` })
 }
 function onClickTag({ id }: { id: string }) {
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const currentPageId = (currentPage as any)?.options?.id
+  if (id === currentPageId) {
+    return
+  }
+  if (currentPage.route === 'tag-package/pages/tag/index') {
+    uni.redirectTo({ url: `/tag-package/pages/tag/index?id=${id}` })
+  }
   uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
 }
 function onDelete() {
