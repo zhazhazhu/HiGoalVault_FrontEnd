@@ -1,29 +1,4 @@
-# Changelog
-
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
-### [0.0.2](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/v0.0.1...v0.0.2) (2025-10-31)
-
-
-### Features
-
-* add change log markdown ([a65fd16](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a65fd16e3cf0d90ee3ce59c4d6270d6ce28d0735))
-* 修改股票图解析展示 ([1a12663](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/1a1266332c3c67808c4b0792d9de1956f09056c2))
-* 分时图替换成折线图显示 ([eef02ac](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/eef02ac2ddbd43d918f1a2c8af89c820d39fb451))
-* 增加k线图十字光标选择 ([a767db1](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a767db1f4db2dd3e049ab197a3003f1dded48b83))
-* 增加k线图在移动端上交互操作 ([8e429e0](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/8e429e018a16142cd0e2cbb91a7a59d31a3945e3))
-* 增加k线图实时数据查询 ([b6ce577](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/b6ce577f97413ac2ba2cfbc52c655003c5a02969))
-* 增加markdown解析组件，支持复制链接/查看图片 ([33a5310](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/33a531043348d7dba453235d687df323abd3a510))
-* 增加消息已暂停生成提示 ([dee3b1d](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/dee3b1d8cea7121b632555e1774dd356ee330d5c))
-* 增加深度思考操作 ([431141c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/431141c3ea52e50d02bb314ce8ac5bb289276d9c))
-* 实现k线图加载数据 ([418837c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/418837cb7abd6f2a5aa24ed128089a04b7e9fd5e))
-* 对接正式消息模型参数，更换markdown渲染库 ([a5e9255](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a5e9255cc39cdfa1322ef1aca00f4a0d83e19b5c))
-* 搜索功能增加分类查询 ([0aef74b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0aef74b9f7507865cfe53aae67ae3d376144ba4e))
-* 新增敏感词检测 ([eb00b3f](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/eb00b3feae4322986af67b3a1a6a471a579c42ff))
-* 新增消息回答流打字机效果 ([278cc93](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/278cc93eea6f88a30d35df6c1e53c9f5594c0187))
-* 消息对话框展示tag ([1e2f7d6](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/1e2f7d6d4fd6e42757e5aa13cc60a001754be794))
-* 添加查询股票基本信息 ([41df27b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/41df27bab6d2b70774a180f391c708482a636093))
-* **股票图表:** 重构股票图表组件并优化显示逻辑 ([45cd2cb](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/45cd2cb8b925ce737b7cbbcf875845c31a25d24c))
+## [0.0.2](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/v0.0.1...v0.0.2) (2025-10-31)
 
 
 ### Bug Fixes
@@ -52,6 +27,7 @@ All notable changes to this project will be documented in this file. See [standa
 * 取消收藏时跳转问题 ([3b67f1b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/3b67f1b791933378c633222e0286dd049257154d))
 * 回复消息时禁止输入框操作 ([5d8d9e8](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/5d8d9e88f2931803246fee2c7fea0b8fe19f2ea2))
 * 回答中断之后状态错误问题 ([15b0797](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/15b0797690959132ec043ee1aaf90ecbe072ca70))
+* 回答流途中中断消息股票不显示问题 ([325a98b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/325a98bfadd390637e49011ad060e97812d01aa1))
 * 回答消息移除滚动 ([8499254](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/8499254f2ef721cc4080e01465c7d3491e93e1b6))
 * 增加code显示样式 ([8aa5ecd](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/8aa5ecd7afe334bbc166dfa583c11c6c0e4d17fe))
 * 增加点赞按钮可用区域 ([faca318](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/faca318a5074525a64ca483bd7f7dafbaec1847a))
@@ -70,6 +46,52 @@ All notable changes to this project will be documented in this file. See [standa
 * 详情页深度思考不能展开问题 ([0d6faf3](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0d6faf37325cf2df10dc4b56d35708effcdc904c))
 * 语音输入时文字识别错误问题 ([0565dd8](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0565dd87375e2deb6d8599558b2863eb15120546))
 * 跳转用户路由层级过多问题 ([0a84976](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0a84976dec47bb25a70ecc75b0283f84cbe8095a))
+
+
+### Features
+
+* add change log markdown ([a65fd16](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a65fd16e3cf0d90ee3ce59c4d6270d6ce28d0735))
+* 修改股票图解析展示 ([1a12663](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/1a1266332c3c67808c4b0792d9de1956f09056c2))
+* 分时图替换成折线图显示 ([eef02ac](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/eef02ac2ddbd43d918f1a2c8af89c820d39fb451))
+* 增加k线图十字光标选择 ([a767db1](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a767db1f4db2dd3e049ab197a3003f1dded48b83))
+* 增加k线图在移动端上交互操作 ([8e429e0](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/8e429e018a16142cd0e2cbb91a7a59d31a3945e3))
+* 增加k线图实时数据查询 ([b6ce577](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/b6ce577f97413ac2ba2cfbc52c655003c5a02969))
+* 增加markdown解析组件，支持复制链接/查看图片 ([33a5310](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/33a531043348d7dba453235d687df323abd3a510))
+* 增加消息已暂停生成提示 ([dee3b1d](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/dee3b1d8cea7121b632555e1774dd356ee330d5c))
+* 增加深度思考操作 ([431141c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/431141c3ea52e50d02bb314ce8ac5bb289276d9c))
+* 实现k线图加载数据 ([418837c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/418837cb7abd6f2a5aa24ed128089a04b7e9fd5e))
+* 对接正式消息模型参数，更换markdown渲染库 ([a5e9255](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a5e9255cc39cdfa1322ef1aca00f4a0d83e19b5c))
+* 搜索功能增加分类查询 ([0aef74b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0aef74b9f7507865cfe53aae67ae3d376144ba4e))
+* 新增敏感词检测 ([eb00b3f](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/eb00b3feae4322986af67b3a1a6a471a579c42ff))
+* 新增消息回答流打字机效果 ([278cc93](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/278cc93eea6f88a30d35df6c1e53c9f5594c0187))
+* 消息对话框展示tag ([1e2f7d6](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/1e2f7d6d4fd6e42757e5aa13cc60a001754be794))
+* 添加查询股票基本信息 ([41df27b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/41df27bab6d2b70774a180f391c708482a636093))
+* **股票图表:** 重构股票图表组件并优化显示逻辑 ([45cd2cb](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/45cd2cb8b925ce737b7cbbcf875845c31a25d24c))
+
+
+### Performance Improvements
+
+* echarts ([3307021](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/33070213013b0b0b93fc2a32aebf96d0161322fc))
+* highlight code ([016ce4a](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/016ce4a49643dd3f6b7add621ec8cc7615b7f8ce))
+* k线图增加loading和MA数据展示 ([04e5557](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/04e5557a75aa88a3c3ca382e105e7744f8d161db))
+* 优化K线图信息展示 ([2c94783](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/2c94783d89dd768e9f33264c2ccd934f25661f55))
+* 优化k线图新数据加载 ([9a75052](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/9a75052955278c7ecfc97885bcd5347c263ecfbf))
+* 优化K线图显示 ([56767ae](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/56767ae546cdbe9e16a04f22a98b8b550650c4db))
+* 优化markdown表格渲染 ([6c86bfa](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/6c86bfa88354ab19ff453d182dc81080def7e0b3))
+* 优化信息流深度思考关闭时机 ([df41d43](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/df41d4397024c854951b3868bb7b0ba34c347032))
+* 优化删除对话的帖子内容详情显示 ([e634dc8](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/e634dc81461fb948676ad1d13c86e543970ad4dd))
+* 优化帖子卡片展示 ([52710a3](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/52710a34739aade2a659e6f19902cdf1a6db197d))
+* 优化帖子卡片样式 ([4d57e79](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/4d57e7935cfbcf8ec97b23dfd6b233a3ea672758))
+* 优化更新滚动位置代码 ([e42964b](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/e42964bbd3b5aa8f8c55681f18db4acc4900890a))
+* 优化消息链接复制 ([6b69268](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/6b692687b427b5f3a33df269a3744aad9cf31447))
+* 优化深度思考展示动画 ([f0e8b63](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/f0e8b6334b6977c2e1ef0d6e8b420bae5ec44575))
+* 优化热门标签空状态 ([a2a8fe3](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a2a8fe35bdac29dfa011a5efe143636ef987f4f9))
+* 优化股票显示 ([a894817](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a89481760d256d1eb1145833f3624fac1cd7e9e7))
+* 侧边栏tab默认选中对话 ([7491469](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/74914690e207d7b757e96d839c57af11d144be24))
+* 当消息只有一条时隐藏切换消息按钮 ([4dc13af](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/4dc13af781d14e167f9fa5bc0c4630d19ec7b26c))
+* 支持后台运行时依然接受消息传输 ([7e97544](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/7e97544c737fd72e5871673f6079e850bbd59e21))
+* 消息对话增加用户头像展示 ([0a5e402](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0a5e402fdb6bbdeb4a652f0415f6f558dacc13cf))
+
 
 
 ## [0.0.1](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/cdd043629b3d3db91fd3591fa72e3f8272214407...v0.0.1) (2025-10-20)
@@ -380,3 +402,6 @@ All notable changes to this project will be documented in this file. See [standa
 * 优化评论输入框弹窗 ([a607e95](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a607e95bc034cbb9494ba3374a731a14c0b05002))
 * 优化请求失败重试机制 ([5f77c06](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/5f77c069867043a543097e6f28c4b23042a19ef1))
 * 增加登录提示 ([8355a22](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/8355a2299e5cc1e9c0fbe38906fec8b20040677e))
+
+
+
