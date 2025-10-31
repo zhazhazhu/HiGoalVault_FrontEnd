@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { ChatMessageStock, Page } from '@/api'
+import type { ChatMessageStock, DateParameterOfStock, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
@@ -147,10 +147,12 @@ websocketStore.receiveMessage((data) => {
     else if (data.data?.stage === 'node end') {
       status.value = 'response'
       pushCharQueue(data.data?.response || '')
+      if (data.data.data) {
+        currentAnswer.value.data = data.data.data
+      }
       currentAnswer.value = {
         ...currentAnswer.value,
         ...data.data,
-        data: data.data.data,
         reference: data.data?.reference,
         queryId: data.data?.query_id,
       }
@@ -160,8 +162,26 @@ websocketStore.receiveMessage((data) => {
     status.value = null
     reset()
     if (currentAnswer.value.data) {
-      const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data || '[]') || []
+      const stockParameter: DateParameterOfStock = {
+        fromdate: '',
+        todate: '',
+        name: '',
+        code: '',
+      }
+      const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data) || []
+      const data = currentAnswer.value.data
+      const dateList = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
+      const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value?.[0]
+      if (dateList) {
+        stockParameter.fromdate = dateList.fromdate
+        stockParameter.todate = dateList.todate
+      }
+      if (code) {
+        stockParameter.code = code
+        stockParameter.name = code
+      }
       currentAnswer.value.stockData = stockData
+      currentAnswer.value.stockParameter = stockParameter
     }
     currentAnswer.value.isPaused = data.data?.isPaused || false
     currentAnswer.value.showSteps = !currentAnswer.value.response
