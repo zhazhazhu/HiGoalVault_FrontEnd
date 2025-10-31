@@ -88,7 +88,7 @@ defineExpose({
 
 <template>
   <view>
-    <MessagePreview v-for="item, index in data" :key="item.queryId" :data="item" @click="onGotoMessage(item)">
+    <MessagePreview v-for="item, index in data" :key="item.queryId" :data="item" @tap="onGotoMessage(item)">
       <template #actions>
         <view class="flex items-center justify-between">
           <view class="text-24rpx font-500 color-#666" @click.stop="collect(item.queryId, index)">
