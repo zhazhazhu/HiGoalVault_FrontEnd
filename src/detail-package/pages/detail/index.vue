@@ -19,9 +19,12 @@ const [currentComment, resetCurrentComment] = useResetRef<{ commentId: string, c
   commentType: null,
 })
 const chatStore = useChatStore()
+const isLoading = ref(true)
 
 async function getData() {
-  const res = await api.getPublicMessageDetail({ contentId: contentId.value })
+  const res = await api.getPublicMessageDetail({ contentId: contentId.value }).finally(() => {
+    isLoading.value = false
+  })
   if (res.code === 200) {
     data.value = res.result
     if (res.result.chatQueryAnswerVO) {
@@ -113,17 +116,22 @@ onLoad((options) => {
         class="h-full overflow-y-auto pb-20rpx"
         @refresherrefresh="refreshData"
       >
-        <ViewDetailCard v-if="data" :data="data" />
-        <view v-if="messageContent !== null" class="bg-white p-32rpx mt-10rpx">
-          <MessageResponseCard :data="messageContent" @click-steps="messageContent.showSteps = !messageContent.showSteps" />
+        <view v-if="isLoading" class="h-100px flex items-center justify-center">
+          <wd-loading color="#ff3b30ff" />
         </view>
-        <view v-else class="mt-40px">
-          <wd-status-tip tip="内容已删除">
-            <template #image>
-              <view class="i-material-symbols-content-paste-off text-100rpx" />
-            </template>
-          </wd-status-tip>
-        </view>
+        <template v-else>
+          <ViewDetailCard v-if="data" :data="data" />
+          <view v-if="messageContent !== null" class="bg-white p-32rpx mt-10rpx">
+            <MessageResponseCard :data="messageContent" @click-steps="messageContent.showSteps = !messageContent.showSteps" />
+          </view>
+          <view v-else class="mt-40px">
+            <wd-status-tip tip="内容已删除">
+              <template #image>
+                <view class="i-material-symbols-content-paste-off text-100rpx" />
+              </template>
+            </wd-status-tip>
+          </view>
+        </template>
       </scroll-view>
 
       <view class="h-200rpx bg-white px-32rpx pt-30rpx">
