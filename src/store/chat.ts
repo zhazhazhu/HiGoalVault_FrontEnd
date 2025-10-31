@@ -2,6 +2,7 @@ import type { Ref } from 'vue'
 import type { AnswerAfter, AnswerBefore, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps, DateParameterOfStock, ResolvedParam } from '../api'
 import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
+import { reactive } from 'vue'
 import { useStoreRef, useUUID } from '@/composables'
 import { isThisMonth, isThisWeek, isToday, useJsonParse } from '@/utils'
 import { Truth } from '../api'
@@ -21,6 +22,9 @@ interface State {
   currentTemporaryMessageId: Ref<string>
   isReplying: boolean
   waitingMessageTask: WaitingMessageTask | null
+  typingTimer: number | null
+  isTyping: boolean
+  displayBuffer: string
 }
 
 export interface ChatWithType {
@@ -29,6 +33,8 @@ export interface ChatWithType {
   thisMonth: Chat[]
   furthermore: Chat[]
 }
+
+const TYPING_SPEED = 50
 
 export const useChatStore = defineStore('chat', {
   state: (): State => ({
@@ -39,6 +45,9 @@ export const useChatStore = defineStore('chat', {
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
     isReplying: false,
     waitingMessageTask: null,
+    typingTimer: null,
+    isTyping: false,
+    displayBuffer: '',
   }),
   getters: {
     currentChat: (state) => {
@@ -191,6 +200,16 @@ export const useChatStore = defineStore('chat', {
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)
+    },
+    getAnswerOfMessageByRunId(runId: string) {
+      for (let i = 0; i < this.messages.length; i++) {
+        for (let j = 0; j < this.messages[i].chatQueryAnswerList.length; j++) {
+          if (this.messages[i].chatQueryAnswerList[j].runId === runId) {
+            return reactive(this.messages[i].chatQueryAnswerList[j])
+          }
+        }
+      }
+      return null
     },
     updateAnswerOfMessageByRunId(runId: string, answer: Partial<AnswerAfter>) {
       for (let i = 0; i < this.messages.length; i++) {

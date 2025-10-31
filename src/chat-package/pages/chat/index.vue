@@ -38,6 +38,17 @@ const converseInstance = ref<InstanceType<typeof Converse>>()
 const newMessageId = ref('')
 const { start, reset, onChange } = useTimeCount()
 
+// 处理WebSocket连接关闭事件
+websocketStore.websocket?.onClose(() => {
+  console.log('WebSocket connection closed.')
+  const currentAnswer = ref(chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId))
+  if (!currentAnswer.value)
+    return
+  currentAnswer.value.isLoading = false
+  chatStore.isReplying = false
+  chatStore.currentRunId = ''
+})
+
 onChange((count) => {
   chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
     messageTimeLong: count,
@@ -48,16 +59,16 @@ websocketStore.receiveMessage((data) => {
   console.log('onMessage', data)
   if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
     return
-  const currentMessage = chatStore.currentTemporaryMessage.chatQueryAnswerList.find(item => item.runId === chatStore.currentRunId)
 
-  if (!currentMessage)
+  const currentAnswer = ref(chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId))
+  if (!currentAnswer.value)
     return
+  currentAnswer.value.isLoading = true
 
-  currentMessage.isLoading = true
   if (data.code === '200' && data.type === 'message') {
     newMessageId.value = data.data?.msg_id
     const currentNode = data.data?.node || ''
-    const isNewNode = currentMessage.steps[currentMessage.steps.length - 1]?.node !== currentNode
+    const isNewNode = currentAnswer.value.steps[currentAnswer.value.steps.length - 1]?.node !== currentNode
     /**
      * 思考步骤阶段
      * 1. 添加新的步骤
@@ -68,83 +79,73 @@ websocketStore.receiveMessage((data) => {
     if (data.data?.stage === 'thinking' || data.data?.stage === 'node begin') {
       start()
       if (isNewNode) {
-        chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-          showSteps: true,
-          steps: [
-            ...currentMessage.steps.map(item => ({ ...item, finished: true })),
-            {
-              node: data.data?.node,
-              message: data.data?.message,
-              thinking: data.data?.thinking || '',
-              finished: false,
-            },
-          ],
-        })
+        currentAnswer.value.showSteps = true
+        currentAnswer.value.steps = [
+          ...currentAnswer.value.steps.map(item => ({ ...item, finished: true })),
+          {
+            node: data.data?.node,
+            message: data.data?.message,
+            thinking: data.data?.thinking || '',
+            finished: false,
+          },
+        ]
       }
       else {
-        chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-          steps: [
-            ...currentMessage.steps.map((item) => {
-              if (item.node === currentNode) {
-                return {
-                  ...item,
-                  thinking: data.data?.thinking ? item.thinking + data.data?.thinking : item.thinking,
-                }
+        currentAnswer.value.steps = [
+          ...currentAnswer.value.steps.map((item) => {
+            if (item.node === currentNode) {
+              return {
+                ...item,
+                thinking: data.data?.thinking ? item.thinking + data.data?.thinking : item.thinking,
               }
-              return item
-            }),
-          ],
-        })
+            }
+            return item
+          }),
+        ]
       }
     }
     else if (data.data?.stage === 'stream') {
-      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-        showSteps: !currentMessage.response,
-      })
+      currentAnswer.value.showSteps = !currentAnswer.value.response
       reset()
-      if (currentMessage.data) {
-        const stockData = useJsonParse<[ChatMessageStock]>(currentMessage.data.analysis_data) || []
-        chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-          stockData,
-        })
+      if (currentAnswer.value.data) {
+        const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data) || []
+        currentAnswer.value.stockData = stockData
       }
-      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+      currentAnswer.value = {
+        ...currentAnswer.value,
         ...data.data,
-        steps: currentMessage.steps.map(item => ({
+        steps: currentAnswer.value.steps.map(item => ({
           ...item,
           finished: true,
         })),
-        response: currentMessage.response += (data.data?.response || ''),
+        response: currentAnswer.value.response += (data.data?.response || ''),
         reference: data.data?.reference,
         queryId: data.data?.query_id,
-      })
+      }
     }
     else if (data.data?.stage === 'node end') {
-      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
+      currentAnswer.value = {
+        ...currentAnswer.value,
         ...data.data,
         data: data.data.data,
-        response: currentMessage.response += (data.data?.response || ''),
+        response: currentAnswer.value.response += (data.data?.response || ''),
         reference: data.data?.reference,
         queryId: data.data?.query_id,
-      })
+      }
     }
   }
   if (data.type === 'stream-end') {
     reset()
-    if (currentMessage.data) {
-      const stockData = useJsonParse<[ChatMessageStock]>(currentMessage.data.analysis_data) || []
-      chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-        stockData,
-      })
+    if (currentAnswer.value.data) {
+      const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data || '[]') || []
+      currentAnswer.value.stockData = stockData
     }
-    chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-      showSteps: !currentMessage.response,
-      steps: currentMessage.steps.map(item => ({
-        ...item,
-        finished: true,
-      })),
-      isLoading: false,
-    })
+    currentAnswer.value.showSteps = !currentAnswer.value.response
+    currentAnswer.value.steps = currentAnswer.value.steps.map(item => ({
+      ...item,
+      finished: true,
+    }))
+    currentAnswer.value.isLoading = false
     // 更新当前的messageID
     if (newMessageId.value) {
       const current = chatStore.messages.find(item => item.msgId === chatStore.currentTemporaryMessageId)!
@@ -153,7 +154,7 @@ websocketStore.receiveMessage((data) => {
       newMessageId.value = ''
     }
 
-    currentMessage.isLoading = false
+    currentAnswer.value.isLoading = false
     // 清空当前runId
     chatStore.currentRunId = ''
     chatStore.isReplying = false
