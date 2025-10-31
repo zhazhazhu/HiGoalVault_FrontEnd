@@ -5,8 +5,9 @@ import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import StockPreview from '@/echarts/components/preview.vue?async'
+import { renderMarkdown } from '@/modules'
 import { useUserStore } from '@/store'
-import { formatCommentDate, formatCommentOrThumbUpCount, useJsonParse } from '@/utils'
+import { formatCommentDate, formatCommentOrThumbUpCount, markdownToPlainText, useJsonParse } from '@/utils'
 
 const props = defineProps<{
   disableToUser?: boolean
@@ -123,6 +124,10 @@ function onDelete() {
 
     <StockPreview v-if="stockData.length === 1" :data="stockData" />
 
+    <view v-else>
+      <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="`${renderMarkdown(data.chatQueryAnswerVO?.response.substring(0, 70))}`" />
+    </view>
+
     <view class="flex items-center color-#666 gap-30rpx">
       <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
         <view class="wechat-icon bg-#666 size-50rpx" />
@@ -153,5 +158,13 @@ function onDelete() {
   flex-direction: column;
   gap: 20rpx;
   border: 1px solid #ffaeae26;
+}
+.hi-view-card--content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>
