@@ -11,7 +11,7 @@ const emit = defineEmits<{
 }>()
 const model = defineModel({ type: Boolean, required: true })
 const cs = useClassesName('sidebar-content')
-const active = ref('browse')
+const active = ref('chat')
 const userStore = useUserStore()
 const chatStore = useChatStore()
 const isEdit = ref(false)
@@ -60,6 +60,9 @@ onMounted(() => {
           </wd-button>
         </template>
       </template>
+      <tabs-item name="chat" label="对话">
+        <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
+      </tabs-item>
       <tabs-item name="browse" label="发现">
         <view class="flex flex-col gap-10px mt-10px">
           <view class="text-34rpx font-bold text-h1-color">
@@ -76,9 +79,6 @@ onMounted(() => {
             </view>
           </view>
         </view>
-      </tabs-item>
-      <tabs-item name="chat" label="对话">
-        <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
       </tabs-item>
     </tabs>
 
