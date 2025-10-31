@@ -51,7 +51,7 @@ function handleAfterEnter() {
 }
 async function onConfirm() {
   const hasSensitive = await api.hasSensitiveWord(input.value)
-  if (hasSensitive) {
+  if (hasSensitive.result) {
     uni.showToast({
       title: '包含敏感词',
       icon: 'none',

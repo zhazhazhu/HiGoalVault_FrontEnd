@@ -96,7 +96,7 @@ async function onConfirmMessage(content?: string) {
   const text = model.value.trim()
   // 检查是否包含敏感词
   const hasSensitive = await api.hasSensitiveWord(text)
-  if (hasSensitive) {
+  if (hasSensitive.result) {
     uni.showToast({
       title: '包含敏感词，无法发送',
       icon: 'none',
