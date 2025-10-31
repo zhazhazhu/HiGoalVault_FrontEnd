@@ -311,7 +311,7 @@ function stopTextToSpeech() {
           <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
           <view class="refresh-icon size-28px" @click="onRefresh" />
           <view class="copy-icon size-30px" @click="onCopy" />
-          <view class="flex items-center text-14px gap-8px">
+          <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
             <view class="size-30px flex items-center justify-center">
               <view class="i-material-symbols-arrow-back-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
             </view>
