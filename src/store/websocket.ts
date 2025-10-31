@@ -55,6 +55,7 @@ export interface WsMessageData {
 
 export interface StopWsMessageData extends Partial<Omit<WsMessageData, 'runId'>> {
   runId: string
+  queryId?: string
 }
 
 export interface WsMessageResponse {

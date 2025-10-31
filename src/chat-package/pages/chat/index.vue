@@ -64,7 +64,7 @@ websocketStore.receiveMessage((data) => {
   if (!currentAnswer.value)
     return
   currentAnswer.value.isLoading = true
-
+  currentAnswer.value.queryId = data.data?.query_id
   if (data.code === '200' && data.type === 'message') {
     newMessageId.value = data.data?.msg_id
     const currentNode = data.data?.node || ''
