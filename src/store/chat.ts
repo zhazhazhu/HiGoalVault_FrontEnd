@@ -141,6 +141,7 @@ export const useChatStore = defineStore('chat', {
         label,
         isLoading: false,
         showSteps: !answer.response,
+        isPaused: answer.isPaused || false,
       }
     },
     createTemporaryMessage(message?: Partial<ChatMessageAfter>): ChatMessageAfter {
@@ -169,6 +170,7 @@ export const useChatStore = defineStore('chat', {
             stockData: [],
             showSteps: false,
             label: [],
+            isPaused: false,
           },
         ],
         ...message,
@@ -197,6 +199,7 @@ export const useChatStore = defineStore('chat', {
         summary: '',
         showSteps: false,
         label: [],
+        isPaused: false,
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)

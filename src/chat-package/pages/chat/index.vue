@@ -140,6 +140,7 @@ websocketStore.receiveMessage((data) => {
       const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data || '[]') || []
       currentAnswer.value.stockData = stockData
     }
+    currentAnswer.value.isPaused = data.data?.isPaused || false
     currentAnswer.value.showSteps = !currentAnswer.value.response
     currentAnswer.value.steps = currentAnswer.value.steps.map(item => ({
       ...item,

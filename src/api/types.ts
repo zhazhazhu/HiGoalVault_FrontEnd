@@ -68,6 +68,7 @@ export interface AnswerBefore {
   steps: string
   summary: string
   label: string | null // 标签
+  isPaused: boolean // 是否暂停
 }
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps' | 'label'> {

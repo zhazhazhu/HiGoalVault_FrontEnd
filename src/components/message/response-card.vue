@@ -72,6 +72,12 @@ const cs = useClassesName('message-card')
       #{{ item }}
     </Tag>
   </view>
+
+  <view v-if="data.isPaused">
+    <view class="text-13px text-gray-7">
+      已暂停生成
+    </view>
+  </view>
 </template>
 
 <style lang='scss' scoped>
