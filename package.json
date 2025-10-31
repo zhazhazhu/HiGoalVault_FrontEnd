@@ -1,6 +1,6 @@
 {
   "name": "@higoal/mini-grogram",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "packageManager": "pnpm@10.15.0",
   "description": "This is a mini program project.",
   "author": "HiGoal",
@@ -20,7 +20,8 @@
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "release": "standard-version"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4070620250821001",
@@ -85,6 +86,7 @@
     "lint-staged": "^16.1.6",
     "sass": "^1.78.0",
     "simple-git-hooks": "^2.13.1",
+    "standard-version": "^9.5.0",
     "terser": "^5.44.0",
     "typescript": "^4.9.5",
     "unocss": "65.5.0",
