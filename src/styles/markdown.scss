@@ -142,8 +142,10 @@
   border-collapse: collapse;
   margin: 12px 0;
   font-size: 13px;
-  overflow: auto;
   display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .markdown-body .md-thead {
@@ -159,6 +161,8 @@
   border: 1px solid #e5e7eb;
   padding: 8px 12px;
   text-align: left;
+  white-space: nowrap;
+  word-break: normal;
 }
 
 .markdown-body .md-th {
