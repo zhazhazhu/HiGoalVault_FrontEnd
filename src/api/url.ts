@@ -47,4 +47,5 @@ export enum API {
   DELETE_PUBLISH_CONTENT_BY_ID = '/buyer/content/publish/deleteContentByContentId',
   GET_FINANCE_DATA = '/buyer/finance/query',
   GET_FINANCE_BASIC_INFO = '/buyer/finance/queryFinanceBasicInfo',
+  HAS_SENSITIVE_WORD = '/buyer/sensitiveWord/contains',
 }
