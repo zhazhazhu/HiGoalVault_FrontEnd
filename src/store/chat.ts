@@ -22,9 +22,6 @@ interface State {
   currentTemporaryMessageId: Ref<string>
   isReplying: boolean
   waitingMessageTask: WaitingMessageTask | null
-  typingTimer: number | null
-  isTyping: boolean
-  displayBuffer: string
 }
 
 export interface ChatWithType {
@@ -33,8 +30,6 @@ export interface ChatWithType {
   thisMonth: Chat[]
   furthermore: Chat[]
 }
-
-const TYPING_SPEED = 50
 
 export const useChatStore = defineStore('chat', {
   state: (): State => ({
@@ -45,9 +40,6 @@ export const useChatStore = defineStore('chat', {
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
     isReplying: false,
     waitingMessageTask: null,
-    typingTimer: null,
-    isTyping: false,
-    displayBuffer: '',
   }),
   getters: {
     currentChat: (state) => {

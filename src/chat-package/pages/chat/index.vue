@@ -8,6 +8,7 @@ import { computed, onMounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { messageInjectKey } from '@/composables/inject'
+import { useCharQueue } from '@/composables/useChatQueue'
 import { useResetRef } from '@/composables/useResetRef'
 import { useTimeCount } from '@/composables/useTimeCount'
 import { useUserStore } from '@/store'
@@ -37,6 +38,9 @@ const messages = computed(() => chatStore.messages)
 const converseInstance = ref<InstanceType<typeof Converse>>()
 const newMessageId = ref('')
 const { start, reset, onChange } = useTimeCount()
+const status = ref<'thinking' | 'response' | null>(null)
+const currentThinkingIndex = ref(0)
+const { charQueue, pushQueue: pushCharQueue, onTyping: onCharTyping, pushFullQueue } = useCharQueue()
 
 // 处理WebSocket连接关闭事件
 websocketStore.websocket?.onClose(() => {
@@ -47,12 +51,31 @@ websocketStore.websocket?.onClose(() => {
   currentAnswer.value.isLoading = false
   chatStore.isReplying = false
   chatStore.currentRunId = ''
+  charQueue.value.length && pushFullQueue()
 })
 
 onChange((count) => {
   chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
     messageTimeLong: count,
   })
+})
+
+onCharTyping((char) => {
+  const currentAnswer = ref(chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId))
+  if (!currentAnswer.value)
+    return
+  if (status.value === 'thinking') {
+    if (currentAnswer.value.steps && currentAnswer.value.steps[currentThinkingIndex.value - 1]) {
+      currentAnswer.value.steps[currentThinkingIndex.value - 1].thinking += char
+    }
+  }
+  else if (status.value === 'response') {
+    currentAnswer.value.response += char
+  }
+})
+
+watch(() => [status.value, currentThinkingIndex.value], () => {
+  charQueue.value.length && pushFullQueue()
 })
 
 websocketStore.receiveMessage((data) => {
@@ -65,6 +88,7 @@ websocketStore.receiveMessage((data) => {
     return
   currentAnswer.value.isLoading = true
   currentAnswer.value.queryId = data.data?.query_id
+
   if (data.code === '200' && data.type === 'message') {
     newMessageId.value = data.data?.msg_id
     const currentNode = data.data?.node || ''
@@ -77,8 +101,11 @@ websocketStore.receiveMessage((data) => {
      * 如果上一个node相同，则修改旧的步骤
      */
     if (data.data?.stage === 'thinking' || data.data?.stage === 'node begin') {
+      status.value = 'thinking'
       start()
       if (isNewNode) {
+        charQueue.value.length && pushFullQueue()
+        currentThinkingIndex.value++
         currentAnswer.value.showSteps = true
         currentAnswer.value.steps = [
           ...currentAnswer.value.steps.map(item => ({ ...item, finished: true })),
@@ -91,26 +118,21 @@ websocketStore.receiveMessage((data) => {
         ]
       }
       else {
+        pushCharQueue(data.data?.thinking || '')
         currentAnswer.value.steps = [
-          ...currentAnswer.value.steps.map((item) => {
-            if (item.node === currentNode) {
-              return {
-                ...item,
-                thinking: data.data?.thinking ? item.thinking + data.data?.thinking : item.thinking,
-              }
-            }
-            return item
-          }),
+          ...currentAnswer.value.steps.map(item => ({ ...item, thinking: item.thinking || '' })),
         ]
       }
     }
     else if (data.data?.stage === 'stream') {
+      status.value = 'response'
       currentAnswer.value.showSteps = !currentAnswer.value.response
       reset()
       if (currentAnswer.value.data) {
-        const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data) || []
+        const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data || '[]') || []
         currentAnswer.value.stockData = stockData
       }
+      pushCharQueue(data.data?.response || '')
       currentAnswer.value = {
         ...currentAnswer.value,
         ...data.data,
@@ -118,23 +140,24 @@ websocketStore.receiveMessage((data) => {
           ...item,
           finished: true,
         })),
-        response: currentAnswer.value.response += (data.data?.response || ''),
         reference: data.data?.reference,
         queryId: data.data?.query_id,
       }
     }
     else if (data.data?.stage === 'node end') {
+      status.value = 'response'
+      pushCharQueue(data.data?.response || '')
       currentAnswer.value = {
         ...currentAnswer.value,
         ...data.data,
         data: data.data.data,
-        response: currentAnswer.value.response += (data.data?.response || ''),
         reference: data.data?.reference,
         queryId: data.data?.query_id,
       }
     }
   }
   if (data.type === 'stream-end') {
+    status.value = null
     reset()
     if (currentAnswer.value.data) {
       const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data || '[]') || []
