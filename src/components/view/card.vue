@@ -128,13 +128,13 @@ function onDelete() {
         <view class="wechat-icon bg-#666 size-50rpx" />
       </button>
       <view class="flex-1" />
-      <view class="flex items-center">
+      <view class="flex items-center w-30px h-30px">
         <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" @click.stop="onThumbsUp" />
         <view class="text-26rpx">
           {{ formatCommentOrThumbUpCount(data.likeCount) }}
         </view>
       </view>
-      <view class="flex items-center">
+      <view class="flex items-center w-30px h-30px">
         <view class="comment-icon bg-#666 size-46rpx" />
         <view class="text-26rpx">
           {{ formatCommentOrThumbUpCount(data.commentCount) }}
