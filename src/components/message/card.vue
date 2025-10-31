@@ -351,8 +351,10 @@ function stopTextToSpeech() {
   width: 100%;
 }
 .hi-message-card--user {
-  background: linear-gradient(270deg, #ff3b30 0%, #fc6146 100%);
-  color: #fff;
+  // background: linear-gradient(270deg, #ff3b30 0%, #fc6146 100%);
+  // color: #fff;
+  background-color: #fff;
+  color: #3a3a3a;
   padding: 10px 16px;
   font-size: 17px;
   border-radius: 12px 12px 0px 12px;
