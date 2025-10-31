@@ -94,6 +94,15 @@ async function onConfirmMessage(content?: string) {
   if (!model.value.trim().length)
     return
   const text = model.value.trim()
+  // 检查是否包含敏感词
+  const hasSensitive = await api.hasSensitiveWord(text)
+  if (hasSensitive) {
+    uni.showToast({
+      title: '包含敏感词，无法发送',
+      icon: 'none',
+    })
+    return
+  }
   model.value = ''
   chatStore.isReplying = true
   // 创建并保存当前消息的runId

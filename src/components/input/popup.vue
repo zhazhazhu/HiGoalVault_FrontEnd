@@ -4,6 +4,7 @@ import type { ButtonProps } from 'wot-design-uni/components/wd-button/types'
 import type { popupProps } from 'wot-design-uni/components/wd-popup/types'
 import type { TextareaProps } from 'wot-design-uni/components/wd-textarea/types'
 import { computed, ref } from 'vue'
+import { api } from '@/api'
 import { useClassesName } from '@/composables'
 
 type PopupProps = ExtractPropTypes<typeof popupProps>
@@ -48,7 +49,15 @@ function handleBeforeLeave() {
 function handleAfterEnter() {
   isFocus.value = true
 }
-function onConfirm() {
+async function onConfirm() {
+  const hasSensitive = await api.hasSensitiveWord(input.value)
+  if (hasSensitive) {
+    uni.showToast({
+      title: '包含敏感词',
+      icon: 'none',
+    })
+    return
+  }
   visible.value = false
   emit('confirm', input.value)
 }
