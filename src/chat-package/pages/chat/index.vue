@@ -45,32 +45,32 @@ const { charQueue, pushQueue: pushCharQueue, onTyping: onCharTyping, pushFullQue
 // 处理WebSocket连接关闭事件
 websocketStore.websocket?.onClose(() => {
   console.log('WebSocket connection closed.')
-  const currentAnswer = ref(chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId))
-  if (!currentAnswer.value)
+  const currentAnswer = chatStore.currentAnswer
+  if (!currentAnswer)
     return
-  currentAnswer.value.isLoading = false
+  currentAnswer.isLoading = false
   chatStore.isReplying = false
   chatStore.currentRunId = ''
   charQueue.value.length && pushFullQueue()
 })
 
 onChange((count) => {
-  chatStore.updateAnswerOfMessageByRunId(chatStore.currentRunId, {
-    messageTimeLong: count,
-  })
+  if (!chatStore.currentAnswer)
+    return
+  chatStore.currentAnswer.messageTimeLong = count
 })
 
 onCharTyping((char) => {
-  const currentAnswer = ref(chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId))
-  if (!currentAnswer.value)
+  const currentAnswer = chatStore.currentAnswer
+  if (!currentAnswer)
     return
   if (status.value === 'thinking') {
-    if (currentAnswer.value.steps && currentAnswer.value.steps[currentThinkingIndex.value - 1]) {
-      currentAnswer.value.steps[currentThinkingIndex.value - 1].thinking += char
+    if (currentAnswer.steps && currentAnswer.steps[currentThinkingIndex.value - 1]) {
+      currentAnswer.steps[currentThinkingIndex.value - 1].thinking += char
     }
   }
   else if (status.value === 'response') {
-    currentAnswer.value.response += char
+    currentAnswer.response += char
   }
 })
 
@@ -83,16 +83,16 @@ websocketStore.receiveMessage((data) => {
   if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
     return
 
-  const currentAnswer = ref(chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId))
-  if (!currentAnswer.value)
+  const currentAnswer = chatStore.currentAnswer
+  if (!currentAnswer)
     return
-  currentAnswer.value.isLoading = true
-  currentAnswer.value.queryId = data.data?.query_id
+  currentAnswer.isLoading = true
+  currentAnswer.queryId = currentAnswer.queryId || data.data?.query_id
 
   if (data.code === '200' && data.type === 'message') {
     newMessageId.value = data.data?.msg_id
     const currentNode = data.data?.node || ''
-    const isNewNode = currentAnswer.value.steps[currentAnswer.value.steps.length - 1]?.node !== currentNode
+    const isNewNode = currentAnswer.steps[currentAnswer.steps.length - 1]?.node !== currentNode
     /**
      * 思考步骤阶段
      * 1. 添加新的步骤
@@ -106,9 +106,9 @@ websocketStore.receiveMessage((data) => {
       if (isNewNode) {
         charQueue.value.length && pushFullQueue()
         currentThinkingIndex.value++
-        currentAnswer.value.showSteps = true
-        currentAnswer.value.steps = [
-          ...currentAnswer.value.steps.map(item => ({ ...item, finished: true })),
+        currentAnswer.showSteps = true
+        currentAnswer.steps = [
+          ...currentAnswer.steps.map(item => ({ ...item, finished: true })),
           {
             node: data.data?.node,
             message: data.data?.message,
@@ -119,57 +119,48 @@ websocketStore.receiveMessage((data) => {
       }
       else {
         pushCharQueue(data.data?.thinking || '')
-        currentAnswer.value.steps = [
-          ...currentAnswer.value.steps.map(item => ({ ...item, thinking: item.thinking || '' })),
+        currentAnswer.steps = [
+          ...currentAnswer.steps.map(item => ({ ...item, thinking: item.thinking || '' })),
         ]
       }
     }
     else if (data.data?.stage === 'stream') {
       status.value = 'response'
-      currentAnswer.value.showSteps = !currentAnswer.value.response
+      currentAnswer.showSteps = !currentAnswer.response
       reset()
-      if (currentAnswer.value.data) {
-        const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data || '[]') || []
-        currentAnswer.value.stockData = stockData
+      if (currentAnswer.data) {
+        const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.data.analysis_data || '[]') || []
+        currentAnswer.stockData = stockData
       }
       pushCharQueue(data.data?.response || '')
-      currentAnswer.value = {
-        ...currentAnswer.value,
-        ...data.data,
-        steps: currentAnswer.value.steps.map(item => ({
-          ...item,
-          finished: true,
-        })),
-        reference: data.data?.reference,
-        queryId: data.data?.query_id,
-      }
+      currentAnswer.steps = currentAnswer.steps.map(item => ({
+        ...item,
+        finished: true,
+      }))
+      currentAnswer.response += data.data?.response || ''
+      currentAnswer.reference = data.data?.reference || []
     }
     else if (data.data?.stage === 'node end') {
       status.value = 'response'
       pushCharQueue(data.data?.response || '')
       if (data.data.data) {
-        currentAnswer.value.data = data.data.data
+        currentAnswer.data = data.data.data
       }
-      currentAnswer.value = {
-        ...currentAnswer.value,
-        ...data.data,
-        reference: data.data?.reference,
-        queryId: data.data?.query_id,
-      }
+      currentAnswer.reference = data.data?.reference || []
     }
   }
   if (data.type === 'stream-end') {
     status.value = null
     reset()
-    if (currentAnswer.value.data) {
+    if (currentAnswer.data) {
       const stockParameter: DateParameterOfStock = {
         fromdate: '',
         todate: '',
         name: '',
         code: '',
       }
-      const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.value.data.analysis_data) || []
-      const data = currentAnswer.value.data
+      const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.data.analysis_data) || []
+      const data = currentAnswer.data
       const dateList = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
       const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value?.[0]
       if (dateList) {
@@ -180,16 +171,15 @@ websocketStore.receiveMessage((data) => {
         stockParameter.code = code
         stockParameter.name = code
       }
-      currentAnswer.value.stockData = stockData
-      currentAnswer.value.stockParameter = stockParameter
+      currentAnswer.stockData = stockData
+      currentAnswer.stockParameter = stockParameter
     }
-    currentAnswer.value.isPaused = data.data?.isPaused || false
-    currentAnswer.value.showSteps = !currentAnswer.value.response
-    currentAnswer.value.steps = currentAnswer.value.steps.map(item => ({
+    currentAnswer.isPaused = data.data?.isPaused || false
+    currentAnswer.showSteps = !currentAnswer.response
+    currentAnswer.steps = currentAnswer.steps.map(item => ({
       ...item,
       finished: true,
     }))
-    currentAnswer.value.isLoading = false
     // 更新当前的messageID
     if (newMessageId.value) {
       const current = chatStore.messages.find(item => item.msgId === chatStore.currentTemporaryMessageId)!
@@ -198,7 +188,7 @@ websocketStore.receiveMessage((data) => {
       newMessageId.value = ''
     }
 
-    currentAnswer.value.isLoading = false
+    currentAnswer.isLoading = false
     // 清空当前runId
     chatStore.currentRunId = ''
     chatStore.isReplying = false

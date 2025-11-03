@@ -2,7 +2,6 @@ import type { Ref } from 'vue'
 import type { AnswerAfter, AnswerBefore, Chat, ChatMessageAfter, ChatMessageBefore, ChatMessageReference, ChatMessageStock, ChatSteps, DateParameterOfStock, ResolvedParam } from '../api'
 import dayjs from 'dayjs'
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
 import { useStoreRef, useUUID } from '@/composables'
 import { isThisMonth, isThisWeek, isToday, useJsonParse } from '@/utils'
 import { Truth } from '../api'
@@ -71,6 +70,15 @@ export const useChatStore = defineStore('chat', {
         }
       })
       return result
+    },
+    currentAnswer: (state) => {
+      for (const element of state.messages) {
+        for (const answer of element.chatQueryAnswerList) {
+          if (answer.runId === state.currentRunId) {
+            return answer
+          }
+        }
+      }
     },
   },
   actions: {
@@ -195,29 +203,6 @@ export const useChatStore = defineStore('chat', {
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)
-    },
-    getAnswerOfMessageByRunId(runId: string) {
-      for (let i = 0; i < this.messages.length; i++) {
-        for (let j = 0; j < this.messages[i].chatQueryAnswerList.length; j++) {
-          if (this.messages[i].chatQueryAnswerList[j].runId === runId) {
-            return reactive(this.messages[i].chatQueryAnswerList[j])
-          }
-        }
-      }
-      return null
-    },
-    updateAnswerOfMessageByRunId(runId: string, answer: Partial<AnswerAfter>) {
-      for (let i = 0; i < this.messages.length; i++) {
-        for (let j = 0; j < this.messages[i].chatQueryAnswerList.length; j++) {
-          if (this.messages[i].chatQueryAnswerList[j].runId === runId) {
-            this.messages[i].chatQueryAnswerList[j] = {
-              ...this.messages[i].chatQueryAnswerList[j],
-              ...answer,
-            }
-            break
-          }
-        }
-      }
     },
     putTemporaryChat(chatId: string) {
       const userStore = useUserStore()

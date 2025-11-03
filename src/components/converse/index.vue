@@ -134,8 +134,7 @@ function onMessageTypeChange() {
 }
 
 function onStopSend() {
-  const currentAnswer = chatStore.getAnswerOfMessageByRunId(chatStore.currentRunId)
-  websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: currentAnswer?.queryId })
+  websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 }
 
 function getConverseHeight() {

@@ -13,7 +13,6 @@ import { useWebsocketStore } from '@/store/websocket'
 import { markdownToPlainText } from '@/utils'
 
 const props = withDefaults(defineProps<{
-  message: ChatMessageAfter & Record<string, any>
   readonly?: boolean
   withAvatar?: boolean
 }>(), {
