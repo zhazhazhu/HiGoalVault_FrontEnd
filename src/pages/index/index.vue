@@ -141,16 +141,9 @@ onShareTimeline(() => {
   }
 })
 
-onMounted(() => {
+onShow(() => {
   resetData()
   getData()
-  // uni.navigateTo({ url: '/pages/chat/index' })
-  // uni.navigateTo({ url: '/pages/index/detail?id=1972913302560460801' })
-  // uni.navigateTo({ url: '/user-package/pages/user/index' })
-  // uni.navigateTo({ url: '/pages/index/detail?id=1976543634471948290' })
-})
-
-onShow(() => {
   chatStore.currentChatId = ''
 })
 </script>
