@@ -24,7 +24,8 @@ const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const stockData = computed(() => {
   const _data: AnswerAfter['data'] = data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : { analysis_data: '' }
-  const stockData = useJsonParse<[ChatMessageStock] | []>(_data.analysis_data || '[]') || []
+  const analysisStr = (_data.analysis_data || '[]').replace(/\bNaN\b/g, 'null')
+  const stockData = useJsonParse<[ChatMessageStock] | []>(analysisStr) || []
   return stockData
 })
 const message = useMessage()
