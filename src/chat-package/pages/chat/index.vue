@@ -104,7 +104,6 @@ websocketStore.receiveMessage((data) => {
       status.value = 'thinking'
       start()
       if (isNewNode) {
-        charQueue.value.length && pushFullQueue()
         currentThinkingIndex.value++
         currentAnswer.showSteps = true
         currentAnswer.steps = [
@@ -126,18 +125,17 @@ websocketStore.receiveMessage((data) => {
     }
     else if (data.data?.stage === 'stream') {
       status.value = 'response'
+      pushCharQueue(data.data?.response || '')
       currentAnswer.showSteps = !currentAnswer.response
       reset()
       if (currentAnswer.data) {
         const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.data.analysis_data || '[]') || []
         currentAnswer.stockData = stockData
       }
-      pushCharQueue(data.data?.response || '')
       currentAnswer.steps = currentAnswer.steps.map(item => ({
         ...item,
         finished: true,
       }))
-      currentAnswer.response += data.data?.response || ''
       currentAnswer.reference = data.data?.reference || []
     }
     else if (data.data?.stage === 'node end') {
@@ -150,7 +148,9 @@ websocketStore.receiveMessage((data) => {
     }
   }
   if (data.type === 'stream-end') {
+    pushFullQueue()
     status.value = null
+    currentThinkingIndex.value = 0
     reset()
     if (currentAnswer.data) {
       const stockParameter: DateParameterOfStock = {
@@ -188,7 +188,6 @@ websocketStore.receiveMessage((data) => {
       newMessageId.value = ''
     }
 
-    currentThinkingIndex.value = 0
     currentAnswer.isLoading = false
     // 清空当前runId
     chatStore.currentRunId = ''
@@ -302,10 +301,10 @@ onShareAppMessage(async ({ from }) => {
         <view v-if="messages.length > 0" class="w-full">
           <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" :key="`message-${item.msgId}`" :message="item" with-avatar />
 
-          <view v-show="loading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
-            <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
+          <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
+            <wd-loading color="#FC6146FF" :size="20" />
             <text class="ml-20rpx text-24rpx">
-              {{ isFinish ? '没有更多了' : '加载中...' }}
+              加载中...
             </text>
           </view>
         </view>
