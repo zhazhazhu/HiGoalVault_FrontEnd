@@ -57,7 +57,7 @@ function onClickSuggest(item: string) {
       </view>
       <view v-if="model && isFocus" :class="cs.m('suggest')">
         <template v-if="suggestList.length">
-          <view v-for="item in suggestList" :key="item" class="py-5px flex justify-between items-center" @click="onClickSuggest(item)">
+          <view v-for="item in suggestList" :key="item" class="py-8px flex justify-between items-center" @click="onClickSuggest(item)">
             <view class="flex items-center gap-12px flex-1">
               <view class="i-mingcute-search-line text-18px color-gray" />
               <view class="text-14px">
