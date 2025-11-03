@@ -1,6 +1,7 @@
 <script lang='ts' setup>
 import type { ExtractPropTypes } from 'vue'
 import type { ButtonProps } from 'wot-design-uni/components/wd-button/types'
+import type { inputProps } from 'wot-design-uni/components/wd-input/types'
 import type { popupProps } from 'wot-design-uni/components/wd-popup/types'
 import type { TextareaProps } from 'wot-design-uni/components/wd-textarea/types'
 import { computed, ref } from 'vue'
@@ -10,15 +11,19 @@ import { useClassesName } from '@/composables'
 type PopupProps = ExtractPropTypes<typeof popupProps>
 
 const props = withDefaults(defineProps<{
+  modelValue?: string
   visible?: boolean
   placeholder?: string
   buttonText?: string
+  inputType?: 'input' | 'textarea'
   popupOptions?: Partial<PopupProps>
   textareaOptions?: Partial<TextareaProps>
+  inputOptions?: Partial<ExtractPropTypes<typeof inputProps>>
   buttonOptions?: Partial<ButtonProps>
 }>(), {
   placeholder: '说点什么...',
   buttonText: '发送',
+  inputType: 'textarea',
 })
 
 const emit = defineEmits<{
@@ -31,6 +36,10 @@ const isFocus = ref(false)
 const textareaOptions = computed<Partial<TextareaProps>>(() => ({
   placeholder: props.placeholder || '',
   ...props.textareaOptions,
+}))
+const inputOptions = computed<Partial<ExtractPropTypes<typeof inputProps>>>(() => ({
+  placeholder: props.placeholder || '',
+  ...props.inputOptions,
 }))
 const buttonOptions = computed<Partial<ButtonProps>>(() => ({
   text: props.buttonText || '',
@@ -48,6 +57,9 @@ function handleBeforeLeave() {
 }
 function handleAfterEnter() {
   isFocus.value = true
+}
+function handleAfterLeave() {
+  input.value = props.modelValue || ''
 }
 async function onConfirm() {
   const hasSensitive = await api.hasSensitiveWord(input.value)
@@ -85,6 +97,7 @@ function onBlur() {
         'onUpdate:modelValue': (value: boolean) => { visible = value },
         'onClose': handleClose,
         'onBefore-leave': handleBeforeLeave,
+        'onAfterLeave': handleAfterLeave,
         'onAfter-enter': handleAfterEnter,
         ...popupOptions,
       }"
@@ -92,6 +105,7 @@ function onBlur() {
       <view class="p-30rpx pb-40rpx flex items-center gap-20rpx">
         <view class="flex-1">
           <wd-textarea
+            v-if="inputType === 'textarea'"
             v-bind="{
               'modelValue': input,
               'noBorder': true,
@@ -110,6 +124,28 @@ function onBlur() {
               'onConfirm': onConfirm,
               'onBlur': onBlur,
               ...textareaOptions,
+            }"
+          />
+          <wd-input
+            v-else
+            v-bind="{
+              'modelValue': input,
+              'noBorder': true,
+              'focus': isFocus,
+              'confirmType': 'send',
+              'showConfirmBar': false,
+              'autoHeight': true,
+              'cursorSpacing': 100,
+              'placeholder': placeholder,
+              'customTextareaClass': cs.m('textarea'),
+              'customClass': cs.m('textarea-container'),
+              'placeholderClass': cs.m('textarea-placeholder'),
+              'onUpdate:modelValue': (val) => {
+                input = val
+              },
+              'onConfirm': onConfirm,
+              'onBlur': onBlur,
+              ...inputOptions,
             }"
           />
         </view>
