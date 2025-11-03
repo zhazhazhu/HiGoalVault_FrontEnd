@@ -188,6 +188,7 @@ websocketStore.receiveMessage((data) => {
       newMessageId.value = ''
     }
 
+    currentThinkingIndex.value = 0
     currentAnswer.isLoading = false
     // 清空当前runId
     chatStore.currentRunId = ''

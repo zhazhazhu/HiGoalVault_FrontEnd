@@ -8,7 +8,6 @@ import { useUserStore } from '@/store'
 const user = useUserStore()
 const cs = useClassesName('settings')
 const message = useMessage()
-const isUpdateNickname = ref(false)
 const userInfo = computed({
   get() {
     return user.userInfo
@@ -47,16 +46,34 @@ function openPrivacyPolicy() {
 function onChooseAvatar(e) {
   console.log(e)
 }
-async function onUpdateNickname() {
-  if (isUpdateNickname.value) {
-    isUpdateNickname.value = false
-    const res = await api.updateUserInfo({ nickName: user.userInfo?.nickName })
-    if (res.code === 200) {
-      console.log('修改昵称成功')
-    }
+async function onConfirm(val: string) {
+  if (val.trim() === '') {
+    return
   }
-  else {
-    isUpdateNickname.value = true
+  else if (val.trim().length > 10) {
+    uni.showToast({
+      title: '昵称不能超过10个字符',
+      icon: 'none',
+    })
+    return
+  }
+  else if (/[^\u4E00-\u9FA5a-z0-9]/i.test(val.trim())) {
+    uni.showToast({
+      title: '昵称只能包含中文、字母和数字',
+      icon: 'none',
+    })
+    return
+  }
+  else if (val.trim() === user.userInfo?.nickName) {
+    return
+  }
+  const res = await api.updateUserInfo({ nickName: val })
+  if (res.code === 200) {
+    userInfo.value!.nickName = val
+    uni.showToast({
+      title: '修改昵称成功',
+      icon: 'none',
+    })
   }
 }
 </script>
@@ -84,13 +101,19 @@ async function onUpdateNickname() {
           </view>
         </view>
         <view class="flex items-center">
-          <view class=" mt-20rpx flex items-center gap-10rpx">
-            <wd-input v-if="isUpdateNickname" :model-value="userInfo?.nickName" no-border :autofocus="true" type="nickname" @update:model-value="user.userInfo!.nickName = $event" @blur="onUpdateNickname" />
-            <view v-else class="color-#333 text-32rpx font-bold">
-              {{ userInfo?.nickName }}
+          <input-popup
+            :model-value="userInfo!.nickName"
+            placeholder="请输入昵称"
+            button-text="确认"
+            @confirm="onConfirm"
+          >
+            <view class=" mt-20rpx flex items-center gap-10rpx">
+              <view class="color-#333 text-32rpx font-bold">
+                {{ userInfo?.nickName }}
+              </view>
+              <view class="i-tabler-pencil-minus color-#333 text-36rpx" />
             </view>
-            <view v-if="!isUpdateNickname" class="i-tabler-pencil-minus color-#333 text-36rpx" @click="onUpdateNickname" />
-          </view>
+          </input-popup>
         </view>
       </view>
 
