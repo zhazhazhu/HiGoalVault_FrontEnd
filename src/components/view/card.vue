@@ -6,7 +6,7 @@ import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import StockPreview from '@/echarts/components/preview.vue?async'
 import { renderMarkdown } from '@/modules'
-import { useUserStore } from '@/store'
+import { useGlobalStore, useUserStore } from '@/store'
 import { formatCommentDate, formatCommentOrThumbUpCount, markdownToPlainText, useJsonParse } from '@/utils'
 
 const props = defineProps<{
@@ -20,6 +20,7 @@ const emit = defineEmits<{
 
 const cs = useClassesName('view-card')
 const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
+const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const stockData = computed(() => {
   const _data: AnswerAfter['data'] = data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : { analysis_data: '' }
@@ -70,6 +71,7 @@ function onDelete() {
   }).then(async () => {
     const res = await api.deletePublishContentById(data.value.id)
     if (res.code === 200) {
+      globalStore.shouldReloadAtHomePage = true
       emit('delete', data.value.id)
       uni.showToast({
         title: '删除成功',

@@ -141,10 +141,18 @@ onShareTimeline(() => {
   }
 })
 
-onShow(() => {
+onMounted(() => {
   resetData()
   getData()
+})
+
+onShow(() => {
   chatStore.currentChatId = ''
+  if (globalStore.shouldReloadAtHomePage) {
+    resetData()
+    getData()
+    globalStore.shouldReloadAtHomePage = false
+  }
 })
 </script>
 

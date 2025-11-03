@@ -11,6 +11,7 @@ interface Status {
   keyboardHeight: number
   stsTempConfig: Ref<GenerateStsTempKeyResponse | null>
   showLoginPopup: boolean
+  shouldReloadAtHomePage: boolean
 }
 
 export const useGlobalStore = defineStore('global', {
@@ -20,6 +21,7 @@ export const useGlobalStore = defineStore('global', {
     keyboardHeight: 0,
     stsTempConfig: useStoreRef('Q_CLOUD_AI_VOICE', null),
     showLoginPopup: false,
+    shouldReloadAtHomePage: false,
   }),
   actions: {
     syncStatusBarHeight() {
