@@ -286,6 +286,11 @@ function hasSensitiveWord(text: string) {
   return http(`${API.HAS_SENSITIVE_WORD}?text=${text}`).get<boolean>()
 }
 
+// 搜索建议
+function searchSuggest(prefix: string) {
+  return http(`${API.SEARCH_SUGGEST}?prefix=${prefix}`).get<string[]>()
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -336,4 +341,5 @@ export const api = {
   getFinanceData,
   getFinanceBasicInfo,
   hasSensitiveWord,
+  searchSuggest,
 }

@@ -18,11 +18,15 @@ function onChangeChat() {
   uni.navigateTo({ url: '/chat-package/pages/chat/index' })
 }
 function onConfirm() {
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const method = currentPage.route === '/search-package/pages/search/result' ? uni.redirectTo : uni.navigateTo
+
   if (userId.value) {
-    uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}&userId=${userId.value}` })
+    method({ url: `/search-package/pages/search/result?keyword=${searchText.value}&userId=${userId.value}` })
   }
   else {
-    uni.navigateTo({ url: `/search-package/pages/search/result?keyword=${searchText.value}` })
+    method({ url: `/search-package/pages/search/result?keyword=${searchText.value}` })
   }
   searchText.value = ''
   removeSearchHistoryVisible.value = false
@@ -62,26 +66,28 @@ onLoad((options) => {
 <template>
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
-    <Container custom-class="px-32rpx">
-      <SearchHead v-model="searchText" :placeholder="userId ? '搜索用户内容' : '搜索'" @confirm="onConfirm" @back="onGotoBack" />
+    <Container>
+      <view class="px-32rpx">
+        <SearchHead v-model="searchText" :placeholder="userId ? '搜索用户内容' : '搜索'" @confirm="onConfirm" @back="onGotoBack" />
 
-      <view :class="cs.m('content')">
-        <view :class="cs.m('lately-search')">
-          <SearchCard
-            title="最近搜索"
-            :enable-close="removeSearchHistoryVisible"
-            :data="searchStore.searchHistory"
-            @edit-click="onOperate('delete')"
-            @close="onCloseSearchHistory"
-            @tag-click="onTagClick"
-          >
-            <template #edit>
-              <view v-if="!removeSearchHistoryVisible" class="i-material-symbols-light-delete-outline" />
-              <wd-button v-else type="primary" plain size="small">
-                完成
-              </wd-button>
-            </template>
-          </SearchCard>
+        <view :class="cs.m('content')">
+          <view :class="cs.m('lately-search')">
+            <SearchCard
+              title="最近搜索"
+              :enable-close="removeSearchHistoryVisible"
+              :data="searchStore.searchHistory"
+              @edit-click="onOperate('delete')"
+              @close="onCloseSearchHistory"
+              @tag-click="onTagClick"
+            >
+              <template #edit>
+                <view v-if="!removeSearchHistoryVisible" class="i-material-symbols-light-delete-outline" />
+                <wd-button v-else type="primary" plain size="small">
+                  完成
+                </wd-button>
+              </template>
+            </SearchCard>
+          </view>
         </view>
       </view>
     </Container>

@@ -48,4 +48,5 @@ export enum API {
   GET_FINANCE_DATA = '/buyer/finance/query',
   GET_FINANCE_BASIC_INFO = '/buyer/finance/queryFinanceBasicInfo',
   HAS_SENSITIVE_WORD = '/buyer/sensitiveWord/contains',
+  SEARCH_SUGGEST = '/buyer/search/suggest',
 }
