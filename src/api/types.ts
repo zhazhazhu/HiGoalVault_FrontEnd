@@ -224,6 +224,8 @@ export interface ChatMessageStockData {
   short_hld: number
   /** 空头变化（新增） */
   short_chg: number
+  /** 换手率 */
+  turnover_rate: number | null
 }
 
 export interface ChatMessageReference {
@@ -556,4 +558,5 @@ export interface GetFinanceBasicInfoResponse {
   exchange: string
   symbol: string
   name: string
+  dataType: 'FUTURES' | 'STOCK'
 }
