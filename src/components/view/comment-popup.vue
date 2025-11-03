@@ -213,6 +213,9 @@ function onDeleteComment(index: number) {
   data.value.splice(index, 1)
   total.value--
 }
+function handleAfterLeave() {
+  resetComment()
+}
 
 watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
   if (model || isRefreshing) {
@@ -281,6 +284,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
             v-model:visible="isFocus"
             :placeholder="placeholder"
             :popup-options="{ modal: false }"
+            @after-leave="handleAfterLeave"
             @confirm="onConfirm"
           />
         </view>

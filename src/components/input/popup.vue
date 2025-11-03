@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (e: 'confirm', value: string): void
+  (e: 'afterLeave'): void
 }>()
 const input = defineModel({ type: String, default: '' })
 const visible = defineModel('visible', { type: Boolean, default: false })
@@ -60,6 +61,7 @@ function handleAfterEnter() {
 }
 function handleAfterLeave() {
   input.value = props.modelValue || ''
+  emit('afterLeave')
 }
 async function onConfirm() {
   const hasSensitive = await api.hasSensitiveWord(input.value)
@@ -76,14 +78,23 @@ async function onConfirm() {
 function onBlur() {
   visible.value = false
 }
+
+defineExpose({
+  open() {
+    visible.value = true
+  },
+})
 </script>
 
 <template>
   <view>
     <view @click="onVisualInput">
       <slot>
-        <view class="bg-#f3f3f3 px-20rpx py-30rpx text-24rpx text-gray-3">
+        <view v-if="!input" class="bg-#f3f3f3 px-20rpx py-30rpx text-24rpx text-gray-3">
           {{ placeholder }}
+        </view>
+        <view v-else class="bg-#f3f3f3 px-20rpx py-30rpx text-24rpx text-#333">
+          {{ input }}
         </view>
       </slot>
     </view>

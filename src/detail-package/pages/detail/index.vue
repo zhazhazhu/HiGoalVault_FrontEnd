@@ -147,18 +147,23 @@ onLoad((options) => {
               @confirm="onConfirm"
             />
           </view>
-          <view class="flex flex-col items-center" @click="openCommentPopup">
-            <view class="comment-icon size-60rpx" />
-            <text class="text-22rpx color-gray-6 font-bold">
-              {{ formatCommentOrThumbUpCount(data?.commentCount) }}
-            </text>
-          </view>
-          <view class="flex flex-col items-center" @click="onThumbsUp">
-            <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLike }" />
-            <text class="text-22rpx color-gray-6 font-bold">
-              {{ formatCommentOrThumbUpCount(data?.likeCount) }}
-            </text>
-          </view>
+          <wd-button v-if="commentContent" size="small" :round="false" custom-class="rounded-8px" type="primary" @click="onConfirm">
+            发送
+          </wd-button>
+          <template v-else>
+            <view class="flex flex-col items-center" @click="openCommentPopup">
+              <view class="comment-icon size-60rpx" />
+              <text class="text-22rpx color-gray-6 font-bold">
+                {{ formatCommentOrThumbUpCount(data?.commentCount) }}
+              </text>
+            </view>
+            <view class="flex flex-col items-center" @click="onThumbsUp">
+              <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLike }" />
+              <text class="text-22rpx color-gray-6 font-bold">
+                {{ formatCommentOrThumbUpCount(data?.likeCount) }}
+              </text>
+            </view>
+          </template>
         </view>
       </view>
     </Container>
