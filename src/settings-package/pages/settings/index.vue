@@ -105,7 +105,6 @@ async function onConfirm(val: string) {
             :model-value="userInfo!.nickName"
             placeholder="请输入昵称"
             button-text="确认"
-            input-type="input"
             @confirm="onConfirm"
           >
             <view class=" mt-20rpx flex items-center gap-10rpx">
