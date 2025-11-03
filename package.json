@@ -16,7 +16,7 @@
   "scripts": {
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni build -p mp-weixin",
-    "build:mp-weixin:analyze": "uni build -p mp-weixin --report",
+    "build:mp-weixin:analyze": "scripts/analyze-package.sh",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
