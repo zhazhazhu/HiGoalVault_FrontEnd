@@ -4,6 +4,7 @@ import type Converse from '@/components/converse/index.vue'
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
+import { API } from '@/api/url'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useChatStore, useGlobalStore, useUserStore } from '@/store'
@@ -123,9 +124,11 @@ function onConverseTap() {
 
 onShareAppMessage(({ target, from }) => {
   if (from === 'button') {
+    const imageUrl = `${API.SCREEN_SHOT}?id=${target.dataset.id}`
     return {
       title: '我发布了最新的行情，快来看看吧',
       path: `/detail-package/pages/detail/index?id=${target.dataset.id}`,
+      imageUrl,
     }
   }
   return {

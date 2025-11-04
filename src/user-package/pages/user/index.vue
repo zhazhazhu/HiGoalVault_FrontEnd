@@ -5,6 +5,7 @@ import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { cloneDeep } from 'lodash-es'
 import { ref } from 'vue'
 import { api } from '@/api'
+import { API } from '@/api/url'
 import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 
@@ -94,10 +95,12 @@ function onTabChange() {
 }
 
 onShareAppMessage(({ target, from }) => {
+  const imageUrl = `${API.SCREEN_SHOT}?id=${target.dataset.id}`
   if (from === 'button') {
     return {
       title: '快来看看我聊了啥～',
       path: `/chat-package/pages/chat/index?id=${target.dataset.id}`,
+      imageUrl,
     }
   }
   else {

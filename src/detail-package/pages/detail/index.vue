@@ -3,6 +3,7 @@ import type { AnswerAfter, PublishMessageListResponse } from '@/api'
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
+import { API } from '@/api/url'
 import { useResetRef } from '@/composables/useResetRef'
 import { useChatStore, useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
@@ -79,9 +80,11 @@ watch(commentVisible, (val) => {
 })
 
 onShareAppMessage(() => {
+  const imageUrl = `${API.SCREEN_SHOT}?id=${data.value?.id}`
   return {
     title: data.value?.title,
     path: `/detail-package/pages/detail/index?id=${data.value?.id}`,
+    imageUrl,
   }
 })
 

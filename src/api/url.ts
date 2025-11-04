@@ -49,4 +49,5 @@ export enum API {
   GET_FINANCE_BASIC_INFO = '/buyer/finance/queryFinanceBasicInfo',
   HAS_SENSITIVE_WORD = '/buyer/sensitiveWord/contains',
   SEARCH_SUGGEST = '/buyer/search/suggest',
+  SCREEN_SHOT = 'https://higoall.com:9443/screen-shot-article',
 }
