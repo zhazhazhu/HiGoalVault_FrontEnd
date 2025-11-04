@@ -50,7 +50,7 @@ const { store, config, stockInfo, resetConfigData } = useStockChart({
   zoomEnd: computed(() => zoomEnd.value),
   code: props.params.code,
 })
-const { load, reset } = useLoadStockData({
+const { load, reset, abort } = useLoadStockData({
   date: props.params.todate,
   type: computed(() => currentTimeGranularity.value.key),
 })
@@ -75,14 +75,29 @@ onUnmounted(() => {
   stopPolling()
 })
 
-watch(currentTimeGranularity, () => {
+watch(currentTimeGranularity, async () => {
+  // 中止之前的加载
+  abort()
+  // 若上一轮尚在 finally 阶段，等待其结束以清理 isLoadingMore/hideLoading
+  if (isLoadingMore.value) {
+    await new Promise<void>((resolve) => {
+      const tick = () => {
+        if (!isLoadingMore.value)
+          resolve()
+        else
+          setTimeout(tick, 16)
+      }
+      tick()
+    })
+  }
+  // 重置状态后重新加载新周期数据
   stockData.value = []
   reset()
   hasMoreData.value = true
   zoomStart.value = null
   zoomEnd.value = null
   resetConfigData()
-  loadMoreData()
+  await loadMoreData()
   if (enablePolling.value) {
     startPolling()
   }
@@ -338,11 +353,10 @@ async function loadMoreData() {
 
   isLoadingMore.value = true
   chartCanvasInstance.value?.chart?.showLoading()
-
   try {
     const data = await load(props.params.code)
-    // 判断是否返回了数据
-    if (!data || data.length === 0) {
+    // 判断是否真实为空数据（仅当返回数组且长度为 0）
+    if (Array.isArray(data) && data.length === 0) {
       // 没有更多数据了
       hasMoreData.value = false
       uni.showToast({ title: '没有更早的数据了', icon: 'none' })

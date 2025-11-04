@@ -154,18 +154,44 @@ export function useLoadStockData(options: UseLoadStockDataOptions) {
     pageSize: 200,
   })
   const result = ref<ChatMessageStockData[]>([])
+  // 通过 Promise.race 与外部触发的 abort 信号结合，实现“立刻中断等待”
+  const ABORTED = Symbol('ABORTED')
+  let triggerAbort: (() => void) | null = null
+
+  function abort() {
+    // 触发当前等待中的 abortPromise，使 load 立刻结束并返回空数组
+    if (triggerAbort) {
+      const fn = triggerAbort
+      triggerAbort = null
+      fn()
+    }
+  }
   async function load(code: string) {
     if (!code)
       return []
     // 迭代请求，直到累计数据条数 >= pageSize 或无更多数据
     while (result.value.length < page.value.pageSize) {
       const [start, end] = updateDate(page.value, toValue(options.type), options.date)
-      const res = await api.getFinanceData({
-        startDateTime: start.format('YYYY-MM-DD HH:mm:ss'),
-        endDateTime: end.format('YYYY-MM-DD HH:mm:ss'),
-        transCode: code,
-        timeGranularity: toValue(options.type),
+      // 构造一个 abortPromise，外部调用 abort() 时立即 resolve，为了不抛错用特殊标记值
+      const abortPromise = new Promise<any>((resolve) => {
+        triggerAbort = () => resolve(ABORTED)
       })
+      const res = await Promise.race([
+        api.getFinanceData({
+          startDateTime: start.format('YYYY-MM-DD HH:mm:ss'),
+          endDateTime: end.format('YYYY-MM-DD HH:mm:ss'),
+          transCode: code,
+          timeGranularity: toValue(options.type),
+        }),
+        abortPromise,
+      ])
+
+      // 若被中断，清理并返回空数据（避免外层出现“加载失败”的错误提示）
+      if (res === ABORTED) {
+        result.value = []
+        triggerAbort = null
+        return []
+      }
 
       if (res.code !== 200)
         break
@@ -180,12 +206,14 @@ export function useLoadStockData(options: UseLoadStockDataOptions) {
 
     const _result = result.value.slice()
     result.value = []
+    triggerAbort = null
     return _result
   }
 
   return {
     load,
     reset,
+    abort,
   }
 }
 
