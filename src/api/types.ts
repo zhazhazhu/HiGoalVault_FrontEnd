@@ -226,6 +226,8 @@ export interface ChatMessageStockData {
   short_chg: number
   /** 换手率 */
   turnover_rate: number | null
+  /** 振幅率 */
+  price_swing: number | null
 }
 
 export interface ChatMessageReference {
