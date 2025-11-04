@@ -55,7 +55,7 @@ const { load, reset } = useLoadStockData({
   type: computed(() => currentTimeGranularity.value.key),
 })
 const enablePolling = computed(() => {
-  return currentTimeGranularity.value.key === '5MINS' && dayjs(props.params.todate).isSame(dayjs(), 'day')
+  return dayjs(props.params.todate).isSame(dayjs(), 'day')
 })
 const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({ code: props.params.code })
 const showOtherPeriod = ref(false)
