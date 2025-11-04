@@ -542,7 +542,6 @@ export enum TimeGranularity {
   '1MINS' = '1MINS',
   '5MINS' = '5MINS',
   '30MINS' = '30MINS',
-  '50MINS' = '50MINS',
   '1HOUR' = '1HOUR',
   'DAILY' = 'DAILY',
   '5DAILY' = '5DAILY',

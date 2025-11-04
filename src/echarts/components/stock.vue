@@ -11,7 +11,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
 import { computed, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { getStockInfo, useLoadStockData, usePollingStockDataService, useStockChart } from '@/echarts'
-import { StockChartStyleConfig, timeGranularityOptions } from '@/echarts/config'
+import { otherTimeGranularityOptions, StockChartStyleConfig, timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
 
 const props = defineProps<{
@@ -58,6 +58,7 @@ const enablePolling = computed(() => {
   return currentTimeGranularity.value.key === '5MINS' && dayjs(props.params.todate).isSame(dayjs(), 'day')
 })
 const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({ code: props.params.code })
+const showOtherPeriod = ref(false)
 
 onUpdateData((data) => {
   stockData.value.push(...data)
@@ -90,7 +91,8 @@ watch(currentTimeGranularity, () => {
   }
 }, { immediate: true })
 
-function handleSegmentChange(option) {
+function handleSegmentChange(option, showOther = true) {
+  showOtherPeriod.value = showOther
   currentTimeGranularity.value = option
 }
 
@@ -372,7 +374,19 @@ async function loadMoreData() {
     <template v-if="!preview">
       <!-- 时间周期选择器 -->
       <view class="period-selector">
-        <wd-segmented size="small" :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" />
+        <!-- <wd-segmented size="small" :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" /> -->
+        <view v-for="item in timeGranularityOptions" :key="item.key" class="period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item, false)">
+          {{ item.value }}
+        </view>
+        <view class="period-item" @click="showOtherPeriod = !showOtherPeriod">
+          更多
+        </view>
+      </view>
+
+      <view class="other-period" :class="{ visible: showOtherPeriod }">
+        <view v-for="item in otherTimeGranularityOptions" :key="item.key" class="other-period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item)">
+          {{ item.value }}
+        </view>
       </view>
 
       <view class="flex gap-12px text-8px my-8px" @click="hideCross">
@@ -421,5 +435,56 @@ async function loadMoreData() {
   position: relative;
   /* H5 下限制只允许水平手势，减少垂直滚动 */
   touch-action: pan-x;
+}
+
+.period-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #e4e4e4;
+  padding: 4px;
+  font-size: 12px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.period-item {
+  cursor: pointer;
+  padding: 4px 16px;
+  color: #4c4c4c;
+  font-weight: 500;
+  border-radius: 4px;
+  &.active {
+    color: #272727;
+    background-color: #fff;
+  }
+}
+
+.other-period {
+  width: 100%;
+  padding: 4px;
+  font-size: 9px;
+  border-radius: 4px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  display: none;
+}
+
+.other-period.visible {
+  display: flex;
+}
+
+.other-period-item {
+  cursor: pointer;
+  padding: 4px 8px;
+  color: #777777;
+  border: 1px solid #dedede;
+  font-weight: 500;
+  border-radius: 4px;
+  &.active {
+    color: #272727;
+    background-color: #cccccc;
+  }
 }
 </style>

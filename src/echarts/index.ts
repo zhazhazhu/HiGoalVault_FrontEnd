@@ -94,7 +94,7 @@ export function useStockChart(options: UseStockChartOptions) {
         return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
       })
       config.value.xAxis[0].data.unshift(...categoryData)
-      if (toValue(options.timeGranularity) === '5MINS') {
+      if (toValue(options.timeGranularity) === '1MINS') {
         config.value.series[0].data.unshift(...(stockChartData.map(item => item[1])) as any)
       }
       else {

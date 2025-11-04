@@ -16,6 +16,8 @@ export enum StockChartStyleConfig {
 
 type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '5MINS' | '30MINS' | '1HOUR' | '50MINS' | 'YEAR'>, { key: TimeGranularity, value: string }>
 
+type OtherTimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '1MINS' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | '5DAILY'>, { key: TimeGranularity, value: string }>
+
 export const timeGranularityOptions: TimeGranularityOptions = {
   // [TimeGranularity['30MINS']]: {
   //   key: TimeGranularity['30MINS'],
@@ -55,6 +57,25 @@ export const timeGranularityOptions: TimeGranularityOptions = {
   // },
 }
 
+export const otherTimeGranularityOptions: OtherTimeGranularityOptions = {
+  [TimeGranularity['5MINS']]: {
+    key: TimeGranularity['5MINS'],
+    value: '5分',
+  },
+  [TimeGranularity['30MINS']]: {
+    key: TimeGranularity['30MINS'],
+    value: '30分',
+  },
+  [TimeGranularity['1HOUR']]: {
+    key: TimeGranularity['1HOUR'],
+    value: '1小时',
+  },
+  [TimeGranularity.YEAR]: {
+    key: TimeGranularity.YEAR,
+    value: '年K',
+  },
+}
+
 // eslint-disable-next-line unused-imports/no-unused-vars
 function xAxisInterval(index: number, value: string, categoryData: string[], timeGranularity: TimeGranularity) {
   if (index === 0 || index === categoryData.length - 1)
@@ -77,7 +98,15 @@ function xAxisInterval(index: number, value: string, categoryData: string[], tim
 export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
   if (timeGranularity === '1MINS')
     return dayjs(value).format('HH:mm')
+  else if (timeGranularity === '5MINS')
+    return dayjs(value).format('HH:mm')
+  else if (timeGranularity === '30MINS')
+    return dayjs(value).format('HH:mm')
+  else if (timeGranularity === '1HOUR')
+    return dayjs(value).format('HH:mm')
   else if (timeGranularity === 'DAILY')
+    return dayjs(value).format('M-DD')
+  else if (timeGranularity === '5DAILY')
     return dayjs(value).format('M-DD')
   else if (timeGranularity === 'WEEKLY')
     return dayjs(value).format('YYYY-MM')
