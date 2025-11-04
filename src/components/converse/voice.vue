@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type RecordPopup from '~/components/record/popup.vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onHide, onLoad, onShow } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { useClassesName, useUUID } from '@/composables'
 import { useGlobalStore } from '@/store'
@@ -16,7 +16,7 @@ const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>('m
 const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
 const globalStore = useGlobalStore()
 const qCloudAIVoice = requirePlugin('QCloudAIVoice')
-const speechRecognizerManager = qCloudAIVoice.realtimeRecognition()
+const speechRecognizerManager = ref(qCloudAIVoice.realtimeRecognition())
 const isConnected = ref(false)
 const speechText = ref('')
 const record = uni.getRecorderManager()
@@ -27,7 +27,7 @@ const isTouched = ref(false)
 
 record.onFrameRecorded((res) => {
   if (res.frameBuffer && isConnected.value) {
-    speechRecognizerManager.write(res.frameBuffer)
+    speechRecognizerManager.value.write(res.frameBuffer)
     const audioData = new Int16Array(res.frameBuffer)
 
     let sum = 0
@@ -47,7 +47,7 @@ record.onFrameRecorded((res) => {
 watch(() => [isRecording.value, isConnected.value], ([isRecording, isConnected]) => {
   if (!isRecording || !isConnected) {
     record.stop()
-    speechRecognizerManager.stop()
+    speechRecognizerManager.value.stop()
   }
 })
 async function onTouchStart() {
@@ -132,7 +132,7 @@ async function start() {
     duration: 60 * 1000 * 3, // 最长3分钟
   }
   voiceId.value = useUUID(32)
-  speechRecognizerManager.start(config, voiceId.value)
+  speechRecognizerManager.value.start(config, voiceId.value)
 }
 function onConfirm() {
   isRecording.value = false
@@ -148,13 +148,15 @@ function onCloseTextRecognition() {
   speechText.value = ''
 }
 
-onLoad(async () => {
+onShow(async () => {
   await globalStore.generateStsTempKey()
 
-  if (!speechRecognizerManager)
-    return
+  if (!speechRecognizerManager.value) {
+    console.log('speechRecognizerManager.value 不存在')
+    speechRecognizerManager.value = qCloudAIVoice.realtimeRecognition()
+  }
 
-  speechRecognizerManager.OnRecognitionStart = () => {
+  speechRecognizerManager.value.OnRecognitionStart = () => {
     isConnected.value = true
     record.start({
       sampleRate: 16000,
@@ -165,22 +167,29 @@ onLoad(async () => {
       duration: 60 * 1000 * 3, // 最长3分钟
     })
   }
-  speechRecognizerManager.OnRecognitionComplete = (res) => {
+  speechRecognizerManager.value.OnRecognitionComplete = (res) => {
     console.log('OnRecognitionComplete', res)
   }
-  speechRecognizerManager.OnRecognitionResultChange = (res) => {
+  speechRecognizerManager.value.OnRecognitionResultChange = (res) => {
     console.log('OnRecognitionResultChange', res.result?.voice_text_str)
     if (res.result?.voice_text_str) {
       speechText.value = String(res.result?.voice_text_str || '')
     }
   }
-  speechRecognizerManager.OnSentenceEnd = (res) => {
+  speechRecognizerManager.value.OnSentenceEnd = (res) => {
     console.log('OnSentenceEnd', res.result?.voice_text_str)
     // speechText.value = String(res.result?.voice_text_str || '')
   }
-  speechRecognizerManager.OnError = (res) => {
+  speechRecognizerManager.value.OnError = (res) => {
     console.log('OnError', res)
   }
+})
+
+onHide(() => {
+  isConnected.value = false
+  speechText.value = ''
+  record.stop()
+  speechRecognizerManager.value.stop()
 })
 </script>
 
