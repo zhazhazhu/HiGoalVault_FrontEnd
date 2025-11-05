@@ -117,6 +117,8 @@ function handleSegmentChange(option, showOther = true) {
 let timer: NodeJS.Timeout | null = null
 
 function handleZRClick(params: ElementEvent) {
+  if (props.preview)
+    return
   // 若点击在网格区域，则根据像素位置映射到最近的数据索引
   const idx = pickIndexByPixel(params)
   if (idx !== null) {
@@ -300,7 +302,7 @@ function handleLongPress(params: any) {
 }
 
 function handleZRMouseMove(params: ElementEvent) {
-  if (!isCrossDragActive.value)
+  if (!isCrossDragActive.value || props.preview)
     return
 
   const idx = pickIndexByPixel(params)
@@ -337,7 +339,7 @@ function handleZRMouseMove(params: ElementEvent) {
 }
 
 function handleZRMouseUp() {
-  if (!isCrossDragActive.value)
+  if (!isCrossDragActive.value || props.preview)
     return
   isCrossDragActive.value = false
   chartCanvasInstance.value?.setOption({
@@ -454,6 +456,7 @@ async function loadMoreData() {
   margin: 0;
   .chart-wrapper {
     height: 250px;
+    touch-action: pan-y;
   }
 }
 
@@ -462,7 +465,6 @@ async function loadMoreData() {
   width: 100%;
   overflow: hidden;
   position: relative;
-  /* H5 下限制只允许水平手势，减少垂直滚动 */
   touch-action: pan-x;
 }
 

@@ -226,7 +226,7 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         zoomOnMouseWheel: !options.preview,
         moveOnMouseMove: !options.preview,
         moveOnMouseWheel: !options.preview,
-        preventDefaultMouseMove: false,
+        preventDefaultMouseMove: true,
       },
       {
         id: 'dataZoomSlider',
@@ -415,7 +415,7 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
         zoomOnMouseWheel: !options.preview,
         moveOnMouseMove: !options.preview,
         moveOnMouseWheel: !options.preview,
-        preventDefaultMouseMove: false,
+        preventDefaultMouseMove: true,
       },
       {
         id: 'dataZoomSlider',
