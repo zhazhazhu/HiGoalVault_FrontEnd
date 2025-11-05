@@ -45,6 +45,14 @@ function gotoBack() {
 async function onConfirm() {
   if (!commentContent.value)
     return
+  const hasSensitive = await api.hasSensitiveWord(commentContent.value)
+  if (hasSensitive.result) {
+    uni.showToast({
+      title: '包含敏感词',
+      icon: 'none',
+    })
+    return
+  }
   const res = await api.addComment({ commentContent: commentContent.value, contentId: data.value!.id })
   if (res.code === 200) {
     commentContent.value = ''
