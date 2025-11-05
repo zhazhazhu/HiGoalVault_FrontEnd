@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type RecordPopup from '~/components/record/popup.vue'
-import { onHide, onLoad, onShow } from '@dcloudio/uni-app'
+import { onHide, onLoad } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { useClassesName, useUUID } from '@/composables'
 import { useGlobalStore } from '@/store'
@@ -15,8 +15,7 @@ const isRecording = ref(false)
 const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>('microphone')
 const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
 const globalStore = useGlobalStore()
-const qCloudAIVoice = requirePlugin('QCloudAIVoice')
-const speechRecognizerManager = ref(qCloudAIVoice.realtimeRecognition())
+const speechRecognizerManager = requirePlugin('QCloudAIVoice').realtimeRecognition()
 const isConnected = ref(false)
 const speechText = ref('')
 const record = uni.getRecorderManager()
@@ -27,7 +26,7 @@ const isTouched = ref(false)
 
 record.onFrameRecorded((res) => {
   if (res.frameBuffer && isConnected.value) {
-    speechRecognizerManager.value.write(res.frameBuffer)
+    speechRecognizerManager.write(res.frameBuffer)
     const audioData = new Int16Array(res.frameBuffer)
 
     let sum = 0
@@ -47,7 +46,7 @@ record.onFrameRecorded((res) => {
 watch(() => [isRecording.value, isConnected.value], ([isRecording, isConnected]) => {
   if (!isRecording || !isConnected) {
     record.stop()
-    speechRecognizerManager.value.stop()
+    speechRecognizerManager.stop()
   }
 })
 async function onTouchStart() {
@@ -87,9 +86,6 @@ function onTouchEnd() {
     return
   }
   isConnected.value = false
-  if (recordPopupFocusedButton.value !== 'cancel') {
-    emit('done', speechText.value)
-  }
 }
 function onTouchMove(event) {
   const touch = event.touches[0]
@@ -132,7 +128,7 @@ async function start() {
     duration: 60 * 1000 * 3, // 最长3分钟
   }
   voiceId.value = useUUID(32)
-  speechRecognizerManager.value.start(config, voiceId.value)
+  speechRecognizerManager.start(config, voiceId.value)
 }
 function onConfirm() {
   isRecording.value = false
@@ -148,15 +144,13 @@ function onCloseTextRecognition() {
   speechText.value = ''
 }
 
-onShow(async () => {
+onLoad(async () => {
   await globalStore.generateStsTempKey()
 
-  if (!speechRecognizerManager.value) {
-    console.log('speechRecognizerManager.value 不存在')
-    speechRecognizerManager.value = qCloudAIVoice.realtimeRecognition()
-  }
+  if (!speechRecognizerManager)
+    return
 
-  speechRecognizerManager.value.OnRecognitionStart = () => {
+  speechRecognizerManager.OnRecognitionStart = () => {
     isConnected.value = true
     record.start({
       sampleRate: 16000,
@@ -167,29 +161,36 @@ onShow(async () => {
       duration: 60 * 1000 * 3, // 最长3分钟
     })
   }
-  speechRecognizerManager.value.OnRecognitionComplete = (res) => {
+  speechRecognizerManager.OnRecognitionComplete = (res) => {
     console.log('OnRecognitionComplete', res)
   }
-  speechRecognizerManager.value.OnRecognitionResultChange = (res) => {
+  speechRecognizerManager.OnRecognitionResultChange = (res) => {
     console.log('OnRecognitionResultChange', res.result?.voice_text_str)
     if (res.result?.voice_text_str) {
       speechText.value = String(res.result?.voice_text_str || '')
     }
   }
-  speechRecognizerManager.value.OnSentenceEnd = (res) => {
-    console.log('OnSentenceEnd', res.result?.voice_text_str)
-    // speechText.value = String(res.result?.voice_text_str || '')
+  speechRecognizerManager.OnSentenceEnd = (res) => {
+    const text = String(res.result?.voice_text_str || '')
+    if (text.length > speechText.value.length) {
+      speechText.value = text
+    }
+    console.log('OnSentenceEnd', text)
+    if (recordPopupFocusedButton.value !== 'cancel') {
+      emit('done', speechText.value)
+    }
   }
-  speechRecognizerManager.value.OnError = (res) => {
+  speechRecognizerManager.OnError = (res) => {
     console.log('OnError', res)
   }
 })
 
 onHide(() => {
+  console.log('Voice onHide')
   isConnected.value = false
   speechText.value = ''
   record.stop()
-  speechRecognizerManager.value.stop()
+  speechRecognizerManager.stop()
 })
 </script>
 
