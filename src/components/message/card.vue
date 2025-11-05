@@ -45,6 +45,7 @@ const { start, reset } = useCountDown({
   },
 })
 const messageBox = useMessage()
+const currentLongPressType = ref<'response' | 'step'>()
 
 innerAudioContext.onPlay(() => {
   console.log('音频开始播放')
@@ -131,8 +132,9 @@ function onRefresh() {
 }
 function onCopy() {
   const response = markdownToPlainText(currentAnswer.value.response || '')
+  const steps = currentAnswer.value.steps?.map(item => `${item.message}\n\n${markdownToPlainText(item.thinking || '')}`).join('\n') || ''
   uni.setClipboardData({
-    data: `${currentAnswer.value.message}\n${response}`,
+    data: currentLongPressType.value === 'response' ? response : steps,
     showToast: true,
   })
 }
@@ -159,10 +161,11 @@ async function onFavorite() {
     }
   }
 }
-function openTooltips(e) {
+function openTooltips(e: any, type: 'response' | 'step') {
   messageToolRect.value.x = e.detail.x
   messageToolRect.value.y = e.detail.y
   messageToolVisible.value = true
+  currentLongPressType.value = type
 }
 
 async function onMessageToolOperate(type: MessageToolOperateType) {
@@ -270,7 +273,7 @@ function stopTextToSpeech() {
       <wd-message-box />
     </wd-root-portal>
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
-    <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" />
+    <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" :type="currentLongPressType" />
     <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" :message-text-to-speaking="messageTextToSpeaking" @operate="onMessageToolOperate" />
 
     <wd-checkbox

@@ -5,10 +5,11 @@ import { markdownToPlainText } from '@/utils'
 
 const props = defineProps<{
   message: AnswerAfter
+  type?: 'response' | 'step'
 }>()
 const model = defineModel({ type: Boolean, default: false })
 
-const content = computed(() => markdownToPlainText(props.message.response))
+const content = computed(() => props.type === 'response' ? markdownToPlainText(props.message.response || '') : markdownToPlainText(props.message.steps?.map(item => `${item.message}\n\n${item.thinking || ''}`).join('\n\n') || ''))
 </script>
 
 <template>

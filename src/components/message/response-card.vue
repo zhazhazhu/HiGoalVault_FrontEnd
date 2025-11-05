@@ -11,7 +11,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'longPressContent', val: any): void
+  (e: 'longPressContent', val: any, type: 'response' | 'step'): void
   (e: 'clickSteps'): void
 }>()
 
@@ -35,7 +35,7 @@ const cs = useClassesName('message-card')
     </view>
 
     <wd-transition :show="data.showSteps" name="fade" :duration="50">
-      <wd-steps vertical>
+      <wd-steps vertical @longpress="(e) => emit('longPressContent', e, 'step')">
         <wd-step
           v-for="item in data.steps"
           :key="item.node"
@@ -63,7 +63,7 @@ const cs = useClassesName('message-card')
 
   <Stock v-if="data.stockParameter.code" :data="data.stockData?.[0]?.data" :params="data.stockParameter" />
 
-  <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e)">
+  <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e, 'response')">
     <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" />
   </view>
 
