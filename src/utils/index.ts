@@ -132,11 +132,51 @@ export function formatCommentOrThumbUpCount(count?: number) {
   }
 }
 
+export function replaceNaNWithNull(json: string): string {
+  if (!json || typeof json !== 'string')
+    return json
+  let inString = false
+  let escaped = false
+  let out = ''
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i]
+    if (inString) {
+      out += ch
+      if (escaped) {
+        escaped = false
+        continue
+      }
+      if (ch === '\\') {
+        escaped = true
+        continue
+      }
+      if (ch === '"') {
+        inString = false
+        continue
+      }
+    }
+    else {
+      if (ch === '"') {
+        inString = true
+        out += ch
+        continue
+      }
+      if (ch === 'N' && json.slice(i, i + 3) === 'NaN') {
+        out += 'null'
+        i += 2
+        continue
+      }
+      out += ch
+    }
+  }
+  return out
+}
+
 export type Awaitable<T> = T | Promise<T>
 
 export function useJsonParse<T>(val: string): T | null | undefined {
   try {
-    return JSON.parse(val) as T
+    return JSON.parse(replaceNaNWithNull(val)) as T
   }
   catch (e) {
     console.log('parse json error cause', e)
