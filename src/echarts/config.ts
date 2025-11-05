@@ -130,7 +130,7 @@ export function generateStockChartConfig(store: Ref<StockChartStore>, options: U
 export function generateKLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
   const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = store.value
   const endValue = Math.max(0, stockChartData.length - 1)
-  const startValue = Math.max(0, endValue - 50)
+  const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
   return {
     tooltip: {
@@ -338,7 +338,7 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
 export function generateLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
   const { categoryData, stockChartData } = store.value
   const endValue = Math.max(0, stockChartData.length - 1)
-  const startValue = Math.max(0, endValue - 50)
+  const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
   return {
     tooltip: {
