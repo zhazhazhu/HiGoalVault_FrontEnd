@@ -2,20 +2,7 @@
 
 HiGoal AI 是一个轻量级的金融信息服务平台，面向微信小程序生态，聚合 AI 对话、多模态交互（文本/语音/图像）、金融信息与社区分享功能，为用户提供实时、权威、个性化的财经信息服务与交流社区。
 
-## Install
-
-```bash
-pnpm i
-
-or
-
-curl https://ni-bz9c.vercel.app/install.sh | bash && ni // macos | linux
-```
-you see [https://github.com/zhazhazhu/ni](https://github.com/zhazhazhu/ni)
-
-# start
-
-- 运行dev(更多命令请查看package.json)
+## 开始
 
 ```bash
 // dev server
@@ -24,6 +11,12 @@ pnpm run dev:mp-weixin
 // build
 pnpm run build:mp-weixin
 ```
+
+## 版本/更新/打包体积分析
+
+- 变更日志：参见 [CHANGELOG.md](/CHANGELOG.md)
+- 构建与打包命令：参见 [package.json](/package.json)
+- 打包体积分析：`pnpm run build:mp-weixin && pnpm run build:mp-weixin:analyze`
 
 ## 技术栈与运行
 
@@ -214,8 +207,3 @@ pnpm run build:mp-weixin
    - 使用 `wd-root-portal` 的 Toast/MessageBox 提示统一；
    - 通过 `useClassesName` 保持样式命名一致性；
    - 在 `vite.config.ts` 中配置别名，确保路径简洁（`@` 指向 `src`）。
-
-## 版本与更新
-
-- 变更日志：参见 `CHANGELOG.md`
-- 构建与打包命令：参见 `package.json`
