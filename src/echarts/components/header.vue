@@ -65,7 +65,7 @@ onMounted(async () => {
             </view>
           </view>
         </view>
-        <view class="text-12px flex flex-col gap-8px">
+        <view class="text-10px flex flex-col gap-8px">
           <view class="flex justify-between">
             <view>高</view>
             <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
@@ -79,7 +79,7 @@ onMounted(async () => {
             </view>
           </view>
         </view>
-        <view class="text-12px  flex flex-col gap-8px">
+        <view class="text-10px  flex flex-col gap-8px">
           <view class="flex justify-between">
             <view>开</view>
             <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
@@ -93,7 +93,7 @@ onMounted(async () => {
             </view>
           </view>
         </view>
-        <view class="text-12px  flex flex-col gap-8px">
+        <view class="text-10px  flex flex-col gap-8px">
           <view class="flex justify-between">
             <view>量</view>
             <view class="font-500">
@@ -124,7 +124,7 @@ onMounted(async () => {
             </view>
           </view>
         </view>
-        <view class="text-12px flex flex-col gap-8px">
+        <view class="text-10px flex flex-col gap-8px">
           <view class="flex justify-between">
             <view>高</view>
             <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
@@ -144,7 +144,7 @@ onMounted(async () => {
             </view>
           </view>
         </view>
-        <view class="text-12px  flex flex-col gap-8px">
+        <view class="text-10px  flex flex-col gap-8px">
           <view class="flex justify-between">
             <view>振幅</view>
             <view class="font-500">
@@ -164,7 +164,7 @@ onMounted(async () => {
             </view>
           </view>
         </view>
-        <view class="text-12px  flex flex-col gap-8px">
+        <view class="text-10px  flex flex-col gap-8px">
           <view class="flex justify-between">
             <view>量</view>
             <view class="font-500">

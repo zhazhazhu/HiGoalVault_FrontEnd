@@ -1,13 +1,12 @@
 <script lang='ts' setup>
-import type { AnswerAfter, ChatMessageStock, PublishMessageListResponse } from '@/api'
+import type { AfterPublishMessageListResponse } from '@/api'
 import { computed } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
-import StockPreview from '@/echarts/components/preview.vue?async'
-import { renderMarkdown } from '@/modules'
+import Stock from '@/echarts/components/stock.vue?async'
 import { useGlobalStore, useUserStore } from '@/store'
-import { formatCommentDate, formatCommentOrThumbUpCount, markdownToPlainText, useJsonParse } from '@/utils'
+import { formatCommentDate, formatCommentOrThumbUpCount, markdownToPlainText } from '@/utils'
 
 const props = defineProps<{
   disableToUser?: boolean
@@ -19,17 +18,11 @@ const emit = defineEmits<{
 }>()
 
 const cs = useClassesName('view-card')
-const data = defineModel('data', { type: Object as () => PublishMessageListResponse, required: true })
+const data = defineModel('data', { type: Object as () => AfterPublishMessageListResponse, required: true })
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
-const stockData = computed(() => {
-  const _data: AnswerAfter['data'] = data.value.chatQueryAnswerVO?.data ? JSON.parse(data.value.chatQueryAnswerVO?.data) : { analysis_data: '' }
-  const analysisStr = (_data.analysis_data || '[]').replace(/\bNaN\b/g, 'null')
-  const stockData = useJsonParse<[ChatMessageStock] | []>(analysisStr) || []
-  return stockData
-})
 const message = useMessage()
-const responseContent = computed(() => data.value.chatQueryAnswerVO?.response.length > 70 ? markdownToPlainText(`${data.value.chatQueryAnswerVO?.response.substring(0, 70)}...`) : markdownToPlainText(data.value.chatQueryAnswerVO?.response || ''))
+const responseContent = computed(() => data.value.chatQueryAnswerVO?.response?.length > 70 ? markdownToPlainText(`${data.value.chatQueryAnswerVO?.response.substring(0, 70)}...`) : markdownToPlainText(data.value.chatQueryAnswerVO?.response || ''))
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
@@ -119,7 +112,7 @@ function onDelete() {
       </view> -->
     </view>
 
-    <StockPreview v-if="stockData.length === 1" :data="stockData" />
+    <Stock v-if="data.chatQueryAnswerVO?.stockParameter?.code" :data="data.chatQueryAnswerVO?.stockData?.[0]?.data" :params="data.chatQueryAnswerVO?.stockParameter" preview />
 
     <view v-else>
       <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />

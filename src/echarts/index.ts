@@ -49,6 +49,7 @@ export interface UseStockChartOptions {
   timeGranularity: MaybeRefOrGetter<TimeGranularity>
   zoomStart: MaybeRefOrGetter<number | null>
   zoomEnd: MaybeRefOrGetter<number | null>
+  preview: boolean
 }
 
 export function useStockChart(options: UseStockChartOptions) {

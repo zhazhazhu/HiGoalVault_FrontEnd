@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { PublishMessageListResponse } from '@/api'
+import type { AfterPublishMessageListResponse } from '@/api'
 import { useClassesName } from '@/composables'
 
 defineProps<{
@@ -7,10 +7,10 @@ defineProps<{
   isFinish: boolean
   enableDelete?: boolean
 }>()
-const data = defineModel('data', { type: Array as () => PublishMessageListResponse[], required: true })
+const data = defineModel('data', { type: Array as () => AfterPublishMessageListResponse[], required: true })
 const cs = useClassesName('view')
 
-function gotoDetail(item: PublishMessageListResponse) {
+function gotoDetail(item: AfterPublishMessageListResponse) {
   uni.navigateTo({
     url: `/detail-package/pages/detail/index?id=${item.id}`,
   })

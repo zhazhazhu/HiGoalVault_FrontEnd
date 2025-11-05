@@ -49,13 +49,14 @@ const { store, config, stockInfo, resetConfigData } = useStockChart({
   zoomStart: computed(() => zoomStart.value),
   zoomEnd: computed(() => zoomEnd.value),
   code: props.params.code,
+  preview: props.preview,
 })
 const { load, reset, abort } = useLoadStockData({
   date: props.params.todate,
   type: computed(() => currentTimeGranularity.value.key),
 })
 const enablePolling = computed(() => {
-  return dayjs(props.params.todate).isSame(dayjs(), 'day')
+  return dayjs(props.params.todate).isSame(dayjs(), 'day') && props.preview !== true
 })
 const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({ code: props.params.code })
 const showOtherPeriod = ref(false)
@@ -107,6 +108,8 @@ watch(currentTimeGranularity, async () => {
 }, { immediate: true })
 
 function handleSegmentChange(option, showOther = true) {
+  if (props.preview)
+    return
   showOtherPeriod.value = showOther
   currentTimeGranularity.value = option
 }
@@ -275,6 +278,8 @@ function pickIndexByPixel(evt: ElementEvent): number | null {
 
 // 长按事件：激活拖动，使用 zrender 事件跟随与结束；长按期间禁用 dataZoom
 function handleLongPress(params: any) {
+  if (props.preview)
+    return
   uni.vibrateShort()
   if (timer) {
     clearTimeout(timer)
@@ -345,6 +350,11 @@ function handleZRMouseUp() {
     hideCross()
   }, 3000)
 }
+function handleOtherPeriodChange() {
+  if (props.preview)
+    return
+  showOtherPeriod.value = !showOtherPeriod.value
+}
 
 // 加载更多历史数据
 async function loadMoreData() {
@@ -376,8 +386,8 @@ async function loadMoreData() {
 </script>
 
 <template>
-  <view class="stock-chart-container">
-    <view class="text-13px color-#ff1e1e mb-10px">
+  <view class="stock-chart-container" :class="[preview && 'preview']">
+    <view v-if="!props.preview" class="text-13px color-#ff1e1e mb-10px">
       这是查询到的行情数据：
     </view>
     <!-- 股票基本信息 -->
@@ -385,53 +395,51 @@ async function loadMoreData() {
       <StockHeader v-if="stockInfo" :stock-info="stockInfo" />
     </view>
 
-    <template v-if="!preview">
-      <!-- 时间周期选择器 -->
-      <view class="period-selector">
-        <!-- <wd-segmented size="small" :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" /> -->
-        <view v-for="item in timeGranularityOptions" :key="item.key" class="period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item, false)">
-          {{ item.value }}
-        </view>
-        <view class="period-item" @click="showOtherPeriod = !showOtherPeriod">
-          更多
-        </view>
+    <!-- 时间周期选择器 -->
+    <view class="period-selector">
+      <!-- <wd-segmented size="small" :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" /> -->
+      <view v-for="item in timeGranularityOptions" :key="item.key" class="period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item, false)">
+        {{ item.value }}
       </view>
+      <view class="period-item" @click="handleOtherPeriodChange">
+        更多
+      </view>
+    </view>
 
-      <view class="other-period" :class="{ visible: showOtherPeriod }">
-        <view v-for="item in otherTimeGranularityOptions" :key="item.key" class="other-period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item)">
-          {{ item.value }}
-        </view>
+    <view class="other-period" :class="{ visible: showOtherPeriod }">
+      <view v-for="item in otherTimeGranularityOptions" :key="item.key" class="other-period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item)">
+        {{ item.value }}
       </view>
+    </view>
 
-      <view class="flex gap-12px text-8px my-8px" @click="hideCross">
-        <text :style="{ color: StockChartStyleConfig.MA5_COLOR }">
-          MA5: {{ formatMA(displayedMA.ma5) }}
-        </text>
-        <text :style="{ color: StockChartStyleConfig.MA10_COLOR }">
-          MA10: {{ formatMA(displayedMA.ma10) }}
-        </text>
-        <text :style="{ color: StockChartStyleConfig.MA20_COLOR }">
-          MA20: {{ formatMA(displayedMA.ma20) }}
-        </text>
-        <text :style="{ color: StockChartStyleConfig.MA30_COLOR }">
-          MA30: {{ formatMA(displayedMA.ma30) }}
-        </text>
-      </view>
+    <view class="flex gap-12px text-8px my-8px" @click="hideCross">
+      <text :style="{ color: StockChartStyleConfig.MA5_COLOR }">
+        MA5: {{ formatMA(displayedMA.ma5) }}
+      </text>
+      <text :style="{ color: StockChartStyleConfig.MA10_COLOR }">
+        MA10: {{ formatMA(displayedMA.ma10) }}
+      </text>
+      <text :style="{ color: StockChartStyleConfig.MA20_COLOR }">
+        MA20: {{ formatMA(displayedMA.ma20) }}
+      </text>
+      <text :style="{ color: StockChartStyleConfig.MA30_COLOR }">
+        MA30: {{ formatMA(displayedMA.ma30) }}
+      </text>
+    </view>
 
-      <!-- 图表容器 -->
-      <view class="chart-wrapper">
-        <uni-echarts
-          ref="chartCanvasInstance"
-          custom-class="h-280px"
-          :option="config"
-          @zr:click="handleZRClick"
-          @zr:mousemove="handleZRMouseMove"
-          @zr:mouseup="handleZRMouseUp"
-          @datazoom="handleDataZoom"
-          @native:longpress="handleLongPress"
-        />
-      </view>
-    </template>
+    <!-- 图表容器 -->
+    <view class="chart-wrapper">
+      <uni-echarts
+        ref="chartCanvasInstance"
+        custom-class="h-280px"
+        :option="config"
+        @zr:click="handleZRClick"
+        @zr:mousemove="handleZRMouseMove"
+        @zr:mouseup="handleZRMouseUp"
+        @datazoom="handleDataZoom"
+        @native:longpress="handleLongPress"
+      />
+    </view>
   </view>
 </template>
 
@@ -440,6 +448,13 @@ async function loadMoreData() {
   background-color: #fff;
   overflow: hidden;
   margin: 12px 0;
+}
+
+.stock-chart-container.preview {
+  margin: 0;
+  .chart-wrapper {
+    height: 250px;
+  }
 }
 
 .chart-wrapper {
@@ -457,13 +472,12 @@ async function loadMoreData() {
   justify-content: space-between;
   background-color: #e4e4e4;
   padding: 4px;
-  font-size: 12px;
+  font-size: 10px;
   border-radius: 4px;
   position: relative;
 }
 
 .period-item {
-  cursor: pointer;
   padding: 4px 16px;
   color: #4c4c4c;
   font-weight: 500;
@@ -490,7 +504,6 @@ async function loadMoreData() {
 }
 
 .other-period-item {
-  cursor: pointer;
   padding: 4px 8px;
   color: #777777;
   border: 1px solid #dedede;

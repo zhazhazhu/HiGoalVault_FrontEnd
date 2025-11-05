@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Page, PublishMessageListResponse } from '@/api'
+import type { AfterPublishMessageListResponse, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import { onMounted, ref } from 'vue'
@@ -10,7 +10,7 @@ import { useResetRef } from '@/composables/useResetRef'
 import { useChatStore, useGlobalStore, useUserStore } from '@/store'
 
 interface Data {
-  data: PublishMessageListResponse[]
+  data: AfterPublishMessageListResponse[]
   isLoading: boolean
   isFinish: boolean
   page: Page
@@ -61,7 +61,11 @@ async function getViewData() {
     data.value.view.isLoading = false
   })
   if (res.code === 200) {
-    data.value.view.data.push(...res.result.records)
+    const records = res.result.records.map(item => ({
+      ...item,
+      chatQueryAnswerVO: chatStore.transformAnswer(item.chatQueryAnswerVO),
+    }))
+    data.value.view.data.push(...records)
     data.value.view.isFinish = res.result.total <= data.value.view.data.length
   }
 }
@@ -77,7 +81,11 @@ async function getFollowData() {
     data.value.follow.isLoading = false
   })
   if (res.code === 200) {
-    data.value.follow.data.push(...res.result.records)
+    const records = res.result.records.map(item => ({
+      ...item,
+      chatQueryAnswerVO: chatStore.transformAnswer(item.chatQueryAnswerVO),
+    }))
+    data.value.follow.data.push(...records)
     data.value.follow.isFinish = res.result.total <= data.value.follow.data.length
   }
 }

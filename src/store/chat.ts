@@ -91,6 +91,10 @@ export const useChatStore = defineStore('chat', {
       }
     },
     transformAnswer(answer: AnswerBefore): AnswerAfter {
+      if (!answer) {
+        return {} as AnswerAfter
+      }
+
       let reference: ChatMessageReference[] = []
       let data: AnswerAfter['data'] = { analysis_data: '', resolved_params: { parameters: [] } }
       let stockData: [ChatMessageStock] | [] = []

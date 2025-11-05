@@ -309,6 +309,10 @@ export interface PublishMessageListResponse {
   isFollowed: boolean // 是否关注
 }
 
+export interface AfterPublishMessageListResponse extends Omit<PublishMessageListResponse, 'chatQueryAnswerVO'> {
+  chatQueryAnswerVO: AnswerAfter
+}
+
 export interface PublishMessageListResponseWithPage extends PageResult {
   records: PublishMessageListResponse[]
 }

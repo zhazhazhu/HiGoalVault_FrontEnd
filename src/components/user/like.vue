@@ -1,10 +1,11 @@
 <script lang='ts' setup>
-import type { Page, PublishMessageListResponse } from '@/api'
+import type { AfterPublishMessageListResponse, Page } from '@/api'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useResetRef } from '@/composables/useResetRef'
+import { useChatStore } from '@/store'
 
-const data = ref<PublishMessageListResponse[]>([])
+const data = ref<AfterPublishMessageListResponse[]>([])
 const total = ref<number>(0)
 const isLoading = ref(false)
 const isFinish = ref(false)
@@ -14,6 +15,7 @@ const [page, resetPage] = useResetRef<Page>({
   sort: 'createTime',
 })
 const isRefreshing = ref(false)
+const chatStore = useChatStore()
 
 async function getData() {
   isLoading.value = true
@@ -21,7 +23,11 @@ async function getData() {
     ...page.value,
   })
   if (res.code === 200) {
-    data.value.push(...res.result.records)
+    const records = res.result.records.map(item => ({
+      ...item,
+      chatQueryAnswerVO: chatStore.transformAnswer(item.chatQueryAnswerVO),
+    }))
+    data.value.push(...records)
     total.value = res.result.total
     isLoading.value = false
     isFinish.value = data.value.length <= total.value
