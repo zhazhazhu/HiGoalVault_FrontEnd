@@ -133,7 +133,7 @@ export const useWebsocketStore = defineStore('websocket', {
         if (this.messageCallbacks.length > 0) {
           try {
             const data = JSON.parse(res.data) as WsMessageResponseBefore
-            const messageData = (data.body.data.sseMsgType === 'stream-end' ? null : JSON.parse(data.body.data.data!) as AnswerAfter)
+            const messageData = (data.body.data.sseMsgType === 'stream-end' ? data.body.data.data as any : JSON.parse(data.body.data.data!) as AnswerAfter)
 
             const response: WsMessageResponse = {
               id: data.id,
