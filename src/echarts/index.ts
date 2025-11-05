@@ -199,8 +199,7 @@ export function useLoadStockData(options: UseLoadStockDataOptions) {
       const records: ChatMessageStockData[] = Array.isArray(res.result?.records) ? res.result.records : []
       if (records.length === 0)
         break
-
-      result.value.push(...records)
+      result.value.unshift(...records)
       page.value.pageNumber++
     }
 
