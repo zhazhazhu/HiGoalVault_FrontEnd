@@ -474,13 +474,13 @@ async function loadMoreData() {
   justify-content: space-between;
   background-color: #e4e4e4;
   padding: 4px;
-  font-size: 10px;
+  font-size: 18rpx;
   border-radius: 4px;
   position: relative;
 }
 
 .period-item {
-  padding: 4px 16px;
+  padding: 12rpx 30rpx;
   color: #4c4c4c;
   font-weight: 500;
   border-radius: 4px;
@@ -493,7 +493,7 @@ async function loadMoreData() {
 .other-period {
   width: 100%;
   padding: 4px;
-  font-size: 9px;
+  font-size: 16rpx;
   border-radius: 4px;
   flex-wrap: wrap;
   gap: 8px;
@@ -506,7 +506,7 @@ async function loadMoreData() {
 }
 
 .other-period-item {
-  padding: 4px 8px;
+  padding: 10rpx 18rpx;
   color: #777777;
   border: 1px solid #dedede;
   font-weight: 500;
