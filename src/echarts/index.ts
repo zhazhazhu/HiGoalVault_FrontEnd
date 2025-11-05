@@ -237,9 +237,17 @@ function updateDate(page: { pageNumber: number, pageSize: number }, type: TimeGr
       dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 30, 'minute')
       dateRange[0] = dateRange[1].subtract(page.pageSize * 30, 'minute')
       break
+    case TimeGranularity['1HOUR']:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'hour')
+      dateRange[0] = dateRange[1].subtract(page.pageSize, 'hour')
+      break
     case TimeGranularity.DAILY:
       dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'day')
       dateRange[0] = dateRange[1].subtract(page.pageSize, 'day')
+      break
+    case TimeGranularity['5DAILY']:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 5, 'day')
+      dateRange[0] = dateRange[1].subtract(page.pageSize * 5, 'day')
       break
     case TimeGranularity.WEEKLY:
       dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'week')
@@ -248,6 +256,10 @@ function updateDate(page: { pageNumber: number, pageSize: number }, type: TimeGr
     case TimeGranularity.MONTHLY:
       dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'month')
       dateRange[0] = dateRange[1].subtract(page.pageSize, 'month')
+      break
+    case TimeGranularity.YEAR:
+      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'year')
+      dateRange[0] = dateRange[1].subtract(page.pageSize, 'year')
       break
   }
 
