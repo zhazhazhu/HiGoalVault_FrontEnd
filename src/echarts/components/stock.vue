@@ -467,7 +467,7 @@ async function loadMoreData() {
   width: 100%;
   overflow: hidden;
   position: relative;
-  touch-action: pan-x;
+  touch-action: pan-x pan-y;
 }
 
 .period-selector {
