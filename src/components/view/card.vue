@@ -29,6 +29,7 @@ const stockData = computed(() => {
   return stockData
 })
 const message = useMessage()
+const responseContent = computed(() => data.value.chatQueryAnswerVO?.response.length > 70 ? markdownToPlainText(`${data.value.chatQueryAnswerVO?.response.substring(0, 70)}...`) : markdownToPlainText(data.value.chatQueryAnswerVO?.response || ''))
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
@@ -113,9 +114,15 @@ function onDelete() {
 
     <view>
       <wd-text :text="data.title" color="#121212" size="32rpx" bold />
-      <view class="text-24rpx color-#696969 py-10rpx">
+      <!-- <view class="text-24rpx color-#696969 py-10rpx">
         {{ data.chatQueryAnswerVO?.summary }}
-      </view>
+      </view> -->
+    </view>
+
+    <StockPreview v-if="stockData.length === 1" :data="stockData" />
+
+    <view v-else>
+      <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />
     </view>
 
     <!-- 标签区域 - 超出一行隐藏 -->
@@ -123,12 +130,6 @@ function onDelete() {
       <Tag v-for="item in data?.tags.slice(0, 3)" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
         #{{ item.tagName }}
       </Tag>
-    </view>
-
-    <StockPreview v-if="stockData.length === 1" :data="stockData" />
-
-    <view v-else>
-      <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="`${renderMarkdown(data.chatQueryAnswerVO?.response.substring(0, 70))}`" />
     </view>
 
     <view class="flex items-center color-#666 gap-30rpx">
