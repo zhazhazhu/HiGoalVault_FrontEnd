@@ -51,12 +51,12 @@ const { store, config, stockInfo, resetConfigData } = useStockChart({
   code: props.params.code,
   preview: props.preview,
 })
-const { load, reset, abort } = useLoadStockData({
-  date: props.params.todate,
-  type: computed(() => currentTimeGranularity.value.key),
-})
 const enablePolling = computed(() => {
   return dayjs(props.params.todate).isSame(dayjs(), 'day') && props.preview !== true
+})
+const { load, reset, abort } = useLoadStockData({
+  date: enablePolling.value ? dayjs().format('YYYY-MM-DD HH:mm:ss') : props.params.todate,
+  type: computed(() => currentTimeGranularity.value.key),
 })
 const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({ code: props.params.code })
 const showOtherPeriod = ref(false)

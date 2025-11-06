@@ -284,28 +284,31 @@ export function usePollingStockDataService(options?: UsePollingStockDataOptions)
     timeRange: [dayjs(), dayjs()],
   })
   const data = ref<ChatMessageStockData[]>([])
-  switch (opts.timeGranularity) {
-    case TimeGranularity['1MINS']:
-      config.timeRange[0] = dayjs().subtract(1, 'minute')
-      break
-    case TimeGranularity['5MINS']:
-      config.timeRange[0] = dayjs().subtract(5, 'minute')
-      break
-    case TimeGranularity['30MINS']:
-      config.timeRange[0] = dayjs().subtract(30, 'minute')
-      break
-    case TimeGranularity.DAILY:
-      config.timeRange[0] = dayjs().subtract(1, 'day')
-      break
-    case TimeGranularity.WEEKLY:
-      config.timeRange[0] = dayjs().subtract(1, 'week')
-      break
-    case TimeGranularity.MONTHLY:
-      config.timeRange[0] = dayjs().subtract(1, 'month')
-      break
-    case TimeGranularity.YEAR:
-      config.timeRange[0] = dayjs().subtract(1, 'year')
-      break
+  function updateDateRange() {
+    config.timeRange = [dayjs(), dayjs()]
+    switch (opts.timeGranularity) {
+      case TimeGranularity['1MINS']:
+        config.timeRange[0] = dayjs().subtract(1, 'minute')
+        break
+      case TimeGranularity['5MINS']:
+        config.timeRange[0] = dayjs().subtract(5, 'minute')
+        break
+      case TimeGranularity['30MINS']:
+        config.timeRange[0] = dayjs().subtract(30, 'minute')
+        break
+      case TimeGranularity.DAILY:
+        config.timeRange[0] = dayjs().subtract(1, 'day')
+        break
+      case TimeGranularity.WEEKLY:
+        config.timeRange[0] = dayjs().subtract(1, 'week')
+        break
+      case TimeGranularity.MONTHLY:
+        config.timeRange[0] = dayjs().subtract(1, 'month')
+        break
+      case TimeGranularity.YEAR:
+        config.timeRange[0] = dayjs().subtract(1, 'year')
+        break
+    }
   }
 
   function startPolling() {
@@ -315,6 +318,7 @@ export function usePollingStockDataService(options?: UsePollingStockDataOptions)
     if (timer)
       clearInterval(timer)
     timer = setInterval(() => {
+      updateDateRange()
       fetchData(symbol)
     }, opts.interval)
   }
