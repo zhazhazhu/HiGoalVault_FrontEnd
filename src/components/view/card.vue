@@ -3,7 +3,7 @@ import type { AfterPublishMessageListResponse } from '@/api'
 import { computed } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
-import { useClassesName } from '@/composables'
+import { useClassesName, useIntersectionObserver, useUUID } from '@/composables'
 import Stock from '@/echarts/components/stock.vue?async'
 import { useGlobalStore, useUserStore } from '@/store'
 import { formatCommentDate, formatCommentOrThumbUpCount, markdownToPlainText } from '@/utils'
@@ -23,6 +23,8 @@ const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const message = useMessage()
 const responseContent = computed(() => data.value.chatQueryAnswerVO?.response?.length > 70 ? markdownToPlainText(`${data.value.chatQueryAnswerVO?.response.substring(0, 70)}...`) : markdownToPlainText(data.value.chatQueryAnswerVO?.response || ''))
+const parseSectionId = `view-card-parse-${useUUID(32)}-${data.value.id}`
+const visible = useIntersectionObserver(`#${parseSectionId}`)
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
@@ -113,10 +115,11 @@ function onDelete() {
       </view> -->
     </view>
 
-    <Stock v-if="data.chatQueryAnswerVO?.stockParameter?.code" :data="data.chatQueryAnswerVO?.stockData?.[0]?.data" :params="data.chatQueryAnswerVO?.stockParameter" preview />
-
-    <view v-else>
-      <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />
+    <view :id="parseSectionId" class="min-h-20px">
+      <template v-if="visible">
+        <Stock v-if="data.chatQueryAnswerVO?.stockParameter?.code" :data="data.chatQueryAnswerVO?.stockData?.[0]?.data" :params="data.chatQueryAnswerVO?.stockParameter" preview />
+        <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />
+      </template>
     </view>
 
     <!-- 标签区域 - 超出一行隐藏 -->

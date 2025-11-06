@@ -1,4 +1,5 @@
 export * from './useClassesName'
+export * from './useIntersectionObserver'
 export * from './useStoreRef'
 export * from './useTheme'
 export * from './useUUID'
