@@ -197,10 +197,10 @@ onShow(() => {
             <wd-icon name="search" size="18" />
           </template>
           <tabs-item name="view" label="发现">
-            <ViewList v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
+            <ViewList v-if="active === 'view'" v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
           </tabs-item>
           <tabs-item name="follow" label="关注">
-            <ViewList v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
+            <ViewList v-if="active === 'follow'" v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
           </tabs-item>
         </tabs>
       </view>

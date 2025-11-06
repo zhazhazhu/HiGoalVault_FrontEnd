@@ -203,13 +203,13 @@ onLoad((options) => {
             </view>
           </template>
           <tabs-item name="published" :label="`发布${data?.contentCount || 0}`">
-            <UserPublish ref="userPublish" :user-id="userId" />
+            <UserPublish v-if="activeTab === 'published'" ref="userPublish" :user-id="userId" />
           </tabs-item>
           <tabs-item v-if="!userId" name="commented" label="评论过">
-            <UserComment ref="userComment" :user-id="userId" />
+            <UserComment v-if="activeTab === 'commented'" ref="userComment" :user-id="userId" />
           </tabs-item>
           <tabs-item v-if="!userId" name="interacted" label="互动过">
-            <view>
+            <view v-if="activeTab === 'interacted'">
               <view class="flex flex-wrap gap-12rpx mb-20rpx">
                 <Tag type="warning" :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
                   赞过{{ userLike?.total }}
@@ -219,8 +219,8 @@ onLoad((options) => {
                 </Tag>
               </view>
 
-              <UserLike v-show="interactActiveTab === 'liked'" ref="userLike" />
-              <UserCollect v-show="interactActiveTab === 'collected'" ref="userCollect" />
+              <UserLike v-if="interactActiveTab === 'liked'" ref="userLike" />
+              <UserCollect v-if="interactActiveTab === 'collected'" ref="userCollect" />
             </view>
           </tabs-item>
         </tabs>

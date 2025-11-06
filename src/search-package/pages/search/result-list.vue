@@ -14,7 +14,11 @@ const chatStore = useChatStore()
 const transformData = computed(() => props.data.map((item) => {
   return {
     ...item,
-    chatQueryAnswerVO: item.chatQueryAnswerVO ? chatStore.transformAnswer(item.chatQueryAnswerVO) : null,
+    chatQueryAnswerVO: chatStore.transformAnswer(item.chatQueryAnswerVO),
+    memberContentForClientVO: {
+      ...item.memberContentForClientVO,
+      chatQueryAnswerVO: chatStore.transformAnswer(item.memberContentForClientVO.chatQueryAnswerVO),
+    },
   }
 }))
 
