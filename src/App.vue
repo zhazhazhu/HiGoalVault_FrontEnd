@@ -39,10 +39,8 @@ onShow(() => {
   if (userStore.isLogin) {
     websocket.connectWebSocket()
     uni.onNetworkStatusChange((res) => {
-      websocket.websocket && websocket.disconnectWebSocket()
-      if (res.isConnected) {
-        websocket.connectWebSocket()
-      }
+      console.log('network status change', res)
+      websocket.connectWebSocket()
     })
   }
 })

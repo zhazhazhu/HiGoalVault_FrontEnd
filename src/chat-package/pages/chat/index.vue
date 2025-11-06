@@ -3,8 +3,9 @@ import type { ChatMessageStock, DateParameterOfStock, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
+import type { WsMessageResponse } from '@/store/websocket'
 import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
-import { computed, onMounted, provide, ref, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { messageInjectKey } from '@/composables/inject'
@@ -42,22 +43,6 @@ const status = ref<'thinking' | 'response' | null>(null)
 const currentThinkingIndex = ref(0)
 const { charQueue, pushQueue: pushCharQueue, onTyping: onCharTyping, pushFullQueue } = useCharQueue()
 
-// 处理WebSocket连接关闭事件
-websocketStore.websocket?.onClose(() => {
-  reset()
-  console.log('WebSocket connection closed.')
-  const currentAnswer = chatStore.currentAnswer
-  if (!currentAnswer)
-    return
-  currentAnswer.steps.forEach((item) => {
-    item.finished = true
-  })
-  currentAnswer.isLoading = false
-  chatStore.isReplying = false
-  chatStore.currentRunId = ''
-  charQueue.value.length && pushFullQueue()
-})
-
 onChange((count) => {
   if (!chatStore.currentAnswer)
     return
@@ -82,7 +67,25 @@ watch(() => [status.value, currentThinkingIndex.value], () => {
   charQueue.value.length && pushFullQueue()
 })
 
-websocketStore.receiveMessage((data) => {
+function websocketClose() {
+  charQueue.value.length && pushFullQueue()
+  websocketStore.websocket = null
+  reset()
+  const currentAnswer = chatStore.currentAnswer
+  if (!currentAnswer)
+    return
+  currentAnswer.steps.forEach((item) => {
+    item.finished = true
+  })
+  currentThinkingIndex.value = 0
+  currentAnswer.isLoading = false
+  chatStore.isReplying = false
+  chatStore.currentRunId = ''
+  chatStore.currentTemporaryMessageId = ''
+  chatStore.waitingMessageTask = null
+}
+
+function websocketMessage(data: WsMessageResponse) {
   console.log('onMessage', data)
   if (!chatStore.currentTemporaryMessage || !chatStore.currentRunId)
     return
@@ -95,6 +98,13 @@ websocketStore.receiveMessage((data) => {
 
   if (data.code === '200' && data.type === 'message') {
     newMessageId.value = data.data?.msg_id
+    // 更新当前的messageID
+    if (newMessageId.value) {
+      const current = chatStore.messages.find(item => item.msgId === chatStore.currentTemporaryMessageId)!
+      current.msgId = newMessageId.value
+      chatStore.currentTemporaryMessageId = newMessageId.value
+      newMessageId.value = ''
+    }
     const currentNode = data.data?.node || ''
     const isNewNode = currentAnswer.steps[currentAnswer.steps.length - 1]?.node !== currentNode
     /**
@@ -184,13 +194,6 @@ websocketStore.receiveMessage((data) => {
       ...item,
       finished: true,
     }))
-    // 更新当前的messageID
-    if (newMessageId.value) {
-      const current = chatStore.messages.find(item => item.msgId === chatStore.currentTemporaryMessageId)!
-      current.msgId = newMessageId.value
-      chatStore.currentTemporaryMessageId = newMessageId.value
-      newMessageId.value = ''
-    }
 
     currentAnswer.isLoading = false
     // 清空当前runId
@@ -198,7 +201,7 @@ websocketStore.receiveMessage((data) => {
     chatStore.isReplying = false
     console.log('chatStore', chatStore.messages)
   }
-})
+}
 
 watch(() => share.value.isChecked, (newVal) => {
   if (!newVal) {
@@ -254,6 +257,8 @@ provide(messageInjectKey, {
 onShow(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
+  websocketStore.onMessage = websocketMessage
+  websocketStore.onClose = websocketClose
   chatStore.messages = []
   getMessage()
   // uni.navigateTo({ url: '/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
