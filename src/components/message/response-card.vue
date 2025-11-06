@@ -1,11 +1,11 @@
 <script lang='ts' setup>
 import type { AnswerAfter } from '@/api'
-import { useClassesName } from '@/composables'
+import { useClassesName, useIntersectionObserver, useUUID } from '@/composables'
 import Stock from '@/echarts/components/stock.vue?async'
 import { renderMarkdown } from '@/modules'
 import { formatSeconds } from '@/utils'
 
-defineProps<{
+const props = defineProps<{
   data: AnswerAfter
   enableLabel?: boolean
 }>()
@@ -16,10 +16,12 @@ const emit = defineEmits<{
 }>()
 
 const cs = useClassesName('message-card')
+const instanceId = `response-card-${useUUID()}-${props.data.queryId}`
+const visible = useIntersectionObserver(`#${instanceId}`)
 </script>
 
 <template>
-  <view :class="cs.e('messages')">
+  <view :id="instanceId" :class="cs.e('messages')">
     <view class="b-b-1px b-gray-2 py-10px flex justify-between items-center mb-10px" @click="emit('clickSteps')">
       <view class="color-#c36622 gap-6px flex items-center font-500">
         <view class="i-famicons-logo-react text-15px" />
@@ -61,7 +63,7 @@ const cs = useClassesName('message-card')
     </wd-transition>
   </view>
 
-  <Stock v-if="data.stockParameter.code" :data="data.stockData?.[0]?.data" :params="data.stockParameter" />
+  <Stock v-if="data.stockParameter.code && visible" :data="data.stockData?.[0]?.data" :params="data.stockParameter" />
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e, 'response')">
     <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" />
