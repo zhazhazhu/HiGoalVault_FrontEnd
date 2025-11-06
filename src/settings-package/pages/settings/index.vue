@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { computed } from 'vue'
+import { ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -8,14 +8,8 @@ import { useUserStore } from '@/store'
 const user = useUserStore()
 const cs = useClassesName('settings')
 const message = useMessage()
-const userInfo = computed({
-  get() {
-    return user.userInfo
-  },
-  set(val) {
-    user.userInfo = val
-  },
-})
+const userName = ref(user.userInfo?.nickName || '')
+const isUpdateNickname = ref(false)
 
 function gotoHome() {
   uni.navigateBack()
@@ -48,6 +42,7 @@ function onChooseAvatar(e) {
 }
 async function onConfirm(val: string) {
   if (val.trim() === '') {
+    isUpdateNickname.value = false
     return
   }
   else if (val.trim().length > 10) {
@@ -55,6 +50,7 @@ async function onConfirm(val: string) {
       title: '昵称不能超过10个字符',
       icon: 'none',
     })
+    isUpdateNickname.value = false
     return
   }
   else if (/[^\u4E00-\u9FA5a-z0-9]/i.test(val.trim())) {
@@ -62,19 +58,27 @@ async function onConfirm(val: string) {
       title: '昵称只能包含中文、字母和数字',
       icon: 'none',
     })
+    isUpdateNickname.value = false
     return
   }
   else if (val.trim() === user.userInfo?.nickName) {
+    isUpdateNickname.value = false
     return
   }
-  const res = await api.updateUserInfo({ nickName: val })
+  const res = await api.updateUserInfo({ nickName: val }).finally(() => {
+    isUpdateNickname.value = false
+  })
   if (res.code === 200) {
-    userInfo.value!.nickName = val
+    userName.value = val
+    user.userInfo!.nickName = val
     uni.showToast({
       title: '修改昵称成功',
       icon: 'none',
     })
   }
+}
+function onUpdateNickname() {
+  isUpdateNickname.value = true
 }
 </script>
 
@@ -101,19 +105,13 @@ async function onConfirm(val: string) {
           </view>
         </view>
         <view class="flex items-center">
-          <input-popup
-            :model-value="userInfo!.nickName"
-            placeholder="请输入昵称"
-            button-text="确认"
-            @confirm="onConfirm"
-          >
-            <view class=" mt-20rpx flex items-center gap-10rpx">
-              <view class="color-#333 text-32rpx font-bold">
-                {{ userInfo?.nickName }}
-              </view>
-              <view class="i-tabler-pencil-minus color-#333 text-36rpx" />
+          <view class=" mt-20rpx flex items-center gap-10rpx">
+            <wd-input v-if="isUpdateNickname" v-model="userName" custom-class="hi-custom-input" :focus="isUpdateNickname" no-border :autofocus="true" type="nickname" confirm-type="done" @update:model-value="onConfirm(userName)" @blur="onConfirm(userName)" />
+            <view v-else class="color-#333 text-32rpx font-bold" @click="onUpdateNickname">
+              {{ userName }}
             </view>
-          </input-popup>
+            <view v-if="!isUpdateNickname" class="i-tabler-pencil-minus color-#333 text-36rpx" @click="onUpdateNickname" />
+          </view>
         </view>
       </view>
 
