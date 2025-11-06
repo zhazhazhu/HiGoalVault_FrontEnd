@@ -6,7 +6,7 @@ import { useUserStore } from './user'
 // 定义 Pinia Store 的状态接口
 interface Status {
   websocket: UniApp.SocketTask | null
-  messageCallbacks: ((data: WsMessageResponse) => void)[]
+  messageCallback: ((data: WsMessageResponse) => void)[]
 }
 
 export enum ClientType {
@@ -83,7 +83,7 @@ export interface WsMessageResponseBefore {
 export const useWebsocketStore = defineStore('websocket', {
   state: (): Status => ({
     websocket: null,
-    messageCallbacks: [],
+    messageCallback: [],
   }),
   actions: {
     // 核心函数：连接 WebSocket
@@ -118,7 +118,7 @@ export const useWebsocketStore = defineStore('websocket', {
       this.websocket.onClose(() => {
         console.log('WebSocket connection closed.')
         this.websocket = null
-        this.messageCallbacks = []
+        this.messageCallback = []
       })
 
       // 监听连接错误事件
@@ -130,7 +130,7 @@ export const useWebsocketStore = defineStore('websocket', {
       this.websocket.onMessage((res) => {
         console.log('WebSocket message received:', res)
 
-        if (this.messageCallbacks.length > 0) {
+        if (this.messageCallback.length > 0) {
           try {
             const data = JSON.parse(res.data) as WsMessageResponseBefore
             const messageData = (data.body.data.sseMsgType === 'stream-end' ? data.body.data.data as any : JSON.parse(data.body.data.data!) as AnswerAfter)
@@ -143,7 +143,7 @@ export const useWebsocketStore = defineStore('websocket', {
             }
 
             // 调用所有回调函数
-            this.messageCallbacks.forEach(cb => cb(response))
+            this.messageCallback.forEach(cb => cb(response))
           }
           catch (error) {
             console.error('Error parsing WebSocket message:', error)
@@ -193,8 +193,7 @@ export const useWebsocketStore = defineStore('websocket', {
 
     // 接收消息
     receiveMessage(callback: (data: WsMessageResponse) => void) {
-      // 添加回调到列表中
-      this.messageCallbacks.push(callback)
+      this.messageCallback = [callback]
     },
 
     // 关闭消息
@@ -263,7 +262,7 @@ export const useWebsocketStore = defineStore('websocket', {
       if (this.websocket) {
         this.websocket.close({ code: 1000, reason: 'User closed' })
         this.websocket = null
-        this.messageCallbacks = []
+        this.messageCallback = []
       }
     },
   },
