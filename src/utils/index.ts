@@ -175,8 +175,17 @@ export function replaceNaNWithNull(json: string): string {
 export type Awaitable<T> = T | Promise<T>
 
 export function useJsonParse<T>(val: string): T | null | undefined {
+  if (!val) {
+    return null
+  }
   try {
-    return JSON.parse(replaceNaNWithNull(val)) as T
+    return JSON.parse(replaceNaNWithNull(val), (_, value) => {
+      // 检查值是否为字符串 "NaN" (这里是字符串，而不是真正的数字类型 NaN)
+      if (typeof value === 'string' && value === 'NaN') {
+        return null // 将 "NaN" 字符串替换为 null
+      }
+      return value // 否则返回原始值
+    }) as T
   }
   catch (e) {
     console.log('parse json error cause', e)

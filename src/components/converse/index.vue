@@ -56,10 +56,11 @@ async function waitConfirmMessage(text: string) {
   if (data.code === 200) {
     chatStore.currentChatId = data.result.chatId
   }
+  chatStore.currentRunId = useUUID(32)
   chatStore.waitingMessageTask = {
     query: text,
     chatId: data.result.chatId,
-    runId: useUUID(32),
+    runId: chatStore.currentRunId,
   }
   if (pages[pages.length - 1].route === 'chat-package/pages/chat/index') {
     sendWaitingMessage()
