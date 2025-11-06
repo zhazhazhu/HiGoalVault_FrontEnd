@@ -36,8 +36,15 @@ onLaunch(async () => {
     await userStore.refreshAccessToken()
 })
 onShow(() => {
-  if (userStore.isLogin)
+  if (userStore.isLogin) {
     websocket.connectWebSocket()
+    uni.onNetworkStatusChange((res) => {
+      websocket.websocket && websocket.disconnectWebSocket()
+      if (res.isConnected) {
+        websocket.connectWebSocket()
+      }
+    })
+  }
 })
 </script>
 

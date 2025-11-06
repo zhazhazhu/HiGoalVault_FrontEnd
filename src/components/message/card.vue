@@ -123,11 +123,13 @@ function onReference(item: ChatMessageReference) {
 }
 
 function onRefresh() {
-  chatStore.currentRunId = useUUID(32)
-  chatStore.currentTemporaryMessageId = message.value.msgId
-  chatStore.isReplying = true
-  websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: chatStore.currentRunId, msgId: message.value.msgId, query: message.value.query }).then(() => {
-    chatStore.pushTemporaryMessage(message.value.msgId)
+  const currentRunId = useUUID(32)
+  const currentTemporaryMessageId = message.value.msgId
+  websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: currentRunId, msgId: currentTemporaryMessageId, query: message.value.query }).then(() => {
+    chatStore.currentRunId = currentRunId
+    chatStore.currentTemporaryMessageId = currentTemporaryMessageId
+    chatStore.isReplying = true
+    chatStore.pushTemporaryMessage(currentTemporaryMessageId)
   })
 }
 function onCopy() {

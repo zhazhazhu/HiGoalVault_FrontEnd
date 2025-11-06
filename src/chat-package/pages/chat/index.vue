@@ -3,7 +3,7 @@ import type { ChatMessageStock, DateParameterOfStock, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
-import { onShareAppMessage } from '@dcloudio/uni-app'
+import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { computed, onMounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -44,10 +44,14 @@ const { charQueue, pushQueue: pushCharQueue, onTyping: onCharTyping, pushFullQue
 
 // 处理WebSocket连接关闭事件
 websocketStore.websocket?.onClose(() => {
+  reset()
   console.log('WebSocket connection closed.')
   const currentAnswer = chatStore.currentAnswer
   if (!currentAnswer)
     return
+  currentAnswer.steps.forEach((item) => {
+    item.finished = true
+  })
   currentAnswer.isLoading = false
   chatStore.isReplying = false
   chatStore.currentRunId = ''
@@ -247,7 +251,7 @@ provide(messageInjectKey, {
   scrollToTop,
 })
 
-onMounted(() => {
+onShow(() => {
   // 确保 WebSocket 连接已建立
   websocketStore.connectWebSocket()
   chatStore.messages = []

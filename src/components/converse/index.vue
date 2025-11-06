@@ -73,9 +73,9 @@ async function waitConfirmMessage(text: string) {
 function sendWaitingMessage() {
   if (chatStore.waitingMessageTask === null)
     return
-  chatStore.isReplying = true
 
   websocketStore.sendMessage(chatStore.waitingMessageTask).then(() => {
+    chatStore.isReplying = true
     chatStore.createTemporaryMessage({
       query: chatStore.waitingMessageTask!.query,
       chatId: chatStore.waitingMessageTask!.chatId,
@@ -105,10 +105,10 @@ async function onConfirmMessage(content?: string) {
     return
   }
   model.value = ''
-  chatStore.isReplying = true
+
   // 创建并保存当前消息的runId
-  chatStore.currentRunId = useUUID(32)
-  const messageContent = { chatId: chatStore.currentChatId, query: text, runId: chatStore.currentRunId }
+  const currentRunId = useUUID(32)
+  const messageContent = { chatId: chatStore.currentChatId, query: text, runId: currentRunId }
   // 如果当前会话不存在，创建并保存当前会话
   if (!chatStore.currentChatId) {
     waitConfirmMessage(text)
@@ -116,6 +116,8 @@ async function onConfirmMessage(content?: string) {
   }
 
   websocketStore.sendMessage(messageContent).then(() => {
+    chatStore.currentRunId = currentRunId
+    chatStore.isReplying = true
     chatStore.createTemporaryMessage({
       query: text,
       chatId: chatStore.currentChatId,
@@ -124,6 +126,7 @@ async function onConfirmMessage(content?: string) {
   })
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function onAddSource() {
   sourceActionShow.value = true
 }
@@ -154,7 +157,7 @@ function onVoiceDone(text: string, immediate?: boolean) {
   if (immediate)
     onConfirmMessage()
 }
-function onInputFocus(e) {
+function onInputFocus() {
   cursorPosition.value = model.value.length
 }
 

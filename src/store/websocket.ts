@@ -7,6 +7,7 @@ import { useUserStore } from './user'
 interface Status {
   websocket: UniApp.SocketTask | null
   messageCallback: ((data: WsMessageResponse) => void)[]
+  connecting: boolean
 }
 
 export enum ClientType {
@@ -84,15 +85,18 @@ export const useWebsocketStore = defineStore('websocket', {
   state: (): Status => ({
     websocket: null,
     messageCallback: [],
+    connecting: false,
   }),
   actions: {
     // 核心函数：连接 WebSocket
     connectWebSocket(clientType: ClientType = ClientType.WECHAT_MP) {
       // 如果正在连接或已经连接，则直接返回
-      if (this.websocket) {
+      if (this.websocket || this.connecting) {
         console.log('WebSocket is already connected or connecting. Skipping.')
         return
       }
+
+      this.connecting = true
 
       const userStore = useUserStore()
 
@@ -107,6 +111,9 @@ export const useWebsocketStore = defineStore('websocket', {
         fail: (err) => {
           console.error('connectSocket fail:', err)
         },
+        complete: () => {
+          this.connecting = false
+        },
       })
 
       // 监听连接成功事件
@@ -118,7 +125,6 @@ export const useWebsocketStore = defineStore('websocket', {
       this.websocket.onClose(() => {
         console.log('WebSocket connection closed.')
         this.websocket = null
-        this.messageCallback = []
       })
 
       // 监听连接错误事件
@@ -258,11 +264,10 @@ export const useWebsocketStore = defineStore('websocket', {
     },
 
     // 关闭连接
-    closeWebSocket() {
+    disconnectWebSocket() {
       if (this.websocket) {
         this.websocket.close({ code: 1000, reason: 'User closed' })
         this.websocket = null
-        this.messageCallback = []
       }
     },
   },
