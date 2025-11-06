@@ -29,7 +29,7 @@ async function getData() {
   if (res.code === 200) {
     data.value = res.result
     if (res.result.chatQueryAnswerVO) {
-      messageContent.value = { ...chatStore.transformAnswer(res.result.chatQueryAnswerVO), isPaused: false }
+      messageContent.value = { ...chatStore.transformAnswer(res.result.chatQueryAnswerVO), isPaused: false, showSteps: false }
     }
   }
 }
