@@ -26,6 +26,7 @@ const responseContent = computed(() => data.value.chatQueryAnswerVO?.response?.l
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
+    globalStore.showLoginPopup = true
     return
   }
   const res = await api.thumbsUp({
