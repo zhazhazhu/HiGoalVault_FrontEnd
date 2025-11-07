@@ -1,6 +1,6 @@
 {
   "name": "@higoal/mini-grogram",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "packageManager": "pnpm@10.15.0",
   "description": "This is a mini program project.",
   "author": "HiGoal",

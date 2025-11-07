@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/v0.0.3...v0.0.4) (2025-11-07)
+
+
+### Features
+
+* **echarts:** 添加股票数据加载的中断功能 ([3a6abb5](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/3a6abb534984d0bb2a35cac55f5f7ec9bde4e79d))
+* 实现消息深度思考文本复制 ([412d4e2](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/412d4e2504847984bd9c4e7f866e8ca30fa9318d))
+* 实现生成分享图卡片 ([5fc2c7c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/5fc2c7cd170beb0ffd5ab8d4ad0e35fb6ff21ab9))
+* 展示更多的k线图维度选择 ([fb88ab9](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/fb88ab9b2c0426178a01e5250aeb712edb90edd1))
+* 首页渲染全部的k线图数据 ([3bd3510](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/3bd35108a5c919d62db19707cda669bf65d8a8a4))
+
+
+### Bug Fixes
+
+* k线图数据加载问题 ([37c03aa](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/37c03aa651716dd2cbf8a05b8495fde3716a34ab))
+* K线图数据顺序错误问题 ([3cf5622](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/3cf562265ced48ba14652cc71828874a1050a9b8))
+* replace NaN with null ([4cc2996](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/4cc29961ad401a09078c93ec544331a739977386))
+* 修复分析打包体积命令 ([4954fbd](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/4954fbdfa6932408775286255268dfbdc2bc7313))
+* 修复长时间不用之后语音识别不了的问题 ([0955fda](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0955fda4de51ff3467b50fc540659c082b9ea082))
+* 修改截图请求路径 ([0885916](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/08859164e690ef3b2a5664644ed0193d5668dc40))
+* 修改昵称优化 ([bb4114e](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/bb4114e2e8a928de20949d4ef619a8b2fba017ca))
+* 修正股票数据轮询条件判断逻辑 ([ceb3f4e](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/ceb3f4e7cbf45c89b744de36708fe57bb18d28b3))
+* 切换网络时重试websocket连接 ([e1a7d25](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/e1a7d251049683ac189e95ac5f9c90eac0fd032a))
+* 回答流runId错误问题 ([0cb1247](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0cb1247f16594921a194e9da232ed2399122d346))
+* 处理JSON解析期货数据报错问题 ([0808755](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0808755414e8b04a8dc345f4915a56ee45557838))
+* 实时数据参数调整 ([0b2c94f](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/0b2c94f2944f462248b844c3bfebec07d673457b))
+* 敏感词拦截 ([5196dbf](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/5196dbf46ebe52b77597b7b22800dcf0de6b6cc1))
+* 暂停生成取值问题 ([3c6d70c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/3c6d70c79309f55c5af047b316d0438f2a496637))
+* 更改振幅字段取值 ([3321305](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/3321305283941d1bf280de482d0f72185194afe4))
+* 深度思考时间问题 ([b783d15](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/b783d1542de2b07aec05c1baa8d21b3a5fca6191))
+* 补充k线图过滤条件 ([82d827c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/82d827c98569cc5a6f8c030ce3f295bed4edcacc))
+* 解决在安卓上k线图在预览模式不能滚动页面问题 ([646e600](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/646e60089d77ca763da21ed87680675c9be67c5a))
+* 详情页默认收起深度思考 ([1e5da3e](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/1e5da3eab567ae0acfa582583538d28658d591b2))
+* 语音识别不完整问题 ([b4b7873](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/b4b787362df72b67685e70a7031abdb92d395fdd))
+* 预览时只加载原始数据，不从接口请求 ([a825adc](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/a825adc5fe5e7a28460d0a8747feee4f0fe04f84))
+
 ### [0.0.3](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/v0.0.1...v0.0.3) (2025-11-03)
 
 
