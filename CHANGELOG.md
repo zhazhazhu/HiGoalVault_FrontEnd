@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/v0.0.4...v1.0.0) (2025-11-07)
+
+
+### Features
+
+* 限制热门标签显示数量并添加关注页面导航 ([ca1a074](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/ca1a0746a1a6859cf8466d2d55b94e8abb3c5817))
+
+
+### Bug Fixes
+
+* 自动暂停正在进行的对话 ([1dca50c](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/commit/1dca50cf35b1c4ac1d27fad46d3552ec17f109a6))
+
 ### [0.0.4](https://github.com/HiGoalAI/HiGoalVault-FrontEnd/compare/v0.0.3...v0.0.4) (2025-11-07)
 
 
