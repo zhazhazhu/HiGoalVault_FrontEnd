@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AfterPublishMessageListResponse, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
-import { onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
@@ -155,6 +155,12 @@ onShareTimeline(() => {
 onMounted(() => {
   resetData()
   getData()
+})
+
+onLoad((options) => {
+  if (options?.active) {
+    active.value = String(options.active)
+  }
 })
 
 onShow(() => {

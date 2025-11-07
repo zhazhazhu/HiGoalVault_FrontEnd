@@ -24,7 +24,7 @@ watch(() => [model.value, active.value], () => {
 async function getData() {
   const res = await api.getPopularTags()
   if (res.code === 200) {
-    popularTags.value = res.result
+    popularTags.value = res.result.slice(0, 3)
   }
 }
 function onEditChatList() {
@@ -39,6 +39,9 @@ function gotoUser() {
 }
 function onClickTag(tag: Tag) {
   uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${tag.id}` })
+}
+function gotoFollowPage() {
+  uni.navigateTo({ url: '/pages/index/index?active=follow' })
 }
 
 onMounted(() => {
@@ -68,25 +71,18 @@ onMounted(() => {
           <view class="text-34rpx font-bold text-h1-color">
             热门
           </view>
-          <scroll-view
-            v-if="popularTags?.length > 0"
-            id="scroll-view-popular-tag-list"
-            scroll-into-view-alignment="end"
-            enhanced
-            enable-passive
-            enable-flex
-            class="h-[calc(100vh-280px)] py-10px ml-10px"
-            :scroll-y="true"
-            :show-scrollbar="false"
-          >
-            <view v-for="item in popularTags" :key="item.id" class="py-5px text-30rpx text-h2-color" @click="onClickTag(item)">
+          <view v-if="popularTags.length > 0" class="ml-10px">
+            <view v-for="item in popularTags" :key="item.id" class="py-6px text-26rpx text-h2-color" @click="onClickTag(item)">
               {{ item.tagName }}
             </view>
-          </scroll-view>
+          </view>
           <view v-else>
             <view class="text-26rpx color-gray-6">
               暂无热门标签
             </view>
+          </view>
+          <view class="text-34rpx font-bold text-h1-color" @click="gotoFollowPage">
+            关注
           </view>
         </view>
       </tabs-item>

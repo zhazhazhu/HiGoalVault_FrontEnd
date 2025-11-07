@@ -27,6 +27,10 @@ export function useTabs(props: TabsProps, emit: TabsEmits) {
   const instance = getCurrentInstance()!
   const activeName = ref(props.modelValue || 0)
 
+  watch(() => props.modelValue, (val) => {
+    activeName.value = val || 0
+  })
+
   watch(activeName, (val) => {
     emit('update:modelValue', val)
     emit('tabChange', val)
