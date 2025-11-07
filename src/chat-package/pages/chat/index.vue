@@ -4,7 +4,7 @@ import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import type { WsMessageResponse } from '@/store/websocket'
-import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
+import { onHide, onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { computed, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -262,6 +262,9 @@ onShow(() => {
   chatStore.messages = []
   getMessage()
   // uni.navigateTo({ url: '/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
+})
+onHide(() => {
+  websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 })
 
 onShareAppMessage(async ({ from }) => {
