@@ -40,7 +40,16 @@ onShow(() => {
     websocket.connectWebSocket()
     uni.onNetworkStatusChange((res) => {
       console.log('network status change', res)
-      websocket.connectWebSocket()
+      if (res.isConnected) {
+        websocket.connectWebSocket()
+      }
+      else {
+        websocket.disconnectWebSocket()
+        uni.showToast({
+          title: '网络已断开，请检查网络连接',
+          icon: 'none',
+        })
+      }
     })
   }
 })

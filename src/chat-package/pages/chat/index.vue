@@ -4,8 +4,8 @@ import type Converse from '@/components/converse/index.vue'
 import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import type { WsMessageResponse } from '@/store/websocket'
-import { onHide, onShareAppMessage, onShow } from '@dcloudio/uni-app'
-import { computed, provide, ref, watch } from 'vue'
+import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
+import { computed, onUnmounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
 import { messageInjectKey } from '@/composables/inject'
@@ -70,6 +70,7 @@ watch(() => [status.value, currentThinkingIndex.value], () => {
 function websocketClose() {
   charQueue.value.length && pushFullQueue()
   websocketStore.websocket = null
+  chatStore.isReplying = false
   reset()
   const currentAnswer = chatStore.currentAnswer
   if (!currentAnswer)
@@ -79,10 +80,22 @@ function websocketClose() {
   })
   currentThinkingIndex.value = 0
   currentAnswer.isLoading = false
-  chatStore.isReplying = false
   chatStore.currentRunId = ''
   chatStore.currentTemporaryMessageId = ''
   chatStore.waitingMessageTask = null
+}
+
+function websocketError() {
+  uni.getUpdateManager()
+  // message
+  //   .confirm({
+  //     msg: '网络连接异常，请重启应用或检查网络设置',
+  //     title: '网络错误',
+  //   })
+  //   .then(() => {
+  //   })
+  //   .catch(() => {
+  //   })
 }
 
 function websocketMessage(data: WsMessageResponse) {
@@ -229,6 +242,7 @@ function refreshMessage() {
   chatStore.messages = []
   resetPage()
   getMessage()
+  websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 }
 async function loadMessage() {
   if (loading.value || isFinish.value)
@@ -259,11 +273,12 @@ onShow(() => {
   websocketStore.connectWebSocket()
   websocketStore.onMessage = websocketMessage
   websocketStore.onClose = websocketClose
+  websocketStore.onError = websocketError
   chatStore.messages = []
   getMessage()
   // uni.navigateTo({ url: '/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
-onHide(() => {
+onUnmounted(() => {
   websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 })
 

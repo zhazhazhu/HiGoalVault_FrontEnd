@@ -283,12 +283,12 @@ function getFinanceBasicInfo(transCode: string) {
 
 // 检查是否包含敏感词
 function hasSensitiveWord(text: string) {
-  return http(`${API.HAS_SENSITIVE_WORD}?text=${text}`).get<boolean>()
+  return http(`${API.HAS_SENSITIVE_WORD}?text=${text}`, { retry: false }).get<boolean>()
 }
 
 // 搜索建议
 function searchSuggest(prefix: string) {
-  return http(`${API.SEARCH_SUGGEST}?prefix=${prefix}`).get<string[]>()
+  return http(`${API.SEARCH_SUGGEST}?prefix=${prefix}`, { retry: false }).get<string[]>()
 }
 
 // 创建 API 实例对象，保持向后兼容

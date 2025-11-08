@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'vue'
 import { getCurrentInstance, nextTick, onMounted, ref } from 'vue'
 import { api } from '@/api'
-import { useClassesName, useUUID } from '@/composables'
+import { debounce, useClassesName, useUUID } from '@/composables'
 import { useMessageInject } from '@/composables/inject'
 import { useChatStore } from '@/store/chat'
 import { useWebsocketStore } from '@/store/websocket'
@@ -88,7 +88,7 @@ function sendWaitingMessage() {
   })
 }
 
-async function onConfirmMessage(content?: string) {
+async function confirmMessage(content?: string) {
   if (content) {
     model.value = content
   }
@@ -126,6 +126,10 @@ async function onConfirmMessage(content?: string) {
   })
 }
 
+const onConfirmMessage = debounce((content?: string) => {
+  confirmMessage(content)
+}, 300)
+
 // eslint-disable-next-line unused-imports/no-unused-vars
 function onAddSource() {
   sourceActionShow.value = true
@@ -138,6 +142,7 @@ function onMessageTypeChange() {
 }
 
 function onStopSend() {
+  chatStore.isReplying = false
   websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 }
 
