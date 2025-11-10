@@ -126,8 +126,13 @@ async function confirmMessage(content?: string) {
   })
 }
 
-const onConfirmMessage = debounce((content?: string) => {
-  confirmMessage(content)
+const isSending = ref(false)
+const onConfirmMessage = debounce(async (content?: string) => {
+  if (isSending.value)
+    return
+  isSending.value = true
+  await confirmMessage(content)
+  isSending.value = false
 }, 300)
 
 // eslint-disable-next-line unused-imports/no-unused-vars

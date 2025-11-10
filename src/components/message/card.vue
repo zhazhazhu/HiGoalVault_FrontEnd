@@ -121,14 +121,15 @@ function onReference(item: ChatMessageReference) {
     },
   })
 }
-
 function onRefresh() {
+  if (chatStore.isReplying)
+    return
+  chatStore.isReplying = true
   const currentRunId = useUUID(32)
   const currentTemporaryMessageId = message.value.msgId
   websocketStore.sendMessage({ chatId: chatStore.currentChatId, runId: currentRunId, msgId: currentTemporaryMessageId, query: message.value.query }).then(() => {
     chatStore.currentRunId = currentRunId
     chatStore.currentTemporaryMessageId = currentTemporaryMessageId
-    chatStore.isReplying = true
     chatStore.pushTemporaryMessage(currentTemporaryMessageId)
   })
 }
