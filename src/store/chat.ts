@@ -196,7 +196,7 @@ export const useChatStore = defineStore('chat', {
         queryId: '',
         query: '',
         isCollect: Truth.FALSE,
-        isLoading: false,
+        isLoading: true,
         messageTimeLong: 0,
         chatId: '',
         message: '',
