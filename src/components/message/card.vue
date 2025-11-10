@@ -312,27 +312,41 @@ function stopTextToSpeech() {
           </text>
         </view>
 
-        <view v-show="showMessageButtons" :class="cs.e('operations')" class="flex items-center mt-18px gap-8px">
-          <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
-          <view class="refresh-icon size-28px" @click="onRefresh" />
-          <view class="copy-icon size-30px" @click="onCopy" />
-          <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
-            <view class="size-30px flex items-center justify-center">
-              <view class="i-material-symbols-arrow-back-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
+        <template v-if="showMessageButtons">
+          <wd-divider color="#cecece" custom-style="padding: 0" />
+
+          <view :class="cs.e('operations')" class="flex items-center gap-8px">
+            <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
+            <view :class="cs.e('icon-button')" @click="onRefresh">
+              <view class="refresh-icon icon" />
             </view>
-            <view>
-              {{ currentAnswerIndex }}/{{ message.chatQueryAnswerList.length }}
+            <view :class="cs.e('icon-button')" @click="onCopy">
+              <view class="copy-icon icon" />
             </view>
-            <view class="size-30px flex items-center justify-center">
-              <view class="i-material-symbols-arrow-forward-ios-rounded text-34rpx" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
+            <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
+              <view class="size-30px flex items-center justify-center">
+                <view class="i-material-symbols-arrow-back-ios-rounded icon" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
+              </view>
+              <view>
+                {{ currentAnswerIndex }}/{{ message.chatQueryAnswerList.length }}
+              </view>
+              <view class="size-30px flex items-center justify-center">
+                <view class="i-material-symbols-arrow-forward-ios-rounded icon" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
+              </view>
+            </view>
+            <view class="flex-1" />
+            <view :class="cs.e('icon-button')" @click="onFavorite">
+              <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border icon mx-4px" />
+              <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star icon color-[var(--hi-primary-color)] mx-4px" />
+            </view>
+            <view :class="cs.e('icon-button')" @click="onPublish">
+              <view class="share-icon icon" />
+            </view>
+            <view :class="cs.e('icon-button')" @click="openSharePopup">
+              <view class="wechat-icon icon" />
             </view>
           </view>
-          <view class="flex-1" />
-          <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border size-24px mx-4px" @click="onFavorite" />
-          <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star size-24px color-[var(--hi-primary-color)] mx-4px" @click="onFavorite" />
-          <view class="share-icon size-30px" @click="onPublish" />
-          <view class="wechat-icon size-30px" @click="openSharePopup" />
-        </view>
+        </template>
       </view>
 
       <view :class="cs.m('reference')">
@@ -356,13 +370,13 @@ function stopTextToSpeech() {
   width: 100%;
 }
 .hi-message-card--user {
-  // background: linear-gradient(270deg, #ff3b30 0%, #fc6146 100%);
-  // color: #fff;
-  background-color: #fff;
-  color: #3a3a3a;
+  background: var(--hi-primary-color);
+  color: #fff;
+  // background-color: #fff;
+  // color: #3a3a3a;
   padding: 10px 16px;
-  font-size: 17px;
-  border-radius: 12px 12px 0px 12px;
+  font-size: 15px;
+  border-radius: 12px 12px 2px 12px;
   width: fit-content;
   margin-bottom: 10px;
 }
@@ -370,11 +384,12 @@ function stopTextToSpeech() {
   background-color: #fff;
   padding: 10px 16px;
   border-radius: 12px;
-  width: 100%;
+  width: fit-content;
   font-size: 17px;
   color: #121212;
   line-height: 20px;
   margin-bottom: 10px;
+  margin-right: auto;
 }
 .hi-message-card--reference {
   display: flex;
@@ -390,5 +405,17 @@ function stopTextToSpeech() {
   margin-bottom: 10px;
   font-size: 14px;
   color: #333;
+}
+.hi-message-card__icon-button {
+  border: 1px solid #e4e4e4;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .icon {
+    font-size: 24px;
+  }
 }
 </style>

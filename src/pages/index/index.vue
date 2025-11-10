@@ -217,7 +217,7 @@ onShow(() => {
       </view>
     </scroll-view>
 
-    <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)] px-32rpx">
+    <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)]">
       <Converse :disabled="!userStore.isLogin" @resize="handleResize" @tap="onConverseTap" />
     </view>
   </Layout>

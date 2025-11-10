@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   placeholder?: string
   disabled?: boolean
 }>(), {
-  placeholder: '你的金融助理，有什么问题可以咨询我',
+  placeholder: '你的金融助理，随便问我',
 })
 const emit = defineEmits<{
   (e: 'resize', height: number): void
@@ -189,7 +189,7 @@ defineExpose({
 
     <view :class="cs.m('container')">
       <view :class="cs.e('left')">
-        <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" />
+        <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
       </view>
 
       <view v-show="messageType === 'text'" :class="cs.e('input')">
@@ -219,6 +219,7 @@ defineExpose({
       </view>
 
       <view :class="cs.e('right')">
+        <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" />
         <!-- <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" /> -->
         <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage()" />
         <view v-if="chatStore.isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
@@ -233,12 +234,16 @@ defineExpose({
 <style lang='scss' scoped>
 .hi-converse--wrapper {
   padding-top: 10px;
+  background-color: white;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
 }
 .hi-converse--container {
-  padding: 30rpx 40rpx;
+  padding: 10rpx 18rpx;
   background-color: white;
-  box-shadow: 0px 4rpx 16rpx 0px rgba(0, 0, 0, 0.08);
+  // box-shadow: 0px 4rpx 16rpx 0px rgba(0, 0, 0, 0.08);
   border-radius: 26rpx;
+  border: 2px solid black;
   display: flex;
   align-items: flex-end;
 }

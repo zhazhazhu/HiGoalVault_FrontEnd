@@ -2,7 +2,7 @@
 import { useTheme } from './composables'
 
 const { theme, themeVars } = useTheme({
-  colorTheme: '#3854F8',
+  colorTheme: '#4069ff',
   buttonSmallRadius: '4px',
   buttonMediumRadius: '4px',
   buttonLargeRadius: '4px',

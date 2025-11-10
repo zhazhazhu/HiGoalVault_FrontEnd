@@ -23,10 +23,10 @@ const visible = useIntersectionObserver(`#${instanceId}`)
 <template>
   <view :id="instanceId" :class="cs.e('messages')">
     <view class="b-b-1px b-gray-2 py-10px flex justify-between items-center mb-10px" @click="emit('clickSteps')">
-      <view class="color-#c36622 gap-6px flex items-center font-500">
-        <view class="i-famicons-logo-react text-15px" />
+      <view class="color-#565656 gap-6px flex items-center font-500">
+        <!-- <view class="i-famicons-logo-react text-15px" /> -->
         <view class="text-14px">
-          深度思考
+          已深度思考
         </view>
         <view class="color-gray text-12px font-400">
           {{ formatSeconds(data.messageTimeLong / 1000) }}
