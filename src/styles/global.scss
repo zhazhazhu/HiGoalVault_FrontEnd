@@ -201,3 +201,19 @@ page {
   text-align: center;
   background: #ffffff;
 }
+
+.hi-tabs {
+  background: transparent !important;
+  --wot-tabs-nav-line-bg-color: black !important;
+  .wd-tabs__nav {
+    background: transparent !important;
+    .wd-tabs__nav-item {
+      font-weight: 600;
+      color: gray;
+      font-size: 32rpx;
+      &.is-active {
+        color: #424242;
+      }
+    }
+  }
+}

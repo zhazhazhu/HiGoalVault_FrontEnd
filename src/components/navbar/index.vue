@@ -98,7 +98,8 @@ defineExpose({
 }
 .navbar__title {
   max-width: 300rpx;
-  margin-top: 20rpx;
+  margin-top: 12rpx;
+  flex: 1;
 }
 .navbar__status {
   height: var(--status-bar-height);

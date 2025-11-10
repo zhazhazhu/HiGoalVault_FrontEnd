@@ -180,7 +180,14 @@ onShow(() => {
 
 <template>
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
-    <navbar @left-click="onNavbarLeftClick" />
+    <navbar @left-click="onNavbarLeftClick">
+      <template #title>
+        <wd-tabs v-model="active" custom-class="hi-tabs">
+          <wd-tab title="发现" name="view" />
+          <wd-tab title="关注" name="follow" />
+        </wd-tabs>
+      </template>
+    </navbar>
 
     <scroll-view
       class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
@@ -196,24 +203,8 @@ onShow(() => {
       @refresherrefresh="refreshData"
     >
       <view>
-        <tabs
-          v-model="active"
-          editable
-          custom-content-class="mt-10px"
-          :custom-nav-class="cs.m('tab-nav')"
-          :tab-click="onTabClick"
-          @edit="onClickSearch"
-        >
-          <template #edit>
-            <wd-icon name="search" size="18" />
-          </template>
-          <tabs-item name="view" label="发现">
-            <ViewList v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
-          </tabs-item>
-          <tabs-item name="follow" label="关注">
-            <ViewList v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
-          </tabs-item>
-        </tabs>
+        <ViewList v-show="active === 'view'" v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
+        <ViewList v-show="active === 'follow'" v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
       </view>
     </scroll-view>
 

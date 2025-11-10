@@ -262,8 +262,8 @@ function onNavbarLeftClick() {
   }
   showSidebar.value = !showSidebar.value
 }
-function onTabChange(e: number) {
-  if (e === 1) {
+function onTabChange({ index }: { index: number }) {
+  if (index === 1) {
     uni.redirectTo({ url: '/pages/index/index' })
   }
 }
@@ -281,8 +281,11 @@ onShow(() => {
   // uni.navigateTo({ url: '/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
 onUnmounted(() => {
-  chatStore.isReplying = false
-  websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
+  if (chatStore.isReplying) {
+    chatStore.isReplying = false
+    reset()
+    websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
+  }
 })
 
 onShareAppMessage(async ({ from }) => {
@@ -306,10 +309,10 @@ onShareAppMessage(async ({ from }) => {
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">
       <template #title>
-        <tabs @tab-change="onTabChange($event as any)">
-          <tabs-item :name="0" label="黑狗" />
-          <tabs-item :name="1" label="发现" />
-        </tabs>
+        <wd-tabs custom-class="hi-tabs" @change="onTabChange">
+          <wd-tab title="黑狗" />
+          <wd-tab title="发现" />
+        </wd-tabs>
       </template>
     </navbar>
 
