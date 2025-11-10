@@ -1,4 +1,8 @@
 <script lang='ts' setup>
+const props = defineProps<{
+  disabled?: boolean
+}>()
+
 const emit = defineEmits<{
   (e: 'question', value: string): void
 }>()
@@ -8,6 +12,12 @@ const defineQuestion = [
   '九月份沥青2512价格',
   '平安最近股价',
 ]
+
+function onQuestion(item: string) {
+  if (props.disabled)
+    return
+  emit('question', item)
+}
 </script>
 
 <template>
@@ -23,7 +33,7 @@ const defineQuestion = [
       你可以这样问
     </view>
     <view class="flex flex-col gap-20rpx mt-20rpx">
-      <view v-for="item in defineQuestion" :key="item" class="w-fit px-20rpx py-14rpx bg-white rounded-12rpx color-#ff3b3b font-500 text-28rpx" @click="emit('question', item)">
+      <view v-for="item in defineQuestion" :key="item" class="w-fit px-20rpx py-14rpx bg-white rounded-12rpx color-#ff3b3b font-500 text-28rpx" @click="onQuestion(item)">
         {{ item }}
       </view>
     </view>

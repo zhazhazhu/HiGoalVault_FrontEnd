@@ -130,109 +130,112 @@ export const useWebsocketStore = defineStore('websocket', {
         catch {}
         this.websocket = null
       }
-      {
-        this.connecting = true
-        const userStore = useUserStore()
-        // 创建 WebSocket 连接实例
-        this.websocket = uni.connectSocket({
-          url: 'wss://higoall.com:9443/api/v1/buyer/ai-chat-ws',
-          header: {
-            'AccessToken': userStore.accessToken,
-            'Content-type': 'application/json',
-            'ClientType': clientType,
-          },
-          success: () => {
-            console.log('connectSocket success')
-          },
-          fail: (err) => {
-            console.error('connectSocket fail:', err)
-          },
-          complete: () => {
-            this.connecting = false
-          },
-        })
+      this.connecting = true
+      const userStore = useUserStore()
+      // 创建 WebSocket 连接实例
+      this.websocket = uni.connectSocket({
+        url: 'wss://higoall.com:9443/api/v1/buyer/ai-chat-ws',
+        header: {
+          'AccessToken': userStore.accessToken,
+          'Content-type': 'application/json',
+          'ClientType': clientType,
+        },
+        success: () => {
+          console.log('connectSocket success')
+        },
+        fail: (err) => {
+          console.error('connectSocket fail:', err)
+        },
+        complete: () => {
+          this.connecting = false
+        },
+      })
 
-        this.websocket.onOpen(() => {
-          console.log('WebSocket connection opened.')
-          this.isSocketOpen = true
-          this.onOpen && this.onOpen()
-        })
+      this.websocket.onOpen(() => {
+        console.log('WebSocket connection opened.')
+        this.isSocketOpen = true
+        this.onOpen && this.onOpen()
+      })
 
-        this.websocket.onError((err) => {
-          console.error('WebSocket error:', err)
-          this.isSocketOpen = false
-          this.onError && this.onError()
-        })
+      this.websocket.onError((err) => {
+        console.error('WebSocket error:', err)
+        this.isSocketOpen = false
+        this.onError && this.onError()
+      })
 
-        this.websocket.onClose(() => {
-          console.log('WebSocket connection closed.')
-          this.isSocketOpen = false
-          this.onClose && this.onClose()
-        })
+      this.websocket.onClose(() => {
+        console.log('WebSocket connection closed.')
+        this.isSocketOpen = false
+        this.websocket = null
+        this.onClose && this.onClose()
+      })
 
-        // 设置消息监听器，处理所有回调
-        this.websocket.onMessage((res) => {
-          if (this.onMessage) {
-            try {
-              const data = JSON.parse(res.data) as WsMessageResponseBefore
-              const messageData = (data.body.data.sseMsgType === 'stream-end' ? data.body.data.data as any : JSON.parse(data.body.data.data!) as AnswerAfter)
+      // 设置消息监听器，处理所有回调
+      this.websocket.onMessage((res) => {
+        if (this.onMessage) {
+          try {
+            const data = JSON.parse(res.data) as WsMessageResponseBefore
+            const messageData = (data.body.data.sseMsgType === 'stream-end' ? data.body.data.data as any : JSON.parse(data.body.data.data!) as AnswerAfter)
 
-              const response: WsMessageResponse = {
-                id: data.id,
-                code: data.code,
-                type: data.body.data.sseMsgType,
-                data: messageData,
-              }
-
-              this.onMessage(response)
+            const response: WsMessageResponse = {
+              id: data.id,
+              code: data.code,
+              type: data.body.data.sseMsgType,
+              data: messageData,
             }
-            catch (error) {
-              console.error('Error parsing WebSocket message:', error)
-            }
+
+            this.onMessage(response)
           }
-        })
-      }
+          catch (error) {
+            console.error('Error parsing WebSocket message:', error)
+          }
+        }
+      })
     },
 
     // 发送消息
     sendMessage(data: WsMessageData, options?: UniApp.SendSocketMessageOptions) {
-      const userStore = useUserStore()
-      const message: WsMessage = {
-        type: 'buyer',
-        content: {
-          body: {
-            type: 'chat',
-            code: '100007',
-            data: {
-              ...data,
-              query: encodeURI(data.query || ''),
-              msgId: data.msgId,
-              runId: data.runId || useUUID(32),
-              clientType: data.clientType || ClientType.WECHAT_MP,
-              accessToken: data.accessToken || userStore.accessToken,
+      return new Promise<void>((resolve, reject) => {
+        const userStore = useUserStore()
+        const message: WsMessage = {
+          type: 'buyer',
+          content: {
+            body: {
+              type: 'chat',
+              code: '100007',
+              data: {
+                ...data,
+                query: encodeURI(data.query || ''),
+                msgId: data.msgId,
+                runId: data.runId || useUUID(32),
+                clientType: data.clientType || ClientType.WECHAT_MP,
+                accessToken: data.accessToken || userStore.accessToken,
+              },
             },
           },
-        },
-      }
+        }
 
-      const send = () => new Promise((resolve, reject) => {
-        this.websocket!.send({
-          data: JSON.stringify(message),
-          ...(options || {}),
-          success(res) {
-            resolve(res)
-          },
-          fail(err) {
-            reject(err)
-          },
+        const send = () => new Promise((resolve, reject) => {
+          this.websocket!.send({
+            data: JSON.stringify(message),
+            ...(options || {}),
+            success(res) {
+              resolve(res)
+            },
+            fail(err) {
+              reject(err)
+            },
+          })
         })
-      })
 
-      if (!this.websocket || !this.isSocketOpen) {
-        this.connectWebSocket()
-        return this.waitUntilOpen().then(() => send())
-      }
-      return send()
+        if (!this.websocket || !this.isSocketOpen) {
+          this.connectWebSocket()
+          this.waitUntilOpen().then(() => send().then(() => resolve()).catch(err => reject(err)))
+        }
+        else {
+          send().then(() => resolve()).catch(err => reject(err))
+        }
+      })
     },
 
     // 关闭消息

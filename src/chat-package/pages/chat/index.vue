@@ -242,6 +242,7 @@ function refreshMessage() {
   chatStore.messages = []
   if (chatStore.isReplying) {
     chatStore.isReplying = false
+    reset()
     websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
   }
   resetPage()
@@ -272,8 +273,6 @@ provide(messageInjectKey, {
 })
 
 onShow(() => {
-  // 确保 WebSocket 连接已建立
-  websocketStore.connectWebSocket()
   websocketStore.onMessage = websocketMessage
   websocketStore.onClose = websocketClose
   websocketStore.onError = websocketError
@@ -282,6 +281,7 @@ onShow(() => {
   // uni.navigateTo({ url: '/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
 onUnmounted(() => {
+  chatStore.isReplying = false
   websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 })
 
@@ -340,7 +340,7 @@ onShareAppMessage(async ({ from }) => {
         </view>
 
         <view v-else :class="cs.m('wrapper')">
-          <Start @question="(val) => converseInstance?.onConfirmMessage(val)" />
+          <Start :disabled="chatStore.isReplying" @question="(val) => converseInstance?.confirmMessage(val)" />
         </view>
       </scroll-view>
 

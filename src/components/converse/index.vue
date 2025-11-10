@@ -34,9 +34,6 @@ const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
 
 function init() {
-  // 确保 WebSocket 连接已建立
-  websocketStore.connectWebSocket()
-
   if (chatStore.waitingMessageTask) {
     sendWaitingMessage()
   }
@@ -87,13 +84,20 @@ function sendWaitingMessage() {
     chatStore.waitingMessageTask = null
   })
 }
+const isSending = ref(false)
 
 async function confirmMessage(content?: string) {
+  if (chatStore.isReplying || props.disabled)
+    return
+
+  isSending.value = true
   if (content) {
     model.value = content
   }
-  if (!model.value.trim().length)
+  if (!model.value.trim().length) {
+    isSending.value = false
     return
+  }
   const text = model.value.trim()
   // 检查是否包含敏感词
   const hasSensitive = await api.hasSensitiveWord(text)
@@ -102,6 +106,7 @@ async function confirmMessage(content?: string) {
       title: '包含敏感词，无法发送',
       icon: 'none',
     })
+    isSending.value = false
     return
   }
   model.value = ''
@@ -123,16 +128,13 @@ async function confirmMessage(content?: string) {
       chatId: chatStore.currentChatId,
     })
     messageInject?.scrollToTop()
+  }).finally(() => {
+    isSending.value = false
   })
 }
 
-const isSending = ref(false)
-const onConfirmMessage = debounce(async (content?: string) => {
-  if (isSending.value || chatStore.isReplying || props.disabled)
-    return
-  isSending.value = true
-  await confirmMessage(content)
-  isSending.value = false
+const onConfirmMessage = debounce((content?: string) => {
+  confirmMessage(content)
 }, 300)
 
 // eslint-disable-next-line unused-imports/no-unused-vars
@@ -177,6 +179,7 @@ onMounted(() => {
 
 defineExpose({
   onConfirmMessage,
+  confirmMessage,
 })
 </script>
 
