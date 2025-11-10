@@ -240,9 +240,12 @@ async function getMessage() {
 }
 function refreshMessage() {
   chatStore.messages = []
+  if (chatStore.isReplying) {
+    chatStore.isReplying = false
+    websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
+  }
   resetPage()
   getMessage()
-  websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
 }
 async function loadMessage() {
   if (loading.value || isFinish.value)
