@@ -332,7 +332,7 @@ onShareAppMessage(async ({ from }) => {
         @scrolltolower="loadMessage"
       >
         <view v-if="messages.length > 0" class="w-full">
-          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" :key="`message-${item.msgId}`" :message="item" with-avatar />
+          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" :key="`message-${item.msgId}`" :message="item" />
 
           <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
             <wd-loading color="#FC6146FF" :size="20" />

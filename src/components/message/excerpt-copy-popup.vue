@@ -5,7 +5,7 @@ import { markdownToPlainText } from '@/utils'
 
 const props = defineProps<{
   message: AnswerAfter
-  type?: 'response' | 'step'
+  type?: 'response' | 'step' | 'user'
 }>()
 const model = defineModel({ type: Boolean, default: false })
 

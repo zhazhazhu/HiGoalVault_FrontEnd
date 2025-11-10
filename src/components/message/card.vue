@@ -45,7 +45,7 @@ const { start, reset } = useCountDown({
   },
 })
 const messageBox = useMessage()
-const currentLongPressType = ref<'response' | 'step'>()
+const currentLongPressType = ref<'response' | 'step' | 'user'>()
 
 innerAudioContext.onPlay(() => {
   console.log('音频开始播放')
@@ -134,10 +134,20 @@ function onRefresh() {
   })
 }
 function onCopy() {
-  const response = markdownToPlainText(currentAnswer.value.response || '')
-  const steps = currentAnswer.value.steps?.map(item => `${item.message}\n\n${markdownToPlainText(item.thinking || '')}`).join('\n') || ''
+  let content = ''
+  switch (currentLongPressType.value) {
+    case 'response':
+      content = markdownToPlainText(currentAnswer.value.response || '')
+      break
+    case 'step':
+      content = currentAnswer.value.steps?.map(item => `${item.message}\n\n${markdownToPlainText(item.thinking || '')}`).join('\n') || ''
+      break
+    case 'user':
+      content = message.value.query
+      break
+  }
   uni.setClipboardData({
-    data: currentLongPressType.value === 'response' ? response : steps,
+    data: content,
     showToast: true,
   })
 }
@@ -164,7 +174,7 @@ async function onFavorite() {
     }
   }
 }
-function openTooltips(e: any, type: 'response' | 'step') {
+function openTooltips(e: any, type: 'response' | 'step' | 'user') {
   messageToolRect.value.x = e.detail.x
   messageToolRect.value.y = e.detail.y
   messageToolVisible.value = true
@@ -277,7 +287,7 @@ function stopTextToSpeech() {
     </wd-root-portal>
     <publish-popup v-model="publishVisible" :message="currentAnswer" />
     <message-excerpt-copy-popup v-model="messageExcerptCopyPopupVisible" :message="currentAnswer" :type="currentLongPressType" />
-    <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" :message-text-to-speaking="messageTextToSpeaking" @operate="onMessageToolOperate" />
+    <message-tool v-model:visible="messageToolVisible" :rect="messageToolRect" :operate-type="currentLongPressType" :message-text-to-speaking="messageTextToSpeaking" @operate="onMessageToolOperate" />
 
     <wd-checkbox
       v-model="check"
@@ -293,7 +303,7 @@ function stopTextToSpeech() {
         <wd-img :src="message.face" round mode="aspectFill" :width="26" :height="26" />
         <view>{{ message.nickName }}</view>
       </view>
-      <view ref="userInstance" :class="cs.m('user')">
+      <view ref="userInstance" :class="cs.m('user')" @longpress="(e) => openTooltips(e, 'user')">
         {{ message.query }}
       </view>
 
@@ -384,7 +394,7 @@ function stopTextToSpeech() {
   background-color: #fff;
   padding: 10px 16px;
   border-radius: 12px;
-  width: fit-content;
+  width: 100%;
   font-size: 17px;
   color: #121212;
   line-height: 20px;
