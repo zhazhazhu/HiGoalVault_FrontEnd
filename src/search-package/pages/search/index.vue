@@ -15,7 +15,12 @@ function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
 }
 function onChangeChat() {
-  uni.redirectTo({ url: '/chat-package/pages/chat/index' })
+  if (getCurrentPages().length > 9) {
+    uni.redirectTo({ url: '/chat-package/pages/chat/index' })
+  }
+  else {
+    uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+  }
 }
 function onConfirm() {
   const pages = getCurrentPages()
