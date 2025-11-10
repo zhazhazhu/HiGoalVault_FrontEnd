@@ -114,10 +114,10 @@ async function confirmMessage(content?: string) {
     waitConfirmMessage(text)
     return
   }
+  chatStore.isReplying = true
 
   websocketStore.sendMessage(messageContent).then(() => {
     chatStore.currentRunId = currentRunId
-    chatStore.isReplying = true
     chatStore.createTemporaryMessage({
       query: text,
       chatId: chatStore.currentChatId,
@@ -128,7 +128,7 @@ async function confirmMessage(content?: string) {
 
 const isSending = ref(false)
 const onConfirmMessage = debounce(async (content?: string) => {
-  if (isSending.value)
+  if (isSending.value || chatStore.isReplying || props.disabled)
     return
   isSending.value = true
   await confirmMessage(content)
