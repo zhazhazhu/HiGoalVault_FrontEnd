@@ -41,7 +41,7 @@ function onClickTag(tag: Tag) {
   uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${tag.id}` })
 }
 function gotoFollowPage() {
-  uni.navigateTo({ url: '/pages/index/index?active=follow' })
+  uni.redirectTo({ url: '/pages/index/index?active=follow' })
 }
 
 onMounted(() => {
