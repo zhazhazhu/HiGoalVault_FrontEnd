@@ -52,6 +52,10 @@ export interface UseStockChartOptions {
   preview: boolean
 }
 
+function isMinutesGranularity(type: TimeGranularity) {
+  return type === TimeGranularity['1MINS'] || type === TimeGranularity['5MINS']
+}
+
 export function useStockChart(options: UseStockChartOptions) {
   const stockInfo = ref(getStockInfo(options.stockData))
 
@@ -61,7 +65,7 @@ export function useStockChart(options: UseStockChartOptions) {
     })
     return {
       categoryData: toValue(options.stockData).map((item) => {
-        return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
+        return dayjs(isMinutesGranularity(toValue(options.timeGranularity)) ? item.trade_time : item.trade_date).format('YYYY-MM-DD HH:mm:ss')
       }),
       stockChartData,
       originalStockChartData: toValue(options.stockData),
@@ -92,7 +96,7 @@ export function useStockChart(options: UseStockChartOptions) {
         return [item.open, item.close, item.low, item.high]
       })
       const categoryData = newPushStockData.map((item) => {
-        return dayjs(item.trade_date || item.trade_time || '').format('YYYY-MM-DD HH:mm:ss')
+        return dayjs(isMinutesGranularity(toValue(options.timeGranularity)) ? item.trade_time : item.trade_date).format('YYYY-MM-DD HH:mm:ss')
       })
       config.value.xAxis[0].data.unshift(...categoryData)
       if (toValue(options.timeGranularity) === '1MINS') {
