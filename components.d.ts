@@ -56,6 +56,7 @@ declare module 'vue' {
     WdLoading: typeof import('wot-design-uni/components/wd-loading/wd-loading.vue')['default']
     WdMessageBox: typeof import('wot-design-uni/components/wd-message-box/wd-message-box.vue')['default']
     WdPopup: typeof import('wot-design-uni/components/wd-popup/wd-popup.vue')['default']
+    WdResize: typeof import('wot-design-uni/components/wd-resize/wd-resize.vue')['default']
     WdRootPortal: typeof import('wot-design-uni/components/wd-root-portal/wd-root-portal.vue')['default']
     WdStatusTip: typeof import('wot-design-uni/components/wd-status-tip/wd-status-tip.vue')['default']
     WdStep: typeof import('wot-design-uni/components/wd-step/wd-step.vue')['default']

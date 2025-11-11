@@ -188,6 +188,6 @@ function onDelete() {
   -webkit-box-orient: vertical;
 }
 .shadow-button {
-  box-shadow: 0px -13px 20px 11px white;
+  box-shadow: 0px -13px 20px 10px white;
 }
 </style>

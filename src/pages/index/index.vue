@@ -2,7 +2,7 @@
 import type { AfterPublishMessageListResponse, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import { onLoad, onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
-import { onMounted, ref } from 'vue'
+import { getCurrentInstance, onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
 import { useClassesName } from '@/composables'
@@ -46,6 +46,24 @@ const userStore = useUserStore()
 const chatStore = useChatStore()
 const globalStore = useGlobalStore()
 const converseHeight = ref(0)
+const instance = getCurrentInstance()
+const query = uni.createSelectorQuery().in(instance)
+const navbarOpacity = ref(0)
+
+function onScroll(event: any) {
+  const scrollTop = event.detail.scrollTop
+  const statusBarHeight = globalStore.windowInfo?.statusBarHeight || 0
+
+  // 当滚动距离超过状态栏高度时开始显示背景
+  if (scrollTop <= statusBarHeight) {
+    navbarOpacity.value = 0
+  }
+  else {
+    // 滚动距离超过状态栏高度后，在接下来的100px内逐渐显示
+    const progress = Math.min((scrollTop - statusBarHeight) / statusBarHeight, 1)
+    navbarOpacity.value = progress
+  }
+}
 
 async function getData() {
   await Promise.all(userStore.isLogin ? [getViewData(), getFollowData()] : [getViewData()])
@@ -180,17 +198,9 @@ onShow(() => {
 
 <template>
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
-    <navbar @left-click="onNavbarLeftClick">
-      <template #title>
-        <wd-tabs v-model="active" custom-class="hi-tabs">
-          <wd-tab title="发现" name="view" />
-          <wd-tab title="关注" name="follow" />
-        </wd-tabs>
-      </template>
-    </navbar>
-
+    <image src="@/static/home/image/home-background.png" class="absolute top-0 left-0 w-full" />
     <scroll-view
-      class="px-20rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
+      class="bg-[var(--hi-bg-color)] h-100vh box-border"
       :style="{ paddingBottom: `${converseHeight + 10}px` }"
       scroll-y
       enhanced
@@ -200,11 +210,35 @@ onShow(() => {
       :refresher-enabled="true"
       :refresher-triggered="refreshing"
       @scrolltolower="loadData"
+      @scroll="onScroll"
       @refresherrefresh="refreshData"
     >
       <view>
-        <ViewList v-show="active === 'view'" v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
-        <ViewList v-show="active === 'follow'" v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
+        <view class="h-90rpx" />
+
+        <view class="navbar mb-20rpx sticky top-0 left-0 z-9999">
+          <view class="bg-#F2F2F2" :style="{ height: `${globalStore.windowInfo?.statusBarHeight}px`, opacity: navbarOpacity }" />
+
+          <view class="grid grid-cols-3 items-center relative pb-8px px-20rpx">
+            <view class="bg-#F2F2F2 absolute w-full h-full top-0 left-0 " :style="{ opacity: navbarOpacity }" />
+            <view class="flex items-center gap-15px">
+              <view class="i-uil-list-ul text-54rpx" @click="onNavbarLeftClick" />
+              <view v-show="navbarOpacity === 1" class="i-iconamoon-search-bold text-22px" @click="onClickSearch" />
+            </view>
+            <wd-tabs v-model="active" custom-class="hi-tabs" animated>
+              <wd-tab title="发现" name="view" />
+              <wd-tab title="关注" name="follow" />
+            </wd-tabs>
+            <view>
+              <view v-show="navbarOpacity !== 1" class="i-iconamoon-search-bold text-22px float-right" @click="onClickSearch" />
+            </view>
+          </view>
+        </view>
+
+        <view class="px-20rpx ">
+          <ViewList v-show="active === 'view'" v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
+          <ViewList v-show="active === 'follow'" v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
+        </view>
       </view>
     </scroll-view>
 
