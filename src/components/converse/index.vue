@@ -220,10 +220,10 @@ defineExpose({
         </view>
 
         <view :class="cs.e('right')">
-          <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" />
+          <view :class="[cs.e('icon'), messageType === 'text' ? 'message-voice-icon' : 'message-keyboard-icon']" @click="onMessageTypeChange" />
           <!-- <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" /> -->
-          <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage()" />
-          <view v-if="chatStore.isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
+          <view v-if="model.trim().length > 0" class="message-send-icon" :class="cs.e('icon')" @click="onConfirmMessage()" />
+          <view v-if="chatStore.isReplying" class="message-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
         </view>
       </view>
     </view>
@@ -297,7 +297,8 @@ defineExpose({
   padding: 0 20rpx;
 }
 .hi-converse__icon {
-  font-size: 56rpx;
+  width: 56rpx;
+  height: 56rpx;
   margin: 5px 0;
   & + & {
     margin-left: 20rpx;

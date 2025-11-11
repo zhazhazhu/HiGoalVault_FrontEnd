@@ -237,3 +237,39 @@
   mask-size: contain;
   mask-position: center;
 }
+
+.message-send-icon {
+  background-image: url('/static/chat/svg/Frame 2090056621.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.message-stop-icon {
+  background-image: url('/static/chat/svg/Frame 2090056620.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.message-voice-icon {
+  background-image: url('/static/chat/svg/Frame 2090056619.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.message-keyboard-icon {
+  background-image: url('/static/chat/svg/Frame 2090056622.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}

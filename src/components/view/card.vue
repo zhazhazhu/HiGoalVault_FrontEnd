@@ -147,22 +147,25 @@ function onDelete() {
       </Tag>
     </view>
 
-    <view class="flex items-center color-#666 gap-30rpx">
-      <view class="flex items-center min-w-30px h-30px" @click.stop="onThumbsUp">
-        <view class="i-material-symbols-favorite-rounded color-#222 size-22px mr-6rpx" :class="{ 'color-red': data.isLike }" />
+    <view class="flex items-center color-#666 gap-32px">
+      <view class="flex items-center min-w-30px h-30px gap-4px" @click.stop="onThumbsUp">
+        <view class="  size-22px mr-6rpx" :class="[data.isLike ? 'color-red i-material-symbols-favorite-rounded' : 'color-#222 i-material-symbols-favorite-outline-rounded'] " />
         <view class="text-16px color-#222">
           {{ formatCommentOrThumbUpCount(data.likeCount) }}
         </view>
       </view>
-      <view class="flex items-center min-w-30px h-30px">
-        <view class="i-cuida-chatbubble-outline bg-#222  size-22px" />
+      <view class="flex items-center min-w-30px h-30px gap-4px">
+        <view class="comment-icon bg-#222 size-22px" />
         <view class="text-16px color-#222">
           {{ formatCommentOrThumbUpCount(data.commentCount) }}
         </view>
       </view>
       <view class="flex-1" />
-      <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
-        <view class="wechat-icon size-50rpx" />
+      <button class="share-to-wechat" open-type="share" :data-id="data.id" @tap.stop>
+        <view class="wechat-icon size-18px" />
+        <text class="share-text">
+          分享
+        </text>
       </button>
     </view>
   </view>
@@ -187,5 +190,27 @@ function onDelete() {
 }
 .shadow-button {
   box-shadow: 0px -13px 20px 10px white;
+}
+.share-to-wechat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f5f7f9;
+  border-radius: 20px;
+  border: none;
+  font-size: 14px;
+  color: #222222;
+  font-weight: 500;
+  overflow: hidden;
+  &::after {
+    display: none;
+  }
+
+  .share-text {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: #222222;
+    font-weight: 500;
+  }
 }
 </style>
