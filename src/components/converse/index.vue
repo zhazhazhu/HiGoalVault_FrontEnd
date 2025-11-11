@@ -188,41 +188,43 @@ defineExpose({
     <ConverseSourceAction v-model="sourceActionShow" />
 
     <view :class="cs.m('container')">
-      <view :class="cs.e('left')">
-        <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
-      </view>
+      <view class="flex items-end w-full z-9">
+        <view :class="cs.e('left')">
+          <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
+        </view>
 
-      <view v-show="messageType === 'text'" :class="cs.e('input')">
-        <wd-textarea
-          v-model="model"
-          no-border
-          auto-height
-          confirm-type="send"
-          placeholder-style="color: #666; line-height: 28px;"
-          :disabled="chatStore.isReplying || disabled"
-          :placeholder="placeholder"
-          :show-confirm-bar="false"
-          :adjust-position="false"
-          :custom-textarea-class="cs.e('textarea')"
-          :cursor="cursorPosition"
-          :disable-default-padding="true"
-          @focus="onInputFocus"
-          @blur="getConverseHeight"
-          @linechange="onLineChange"
-          @keyboardheightchange="onKeyboardHeightChange"
-          @confirm="onConfirmMessage()"
-        />
-      </view>
+        <view v-show="messageType === 'text'" :class="cs.e('input')">
+          <wd-textarea
+            v-model="model"
+            no-border
+            auto-height
+            confirm-type="send"
+            placeholder-style="color: #666; line-height: 28px;"
+            :disabled="chatStore.isReplying || disabled"
+            :placeholder="placeholder"
+            :show-confirm-bar="false"
+            :adjust-position="false"
+            :custom-textarea-class="cs.e('textarea')"
+            :cursor="cursorPosition"
+            :disable-default-padding="true"
+            @focus="onInputFocus"
+            @blur="getConverseHeight"
+            @linechange="onLineChange"
+            @keyboardheightchange="onKeyboardHeightChange"
+            @confirm="onConfirmMessage()"
+          />
+        </view>
 
-      <view v-show="messageType === 'voice'" :class="cs.m('voice')">
-        <ConverseVoice @done="onVoiceDone" />
-      </view>
+        <view v-show="messageType === 'voice'" :class="cs.m('voice')">
+          <ConverseVoice @done="onVoiceDone" />
+        </view>
 
-      <view :class="cs.e('right')">
-        <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" />
-        <!-- <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" /> -->
-        <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage()" />
-        <view v-if="chatStore.isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
+        <view :class="cs.e('right')">
+          <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" />
+          <!-- <view class="i-weui-add2-outlined" :class="cs.e('icon')" @click="onAddSource" /> -->
+          <view v-if="model.trim().length > 0" class="i-mdi-send-circle" :class="cs.e('icon')" @click="onConfirmMessage()" />
+          <view v-if="chatStore.isReplying" class="converse-stop-icon" :class="cs.e('icon')" @click="onStopSend" />
+        </view>
       </view>
     </view>
     <text :class="cs.e('tip')">
@@ -238,15 +240,53 @@ defineExpose({
   padding-left: 32rpx;
   padding-right: 32rpx;
 }
+// 渐变流动动画
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
 .hi-converse--container {
   padding: 10rpx 18rpx;
   background-color: white;
-  // box-shadow: 0px 4rpx 16rpx 0px rgba(0, 0, 0, 0.08);
   border-radius: 26rpx;
-  border: 2px solid black;
   display: flex;
-  align-items: flex-end;
+  position: relative;
+
+  // 创建渐变边框效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 29rpx;
+    background: linear-gradient(45deg, #abbaff, #1763eb, #45b7d1, #54a0ff, #ffc88e, #ff9ff3, #5f27cd, #ff6b6b);
+    background-size: 400% 400%;
+    animation: gradientFlow 3s ease infinite;
+  }
+
+  // 内部背景
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    border-radius: 26rpx;
+  }
 }
+
 .hi-converse__right {
   display: flex;
   align-items: center;

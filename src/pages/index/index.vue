@@ -201,7 +201,7 @@ onShow(() => {
     <image src="@/static/home/image/home-background.png" class="absolute top-0 left-0 w-full" />
     <scroll-view
       class="bg-[var(--hi-bg-color)] h-100vh box-border"
-      :style="{ paddingBottom: `${converseHeight + 10}px` }"
+      :style="{ paddingBottom: `${converseHeight}px` }"
       scroll-y
       enhanced
       scroll-with-animation

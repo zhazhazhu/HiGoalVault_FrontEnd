@@ -3,7 +3,7 @@ import { useClassesName } from '@/composables'
 
 const props = withDefaults(defineProps<{
   customClass?: string
-  type?: 'primary' | 'info' | 'warning'
+  type?: 'primary'
   size?: 'large' | 'default' | 'small'
 }>(), {
   type: 'primary',
@@ -22,7 +22,7 @@ const cs = useClassesName('tag')
 <style lang='scss' scoped>
 .hi-tag--container {
   width: auto;
-  border-radius: 8rpx;
+  border-radius: 6px;
   padding: 6rpx 18rpx;
   display: inline-flex;
   align-items: center;
@@ -38,19 +38,15 @@ const cs = useClassesName('tag')
     font-size: 18rpx;
   }
   &.hi-tag--primary {
-    background: #66666614;
-    color: var(--hi-primary-color);
-  }
-  &.hi-tag--info {
-    background: #66666614;
-    color: #404040;
-  }
-  &.hi-tag--warning {
-    background: #ff950014;
-    color: #666666;
+    background: white;
+    color: #5e5c66;
+    border: 1px solid #e5e5e7;
     &.is-active {
-      background: #ff950033;
-      color: #121212;
+      background: #f5f7f9;
+      color: #2f2e33;
+      border: 1px solid #e5e5e7;
+      color: #2f2e33;
+      font-weight: 500;
     }
   }
 }

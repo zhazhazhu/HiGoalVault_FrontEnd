@@ -23,7 +23,7 @@ const data = defineModel('data', { type: Object as () => AfterPublishMessageList
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const message = useMessage()
-const responseContent = computed(() => data.value.chatQueryAnswerVO?.response?.length > 150 ? renderMarkdown(`${data.value.chatQueryAnswerVO?.response.substring(0, 150)}...`) : renderMarkdown(data.value.chatQueryAnswerVO?.response || ''))
+const responseContent = computed(() => renderMarkdown(`${data.value.chatQueryAnswerVO?.response.substring(0, 200)}...`))
 const parseSectionId = `view-card-parse-${useUUID(32)}-${data.value.id}`
 const visible = useIntersectionObserver(`#${parseSectionId}`)
 
@@ -111,13 +111,11 @@ function onDelete() {
 
     <view class="bg-#F5F7F9 p-15px rounded-10px relative">
       <view class="absolute z-99 top-0 left-0 w-full h-full flex items-end justify-center">
-        <view class="flex items-center justify-between b-1 b-solid b-gray-2 rounded-8px p-6px bg-#fff w-90% h-42px mb-16px shadow-button">
-          <view class="text-14px">
-            <text>
-              智能投资助
-              <text class="color-#4362FF">
-                手建议
-              </text>
+        <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-90% h-42px mb-16px shadow-button">
+          <view class="text-14px flex items-center">
+            <text>智能投资助</text>
+            <text class="color-#4362FF">
+              手建议
             </text>
           </view>
           <view class="text-13px color-#4362FF flex items-center">
@@ -143,7 +141,7 @@ function onDelete() {
 
     <!-- 标签区域 - 超出一行隐藏 -->
     <view v-if="data.tags.length" class="flex flex-row gap-20rpx overflow-hidden">
-      <Tag v-for="item in data?.tags.slice(0, 3)" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
+      <Tag v-for="item in data?.tags.slice(0, 3)" :key="item.id" :active="item.followStatus" class="flex-shrink-0" @tap.stop="onClickTag({ id: item.id })">
         #{{ item.tagName }}
       </Tag>
     </view>
@@ -177,7 +175,6 @@ function onDelete() {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
-  border: 1px solid #ffaeae26;
 }
 .hi-view-card--content {
   overflow: hidden;
