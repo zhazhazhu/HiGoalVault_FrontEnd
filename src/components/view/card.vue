@@ -5,8 +5,9 @@ import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName, useIntersectionObserver, useUUID } from '@/composables'
 import Stock from '@/echarts/components/stock.vue?async'
+import { renderMarkdown } from '@/modules'
 import { useGlobalStore, useUserStore } from '@/store'
-import { formatCommentDate, formatCommentOrThumbUpCount, markdownToPlainText } from '@/utils'
+import { formatCommentDate, formatCommentOrThumbUpCount } from '@/utils'
 
 const props = defineProps<{
   disableToUser?: boolean
@@ -22,7 +23,7 @@ const data = defineModel('data', { type: Object as () => AfterPublishMessageList
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const message = useMessage()
-const responseContent = computed(() => data.value.chatQueryAnswerVO?.response?.length > 70 ? markdownToPlainText(`${data.value.chatQueryAnswerVO?.response.substring(0, 70)}...`) : markdownToPlainText(data.value.chatQueryAnswerVO?.response || ''))
+const responseContent = computed(() => data.value.chatQueryAnswerVO?.response?.length > 150 ? renderMarkdown(`${data.value.chatQueryAnswerVO?.response.substring(0, 150)}...`) : renderMarkdown(data.value.chatQueryAnswerVO?.response || ''))
 const parseSectionId = `view-card-parse-${useUUID(32)}-${data.value.id}`
 const visible = useIntersectionObserver(`#${parseSectionId}`)
 
@@ -88,8 +89,8 @@ function onDelete() {
   <view :class="cs.m('container')">
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center" @click.stop="gotoUser">
-        <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data.face" />
-        <text class="ml-16rpx">
+        <wd-img width="40rpx" height="40rpx" round mode="aspectFill" :src="data.face" />
+        <text class="ml-16rpx color-#585858">
           {{ data.nickName }}
         </text>
       </view>
@@ -103,23 +104,41 @@ function onDelete() {
     </view>
 
     <view :class="cs.m('content')">
-      <view class="text-26rpx color-#333 word-wrap font-500">
+      <view class="text-15px color-#2F2E33 word-wrap font-500">
         {{ data.content }}
       </view>
     </view>
 
-    <view>
-      <wd-text :text="data.title" color="#121212" size="32rpx" bold />
-      <!-- <view class="text-24rpx color-#696969 py-10rpx">
-        {{ data.chatQueryAnswerVO?.summary }}
-      </view> -->
-    </view>
+    <view class="bg-#F5F7F9 p-15px rounded-10px relative">
+      <view class="absolute z-99 top-0 left-0 w-full h-full flex items-end justify-center">
+        <view class="flex items-center justify-between b-1 b-solid b-gray-2 rounded-8px p-6px bg-#fff w-90% h-42px mb-16px shadow-button">
+          <view class="text-14px">
+            <text>
+              智能投资助
+              <text class="color-#4362FF">
+                手建议
+              </text>
+            </text>
+          </view>
+          <view class="text-13px color-#4362FF flex items-center">
+            <text>查看完整内容</text>
+            <view class="i-material-symbols-arrow-forward-ios-rounded" />
+          </view>
+        </view>
+      </view>
+      <view>
+        <wd-text :text="data.title" color="#121212" size="32rpx" bold />
+        <!-- <view class="text-24rpx color-#696969 py-10rpx">
+          {{ data.chatQueryAnswerVO?.summary }}
+        </view> -->
+      </view>
 
-    <view :id="parseSectionId" class="min-h-20px">
-      <template v-if="visible">
-        <Stock v-if="data.chatQueryAnswerVO?.stockParameter?.code" :data="data.chatQueryAnswerVO?.stockData?.[0]?.data" :params="data.chatQueryAnswerVO?.stockParameter" preview />
-        <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />
-      </template>
+      <view :id="parseSectionId" class="min-h-20px">
+        <template v-if="visible">
+          <Stock v-if="data.chatQueryAnswerVO?.stockParameter?.code" :data="data.chatQueryAnswerVO?.stockData?.[0]?.data" :params="data.chatQueryAnswerVO?.stockParameter" preview />
+          <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />
+        </template>
+      </view>
     </view>
 
     <!-- 标签区域 - 超出一行隐藏 -->
@@ -130,10 +149,6 @@ function onDelete() {
     </view>
 
     <view class="flex items-center color-#666 gap-30rpx">
-      <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
-        <view class="wechat-icon bg-#666 size-50rpx" />
-      </button>
-      <view class="flex-1" />
       <view class="flex items-center min-w-30px h-30px" @click.stop="onThumbsUp">
         <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" />
         <view class="text-26rpx">
@@ -146,6 +161,10 @@ function onDelete() {
           {{ formatCommentOrThumbUpCount(data.commentCount) }}
         </view>
       </view>
+      <view class="flex-1" />
+      <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
+        <view class="wechat-icon bg-#666 size-50rpx" />
+      </button>
     </view>
   </view>
 </template>
@@ -167,5 +186,8 @@ function onDelete() {
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+.shadow-button {
+  box-shadow: 0px -13px 20px 11px white;
 }
 </style>

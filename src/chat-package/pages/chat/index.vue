@@ -362,7 +362,7 @@ onShareAppMessage(async ({ from }) => {
   flex-direction: column;
   transform: scaleY(-1);
   -webkit-transform: scaleY(-1);
-  padding: 0 32rpx;
+  padding: 0 20rpx;
   width: 100%;
 }
 .hi-messages--loading {

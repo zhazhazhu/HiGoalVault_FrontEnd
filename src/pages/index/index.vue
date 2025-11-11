@@ -190,7 +190,7 @@ onShow(() => {
     </navbar>
 
     <scroll-view
-      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
+      class="px-20rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
       :style="{ paddingBottom: `${converseHeight + 10}px` }"
       scroll-y
       enhanced

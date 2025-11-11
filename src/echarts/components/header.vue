@@ -5,6 +5,7 @@ import { api } from '@/api'
 
 const props = defineProps<{
   stockInfo: ChatMessageStockData
+  preview?: boolean
 }>()
 const isUp = computed(() => {
   return props.stockInfo.close > props.stockInfo.pre_close
@@ -42,149 +43,140 @@ onMounted(async () => {
 
 <template>
   <view>
-    <view class="color-#797979 mb-10px">
-      <text class="text-14px mr-6px">
-        {{ basicInfo?.name || '股票名称' }}
-      </text>
-      <text class="text-12px">
-        {{ basicInfo?.transCode || '股票代码' }}
-      </text>
+    <view class="grid grid-cols-2 mb-10px">
+      <view class="font-300">
+        <view class="text-15px">
+          {{ basicInfo?.name || '股票名称' }}
+        </view>
+        <view class="text-13px">
+          {{ basicInfo?.transCode || '股票代码' }}
+        </view>
+      </view>
+      <view class="text-right" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+        <view class="text-18px font-500">
+          {{ stockInfo.close }}
+        </view>
+        <view class="flex justify-end gap-6px">
+          <view class="text-13px">
+            {{ formattedChange }}
+          </view>
+          <view class="text-13px">
+            {{ formattedChangePercent }}%
+          </view>
+        </view>
+      </view>
     </view>
-    <template v-if="basicInfo?.dataType === 'STOCK'">
-      <view class="grid grid-cols-4 gap-20px items-center">
-        <view :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
-          <view class="text-24px font-500">
-            {{ stockInfo.close }}
-          </view>
-          <view class="flex gap-6px">
-            <view class="text-12px">
-              {{ formattedChange }}
+    <template v-if="!preview">
+      <template v-if="basicInfo?.dataType === 'STOCK'">
+        <view class="grid grid-cols-3 gap-20px items-center font-300">
+          <view class="text-15px flex flex-col gap-8px">
+            <view class="flex justify-between">
+              <view>最高</view>
+              <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+                {{ stockInfo.high }}
+              </view>
             </view>
-            <view class="text-12px">
-              {{ formattedChangePercent }}%
-            </view>
-          </view>
-        </view>
-        <view class="text-10px flex flex-col gap-8px">
-          <view class="flex justify-between">
-            <view>高</view>
-            <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
-              {{ stockInfo.high }}
+            <view class="flex justify-between">
+              <view>最低</view>
+              <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+                {{ stockInfo.low }}
+              </view>
             </view>
           </view>
-          <view class="flex justify-between">
-            <view>低</view>
-            <view class="font-500" :style="{ color: isUp ? '#ec4242' : '#2bb552' }">
-              {{ stockInfo.low }}
+          <view class="text-15px  flex flex-col gap-8px">
+            <view class="flex justify-between">
+              <view>开盘</view>
+              <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+                {{ stockInfo.open }}
+              </view>
+            </view>
+            <view class="flex justify-between">
+              <view>换</view>
+              <view class="font-400">
+                {{ stockInfo.turnover_rate }}%
+              </view>
             </view>
           </view>
-        </view>
-        <view class="text-10px  flex flex-col gap-8px">
-          <view class="flex justify-between">
-            <view>开</view>
-            <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
-              {{ stockInfo.open }}
+          <view class="text-15px  flex flex-col gap-8px">
+            <view class="flex justify-between">
+              <view>量</view>
+              <view class="font-400">
+                {{ formatAmount(stockInfo.vol) }}
+              </view>
             </view>
-          </view>
-          <view class="flex justify-between">
-            <view>换</view>
-            <view class="font-500">
-              {{ stockInfo.turnover_rate }}%
-            </view>
-          </view>
-        </view>
-        <view class="text-10px  flex flex-col gap-8px">
-          <view class="flex justify-between">
-            <view>量</view>
-            <view class="font-500">
-              {{ formatAmount(stockInfo.vol) }}
-            </view>
-          </view>
-          <view class="flex justify-between">
-            <view>额</view>
-            <view class="font-500">
-              {{ formatAmount(stockInfo.amount) }}
+            <view class="flex justify-between">
+              <view>额</view>
+              <view class="font-400">
+                {{ formatAmount(stockInfo.amount) }}
+              </view>
             </view>
           </view>
         </view>
-      </view>
-    </template>
-    <template v-else>
-      <view class="grid grid-cols-4 gap-20px items-center">
-        <view :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
-          <view class="text-24px font-500">
-            {{ stockInfo.close }}
-          </view>
-          <view class="flex gap-6px">
-            <view class="text-12px">
-              {{ formattedChange }}
+      </template>
+      <template v-else>
+        <view class="grid grid-cols-3 gap-20px items-center font-300">
+          <view class="text-15px flex flex-col gap-8px">
+            <view class="flex justify-between">
+              <view>最高</view>
+              <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+                {{ stockInfo.high }}
+              </view>
             </view>
-            <view class="text-12px">
-              {{ formattedChangePercent }}%
+            <view class="flex justify-between">
+              <view>最低</view>
+              <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+                {{ stockInfo.low }}
+              </view>
             </view>
-          </view>
-        </view>
-        <view class="text-10px flex flex-col gap-8px">
-          <view class="flex justify-between">
-            <view>高</view>
-            <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
-              {{ stockInfo.high }}
-            </view>
-          </view>
-          <view class="flex justify-between">
-            <view>低</view>
-            <view class="font-500" :style="{ color: isUp ? '#ec4242' : '#2bb552' }">
-              {{ stockInfo.low }}
+            <view class="flex justify-between">
+              <view>开盘</view>
+              <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
+                {{ stockInfo.open }}
+              </view>
             </view>
           </view>
-          <view class="flex justify-between">
-            <view>开</view>
-            <view class="font-500" :style="{ color: isUp ? '#2bb552' : '#ec4242' }">
-              {{ stockInfo.open }}
+          <view class="text-15px  flex flex-col gap-8px">
+            <view class="flex justify-between">
+              <view>振幅</view>
+              <view class="font-400">
+                {{ stockInfo.price_swing || '-' }}%
+              </view>
+            </view>
+            <view class="flex justify-between">
+              <view>昨结</view>
+              <view class="font-400">
+                {{ stockInfo.pre_settle || '-' }}
+              </view>
+            </view>
+            <view class="flex justify-between">
+              <view>今结</view>
+              <view class="font-400">
+                {{ stockInfo.settle || '-' }}
+              </view>
             </view>
           </view>
-        </view>
-        <view class="text-10px  flex flex-col gap-8px">
-          <view class="flex justify-between">
-            <view>振幅</view>
-            <view class="font-500">
-              {{ stockInfo.price_swing || '-' }}%
+          <view class="text-15px  flex flex-col gap-8px">
+            <view class="flex justify-between">
+              <view>量</view>
+              <view class="font-400">
+                {{ formatAmount(stockInfo.vol) }}
+              </view>
             </view>
-          </view>
-          <view class="flex justify-between">
-            <view>昨结</view>
-            <view class="font-500">
-              {{ stockInfo.pre_settle || '-' }}
+            <view class="flex justify-between">
+              <view>持仓</view>
+              <view class="font-400">
+                {{ stockInfo.oi || '-' }}
+              </view>
             </view>
-          </view>
-          <view class="flex justify-between">
-            <view>今结</view>
-            <view class="font-500">
-              {{ stockInfo.settle || '-' }}
-            </view>
-          </view>
-        </view>
-        <view class="text-10px  flex flex-col gap-8px">
-          <view class="flex justify-between">
-            <view>量</view>
-            <view class="font-500">
-              {{ formatAmount(stockInfo.vol) }}
-            </view>
-          </view>
-          <view class="flex justify-between">
-            <view>持仓</view>
-            <view class="font-500">
-              {{ stockInfo.oi || '-' }}
-            </view>
-          </view>
-          <view class="flex justify-between">
-            <view>日增</view>
-            <view class="font-500">
-              {{ stockInfo.oi_chg || '-' }}
+            <view class="flex justify-between">
+              <view>日增</view>
+              <view class="font-400">
+                {{ stockInfo.oi_chg || '-' }}
+              </view>
             </view>
           </view>
         </view>
-      </view>
+      </template>
     </template>
   </view>
 </template>

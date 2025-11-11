@@ -78,7 +78,7 @@ defineExpose({
 <style lang='scss' scoped>
 .navbar__container {
   background: var(--bg-color);
-  padding: 0 32rpx;
+  padding: 0 20rpx;
 }
 .navbar__container .navbar__content {
   height: 90rpx;

@@ -391,16 +391,16 @@ async function loadMoreData() {
 
 <template>
   <view class="stock-chart-container" :class="[preview && 'preview']">
-    <view v-if="!props.preview" class="text-13px color-#ff1e1e mb-10px">
+    <view v-if="!preview" class="text-13px color-#ff1e1e mb-10px">
       这是查询到的行情数据：
     </view>
     <!-- 股票基本信息 -->
-    <view class="my-16px">
-      <StockHeader v-if="stockInfo" :stock-info="stockInfo" />
+    <view class="my-10px">
+      <StockHeader v-if="stockInfo" :stock-info="stockInfo" :preview="preview" />
     </view>
 
     <!-- 时间周期选择器 -->
-    <view class="period-selector">
+    <view v-if="!preview" class="period-selector">
       <!-- <wd-segmented size="small" :value="currentTimeGranularity.value" :options="Object.values(timeGranularityOptions)" @change="handleSegmentChange" /> -->
       <view v-for="item in timeGranularityOptions" :key="item.key" class="period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item, false)">
         {{ item.value }}
@@ -410,13 +410,13 @@ async function loadMoreData() {
       </view>
     </view>
 
-    <view class="other-period" :class="{ visible: showOtherPeriod }">
+    <view v-if="!preview" class="other-period" :class="{ visible: showOtherPeriod }">
       <view v-for="item in otherTimeGranularityOptions" :key="item.key" class="other-period-item" :class="{ active: item.key === currentTimeGranularity.key }" @click="handleSegmentChange(item)">
         {{ item.value }}
       </view>
     </view>
 
-    <view class="flex gap-12px text-8px my-8px" @click="hideCross">
+    <view v-if="!preview" class="flex gap-12px text-8px my-8px" @click="hideCross">
       <text :style="{ color: StockChartStyleConfig.MA5_COLOR }">
         MA5: {{ formatMA(displayedMA.ma5) }}
       </text>
@@ -435,7 +435,7 @@ async function loadMoreData() {
     <view class="chart-wrapper">
       <uni-echarts
         ref="chartCanvasInstance"
-        custom-class="h-280px"
+        :custom-class="preview ? 'h-200px' : 'h-280px'"
         :option="config"
         @zr:click="handleZRClick"
         @zr:mousemove="handleZRMouseMove"
@@ -449,7 +449,7 @@ async function loadMoreData() {
 
 <style lang='scss' scoped>
 .stock-chart-container {
-  background-color: #fff;
+  // background-color: #fff;
   overflow: hidden;
   margin: 12px 0;
 }
@@ -457,7 +457,7 @@ async function loadMoreData() {
 .stock-chart-container.preview {
   margin: 0;
   .chart-wrapper {
-    height: 250px;
+    height: 200px;
     touch-action: pan-y;
   }
 }

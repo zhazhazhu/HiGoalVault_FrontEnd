@@ -5,8 +5,8 @@ import { toValue } from 'vue'
 import { TimeGranularity } from '@/api'
 
 export enum StockChartStyleConfig {
-  UP_COLOR = '#e63434ff',
-  DOWN_COLOR = '#237b3cff',
+  UP_COLOR = '#FF193D',
+  DOWN_COLOR = '#25B230',
   MA5_COLOR = '#007fff',
   MA10_COLOR = '#FFD700',
   MA20_COLOR = '#9370DB',
@@ -158,7 +158,7 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
       left: 10,
       right: 10,
       top: 0,
-      bottom: 60,
+      bottom: options.preview ? 10 : 60,
       outerBoundsContain: 'all',
     },
     xAxis: [
