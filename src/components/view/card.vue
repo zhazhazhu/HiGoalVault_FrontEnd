@@ -111,8 +111,9 @@ function onDelete() {
 
     <view class="bg-#F5F7F9 p-15px rounded-10px relative">
       <view class="absolute z-99 top-0 left-0 w-full h-full flex items-end justify-center">
-        <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-90% h-42px mb-16px shadow-button">
+        <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-94% h-42px mb-16px shadow-button">
           <view class="text-14px flex items-center">
+            <view class="star-info-icon mr-3px" />
             <text>智能投资助</text>
             <text class="color-#4362FF">
               手建议
@@ -148,20 +149,20 @@ function onDelete() {
 
     <view class="flex items-center color-#666 gap-30rpx">
       <view class="flex items-center min-w-30px h-30px" @click.stop="onThumbsUp">
-        <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" />
-        <view class="text-26rpx">
+        <view class="i-material-symbols-favorite-rounded color-#222 size-22px mr-6rpx" :class="{ 'color-red': data.isLike }" />
+        <view class="text-16px color-#222">
           {{ formatCommentOrThumbUpCount(data.likeCount) }}
         </view>
       </view>
       <view class="flex items-center min-w-30px h-30px">
-        <view class="comment-icon bg-#666 size-46rpx" />
-        <view class="text-26rpx">
+        <view class="i-cuida-chatbubble-outline bg-#222  size-22px" />
+        <view class="text-16px color-#222">
           {{ formatCommentOrThumbUpCount(data.commentCount) }}
         </view>
       </view>
       <view class="flex-1" />
       <button class="share-btn contents" open-type="share" :data-id="data.id" @tap.stop>
-        <view class="wechat-icon bg-#666 size-50rpx" />
+        <view class="wechat-icon size-50rpx" />
       </button>
     </view>
   </view>
