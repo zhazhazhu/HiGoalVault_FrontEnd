@@ -4,6 +4,7 @@ import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
+import { useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useChatStore, useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
@@ -86,6 +87,19 @@ watch(commentVisible, (val) => {
     getData()
   }
 })
+async function onContinueTalk() {
+  const res = await api.addChat()
+  if (res.code === 200) {
+    chatStore.currentChatId = res.result.chatId
+  }
+  chatStore.currentRunId = useUUID(32)
+  chatStore.waitingMessageTask = {
+    query: data.value!.title,
+    chatId: chatStore.currentChatId,
+    runId: chatStore.currentRunId,
+  }
+  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+}
 
 onShareAppMessage(() => {
   const imageUrl = `${API.SCREEN_SHOT}?id=${data.value?.id}`
@@ -128,17 +142,28 @@ onLoad((options) => {
         @refresherrefresh="refreshData"
       >
         <view v-if="isLoading" class="h-100px flex items-center justify-center">
-          <wd-loading color="#ff3b30ff" />
+          <wd-loading />
         </view>
         <template v-else>
           <ViewDetailCard v-if="data" :data="data" />
-          <view v-if="messageContent !== null" class="bg-white p-32rpx mt-10rpx">
+
+          <view v-if="messageContent !== null" class="bg-#EDEFF2 mx-32rpx p-32rpx mt-10rpx border-1px border-solid border-#E5E5E7 rounded-16px">
+            <view class="font-18px color-black">
+              {{ messageContent.query }}
+            </view>
+            <view class="bg-white flex items-center justify-center rounded-8px w-fit px-12px py-4px my-10px gap-2px" @click="onContinueTalk">
+              <view class="chat-star-icon" />
+              <view class="text-14px color-#4362FF">
+                继续问
+              </view>
+            </view>
             <MessageResponseCard :data="messageContent" @click-steps="messageContent.showSteps = !messageContent.showSteps" />
           </view>
-          <view v-else class="mt-40px">
+
+          <view v-else class="mt-40px mx-32rpx">
             <wd-status-tip tip="内容已删除">
               <template #image>
-                <view class="i-material-symbols-content-paste-off text-100rpx" />
+                <view class="i-material-symbols-ink-eraser-off-outline-rounded text-100rpx" />
               </template>
             </wd-status-tip>
           </view>
@@ -151,26 +176,25 @@ onLoad((options) => {
             <view class="wechat-icon size-28px" />
           </button>
 
-          <view class="rounded-12px flex-1 overflow-hidden">
+          <view class="rounded-8px flex-1 overflow-hidden">
             <input-popup
               v-model="commentContent"
               placeholder="发表友善评论"
+              button-text="发表"
+              :show-template-button="!!commentContent"
               @confirm="onConfirm"
             />
           </view>
-          <wd-button v-if="commentContent" size="small" :round="false" custom-class="rounded-8px" type="primary" @click="onConfirm">
-            发送
-          </wd-button>
-          <template v-else>
+          <template v-if="!commentContent">
             <view class="flex items-center min-w-30px h-30px relative" @click.stop="onThumbsUp">
               <view class="size-30px" :class="[data?.isLike ? 'color-red i-material-symbols-favorite-rounded' : 'color-#222 i-material-symbols-favorite-outline-rounded'] " />
-              <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px">
+              <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px rounded-4px">
                 {{ formatCommentOrThumbUpCount(data?.likeCount) }}
               </view>
             </view>
             <view class="flex items-center min-w-30px h-30px relative" @click="openCommentPopup">
               <view class="comment-icon bg-#222 size-30px" />
-              <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px">
+              <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px rounded-4px">
                 {{ formatCommentOrThumbUpCount(data?.commentCount) }}
               </view>
             </view>

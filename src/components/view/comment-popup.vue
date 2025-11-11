@@ -234,24 +234,25 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
     @close="handleClose"
   >
     <view class="h-1000rpx p-32rpx relative pb-130rpx">
-      <view class="h-50rpx flex items-center justify-between">
-        <view class="flex items-center gap-10rpx">
-          <text class="font-bold">
-            评论
-          </text>
-          <text class="color-#666">
-            {{ formatCommentOrThumbUpCount(total) }}
+      <view class="h-50rpx grid grid-cols-3 items-center mb-20rpx">
+        <view />
+
+        <view class="text-center color-#222222 text-14px">
+          <text class="font-500">
+            {{ formatCommentOrThumbUpCount(total) }} 评论
           </text>
         </view>
 
-        <view class="i-material-symbols-light-close-rounded text-50rpx color-#333" @click="handleClose" />
+        <view class="flex justify-end color-#222222">
+          <view class="i-material-symbols-close-small-outline-rounded text-50rpx" @click="handleClose" />
+        </view>
       </view>
 
       <scroll-view
         scroll-y
         enhanced
         :show-scrollbar="false"
-        class="h-800rpx gap-20rpx py-32rpx box-border"
+        class="h-800rpx gap-20rpx pb-32rpx box-border"
         :refresher-enabled="true"
         :refresher-triggered="refreshing"
         @scrolltolower="load"
@@ -271,7 +272,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
 
         <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
           <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
-          <text class="ml-20rpx text-24rpx">
+          <text class="ml-20rpx text-13px color-#ABABAB">
             {{ isFinish ? '没有更多了' : '加载中...' }}
           </text>
         </view>
@@ -284,12 +285,10 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
             v-model:visible="isFocus"
             :placeholder="placeholder"
             :popup-options="{ modal: false }"
+            :show-template-button="true"
             @after-leave="handleAfterLeave"
             @confirm="onConfirm"
           />
-        </view>
-        <view class="text-28rpx color-#666666 font-500" :class="{ 'text-#FC6146FF': commentContent.length > 0 }" @click="onConfirm">
-          发表
         </view>
       </view>
     </view>

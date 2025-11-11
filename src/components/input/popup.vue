@@ -6,7 +6,6 @@ import type { popupProps } from 'wot-design-uni/components/wd-popup/types'
 import type { TextareaProps } from 'wot-design-uni/components/wd-textarea/types'
 import { computed, ref } from 'vue'
 import { api } from '@/api'
-import { useClassesName } from '@/composables'
 
 type PopupProps = ExtractPropTypes<typeof popupProps>
 
@@ -20,6 +19,7 @@ const props = withDefaults(defineProps<{
   textareaOptions?: Partial<TextareaProps>
   inputOptions?: Partial<ExtractPropTypes<typeof inputProps>>
   buttonOptions?: Partial<ButtonProps>
+  showTemplateButton?: boolean
 }>(), {
   placeholder: '说点什么...',
   buttonText: '发送',
@@ -32,7 +32,6 @@ const emit = defineEmits<{
 }>()
 const input = defineModel({ type: String, default: '' })
 const visible = defineModel('visible', { type: Boolean, default: false })
-const cs = useClassesName('input-popup')
 const isFocus = ref(false)
 const textareaOptions = computed<Partial<TextareaProps>>(() => ({
   placeholder: props.placeholder || '',
@@ -51,6 +50,9 @@ function handleClose() {
   visible.value = false
 }
 function onVisualInput() {
+  if (props.showTemplateButton === true) {
+    return
+  }
   visible.value = true
 }
 function handleBeforeLeave() {
@@ -90,12 +92,18 @@ defineExpose({
   <view>
     <view @click="onVisualInput">
       <slot>
-        <view v-if="!input" class="bg-#f3f3f3 px-20rpx py-30rpx text-24rpx text-gray-3">
-          {{ placeholder }}
-        </view>
-        <view v-else class="bg-#f3f3f3 px-20rpx py-30rpx text-24rpx text-#333">
-          {{ input }}
-        </view>
+        <InputModel
+          v-model="input"
+          :placeholder="placeholder"
+          :button-text="buttonText"
+          :input-type="inputType"
+          :textarea-options="{ disabled: !showTemplateButton, ...textareaOptions }"
+          :input-options="{ disabled: !showTemplateButton, ...inputOptions }"
+          :button-options="{ disabled: !input.trim(), ...buttonOptions }"
+          :show-template-button="showTemplateButton"
+          @blur="onBlur"
+          @confirm="onConfirm"
+        />
       </slot>
     </view>
 
@@ -113,57 +121,20 @@ defineExpose({
         ...popupOptions,
       }"
     >
-      <view class="p-30rpx pb-40rpx flex items-center gap-20rpx">
-        <view class="flex-1">
-          <wd-textarea
-            v-if="inputType === 'textarea'"
-            v-bind="{
-              'modelValue': input,
-              'noBorder': true,
-              'focus': isFocus,
-              'confirmType': 'send',
-              'showConfirmBar': false,
-              'autoHeight': true,
-              'cursorSpacing': 100,
-              'placeholder': placeholder,
-              'customTextareaClass': cs.m('textarea'),
-              'customClass': cs.m('textarea-container'),
-              'placeholderClass': cs.m('textarea-placeholder'),
-              'onUpdate:modelValue': (val) => {
-                input = val
-              },
-              'onConfirm': onConfirm,
-              'onBlur': onBlur,
-              ...textareaOptions,
-            }"
-          />
-          <wd-input
-            v-else
-            v-bind="{
-              'modelValue': input,
-              'noBorder': true,
-              'focus': isFocus,
-              'confirmType': 'send',
-              'showConfirmBar': false,
-              'autoHeight': true,
-              'cursorSpacing': 100,
-              'placeholder': placeholder,
-              'customTextareaClass': cs.m('textarea'),
-              'customClass': cs.m('textarea-container'),
-              'placeholderClass': cs.m('textarea-placeholder'),
-              'onUpdate:modelValue': (val) => {
-                input = val
-              },
-              'onConfirm': onConfirm,
-              'onBlur': onBlur,
-              ...inputOptions,
-            }"
-          />
-        </view>
-
-        <wd-button v-bind="{ type: 'primary', size: 'small', round: false, customClass: 'rounded-8px', onClick: onConfirm, ...buttonOptions }">
-          {{ buttonText }}
-        </wd-button>
+      <view class="p-30rpx pb-40rpx">
+        <InputModel
+          v-model="input"
+          :focus="isFocus"
+          :placeholder="placeholder"
+          :button-text="buttonText"
+          :input-type="inputType"
+          :textarea-options="{ ...textareaOptions }"
+          :input-options="{ ...inputOptions }"
+          :button-options="{ disabled: !input.trim(), ...buttonOptions }"
+          :show-template-button="true"
+          @blur="onBlur"
+          @confirm="onConfirm"
+        />
       </view>
     </wd-popup>
   </view>

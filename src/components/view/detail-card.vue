@@ -1,10 +1,8 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
-import dayjs from 'dayjs'
 import { watch } from 'vue'
 import { api } from '@/api'
-import { useUUID } from '@/composables'
-import { useChatStore, useUserStore } from '@/store'
+import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 
 const props = defineProps<{
@@ -12,7 +10,6 @@ const props = defineProps<{
 }>()
 
 const userStore = useUserStore()
-const chatStore = useChatStore()
 
 async function checkFollowUser() {
   const res = await api.checkFollowUser(props.data!.memberId)
@@ -25,19 +22,6 @@ async function onFollowUser(followAction: 'follow' | 'unfollow') {
   if (res.code === 200) {
     props.data!.isFollowed = followAction === 'follow'
   }
-}
-async function onContinueTalk() {
-  const res = await api.addChat()
-  if (res.code === 200) {
-    chatStore.currentChatId = res.result.chatId
-  }
-  chatStore.currentRunId = useUUID(32)
-  chatStore.waitingMessageTask = {
-    query: props.data!.title,
-    chatId: chatStore.currentChatId,
-    runId: chatStore.currentRunId,
-  }
-  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
 }
 function onClickTag({ id }: { id: string }) {
   uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
@@ -73,7 +57,7 @@ watch(() => props.data, () => {
             关注
           </view>
         </wd-button>
-        <wd-button v-else plain size="small" type="info" :round="false" @click="onFollowUser('unfollow')">
+        <wd-button v-else size="small" type="info" :round="false" @click="onFollowUser('unfollow')">
           已关注
         </wd-button>
       </template>

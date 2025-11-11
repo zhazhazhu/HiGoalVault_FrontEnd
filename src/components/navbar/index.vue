@@ -97,6 +97,7 @@ defineExpose({
   text-align: right;
 }
 .navbar__title {
+  text-align: center;
   max-width: 300rpx;
   flex: 1;
 }

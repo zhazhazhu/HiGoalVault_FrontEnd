@@ -33,7 +33,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
         </view>
       </view>
 
-      <view :class="data.showSteps ? 'i-flowbite-angle-down-outline' : 'i-flowbite-angle-up-outline' " />
+      <view :class="data.showSteps ? 'i-flowbite-angle-up-outline' : 'i-flowbite-angle-down-outline' " />
     </view>
 
     <wd-transition :show="data.showSteps" name="fade" :duration="50">

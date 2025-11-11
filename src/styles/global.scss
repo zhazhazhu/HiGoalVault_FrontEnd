@@ -170,8 +170,8 @@ page {
 }
 
 .hi-input-popup--textarea-container {
-  --wot-textarea-bg: #f3f3f3;
-  padding: 10px 20px !important;
+  --wot-textarea-bg: transparent;
+  padding: 0 10px !important;
   border-radius: 12px;
 }
 
