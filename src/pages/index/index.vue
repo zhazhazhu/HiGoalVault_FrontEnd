@@ -178,6 +178,7 @@ onShareTimeline(() => {
 onMounted(() => {
   resetData()
   getData()
+  uni.navigateTo({ url: '/detail-package/pages/detail/index?id=1985702093146804226' })
 })
 
 onLoad((options) => {

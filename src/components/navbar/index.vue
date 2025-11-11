@@ -52,7 +52,7 @@ defineExpose({
 
         <view v-else>
           <slot name="left">
-            <view v-if="userStore.isLogin" class="i-uil-list-ul text-54rpx" @click="emits('leftClick')" />
+            <view v-if="userStore.isLogin" class="menu-icon" @click="emits('leftClick')" />
             <view v-else class="flex items-center color-#3e3e3e" @click="handleClick">
               <view class="i-uil-user text-46rpx mr-6rpx" />
               <text class="text-24rpx" user-select="false">
@@ -83,7 +83,7 @@ defineExpose({
 .navbar__container .navbar__content {
   height: 90rpx;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 }
 .navbar__content__left,
@@ -98,7 +98,6 @@ defineExpose({
 }
 .navbar__title {
   max-width: 300rpx;
-  margin-top: 12rpx;
   flex: 1;
 }
 .navbar__status {

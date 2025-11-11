@@ -5,6 +5,7 @@ import { watch } from 'vue'
 import { api } from '@/api'
 import { useUUID } from '@/composables'
 import { useChatStore, useUserStore } from '@/store'
+import { formatCommentDate } from '@/utils'
 
 const props = defineProps<{
   data: PublishMessageListResponse
@@ -51,51 +52,41 @@ watch(() => props.data, () => {
 </script>
 
 <template>
-  <view class="flex flex-col bg-white p-32rpx gap-20rpx">
-    <view class="flex">
-      <view class="flex-1 truncate">
-        <wd-text :text="data?.title" color="#121212" size="32rpx" bold />
-      </view>
-      <wd-button type="success" plain size="small" @click="onContinueTalk">
-        继续提问
-      </wd-button>
-    </view>
-
+  <view class="flex flex-col p-32rpx gap-20rpx">
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center" @click="gotoUser">
-        <wd-img width="56rpx" height="56rpx" round mode="aspectFill" :src="data?.face" />
-        <text class="ml-16rpx">
-          {{ data?.nickName }}
-        </text>
+        <wd-img width="40px" height="40px" round mode="aspectFill" :src="data?.face" />
+        <view class="ml-6px font-400">
+          <view class="color-#5E5C66 text-14px">
+            {{ data?.nickName }}
+          </view>
+          <view class="color-#ABABAB text-12px">
+            {{ formatCommentDate(data?.createTime) }}
+          </view>
+        </view>
       </view>
 
       <template v-if="data?.memberId !== userStore.userInfo?.id">
-        <wd-button v-if="!data?.isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
-          关注
+        <wd-button v-if="!data?.isFollowed" size="small" :round="false" @click="onFollowUser('follow')">
+          <view class="flex items-center">
+            <view class="i-material-symbols-add text-14px" />
+            关注
+          </view>
         </wd-button>
-        <wd-button v-else plain size="small" @click="onFollowUser('unfollow')">
-          取消关注
+        <wd-button v-else plain size="small" type="info" :round="false" @click="onFollowUser('unfollow')">
+          已关注
         </wd-button>
       </template>
     </view>
 
-    <view class="text-26rpx color-#666 word-wrap font-500">
+    <view class="text-15px color-#2F2E33 word-wrap font-500">
       <text>{{ data?.content }}</text>
     </view>
 
     <view class="flex flex-wrap gap-20rpx">
-      <Tag v-for="item in data?.tags" :key="item.id" :type="item.followStatus ? 'primary' : 'info'" @tap.stop="onClickTag(item)">
+      <Tag v-for="item in data?.tags" :key="item.id" :active="item.followStatus" @tap.stop="onClickTag(item)">
         #{{ item.tagName }}
       </Tag>
-    </view>
-
-    <view class="flex items-center gap-20rpx">
-      <text class="text-22rpx color-#969696">
-        发表于 {{ dayjs(data?.createTime).format('YY/MM/DD HH:mm') }}
-      </text>
-      <!-- <view v-if="data.memberId === userStore.userInfo?.id" class="text-#333333 text-22rpx" @click="onDeleteComment">
-        删除
-      </view> -->
     </view>
   </view>
 </template>

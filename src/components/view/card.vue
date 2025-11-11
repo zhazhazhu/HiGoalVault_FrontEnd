@@ -113,7 +113,7 @@ function onDelete() {
       <view class="absolute z-99 top-0 left-0 w-full h-full flex items-end justify-center">
         <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-94% h-42px mb-16px shadow-button">
           <view class="text-14px flex items-center">
-            <view class="star-info-icon mr-3px" />
+            <view class="star-info-icon mr-3px size-40rpx" />
             <text>智能投资助</text>
             <text class="color-#4362FF">
               手建议

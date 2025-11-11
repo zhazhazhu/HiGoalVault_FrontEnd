@@ -191,7 +191,7 @@ function onClickChat(item: Chat) {
 
   &.is-active {
     border: 1px solid var(--hi-primary-color);
-    background-color: #fff4f3;
+    background-color: #f3f7ff;
   }
   .hi-chat-list--left {
     display: flex;

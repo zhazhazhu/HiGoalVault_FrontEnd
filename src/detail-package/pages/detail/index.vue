@@ -124,7 +124,7 @@ onLoad((options) => {
         :show-scrollbar="false"
         :refresher-enabled="true"
         :refresher-triggered="isRefreshing"
-        class="h-full overflow-y-auto pb-20rpx"
+        class="h-full overflow-y-auto pb-20rpx bg-#F7F8F9"
         @refresherrefresh="refreshData"
       >
         <view v-if="isLoading" class="h-100px flex items-center justify-center">
@@ -148,7 +148,7 @@ onLoad((options) => {
       <view class="h-200rpx bg-white px-32rpx pt-30rpx">
         <view class="flex items-center justify-between gap-10px">
           <button open-type="share" class="share-btn contents">
-            <view class="wechat-icon bg-#666 size-70rpx" />
+            <view class="wechat-icon size-28px" />
           </button>
 
           <view class="rounded-12px flex-1 overflow-hidden">
@@ -162,17 +162,17 @@ onLoad((options) => {
             发送
           </wd-button>
           <template v-else>
-            <view class="flex flex-col items-center" @click="openCommentPopup">
-              <view class="comment-icon size-60rpx" />
-              <text class="text-22rpx color-gray-6 font-bold">
-                {{ formatCommentOrThumbUpCount(data?.commentCount) }}
-              </text>
-            </view>
-            <view class="flex flex-col items-center" @click="onThumbsUp">
-              <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-50rpx mb-4rpx" :class="{ 'color-red': data?.isLike }" />
-              <text class="text-22rpx color-gray-6 font-bold">
+            <view class="flex items-center min-w-30px h-30px relative" @click.stop="onThumbsUp">
+              <view class="size-30px" :class="[data?.isLike ? 'color-red i-material-symbols-favorite-rounded' : 'color-#222 i-material-symbols-favorite-outline-rounded'] " />
+              <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px">
                 {{ formatCommentOrThumbUpCount(data?.likeCount) }}
-              </text>
+              </view>
+            </view>
+            <view class="flex items-center min-w-30px h-30px relative" @click="openCommentPopup">
+              <view class="comment-icon bg-#222 size-30px" />
+              <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px">
+                {{ formatCommentOrThumbUpCount(data?.commentCount) }}
+              </view>
             </view>
           </template>
         </view>
