@@ -216,21 +216,21 @@ onShow(() => {
       <view>
         <view class="h-90rpx" />
 
-        <view class="navbar mb-20rpx sticky top-0 left-0 z-9999">
+        <view class="navbar sticky top-0 left-0 z-9999">
           <view class="bg-#F2F2F2" :style="{ height: `${globalStore.windowInfo?.statusBarHeight}px`, opacity: navbarOpacity }" />
 
           <view class="grid grid-cols-3 items-center relative pb-8px px-20rpx">
             <view class="bg-#F2F2F2 absolute w-full h-full top-0 left-0 " :style="{ opacity: navbarOpacity }" />
-            <view class="flex items-center gap-15px">
-              <view class="i-uil-list-ul text-54rpx" @click="onNavbarLeftClick" />
-              <view v-show="navbarOpacity === 1" class="i-iconamoon-search-bold text-22px" @click="onClickSearch" />
+            <view class="flex items-center gap-15px z-9">
+              <view class="menu-icon" @tap="onNavbarLeftClick" />
+              <view v-show="navbarOpacity === 1" class="search-icon" @click="onClickSearch" />
             </view>
             <wd-tabs v-model="active" custom-class="hi-tabs" animated>
               <wd-tab title="发现" name="view" />
               <wd-tab title="关注" name="follow" />
             </wd-tabs>
             <view>
-              <view v-show="navbarOpacity !== 1" class="i-iconamoon-search-bold text-22px float-right" @click="onClickSearch" />
+              <view v-show="navbarOpacity !== 1" class="search-icon float-right" @click="onClickSearch" />
             </view>
           </view>
         </view>

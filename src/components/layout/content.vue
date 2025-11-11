@@ -52,8 +52,8 @@ onMounted(() => {
 <template>
   <view class="pt-110px w-85% px-16px box-border h-full flex flex-col justify-between relative">
     <view class="i-material-symbols-light-close-rounded size-30px absolute top-60px left-14px" @click="emit('close')" />
-    <tabs v-model="active" custom-class="flex-1" :sticky="false" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
-      <template #edit>
+    <view class="relative flex-1 flex flex-col justify-between">
+      <view v-show="active === 'chat'" class="absolute top-6px right-0" @click="onEditChatList">
         <template v-if="chatStore.chats.length > 0">
           <wd-button v-if="!isEdit" type="text">
             编辑
@@ -62,45 +62,82 @@ onMounted(() => {
             完成
           </wd-button>
         </template>
-      </template>
-      <tabs-item name="chat" label="对话">
-        <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
-      </tabs-item>
-      <tabs-item name="browse" label="发现">
-        <view class="flex flex-col gap-10px mt-10px">
-          <view class="text-34rpx font-bold text-h1-color">
-            热门
-          </view>
-          <view v-if="popularTags.length > 0" class="ml-10px">
-            <view v-for="item in popularTags" :key="item.id" class="py-6px text-26rpx text-h2-color" @click="onClickTag(item)">
-              {{ item.tagName }}
-            </view>
-          </view>
-          <view v-else>
-            <view class="text-26rpx color-gray-6">
-              暂无热门标签
-            </view>
-          </view>
-          <view class="text-34rpx font-bold text-h1-color" @click="gotoFollowPage">
-            关注
-          </view>
-        </view>
-      </tabs-item>
-    </tabs>
-
-    <view :class="cs.m('bottom')">
-      <view :class="cs.m('user')" @click="gotoUser">
-        <wd-img :src="userStore.userInfo?.face" round mode="aspectFill" :width="30" :height="30" />
-        <text class="text-16px font-bold text-h1-color ml-8px max-w-120px truncate">
-          {{ userStore.userInfo?.nickName }}
-        </text>
       </view>
+      <wd-tabs v-model="active" custom-class="hi-tabs left-label" animated slidable="always" swipeable>
+        <wd-tab title="对话" name="chat">
+          <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
+        </wd-tab>
+        <wd-tab title="发现" name="browse">
+          <view class="flex flex-col gap-10px mt-10px">
+            <view class="text-34rpx font-bold text-h1-color">
+              热门
+            </view>
+            <view v-if="popularTags.length > 0" class="ml-10px">
+              <view v-for="item in popularTags" :key="item.id" class="py-6px text-26rpx text-h2-color" @click="onClickTag(item)">
+                {{ item.tagName }}
+              </view>
+            </view>
+            <view v-else>
+              <view class="text-26rpx color-gray-6">
+                暂无热门标签
+              </view>
+            </view>
+            <view class="text-34rpx font-bold text-h1-color" @click="gotoFollowPage">
+              关注
+            </view>
+          </view>
+        </wd-tab>
+      </wd-tabs>
+      <!-- <tabs v-model="active" custom-class="flex-1" :sticky="false" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
+        <template #edit>
+          <template v-if="chatStore.chats.length > 0">
+            <wd-button v-if="!isEdit" type="text">
+              编辑
+            </wd-button>
+            <wd-button v-else type="primary" :round="false" size="small">
+              完成
+            </wd-button>
+          </template>
+        </template>
+        <tabs-item name="chat" label="对话">
+          <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
+        </tabs-item>
+        <tabs-item name="browse" label="发现">
+          <view class="flex flex-col gap-10px mt-10px">
+            <view class="text-34rpx font-bold text-h1-color">
+              热门
+            </view>
+            <view v-if="popularTags.length > 0" class="ml-10px">
+              <view v-for="item in popularTags" :key="item.id" class="py-6px text-26rpx text-h2-color" @click="onClickTag(item)">
+                {{ item.tagName }}
+              </view>
+            </view>
+            <view v-else>
+              <view class="text-26rpx color-gray-6">
+                暂无热门标签
+              </view>
+            </view>
+            <view class="text-34rpx font-bold text-h1-color" @click="gotoFollowPage">
+              关注
+            </view>
+          </view>
+        </tabs-item>
+      </tabs> -->
 
-      <view class="flex gap-10px text-48rpx text-h3-color w-80px justify-end">
-        <view class="i-tabler-settings" @click="gotoSettings" />
-        <button open-type="feedback" class="share-btn contents">
-          <view class="i-material-symbols-lightbulb-2-outline-sharp color-h3-color size-44rpx" />
-        </button>
+      <view :class="cs.m('bottom')">
+        <view :class="cs.m('user')" @click="gotoUser">
+          <wd-img :src="userStore.userInfo?.face" round mode="aspectFill" :width="30" :height="30" />
+          <text class="text-16px font-bold text-h1-color ml-8px max-w-120px truncate">
+            {{ userStore.userInfo?.nickName }}
+          </text>
+        </view>
+
+        <view class="flex gap-10px text-48rpx text-h3-color w-80px justify-end">
+          <view class="i-tabler-settings" @click="gotoSettings" />
+          <button open-type="feedback" class="share-btn contents">
+            <view class="i-material-symbols-lightbulb-2-outline-sharp color-h3-color size-44rpx" />
+          </button>
+        </view>
       </view>
     </view>
   </view>

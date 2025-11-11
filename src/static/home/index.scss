@@ -20,3 +20,20 @@
   width: 48rpx;
   height: 48rpx;
 }
+
+.menu-icon {
+  background-image: url('/static/home/svg/Group 2090053351.svg');
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.search-icon {
+  background-color: #333;
+  -webkit-mask-image: url('/static/home/svg/Group 2090053350.svg');
+  mask-image: url('/static/home/svg/Group 2090053350.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  width: 48rpx;
+  height: 48rpx;
+}

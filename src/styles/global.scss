@@ -216,4 +216,12 @@ page {
       }
     }
   }
+  &.left-label {
+    .wd-tabs__nav .wd-tabs__nav-item {
+      padding: 0 17px 0 0 !important;
+    }
+    .wd-tabs__nav .wd-tabs__line {
+      left: -8px !important;
+    }
+  }
 }

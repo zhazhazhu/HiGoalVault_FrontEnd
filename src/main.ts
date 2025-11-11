@@ -3,6 +3,7 @@ import { createSSRApp } from 'vue'
 import App from './App.vue'
 import { navigationInterceptor, requestInterceptor } from './intercepter'
 
+import '@/styles/global.scss'
 import 'uno.css'
 
 export function createApp() {
