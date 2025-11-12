@@ -27,10 +27,13 @@ watchDebounced(model, async (newValue) => {
 }, { delay: 300 })
 
 function onConfirm() {
-  if (!model.value)
+  const text = model.value?.trim()
+  if (!text)
     return
-  searchStore.addSearchHistory(model.value)
-  emit('confirm', model.value)
+  emit('confirm', text)
+  setTimeout(() => {
+    searchStore.addSearchHistory(text)
+  }, 500)
 }
 function onClickSuggest(item: string) {
   model.value = item
@@ -39,40 +42,43 @@ function onClickSuggest(item: string) {
 </script>
 
 <template>
-  <view :class="cs.m('header')">
-    <wd-icon name="thin-arrow-left" size="19px" @click="emit('back')" />
-    <view :class="cs.m('input')">
-      <wd-input
-        v-model="model"
-        custom-class="w-full ml-20rpx"
-        :placeholder="placeholder"
-        clearable
-        no-border
-        @focus="isFocus = true"
-        @blur="isFocus = false"
-        @confirm="onConfirm"
-      />
-      <view :class="cs.m('search-button')" @click="onConfirm">
-        <wd-icon name="search" color="#fff" />
+  <view class="relative h-50px z-99 px-32rpx">
+    <view :class="cs.m('header')">
+      <wd-icon name="thin-arrow-left" size="16px" @click="emit('back')" />
+      <view :class="cs.m('input')">
+        <view class="search-icon bg-#7d7d7d" />
+        <wd-input
+          v-model="model"
+          custom-class="w-full ml-20rpx"
+          :placeholder="placeholder"
+          clearable
+          no-border
+          @focus="isFocus = true"
+          @blur="isFocus = false"
+          @confirm="onConfirm"
+        />
       </view>
-      <view v-if="model && isFocus" :class="cs.m('suggest')">
-        <template v-if="suggestList.length">
-          <view v-for="item in suggestList" :key="item" class="py-8px flex justify-between items-center" @click="onClickSuggest(item)">
-            <view class="flex items-center gap-12px flex-1">
-              <view class="i-mingcute-search-line text-18px color-gray" />
-              <view class="text-14px">
-                {{ item }}
-              </view>
-            </view>
-            <view class="i-material-symbols-arrow-insert-rounded text-18px color-gray" />
-          </view>
-        </template>
-        <view v-else class="text-14px color-gray px-20px py-10px flex items-center justify-center">
-          暂无匹配结果
-        </view>
+      <view class="text-15px font-500 color-#1A1F28">
+        搜索
       </view>
     </view>
-    <!-- <view class="i-uil-camera size-25px" /> -->
+
+    <view v-show="isFocus && model" :class="cs.m('suggest')">
+      <template v-if="suggestList.length">
+        <view v-for="item in suggestList" :key="item" class="py-15px flex justify-between items-center border-b-1px border-solid border-#E2E4E5" @click="onClickSuggest(item)">
+          <view class="flex items-center gap-12px flex-1">
+            <view class="search-icon bg-#7D8699 size-20px" />
+            <view class="text-14px color-#3E3E40">
+              {{ item }}
+            </view>
+          </view>
+          <wd-icon name="arrow-right" size="16px" color="#1A1F28" />
+        </view>
+      </template>
+      <view v-else class="text-14px color-gray px-20px py-10px flex items-center justify-center">
+        暂无匹配结果
+      </view>
+    </view>
   </view>
 </template>
 
@@ -88,28 +94,20 @@ function onClickSuggest(item: string) {
     flex: 1;
     padding: 14rpx 20rpx;
     background-color: white;
-    border-radius: 70rpx;
+    border-radius: 10px;
     position: relative;
+    height: 44px;
   }
-  .hi-search-head--search-button {
-    width: 120rpx;
-    height: 60rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--hi-primary-color);
-    border-radius: 60rpx;
-    margin-left: 20rpx;
-  }
-  .hi-search-head--suggest {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    padding: 20rpx;
-    box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.1);
-    z-index: 1;
-  }
+}
+
+.hi-search-head--suggest {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: var(--hi-bg-color);
+  padding: 20rpx;
+  z-index: 1;
+  height: calc(100vh - 150px);
 }
 </style>

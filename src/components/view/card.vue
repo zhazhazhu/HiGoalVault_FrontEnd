@@ -23,7 +23,7 @@ const data = defineModel('data', { type: Object as () => AfterPublishMessageList
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const message = useMessage()
-const responseContent = computed(() => renderMarkdown(`${data.value.chatQueryAnswerVO?.response.substring(0, 200)}...`))
+const responseContent = computed(() => renderMarkdown(`${data.value.chatQueryAnswerVO?.response?.substring(0, 200) || ''}...`))
 const parseSectionId = `view-card-parse-${useUUID(32)}-${data.value.id}`
 const visible = useIntersectionObserver(`#${parseSectionId}`)
 
@@ -109,7 +109,7 @@ function onDelete() {
       </view>
     </view>
 
-    <view class="bg-#F5F7F9 p-15px rounded-10px relative">
+    <view class="bg-#F5F7F9 p-15px rounded-10px relative min-h-130px">
       <view class="absolute z-99 top-0 left-0 w-full h-full flex items-end justify-center">
         <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-94% h-42px mb-16px shadow-button">
           <view class="text-14px flex items-center">

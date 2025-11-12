@@ -4,9 +4,11 @@ import type { GlobalSearchRequest, GlobalSearchResult, UserCenterSearchRequest }
 import { onLoad } from '@dcloudio/uni-app'
 import { onMounted, ref, watch } from 'vue'
 import { api } from '@/api'
+import { useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { SEARCH_TABS } from '.'
+import { useChatStore } from '@/store'
 import ResultList from './result-list.vue'
+import Sort from './sort.vue'
 
 const showSidebar = ref(false)
 const isLoading = ref(false)
@@ -16,12 +18,14 @@ const [page] = useResetRef<GlobalSearchRequest | UserCenterSearchRequest>({
   pageNumber: 1,
   pageSize: 10,
   keyword: '',
-  searchContentRange: 'ALL',
+  searchSort: 'SMART',
   searchActionRange: 'ALL',
+  searchTimeRange: 'ALL',
 })
 const userId = ref('')
 const isRefreshing = ref(false)
 const keyword = ref('')
+const chatStore = useChatStore()
 
 watch(keyword, (val) => {
   if (val === '') {
@@ -101,30 +105,26 @@ function onConfirm() {
   data.value = []
   getData()
 }
-function onTabChange({ name }: { name: SearchTab }) {
+function changeSort() {
   data.value = []
   page.value.pageNumber = 1
   page.value.pageSize = 10
-  switch (name) {
-    case 'ALL':
-      page.value.searchContentRange = 'ALL'
-      break
-    case 'CONTENT_PUBLISH':
-      page.value.searchContentRange = 'CONTENT_PUBLISH'
-      break
-    case 'CONTENT_COMMENT':
-      page.value.searchContentRange = 'CONTENT_COMMENT'
-      break
-    case 'CONTENT_LIKE':
-      page.value.searchContentRange = 'ACTION'
-      page.value.searchActionRange = 'CONTENT_LIKE'
-      break
-    case 'CHAT_COLLECT':
-      page.value.searchContentRange = 'ACTION'
-      page.value.searchActionRange = 'CHAT_COLLECT'
-      break
-  }
   getData()
+}
+async function handleSendMessage() {
+  if (!keyword.value)
+    return
+  const res = await api.addChat()
+  if (res.code === 200) {
+    chatStore.currentChatId = res.result.chatId
+  }
+  chatStore.currentRunId = useUUID(32)
+  chatStore.waitingMessageTask = {
+    query: keyword.value,
+    chatId: chatStore.currentChatId,
+    runId: chatStore.currentRunId,
+  }
+  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
 }
 
 onLoad((options) => {
@@ -146,34 +146,26 @@ onMounted(() => {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <Navbar @left-click="onNavbarLeftClick" />
 
+    <view class="bg-[var(--hi-bg-color)]">
+      <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
+
+      <Sort v-model="page" @change="changeSort" @send-message="handleSendMessage" />
+    </view>
+
     <scroll-view
       scroll-into-view-alignment="end"
       scroll-y
       enhanced
       enable-passive
-      class="px-32rpx pt-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-93px)] box-border"
+      class="bg-[var(--hi-bg-color)] h-[calc(100vh-93px)] box-border"
       :show-scrollbar="false"
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @scrolltolower="loadData"
       @refresherrefresh="refreshData"
     >
-      <view>
-        <view class="mb-10px sticky top-0 left-0 z-10 bg-[var(--hi-bg-color)]">
-          <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
-
-          <view v-if="userId">
-            <wd-tabs custom-class="wd-tabs-transparent" @change="onTabChange">
-              <block v-for="item in SEARCH_TABS" :key="item.value">
-                <wd-tab :title="item.name" :name="item.value" />
-              </block>
-            </wd-tabs>
-          </view>
-        </view>
-
-        <view>
-          <ResultList :data="data" :is-loading="isLoading" :is-finish="isFinish" />
-        </view>
+      <view class="px-32rpx pt-10px">
+        <ResultList :data="data" :is-loading="isLoading" :is-finish="isFinish" />
       </view>
     </scroll-view>
   </Layout>

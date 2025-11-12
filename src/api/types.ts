@@ -399,7 +399,26 @@ export interface GlobalSearchRequest extends Page {
   userId?: string
   searchSort?: 'SMART' | 'LAST' | 'HOT'
   searchContentRange?: 'ALL' | 'CONTENT_PUBLISH' | 'CONTENT_COMMENT' | 'ACTION'
-  searchActionRange?: 'ALL' | 'CONTENT_LIKE' | 'CHAT_COLLECT'
+  searchActionRange?: 'ALL' | 'CONTENT_LIKE' | 'CONTENT_TAG_FAV' | 'CONTENT_USER_FAV'
+  searchTimeRange?: 'ALL' | 'LAST_ONE_DAY' | 'LAST_SEVEN_DAY' | 'LAST_HALF_YEAR'
+}
+
+export enum SearchSortEnum {
+  SMART = '全部',
+  LAST = '最新发布',
+  HOT = '热度最高',
+}
+
+export enum SearchTimeRangeEnum {
+  ALL = '不限',
+  LAST_ONE_DAY = '最近一天',
+  LAST_SEVEN_DAY = '最近七天',
+}
+
+export enum SearchActionRangeEnum {
+  CONTENT_LIKE = '赞过',
+  CONTENT_TAG_FAV = '关注标签',
+  CONTENT_USER_FAV = '关注用户',
 }
 
 export interface GlobalSearchResultResponse extends PageResult {

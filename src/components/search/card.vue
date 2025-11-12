@@ -66,7 +66,7 @@ onUpdated(() => {
 
 <template>
   <view class="container">
-    <view class="flex items-center justify-between">
+    <view class="flex items-center justify-between h-30px">
       <view class="text-30rpx font-bold">
         {{ title }}
       </view>
@@ -80,11 +80,11 @@ onUpdated(() => {
         <view
           v-for="item, index in data"
           :key="item"
-          class="text-26rpx color-#666 rounded-12rpx bg-#E4E4E4 py-16rpx px-30rpx relative"
+          class="text-26rpx color-#3E3E40 rounded-8rpx bg-#F5F7F9 py-14rpx px-24rpx flex items-center gap-5px"
           @click="onTagClick(item, index)"
         >
           <text>{{ item }}</text>
-          <view class="i-material-symbols-light-cancel absolute -top-6px -right-6px text-36rpx" :class="{ hidden: !enableClose }" />
+          <view class="i-material-symbols-close-rounded text-16px color-gray" :class="{ hidden: !enableClose }" />
         </view>
       </view>
       <view
