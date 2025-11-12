@@ -7,13 +7,13 @@ const props = defineProps<{
 }>()
 
 const canvasRect = {
-  width: 250,
+  width: 80,
   height: 50,
-  gap: 7,
-  count: 25,
+  gap: 6,
+  count: 8,
 }
 const rectangleRect = {
-  radius: 2,
+  radius: 0,
   minHeight: canvasRect.height * 0.2,
   maxHeight: canvasRect.height * 0.8,
 }
@@ -65,7 +65,7 @@ function drawWave() {
 
   // 清空画布
   ctx.clearRect(0, 0, actualWidth, actualHeight)
-  ctx.fillStyle = '#FF3B30' // 你的颜色设置
+  ctx.fillStyle = 'white' // 你的颜色设置
 
   // --- 1. 分贝处理和非线性映射 ---
   const centerIndex = canvasRect.count / 2
@@ -174,7 +174,7 @@ watch(() => props.visible, (visible) => {
     id="voiceCanvas"
     type="2d"
     disable-scroll
-    class="w-200px h-50px"
+    class="w-80px h-50px"
   />
 </template>
 

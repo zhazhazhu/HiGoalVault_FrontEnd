@@ -25,7 +25,7 @@ const converseContainerStyle = ref<CSSProperties>({
   paddingBottom: '10px',
 })
 const sourceActionShow = ref(false)
-const messageType = ref<'text' | 'voice'>('text')
+const messageType = ref<'text' | 'voice'>('voice')
 const websocketStore = useWebsocketStore()
 const chatStore = useChatStore()
 const messageInject = useMessageInject()
@@ -188,7 +188,7 @@ defineExpose({
     <ConverseSourceAction v-model="sourceActionShow" />
 
     <view :class="cs.m('container')">
-      <view class="flex items-end w-full z-9">
+      <view class="flex items-center w-full z-9">
         <view :class="cs.e('left')">
           <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
         </view>
@@ -254,10 +254,12 @@ defineExpose({
 }
 
 .hi-converse--container {
-  padding: 8rpx 18rpx;
+  padding: 0 18rpx;
+  height: 50px;
   background-color: white;
   border-radius: 22rpx;
   display: flex;
+  align-items: center;
   position: relative;
 
   // 创建渐变边框效果

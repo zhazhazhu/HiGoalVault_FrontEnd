@@ -334,14 +334,14 @@ function stopTextToSpeech() {
               <view class="i-mingcute-copy-2-line icon" />
             </view>
             <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
-              <view class="size-30px flex items-center justify-center">
-                <view class="i-material-symbols-arrow-back-ios-rounded icon" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
+              <view class="size-26px flex items-center justify-center">
+                <view class="i-material-symbols-arrow-back-ios-rounded text-16px" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
               </view>
               <view>
                 {{ currentAnswerIndex }}/{{ message.chatQueryAnswerList.length }}
               </view>
-              <view class="size-30px flex items-center justify-center">
-                <view class="i-material-symbols-arrow-forward-ios-rounded icon" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
+              <view class="size-26px flex items-center justify-center">
+                <view class="i-material-symbols-arrow-forward-ios-rounded text-16px" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
               </view>
             </view>
             <view class="flex-1" />

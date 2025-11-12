@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 const cs = useClassesName('voice')
 const isRecording = ref(false)
-const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>('microphone')
+const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>('text')
 const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
 const globalStore = useGlobalStore()
 const speechRecognizerManager = requirePlugin('QCloudAIVoice').realtimeRecognition()
@@ -89,32 +89,53 @@ function onTouchEnd() {
 }
 function onTouchMove(event) {
   const touch = event.touches[0]
+  const touchX = touch.clientX
+  const touchY = touch.clientY
 
-  // 使用小程序的方式获取按钮组元素信息
-  recordPopupRef.value?.recordContainer.boundingClientRect((data) => {
-    if (data && !Array.isArray(data)) {
-      const buttonGroupRect = data as UniApp.NodeInfo
-      const centerX = (buttonGroupRect.left || 0) + (buttonGroupRect.width || 0) / 2
-      const touchX = touch.clientX
-
-      // 根据触摸位置判断聚焦哪个按钮
-      const leftThreshold = centerX - 50 // 左侧阈值
-      const rightThreshold = centerX + 50 // 右侧阈值
-
-      if (touchX < leftThreshold) {
+  // 获取取消按钮位置
+  recordPopupRef.value?.query.select('.operate-button.cancel').boundingClientRect((cancelRect) => {
+    if (cancelRect && !Array.isArray(cancelRect)) {
+      const rect = cancelRect as UniApp.NodeInfo
+      if (isPointInButton(touchX, touchY, rect)) {
         recordPopupFocusedButton.value = 'cancel'
         textRecognitionVisible.value = false
       }
-      else if (touchX > rightThreshold) {
-        recordPopupFocusedButton.value = 'text'
-        textRecognitionVisible.value = true
-      }
-      else {
+    }
+  })
+
+  // 获取录音按钮位置
+  recordPopupRef.value?.query.select('.voice-button').boundingClientRect((voiceRect) => {
+    if (voiceRect && !Array.isArray(voiceRect)) {
+      const rect = voiceRect as UniApp.NodeInfo
+      if (isPointInButton(touchX, touchY, rect)) {
         recordPopupFocusedButton.value = 'microphone'
         textRecognitionVisible.value = false
       }
     }
-  }).exec()
+  })
+
+  // 获取转文字按钮位置（第二个operate-button）
+  recordPopupRef.value?.query.select('.operate-button.text').boundingClientRect((textRect) => {
+    if (textRect && !Array.isArray(textRect)) {
+      const rect = textRect as UniApp.NodeInfo
+      if (isPointInButton(touchX, touchY, rect)) {
+        recordPopupFocusedButton.value = 'text'
+        textRecognitionVisible.value = false
+      }
+    }
+  })
+
+  recordPopupRef.value?.query.exec()
+}
+
+// 辅助函数：检测触摸点是否在按钮区域内
+function isPointInButton(x: number, y: number, buttonRect: UniApp.NodeInfo): boolean {
+  const left = buttonRect.left || 0
+  const right = left + (buttonRect.width || 0)
+  const top = buttonRect.top || 0
+  const bottom = top + (buttonRect.height || 0)
+
+  return x >= left && x <= right && y >= top && y <= bottom
 }
 async function start() {
   const config: QCloudAIVoiceSpeechRecognizerManagerStartParams = {
@@ -241,7 +262,6 @@ onHide(() => {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  line-height: 36px;
 }
 
 .hi-voice--textarea-wrapper {

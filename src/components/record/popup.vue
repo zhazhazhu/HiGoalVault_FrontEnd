@@ -12,7 +12,6 @@ const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('record')
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
-const recordContainer = query.select('.hi-record--container')
 const text = computed(() => {
   if (props.focusedButton === 'cancel') {
     return '松手取消'
@@ -28,16 +27,42 @@ function handleClose() {
 }
 
 defineExpose({
-  recordContainer,
+  query,
 })
 </script>
 
 <template>
-  <wd-popup
+  <view v-if="model" class="fixed top-0 left-0 w-screen h-screen z-9999">
+    <view
+      class="w-screen h-screen voice-popup-wrapper"
+      @click="handleClose"
+    />
+
+    <view :class="[cs.m('container')]">
+      <view v-if="isConnecting" class="decibel-wrapper">
+        <RecordWave :visible="model" :decibel="decibel" />
+      </view>
+
+      <view class="operate-container">
+        <view class="operate-button cancel" :class="{ focus: focusedButton === 'cancel' }">
+          取消
+        </view>
+        <view class="color-white text-14px">
+          {{ text }}
+        </view>
+        <view class="operate-button text" :class="{ focus: focusedButton === 'text' }">
+          转文字
+        </view>
+      </view>
+      <view class="voice-button" :class="{ focus: focusedButton === 'microphone' }" />
+    </view>
+  </view>
+  <!-- <wd-popup
     v-model="model"
     position="bottom"
     lazy-render
     lock-scroll
+    custom-class="voice-popup"
     custom-style="border-radius: 20px 20px 0 0;"
     @close="handleClose"
   >
@@ -72,66 +97,102 @@ defineExpose({
         </view>
       </view>
     </view>
-  </wd-popup>
+  </wd-popup> -->
 </template>
 
 <style lang='scss' scoped>
+.voice-popup-wrapper {
+  background: linear-gradient(0deg, #2f66fe 0%, white 40%, transparent 100%);
+}
+
 .hi-record--container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 50px;
-  height: 200px;
-}
-
-.hi-record__description {
-  font-size: 12px;
-  color: #666666;
-  line-height: 18px;
-  text-align: center;
-  margin: 30px 0 20px 0;
-}
-
-.hi-record__button-group {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
 }
-.hi-record__microphone {
-  width: 72px;
-  height: 72px;
-  background-color: #ff3b301f;
+
+.operate-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+  justify-items: center;
+  align-items: end;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.operate-button {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: rgba(0, 0, 0, 0.6);
+  position: relative;
+  &::before {
+    position: absolute;
+    content: '';
+    width: 84px;
+    height: 84px;
+    border-radius: 100%;
+    background: rgba(255, 255, 255, 0.1);
+  }
   &.focus {
-    background-color: #ff3b3042;
+    color: rgba(0, 0, 0, 1);
+    background: white;
+    &::before {
+      width: 90px;
+      height: 90px;
+    }
   }
 }
-.hi-record__secund-button {
-  width: 46px;
-  height: 46px;
-  background: #f3f3f3;
-  border-radius: 100%;
+.voice-button {
+  position: relative;
+  overflow: hidden;
+  height: 130px;
+  width: 100%;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 230%;
+    height: 400px;
+    background: linear-gradient(180deg, rgb(255 255 255 / 53%) 0%, transparent 40%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100%;
+  }
+  &.focus::before {
+    background: linear-gradient(180deg, rgb(0 0 0 / 32%) 0%, transparent 40%);
+  }
+}
+.decibel-wrapper {
+  background-color: var(--hi-primary-color);
+  padding: 6px 0;
+  width: 140px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  .icon {
-    color: #333333;
-  }
-}
-.hi-record__secund-button.hi-record__cancel.focus {
-  background-color: #ff5555;
-  .icon {
-    color: white;
-  }
-}
-.hi-record__secund-button.hi-record__text.focus {
-  background-color: #04b578ff;
-  .icon {
-    color: white;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--hi-primary-color);
   }
 }
 </style>
