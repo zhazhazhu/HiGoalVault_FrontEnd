@@ -128,12 +128,23 @@
   mask-position: center;
 }
 
+.publish-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056626 (6).svg');
+  mask-image: url('/static/chat/svg/Frame 2090056626 (6).svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
 .share-icon {
   width: 48rpx;
   height: 48rpx;
   background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-分享.svg');
-  mask-image: url('/static/chat/svg/icon-分享.svg');
+  -webkit-mask-image: url('/static/chat/svg/Union.svg');
+  mask-image: url('/static/chat/svg/Union.svg');
   mask-repeat: no-repeat;
   mask-size: contain;
   mask-position: center;
@@ -176,8 +187,8 @@
   width: 48rpx;
   height: 48rpx;
   background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-删除悬浮菜单.svg');
-  mask-image: url('/static/chat/svg/icon-删除悬浮菜单.svg');
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056626 (3).svg');
+  mask-image: url('/static/chat/svg/Frame 2090056626 (3).svg');
   mask-repeat: no-repeat;
   mask-size: contain;
   mask-position: center;
@@ -187,8 +198,8 @@
   width: 48rpx;
   height: 48rpx;
   background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-刷新悬浮菜单.svg');
-  mask-image: url('/static/chat/svg/icon-刷新悬浮菜单.svg');
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056626 (4).svg');
+  mask-image: url('/static/chat/svg/Frame 2090056626 (4).svg');
   mask-repeat: no-repeat;
   mask-size: contain;
   mask-position: center;
@@ -198,8 +209,8 @@
   width: 48rpx;
   height: 48rpx;
   background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-复制悬浮菜单.svg');
-  mask-image: url('/static/chat/svg/icon-复制悬浮菜单.svg');
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056626 (1).svg');
+  mask-image: url('/static/chat/svg/Frame 2090056626 (1).svg');
   mask-repeat: no-repeat;
   mask-size: contain;
   mask-position: center;
@@ -220,8 +231,19 @@
   width: 48rpx;
   height: 48rpx;
   background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-节选复制悬浮菜单.svg');
-  mask-image: url('/static/chat/svg/icon-节选复制悬浮菜单.svg');
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056626.svg');
+  mask-image: url('/static/chat/svg/Frame 2090056626.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.favorite-float-menu-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056626 (2).svg');
+  mask-image: url('/static/chat/svg/Frame 2090056626 (2).svg');
   mask-repeat: no-repeat;
   mask-size: contain;
   mask-position: center;

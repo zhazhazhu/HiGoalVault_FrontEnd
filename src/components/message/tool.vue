@@ -49,21 +49,33 @@ function onClickOutside() {
   <wd-root-portal>
     <view v-if="visible" class="w-screen h-screen bg-transparent fixed top-0 left-0 z-99" @touchstart="onClickOutside">
       <view :class="[cs.m('wrapper'), isOffsetBottom && 'offset-bottom']" :style="wrapperStyle" @click.stop>
-        <view :class="cs.m('item')" @click.stop="onOperate('publish')">
-          <view class="share-icon bg-white size-50rpx" />
-          <text>发布</text>
+        <view :class="cs.m('item')" @click.stop="onOperate('copy')">
+          <view class="copy-float-menu-icon bg-white size-28px" />
+          <text>复制全文</text>
         </view>
-        <view :class="cs.m('item')" @click.stop="onOperate('share')">
-          <view class="wechat-icon bg-white size-50rpx" />
-          <text>分享</text>
+        <view v-if="operateType !== 'user'" :class="cs.m('item')" @click.stop="onOperate('excerptCopy')">
+          <view class="excerpt-copy-float-menu-icon bg-white size-28px" />
+          <text>节选</text>
+        </view>
+        <view v-if="operateType !== 'user'" :class="cs.m('item')" @click.stop="onOperate('favorite')">
+          <view class="favorite-float-menu-icon bg-white size-28px" />
+          <text>收藏</text>
         </view>
         <view :class="cs.m('item')" @click.stop="onOperate('delete')">
-          <view class="delete-float-menu-icon bg-white size-42rpx" />
+          <view class="delete-float-menu-icon bg-white size-28px" />
           <text>删除</text>
         </view>
         <view :class="cs.m('item')" @click.stop="onOperate('refresh')">
-          <view class="refresh-float-menu-icon bg-white size-42rpx" />
+          <view class="refresh-float-menu-icon bg-white size-28px" />
           <text>重新生成</text>
+        </view>
+        <view :class="cs.m('item')" @click.stop="onOperate('publish')">
+          <view class="publish-icon bg-white size-28px" />
+          <text>发布</text>
+        </view>
+        <view :class="cs.m('item')" @click.stop="onOperate('share')">
+          <view class="share-icon bg-white size-26px" />
+          <text>分享</text>
         </view>
         <!-- <view v-if="!messageTextToSpeaking" :class="cs.m('item')" @click.stop="onOperate('voice')">
           <view class="speaker-float-menu-icon bg-white size-50rpx" />
@@ -73,14 +85,6 @@ function onClickOutside() {
           <view class="i-material-symbols-stop-rounded bg-white text-50rpx" />
           <text>停止播放</text>
         </view> -->
-        <view :class="cs.m('item')" @click.stop="onOperate('copy')">
-          <view class="copy-float-menu-icon bg-white size-42rpx" />
-          <text>复制</text>
-        </view>
-        <view v-if="operateType !== 'user'" :class="cs.m('item')" @click.stop="onOperate('excerptCopy')">
-          <view class="excerpt-copy-float-menu-icon bg-white size-42rpx" />
-          <text>节选复制</text>
-        </view>
       </view>
     </view>
   </wd-root-portal>
@@ -134,6 +138,6 @@ function onClickOutside() {
   justify-content: center;
   align-items: center;
   gap: 4px;
-  font-size: 13px;
+  font-size: 12px;
 }
 </style>

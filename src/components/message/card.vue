@@ -328,10 +328,10 @@ function stopTextToSpeech() {
           <view :class="cs.e('operations')" class="flex items-center gap-8px">
             <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
             <view :class="cs.e('icon-button')" @click="onRefresh">
-              <view class="refresh-icon icon" />
+              <view class="i-mdi-refresh icon" />
             </view>
             <view :class="cs.e('icon-button')" @click="onCopy">
-              <view class="copy-icon icon" />
+              <view class="i-mingcute-copy-2-line icon" />
             </view>
             <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
               <view class="size-30px flex items-center justify-center">
@@ -346,11 +346,11 @@ function stopTextToSpeech() {
             </view>
             <view class="flex-1" />
             <view :class="cs.e('icon-button')" @click="onFavorite">
-              <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border icon mx-4px" />
-              <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star icon color-[var(--hi-primary-color)] mx-4px" />
+              <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border icon" />
+              <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star icon color-[var(--hi-primary-color)]" />
             </view>
             <view :class="cs.e('icon-button')" @click="onPublish">
-              <view class="share-icon icon" />
+              <view class="i-material-symbols-upload-rounded icon" />
             </view>
             <view :class="cs.e('icon-button')" @click="openSharePopup">
               <view class="wechat-icon icon" />
@@ -391,7 +391,7 @@ function stopTextToSpeech() {
   margin-bottom: 10px;
 }
 .hi-message-card--model {
-  background-color: #fff;
+  background-color: #f7f8f9;
   padding: 10px 16px;
   border-radius: 12px;
   width: 100%;
@@ -405,6 +405,7 @@ function stopTextToSpeech() {
   display: flex;
   flex-direction: column;
   width: 100%;
+  background-color: #f7f8f9;
 }
 .hi-message-card__reference-item {
   display: flex;
@@ -425,7 +426,9 @@ function stopTextToSpeech() {
   align-items: center;
   justify-content: center;
   .icon {
-    font-size: 24px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
   }
 }
 </style>

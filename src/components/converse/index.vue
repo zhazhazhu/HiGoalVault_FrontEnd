@@ -254,9 +254,9 @@ defineExpose({
 }
 
 .hi-converse--container {
-  padding: 10rpx 18rpx;
+  padding: 8rpx 18rpx;
   background-color: white;
-  border-radius: 26rpx;
+  border-radius: 22rpx;
   display: flex;
   position: relative;
 
@@ -268,7 +268,7 @@ defineExpose({
     left: -2px;
     right: -2px;
     bottom: -2px;
-    border-radius: 29rpx;
+    border-radius: 24rpx;
     background: linear-gradient(45deg, #abbaff, #1763eb, #45b7d1, #54a0ff, #ffc88e, #ff9ff3, #5f27cd, #ff6b6b);
     background-size: 400% 400%;
     animation: gradientFlow 3s ease infinite;
@@ -283,7 +283,7 @@ defineExpose({
     right: 0;
     bottom: 0;
     background: white;
-    border-radius: 26rpx;
+    border-radius: 22rpx;
   }
 }
 

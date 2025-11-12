@@ -46,7 +46,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
         >
           <template #icon>
             <template v-if="item.finished">
-              <wd-icon name="check-circle-filled" size="22px" color="var(--hi-primary-color)" />
+              <view class="chat-star-icon size-26px translate-x-2px" />
             </template>
             <template v-else>
               <view class="i-line-md-loading-twotone-loop text-22px inline-block" />
