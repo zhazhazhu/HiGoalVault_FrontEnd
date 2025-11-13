@@ -131,7 +131,7 @@ function onUpdateNickname() {
       </view>
 
       <view>
-        <wd-button type="primary" block :round="false" size="large" plain @click="onLogout">
+        <wd-button type="primary" block :round="false" size="large" @click="onLogout">
           退出登录
         </wd-button>
       </view>

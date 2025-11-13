@@ -170,7 +170,6 @@ onShareTimeline(() => {
 onMounted(() => {
   resetData()
   getData()
-  uni.navigateTo({ url: '/detail-package/pages/detail/index?id=1985702093146804226' })
 })
 
 onLoad((options) => {
@@ -214,7 +213,10 @@ onShow(() => {
           <view class="grid grid-cols-3 items-center relative pb-8px px-20rpx">
             <view class="bg-#F2F2F2 absolute w-full h-full top-0 left-0 " :style="{ opacity: navbarOpacity }" />
             <view class="flex items-center gap-15px z-9">
-              <view class="menu-icon" @tap="onNavbarLeftClick" />
+              <view v-show="navbarOpacity !== 1" class="bg-#ffffff69 p-4px rounded-8px b-1px b-solid b-#ffffffe0" @tap="onNavbarLeftClick">
+                <view class="menu-icon" />
+              </view>
+              <view v-show="navbarOpacity === 1" class="menu-icon" @tap="onNavbarLeftClick" />
               <view v-show="navbarOpacity === 1" class="search-icon" @click="onClickSearch" />
             </view>
             <wd-tabs v-model="active" custom-class="hi-tabs" animated>
