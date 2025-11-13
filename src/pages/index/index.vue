@@ -2,10 +2,9 @@
 import type { AfterPublishMessageListResponse, Page } from '@/api'
 import type Converse from '@/components/converse/index.vue'
 import { onLoad, onShareAppMessage, onShareTimeline, onShow } from '@dcloudio/uni-app'
-import { getCurrentInstance, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
-import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useChatStore, useGlobalStore, useUserStore } from '@/store'
 
@@ -15,7 +14,6 @@ interface Data {
   isFinish: boolean
   page: Page
 }
-const cs = useClassesName('home')
 const showSidebar = ref(false)
 const refreshing = ref(false)
 const active = ref('view')
@@ -45,9 +43,6 @@ const [data, resetData] = useResetRef<Record<'view' | 'follow', Data>>({
 const userStore = useUserStore()
 const chatStore = useChatStore()
 const globalStore = useGlobalStore()
-const converseHeight = ref(0)
-const instance = getCurrentInstance()
-const query = uni.createSelectorQuery().in(instance)
 const navbarOpacity = ref(0)
 
 function onScroll(event: any) {
@@ -129,9 +124,6 @@ function loadData() {
   else
     loadFollowData()
 }
-function handleResize(height: number) {
-  converseHeight.value = height
-}
 
 function onNavbarLeftClick() {
   showSidebar.value = !showSidebar.value
@@ -201,7 +193,6 @@ onShow(() => {
     <image src="@/static/home/image/home-background.png" class="absolute top-0 left-0 w-full" />
     <scroll-view
       class="bg-[var(--hi-bg-color)] h-100vh box-border"
-      :style="{ paddingBottom: `${converseHeight}px` }"
       scroll-y
       enhanced
       scroll-with-animation
@@ -243,7 +234,7 @@ onShow(() => {
     </scroll-view>
 
     <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)]">
-      <Converse :disabled="!userStore.isLogin" @resize="handleResize" @tap="onConverseTap" />
+      <Converse :disabled="!userStore.isLogin" @tap="onConverseTap" />
     </view>
   </Layout>
 </template>

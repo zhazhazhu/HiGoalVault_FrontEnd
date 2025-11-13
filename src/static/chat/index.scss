@@ -295,3 +295,25 @@
   width: 48rpx;
   height: 48rpx;
 }
+
+.message-return-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/Frame 2090056648.svg');
+  mask-image: url('/static/chat/svg/Frame 2090056648.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.message-check-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/Vector 3631.svg');
+  mask-image: url('/static/chat/svg/Vector 3631.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}

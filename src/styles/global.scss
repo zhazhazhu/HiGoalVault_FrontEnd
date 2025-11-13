@@ -34,6 +34,7 @@ textarea {
   --hi-h2-color: #333333ff;
   --hi-h3-color: #666666ff;
   --wot-textarea-fs: 16px;
+  --wot-cell-line-height: 24px;
   --wot-color-theme: var(--hi-primary-color);
   --wot-color-success: #4e92de;
   --wot-button-small-radius: 6px;
@@ -42,10 +43,20 @@ page {
   height: 100%;
 }
 
-.hi-converse__textarea {
+.hi-textarea {
   max-height: 100px;
-  --wot-textarea-fs: 14px;
-  --wot-cell-line-height: 30px;
+  --wot-textarea-fs: 18px;
+  --wot-cell-line-height: 26px;
+}
+
+.hi-textarea-container {
+  --wot-textarea-bg: transparent;
+}
+
+.hi-textarea-placeholder {
+  color: #9ca3af;
+  font-size: 18px;
+  line-height: 26px;
 }
 
 .hi-message-card--checkbox-text .wd-checkbox__txt {
@@ -120,30 +131,32 @@ page {
 }
 
 .hi-voice--textarea {
-  max-height: 90px;
+  max-height: 160px;
 }
 
 .hi-detail--textarea-container,
 .hi-comment-popup--textarea-container,
 .hi-voice--textarea-container {
-  --wot-textarea-bg: #f1f1f1;
+  --wot-textarea-bg: transparent;
   padding: 14px !important;
 }
 
 .hi-voice--textarea-container {
-  --wot-textarea-bg: white;
+  --wot-textarea-bg: transparent;
+  --wot-textarea-color: white;
+  width: 100%;
 }
 
 .hi-detail--textarea-placeholder,
 .hi-comment-popup--textarea-placeholder,
 .hi-voice--textarea-placeholder {
-  color: #9ca3af;
+  color: white;
   font-size: 14px;
   line-height: 24px;
 }
 
 .hi-voice--textarea-placeholder {
-  color: #333;
+  color: white;
 }
 
 .hi-user--tab-nav .hi-tab-nav--left {

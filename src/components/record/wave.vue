@@ -1,22 +1,25 @@
 <script lang='ts' setup>
-import { getCurrentInstance, ref, watch } from 'vue'
+import { computed, getCurrentInstance, ref, toRefs, watch } from 'vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   visible: boolean
   decibel: number
-}>()
-
-const canvasRect = {
-  width: 80,
-  height: 50,
-  gap: 6,
-  count: 8,
-}
-const rectangleRect = {
-  radius: 0,
-  minHeight: canvasRect.height * 0.2,
-  maxHeight: canvasRect.height * 0.8,
-}
+  options?: {
+    width: number
+    height: number
+    gap: number
+    count: number
+    radius: number
+  }
+}>(), {
+  options: () => ({
+    width: 80,
+    height: 50,
+    gap: 6,
+    count: 8,
+    radius: 0,
+  }),
+})
 
 const instance = getCurrentInstance()
 const dpr = ref(1)
@@ -26,6 +29,9 @@ const animationTimer = ref<number | null>(null)
 const FPS = 10 // 目标帧率：每秒 10 帧
 const frameInterval = 1000 / FPS // 目标帧间隔时间 (1000ms / 10 = 100ms)
 let lastTime = 0 // 记录上次绘制的时间
+const { options } = toRefs(props)
+const minHeight = computed(() => options.value.height! * 0.2)
+const maxHeight = computed(() => options.value.height! * 0.6)
 
 function drawRoundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   const r_dpr = r * dpr.value
@@ -56,19 +62,19 @@ function drawWave() {
 
   const ctx = context.value
   // Canvas 的实际绘图尺寸 (物理像素)
-  const actualWidth = canvasRect.width * dpr.value
-  const actualHeight = canvasRect.height * dpr.value
+  const actualWidth = options.value.width! * dpr.value
+  const actualHeight = options.value.height! * dpr.value
 
-  const width = (canvasRect.width / canvasRect.count) - canvasRect.gap
-  const halfCanvasHeight = canvasRect.height / 2 // 中心线Y坐标 (CSS尺寸)
-  const heightRange = rectangleRect.maxHeight - rectangleRect.minHeight // 最大有效高度
+  const width = (options.value.width! / options.value.count!) - options.value.gap!
+  const halfCanvasHeight = options.value.height! / 2 // 中心线Y坐标 (CSS尺寸)
+  const heightRange = maxHeight.value - minHeight.value // 最大有效高度
 
   // 清空画布
   ctx.clearRect(0, 0, actualWidth, actualHeight)
   ctx.fillStyle = 'white' // 你的颜色设置
 
   // --- 1. 分贝处理和非线性映射 ---
-  const centerIndex = canvasRect.count / 2
+  const centerIndex = options.value.count! / 2
   const fluctuationRange = 0.2 // 高度随机浮动幅度 (±20%)
 
   // 确保 decibel 在 0-1 之间
@@ -79,11 +85,11 @@ function drawWave() {
   const normalizedDecibel = Math.pow(clampedDecibel, 2)
 
   // 基准高度：由标准化分贝值决定
-  const baseHeight = (normalizedDecibel * heightRange) + rectangleRect.minHeight
+  const baseHeight = (normalizedDecibel * heightRange) + minHeight.value
 
   // -------------------------------------------------------------------
 
-  for (let i = 0; i < canvasRect.count; i++) {
+  for (let i = 0; i < options.value.count!; i++) {
     let height: number
 
     // --- 2. 距离和权重计算 (中间高两边低) ---
@@ -99,7 +105,7 @@ function drawWave() {
     if (clampedDecibel === 0) {
       // 3. 静音状态：波形在最小高度附近微弱浮动，并受权重影响
       const minRandom = Math.random() * 0.5 * weight
-      height = rectangleRect.minHeight + minRandom
+      height = minHeight.value + minRandom
     }
     else {
       // 4. 声音激活状态：应用权重和随机浮动
@@ -112,16 +118,16 @@ function drawWave() {
       height = decayedBaseHeight * (1 + fluctuation)
 
       // 确保高度被限制在有效范围内
-      height = Math.max(height, rectangleRect.minHeight)
-      height = Math.min(height, rectangleRect.maxHeight)
+      height = Math.max(height, minHeight.value)
+      height = Math.min(height, maxHeight.value)
     }
 
     // --- 5. 绘制 ---
-    const x = i * (width + canvasRect.gap) + canvasRect.gap / 2
+    const x = i * (width + options.value.gap!) + options.value.gap! / 2
     const topY = halfCanvasHeight - height / 2
 
     // drawRoundRect 函数内部负责 DPR 尺寸转换
-    drawRoundRect(ctx, x, topY, width, height, rectangleRect.radius)
+    drawRoundRect(ctx, x, topY, width, height, options.value.radius!)
   }
 }
 function animation(currentTime: number) {
@@ -147,8 +153,8 @@ async function startCanvas() {
       canvasInstance.value = canvas
       context.value = ctx
 
-      canvas.width = canvasRect.width * dpr.value
-      canvas.height = canvasRect.height * dpr.value
+      canvas.width = options.value.width! * dpr.value
+      canvas.height = options.value.height! * dpr.value
       animationTimer.value = canvasInstance.value.requestAnimationFrame(animation)
     }).exec()
   }, 300)
@@ -156,7 +162,7 @@ async function startCanvas() {
 function stopCanvas() {
   animationTimer.value && canvasInstance.value.cancelAnimationFrame(animationTimer.value)
   animationTimer.value = null
-  context.value?.clearRect(0, 0, canvasRect.width * dpr.value, canvasRect.height * dpr.value)
+  context.value?.clearRect(0, 0, options.value.width! * dpr.value, options.value.height! * dpr.value)
 }
 
 watch(() => props.visible, (visible) => {
@@ -174,7 +180,7 @@ watch(() => props.visible, (visible) => {
     id="voiceCanvas"
     type="2d"
     disable-scroll
-    class="w-80px h-50px"
+    :style="`width: ${options.width}px; height: ${options.height}px;`"
   />
 </template>
 

@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 const cs = useClassesName('voice')
 const isRecording = ref(false)
-const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>('text')
+const recordPopupFocusedButton = ref<'cancel' | 'microphone' | 'text' | null>(null)
 const recordPopupRef = ref<InstanceType<typeof RecordPopup>>()
 const globalStore = useGlobalStore()
 const speechRecognizerManager = requirePlugin('QCloudAIVoice').realtimeRecognition()
@@ -23,6 +23,7 @@ const voiceId = ref('')
 const decibel = ref(0)
 const textRecognitionVisible = ref(false)
 const isTouched = ref(false)
+const isFocus = ref(false)
 
 record.onFrameRecorded((res) => {
   if (res.frameBuffer && isConnected.value) {
@@ -49,6 +50,12 @@ watch(() => [isRecording.value, isConnected.value], ([isRecording, isConnected])
     speechRecognizerManager.stop()
   }
 })
+
+watch(recordPopupFocusedButton, (val, oldVal) => {
+  if (val !== oldVal) {
+    uni.vibrateShort()
+  }
+})
 async function onTouchStart() {
   isTouched.value = false
   const status = await checkPermission('scope.record')
@@ -68,6 +75,7 @@ async function onTouchStart() {
 }
 function onTouchEnd() {
   isTouched.value = true
+
   if (!isConnected.value) {
     uni.showToast({
       title: '按住时间太短',
@@ -92,40 +100,52 @@ function onTouchMove(event) {
   const touchX = touch.clientX
   const touchY = touch.clientY
 
-  // 获取取消按钮位置
-  recordPopupRef.value?.query.select('.operate-button.cancel').boundingClientRect((cancelRect) => {
-    if (cancelRect && !Array.isArray(cancelRect)) {
-      const rect = cancelRect as UniApp.NodeInfo
-      if (isPointInButton(touchX, touchY, rect)) {
+  if (!recordPopupRef.value?.query)
+    return
+
+  const query = recordPopupRef.value.query
+
+  // 批量获取所有按钮位置
+  query
+    .select('.operate-button.cancel')
+    .boundingClientRect()
+    .select('.voice-button')
+    .boundingClientRect()
+    .select('.operate-button.text')
+    .boundingClientRect()
+    .exec((res) => {
+      if (!res || res.length < 3)
+        return
+
+      const [cancelRect, voiceRect, textRect] = res
+
+      // 检查取消按钮
+      if (cancelRect && isPointInButton(touchX, touchY, cancelRect as UniApp.NodeInfo)) {
         recordPopupFocusedButton.value = 'cancel'
         textRecognitionVisible.value = false
+        return
       }
-    }
-  })
 
-  // 获取录音按钮位置
-  recordPopupRef.value?.query.select('.voice-button').boundingClientRect((voiceRect) => {
-    if (voiceRect && !Array.isArray(voiceRect)) {
-      const rect = voiceRect as UniApp.NodeInfo
-      if (isPointInButton(touchX, touchY, rect)) {
+      // 检查录音按钮
+      if (voiceRect && isPointInButton(touchX, touchY, voiceRect as UniApp.NodeInfo)) {
+        recordPopupFocusedButton.value = 'microphone'
+        textRecognitionVisible.value = false
+        return
+      }
+
+      // 检查转文字按钮
+      if (textRect && isPointInButton(touchX, touchY, textRect as UniApp.NodeInfo)) {
+        recordPopupFocusedButton.value = 'text'
+        textRecognitionVisible.value = true
+        return
+      }
+
+      // 如果没有触摸到任何按钮，保持当前状态或设置为默认状态
+      if (recordPopupFocusedButton.value !== 'microphone') {
         recordPopupFocusedButton.value = 'microphone'
         textRecognitionVisible.value = false
       }
-    }
-  })
-
-  // 获取转文字按钮位置（第二个operate-button）
-  recordPopupRef.value?.query.select('.operate-button.text').boundingClientRect((textRect) => {
-    if (textRect && !Array.isArray(textRect)) {
-      const rect = textRect as UniApp.NodeInfo
-      if (isPointInButton(touchX, touchY, rect)) {
-        recordPopupFocusedButton.value = 'text'
-        textRecognitionVisible.value = false
-      }
-    }
-  })
-
-  recordPopupRef.value?.query.exec()
+    })
 }
 
 // 辅助函数：检测触摸点是否在按钮区域内
@@ -217,36 +237,52 @@ onHide(() => {
 
 <template>
   <root-portal>
-    <RecordPopup ref="recordPopupRef" v-model="isRecording" :is-connecting="isConnected" :speech-text="speechText" :decibel="decibel" :focused-button="recordPopupFocusedButton" />
+    <RecordPopup
+      ref="recordPopupRef"
+      v-model="isRecording"
+      :text="speechText"
+      :is-connecting="isConnected"
+      :decibel="decibel"
+      :focused-button="recordPopupFocusedButton"
+    />
 
-    <view v-show="textRecognitionVisible" class="w-screen h-screen fixed top-0 left-0 flex flex-col items-center justify-end z-10" :class="[cs.m('text-recognition-wrapper'), cs.is('transparent', isRecording)]">
-      <view class="p-8% w-full h-70% box-border flex flex-col justify-between" :style="{ paddingBottom: globalStore.keyboardHeight ? `${globalStore.keyboardHeight + 30}px` : '8%' }">
-        <view class="bg-white p-20rpx rounded-20rpx max-w-500px" :class="cs.m('textarea-wrapper')">
-          <wd-textarea
-            v-model="speechText"
-            no-border
-            confirm-type="send"
-            :show-confirm-bar="false"
-            :auto-height="true"
-            :custom-textarea-class="cs.m('textarea')"
-            :custom-class="cs.m('textarea-container')"
-            :placeholder-class="cs.m('textarea-placeholder')"
-            @confirm="onConfirm"
-          />
-        </view>
+    <view v-show="!isRecording && textRecognitionVisible" class="fixed top-0 left-0 w-screen h-screen z-9999">
+      <view class="w-screen h-screen voice-popup-wrapper" />
 
-        <view v-show="!isRecording" class="w-full flex justify-between mt-20rpx">
-          <wd-button
-            type="info"
-            size="large"
-            custom-style="--wot-button-large-height: 55px;--wot-button-info-bg-color: #212121;--wot-button-info-color: white;"
-            @click="onCloseTextRecognition"
-          >
-            取消
-          </wd-button>
-          <wd-button type="info" size="large" custom-style="--wot-button-large-height: 55px" @click="onConfirm">
-            发送
-          </wd-button>
+      <view :class="[cs.m('text-recognition-wrapper')]">
+        <view class="w-full h-70% box-border flex flex-col items-center justify-between" :style="{ paddingBottom: globalStore.keyboardHeight ? `${globalStore.keyboardHeight + 30}px` : '8%' }">
+          <view :class="cs.m('textarea-wrapper')">
+            <wd-textarea
+              v-model="speechText"
+              no-border
+              auto-height
+              confirm-type="send"
+              :focus="isFocus"
+              :show-confirm-bar="false"
+              :adjust-position="false"
+              :custom-textarea-class="cs.m('textarea')"
+              :custom-class="cs.m('textarea-container')"
+              :placeholder-class="cs.m('textarea-placeholder')"
+              @focus="isFocus = true"
+              @blur="isFocus = false"
+              @confirm="onConfirm"
+            />
+          </view>
+
+          <view class="w-85% flex justify-between mt-20rpx">
+            <view class="operate-button" @click="onCloseTextRecognition">
+              <view class="message-return-icon size-24px" />
+              <view>
+                取消
+              </view>
+            </view>
+            <view class="operate-button" @click="onConfirm">
+              <view class="message-check-icon size-24px" />
+              <view>
+                发送
+              </view>
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -264,27 +300,77 @@ onHide(() => {
   text-align: center;
 }
 
+.voice-popup-wrapper {
+  background: linear-gradient(0deg, #2f66fe 0%, #f2f2f2 40%, #f2f2f2 100%);
+}
+
+.hi-record--container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
 .hi-voice--textarea-wrapper {
+  width: 90vw;
+  background-color: var(--hi-primary-color);
+  padding: 6px 0;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-bottom: 30px;
   &::after {
     content: '';
     position: absolute;
-    right: 15%;
-    bottom: -5px;
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
-    background-color: white;
-    transform: rotate(45deg);
+    bottom: -10px;
+    right: 7vw;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--hi-primary-color);
   }
 }
 
 .hi-voice--text-recognition-wrapper {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.45));
-  justify-content: flex-end;
-  &.is-transparent {
-    background: transparent;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.operate-button {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  position: relative;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  gap: 4px;
+  &::before {
+    position: absolute;
+    content: '';
+    width: 84px;
+    height: 84px;
+    border-radius: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
   }
 }
 </style>

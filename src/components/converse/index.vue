@@ -25,7 +25,7 @@ const converseContainerStyle = ref<CSSProperties>({
   paddingBottom: '10px',
 })
 const sourceActionShow = ref(false)
-const messageType = ref<'text' | 'voice'>('voice')
+const messageType = ref<'text' | 'voice'>('text')
 const websocketStore = useWebsocketStore()
 const chatStore = useChatStore()
 const messageInject = useMessageInject()
@@ -199,14 +199,15 @@ defineExpose({
             no-border
             auto-height
             confirm-type="send"
-            placeholder-style="color: #666; line-height: 28px;"
             :disabled="chatStore.isReplying || disabled"
             :placeholder="placeholder"
             :show-confirm-bar="false"
             :adjust-position="false"
-            :custom-textarea-class="cs.e('textarea')"
             :cursor="cursorPosition"
             :disable-default-padding="true"
+            custom-textarea-class="hi-textarea"
+            custom-class="hi-textarea-container"
+            placeholder-class="hi-textarea-placeholder"
             @focus="onInputFocus"
             @blur="getConverseHeight"
             @linechange="onLineChange"
@@ -254,8 +255,7 @@ defineExpose({
 }
 
 .hi-converse--container {
-  padding: 0 18rpx;
-  height: 50px;
+  padding: 10rpx 18rpx;
   background-color: white;
   border-radius: 22rpx;
   display: flex;
@@ -271,7 +271,7 @@ defineExpose({
     right: -2px;
     bottom: -2px;
     border-radius: 24rpx;
-    background: linear-gradient(45deg, #abbaff, #1763eb, #45b7d1, #54a0ff, #ffc88e, #ff9ff3, #5f27cd, #ff6b6b);
+    background: linear-gradient(45deg, #abbaff, #1763eb, #45b7d1, #54a0ff, #ffc88e, #5f27cd);
     background-size: 400% 400%;
     animation: gradientFlow 3s ease infinite;
   }
