@@ -471,12 +471,13 @@ async function loadMoreData() {
 }
 
 .period-selector {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60rpx, auto));
   align-items: center;
   justify-content: space-between;
   background-color: #e4e4e4;
   padding: 4px;
-  font-size: 18rpx;
+  font-size: 11px;
   border-radius: 4px;
   position: relative;
 }

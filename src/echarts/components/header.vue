@@ -44,8 +44,8 @@ onMounted(async () => {
 <template>
   <view>
     <view class="grid grid-cols-2 mb-10px">
-      <view class="font-300">
-        <view class="text-15px">
+      <view class="font-400">
+        <view class="text-14px">
           {{ basicInfo?.name || '股票名称' }}
         </view>
         <view class="text-13px">
@@ -69,7 +69,7 @@ onMounted(async () => {
     <template v-if="!preview">
       <template v-if="basicInfo?.dataType === 'STOCK'">
         <view class="grid grid-cols-3 gap-20px items-center font-300">
-          <view class="text-15px flex flex-col gap-8px">
+          <view class="text-12px flex flex-col gap-8px">
             <view class="flex justify-between">
               <view>最高</view>
               <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
@@ -83,7 +83,7 @@ onMounted(async () => {
               </view>
             </view>
           </view>
-          <view class="text-15px  flex flex-col gap-8px">
+          <view class="text-12px  flex flex-col gap-8px">
             <view class="flex justify-between">
               <view>开盘</view>
               <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
@@ -97,7 +97,7 @@ onMounted(async () => {
               </view>
             </view>
           </view>
-          <view class="text-15px  flex flex-col gap-8px">
+          <view class="text-12px  flex flex-col gap-8px">
             <view class="flex justify-between">
               <view>量</view>
               <view class="font-400">
@@ -115,7 +115,7 @@ onMounted(async () => {
       </template>
       <template v-else>
         <view class="grid grid-cols-3 gap-20px items-center font-300">
-          <view class="text-15px flex flex-col gap-8px">
+          <view class="text-12px flex flex-col gap-8px">
             <view class="flex justify-between">
               <view>最高</view>
               <view class="font-400" :style="{ color: isUp ? '#FF193D' : '#25B230' }">
@@ -135,7 +135,7 @@ onMounted(async () => {
               </view>
             </view>
           </view>
-          <view class="text-15px  flex flex-col gap-8px">
+          <view class="text-12px  flex flex-col gap-8px">
             <view class="flex justify-between">
               <view>振幅</view>
               <view class="font-400">
@@ -155,7 +155,7 @@ onMounted(async () => {
               </view>
             </view>
           </view>
-          <view class="text-15px  flex flex-col gap-8px">
+          <view class="text-12px  flex flex-col gap-8px">
             <view class="flex justify-between">
               <view>量</view>
               <view class="font-400">
