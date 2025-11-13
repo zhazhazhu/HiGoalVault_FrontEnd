@@ -325,7 +325,7 @@ function stopTextToSpeech() {
         <template v-if="showMessageButtons">
           <wd-divider color="#cecece" custom-style="padding: 0" />
 
-          <view :class="cs.e('operations')" class="flex items-center gap-8px">
+          <view :class="cs.e('operations')" class="flex items-center gap-14px">
             <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
             <view :class="cs.e('icon-button')" @click="onRefresh">
               <view class="i-mdi-refresh icon" />
@@ -426,9 +426,9 @@ function stopTextToSpeech() {
   align-items: center;
   justify-content: center;
   .icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
   }
 }
 </style>
