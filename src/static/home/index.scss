@@ -11,12 +11,10 @@
 }
 
 .comment-icon {
-  background-color: #333;
-  -webkit-mask-image: url('/static/home/svg/comment_28.svg');
-  mask-image: url('/static/home/svg/comment_28.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
+  background-image: url('/static/home/svg/comment_28.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
   width: 48rpx;
   height: 48rpx;
 }

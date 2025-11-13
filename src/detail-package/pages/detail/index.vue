@@ -193,7 +193,7 @@ onLoad((options) => {
               </view>
             </view>
             <view class="flex items-center min-w-30px h-30px relative" @click="openCommentPopup">
-              <view class="comment-icon bg-#222 size-30px" />
+              <view class="comment-icon size-30px" />
               <view class="text-12px color-#222 absolute bottom-0 right-0 bg-white px-4px rounded-4px">
                 {{ formatCommentOrThumbUpCount(data?.commentCount) }}
               </view>

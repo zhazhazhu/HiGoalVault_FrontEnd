@@ -86,43 +86,46 @@ onMounted(() => {
   <wd-root-portal>
     <wd-message-box />
   </wd-root-portal>
-  <view class="flex flex-col gap-24rpx w-full mb-24rpx">
-    <view class="flex flex-col gap-14rpx p-14rpx rounded-20rpx comment-card" :class="{ active: data.comment.id === commentId }">
-      <view class="flex items-center gap-10rpx">
-        <wd-img round mode="aspectFill" :src="data.comment.face || 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" width="52rpx" height="52rpx" />
-        <view class="text-28rpx color-#666666">
+  <view class="flex flex-col w-full mb-24rpx">
+    <view class="flex p-7px rounded-20rpx comment-card" :class="{ active: data.comment.id === commentId }">
+      <wd-img round mode="aspectFill" :src="data.comment.face || 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" width="30px" height="30px" />
+
+      <view class="flex flex-col flex-1 ml-8px gap-4px" @click.stop="emit('replyComment', data.comment)">
+        <view class="text-12px color-#ABABAB">
           {{ data.comment.nickName || 'Unknown' }}
         </view>
-      </view>
 
-      <view class="text-#666666 text-26rpx">
-        {{ data.comment.commentContent }}
-      </view>
-
-      <view class="flex justify-between">
-        <view class="flex items-center gap-10rpx">
-          <view class="text-#8E8E93 text-20rpx">
-            发表于 {{ formatCommentDate(data.comment.createTime) }}
-          </view>
-          <view v-if="!isSelf" class="text-#333333 text-20rpx" @click="emit('replyComment', data.comment)">
-            回复
-          </view>
-          <view v-else class="text-#333333 text-20rpx" @click="onDeleteComment">
-            删除
-          </view>
+        <view class="text-#333 text-14px">
+          {{ data.comment.commentContent }}
         </view>
 
-        <view class="flex items-center gap-6rpx color-#666" @click="onLikeComment(data.comment)">
-          <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.comment.isLike }" />
-          <view>{{ data.comment.likeCount }}</view>
+        <view class="flex justify-between">
+          <view class="flex items-center gap-8px text-12px color-#919499">
+            <view>
+              {{ formatCommentDate(data.comment.createTime) }}
+            </view>
+            <view class="font-500" @click.stop="emit('replyComment', data.comment)">
+              回复
+            </view>
+            <view v-if="isSelf" class="font-500" @click.stop="onDeleteComment">
+              删除
+            </view>
+          </view>
+
+          <view class="flex items-center gap-6rpx color-#919499" @click.stop="onLikeComment(data.comment)">
+            <view class="size-18px" :class="[data.comment.isLike ? 'color-red i-material-symbols-favorite-rounded' : 'color-#919499 i-material-symbols-favorite-outline-rounded'] " />
+            <view class="text-14px">
+              {{ data.comment.likeCount }}
+            </view>
+          </view>
         </view>
       </view>
     </view>
 
-    <view v-if="data.totalReplies > 0" class="bg-#F1F1F1 rounded-14rpx p-26rpx flex flex-col gap-40rpx">
+    <view v-if="data.totalReplies > 0" class="rounded-14rpx p-7px pl-45px flex flex-col gap-14px">
       <ViewReplyCard v-for="item, index in data.replies" :key="item.id" :data="item" :comment="data.comment" @update:data="(val) => data.replies[index] = val" @reply-click="onReply" @delete-reply="onDeleteReply($event, index)" />
 
-      <view v-if="data.totalReplies > data.replies.length" class="text-#333333 text-20rpx" @click="onLoadReply(data.comment)">
+      <view v-if="data.totalReplies > data.replies.length" class="font-500 text-12px" @click="onLoadReply(data.comment)">
         展开{{ remainReplyTotal > 10 ? '10' : remainReplyTotal }}条
       </view>
     </view>

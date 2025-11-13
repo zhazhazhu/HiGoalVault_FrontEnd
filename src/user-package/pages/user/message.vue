@@ -131,7 +131,7 @@ onMounted(() => {
 
             <view v-if="item.commentStatus" class="flex justify-end gap-50rpx">
               <view class="flex items-center gap-6rpx" @click.stop="gotoContentComment(item)">
-                <view class="comment-icon bg-#666 size-46rpx" />
+                <view class="comment-icon size-46rpx" />
                 <view class="text-24rpx color-#666">
                   回复评论
                 </view>

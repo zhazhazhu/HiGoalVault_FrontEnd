@@ -51,39 +51,45 @@ function onDeleteReply(data: ReplyResponse) {
 
 <template>
   <view class="flex flex-col gap-14rpx w-full">
-    <view class="flex items-center gap-14rpx text-26rpx font-500">
-      <view class="flex items-center gap-14rpx">
-        <view class="color-blue">
-          {{ data.nickName }}
+    <view class="flex">
+      <wd-img round mode="aspectFill" :src="data.face || 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'" width="18px" height="18px" />
+      <view class="flex flex-col flex-1 ml-8px gap-4px" @click.stop="onReplyClick(data)">
+        <view class="flex items-center gap-14rpx text-12px color-#ABABAB">
+          <view>
+            {{ data.nickName }}
+          </view>
+          <template v-if="data.parentReplyId">
+            <view class="i-material-symbols-play-arrow-rounded" />
+            <view>
+              {{ data.replyToNickName }}
+            </view>
+          </template>
         </view>
-        <view v-if="data.parentReplyId" class="color-#666">
-          回复
-        </view>
-        <view v-if="data.parentReplyId" class="color-blue">
-          {{ data.replyToNickName }} :
-        </view>
-      </view>
 
-      <view class="text-#666666">
-        {{ data.replyContent }}
-      </view>
-    </view>
+        <view class="text-#333 text-14px">
+          {{ data.replyContent }}
+        </view>
 
-    <view class="flex justify-between">
-      <view class="flex items-center gap-10rpx">
-        <view class="text-#8E8E93 text-20rpx">
-          {{ formatCommentDate(data.createTime) }}
+        <view class="flex justify-between">
+          <view class="flex items-center gap-8px text-12px color-#919499">
+            <view>
+              {{ formatCommentDate(data.createTime) }}
+            </view>
+            <view class="font-500" @click.stop="onReplyClick(data)">
+              回复
+            </view>
+            <view v-if="isSelf" class="font-500" @click.stop="onDeleteReply(data)">
+              删除
+            </view>
+          </view>
+
+          <view class="flex items-center gap-6rpx color-#919499" @click.stop="onLikeReply(data)">
+            <view class="size-18px" :class="[data.isLike ? 'color-red i-material-symbols-favorite-rounded' : 'color-#919499 i-material-symbols-favorite-outline-rounded'] " />
+            <view class="text-14px">
+              {{ data.likeCount }}
+            </view>
+          </view>
         </view>
-        <view v-if="!isSelf" class="text-#333333 text-20rpx" @click="onReplyClick(data)">
-          回复
-        </view>
-        <view v-else class="text-#333333 text-20rpx" @click="onDeleteReply(data)">
-          删除
-        </view>
-      </view>
-      <view class="flex items-center gap-6rpx color-#666" @click="onLikeReply(data)">
-        <view class="i-material-symbols-favorite-rounded color-#b1b1b1 size-38rpx mr-6rpx" :class="{ 'color-red': data.isLike }" />
-        <view>{{ data.likeCount }}</view>
       </view>
     </view>
   </view>

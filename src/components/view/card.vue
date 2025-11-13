@@ -155,7 +155,7 @@ function onDelete() {
         </view>
       </view>
       <view class="flex items-center min-w-30px h-30px gap-4px">
-        <view class="comment-icon bg-#222 size-22px" />
+        <view class="comment-icon size-22px" />
         <view class="text-16px color-#222">
           {{ formatCommentOrThumbUpCount(data.commentCount) }}
         </view>

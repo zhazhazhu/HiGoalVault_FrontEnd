@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<{
   inputOptions?: Partial<ExtractPropTypes<typeof inputProps>>
   buttonOptions?: Partial<ButtonProps>
   showTemplateButton?: boolean
+  disableTemplate?: boolean
 }>(), {
   placeholder: '说点什么...',
   buttonText: '发送',
@@ -31,7 +32,7 @@ const emit = defineEmits<{
   (e: 'afterLeave'): void
 }>()
 const input = defineModel({ type: String, default: '' })
-const visible = defineModel('visible', { type: Boolean, default: false })
+const visible = defineModel('visible', { type: Boolean, default: undefined })
 const isFocus = ref(false)
 const textareaOptions = computed<Partial<TextareaProps>>(() => ({
   placeholder: props.placeholder || '',
@@ -50,7 +51,7 @@ function handleClose() {
   visible.value = false
 }
 function onVisualInput() {
-  if (props.showTemplateButton === true) {
+  if (!props.disableTemplate || visible.value === undefined) {
     return
   }
   visible.value = true
@@ -74,11 +75,12 @@ async function onConfirm() {
     })
     return
   }
+  await emit('confirm', input.value)
   visible.value = false
-  emit('confirm', input.value)
 }
 function onBlur() {
   visible.value = false
+  emit('afterLeave')
 }
 
 defineExpose({
@@ -94,12 +96,13 @@ defineExpose({
       <slot>
         <InputModel
           v-model="input"
+          :focus="isFocus"
           :placeholder="placeholder"
           :button-text="buttonText"
           :input-type="inputType"
-          :textarea-options="{ disabled: !showTemplateButton, ...textareaOptions }"
-          :input-options="{ disabled: !showTemplateButton, ...inputOptions }"
-          :button-options="{ disabled: !input.trim(), ...buttonOptions }"
+          :textarea-options="{ disabled: disableTemplate, ...textareaOptions }"
+          :input-options="{ disabled: disableTemplate, ...inputOptions }"
+          :button-options="{ disabled: disableTemplate || !input.trim(), ...buttonOptions }"
           :show-template-button="showTemplateButton"
           @blur="onBlur"
           @confirm="onConfirm"
@@ -121,7 +124,7 @@ defineExpose({
         ...popupOptions,
       }"
     >
-      <view class="p-30rpx pb-40rpx">
+      <view class="p-30rpx">
         <InputModel
           v-model="input"
           :focus="isFocus"

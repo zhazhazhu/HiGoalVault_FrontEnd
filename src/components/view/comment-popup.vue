@@ -148,9 +148,12 @@ function putTemporaryComment(id: string) {
   console.log('putTemporaryComment', data.value)
 }
 async function onConfirm() {
+  const content = commentContent.value.trim()
+  if (!content)
+    return
   try {
     if (currentOperating.value === null) {
-      const res = await api.addComment({ commentContent: commentContent.value, contentId: props.contentId })
+      const res = await api.addComment({ commentContent: content, contentId: props.contentId })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
       }
@@ -158,7 +161,7 @@ async function onConfirm() {
     else if (currentReplying.value.type === 'comment') {
       const res = await api.addCommentReply({
         commentId: currentReplying.value.comment!.id,
-        replyContent: commentContent.value.trim(),
+        replyContent: content,
         replyToUserId: currentReplying.value.comment!.commenterId,
       })
       if (res.code === 200) {
@@ -168,7 +171,7 @@ async function onConfirm() {
     else if (currentReplying.value.type === 'reply') {
       const res = await api.addCommentReply({
         commentId: data.value[currentOperating.value].comment.id,
-        replyContent: commentContent.value.trim(),
+        replyContent: content,
         replyToUserId: currentReplying.value.reply!.replierId,
         parentReplyId: currentReplying.value.reply!.id,
       })
@@ -214,7 +217,9 @@ function onDeleteComment(index: number) {
   total.value--
 }
 function handleAfterLeave() {
-  resetComment()
+  if (!commentContent.value) {
+    resetComment()
+  }
 }
 
 watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
@@ -230,7 +235,6 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
     position="bottom"
     custom-class="rounded-t-32px"
     safe-area-inset-bottom
-    lock-scroll
     @close="handleClose"
   >
     <view class="h-1000rpx p-32rpx relative pb-130rpx">
@@ -278,16 +282,16 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
         </view>
       </scroll-view>
 
-      <view class="flex items-center absolute bottom-0 left-0 w-full px-32rpx box-border gap-30rpx h-100rpx bg-white">
+      <view class="flex items-center w-full box-border gap-30rpx h-100rpx bg-white">
         <view class="rounded-12px flex-1 overflow-hidden">
-          <input-popup
+          <input-model
             v-model="commentContent"
-            v-model:visible="isFocus"
             :placeholder="placeholder"
-            :popup-options="{ modal: false }"
+            :focus="isFocus"
             :show-template-button="true"
-            @after-leave="handleAfterLeave"
+            :textarea-options="{ adjustPosition: true }"
             @confirm="onConfirm"
+            @blur="handleAfterLeave"
           />
         </view>
       </view>
