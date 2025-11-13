@@ -298,6 +298,7 @@ onHide(() => {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
+  transform: translateX(15px);
 }
 
 .voice-popup-wrapper {

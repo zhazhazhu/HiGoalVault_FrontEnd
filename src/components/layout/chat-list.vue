@@ -130,7 +130,7 @@ function onClickChat(item: Chat) {
       <wd-message-box />
     </wd-root-portal>
 
-    <wd-button icon="add" plain block @click="onCreateNewChat">
+    <wd-button icon="add" :round="false" block @click="onCreateNewChat">
       新对话
     </wd-button>
     <scroll-view

@@ -52,8 +52,13 @@ onMounted(() => {
 <template>
   <view class="pt-110px w-85% px-16px box-border h-full flex flex-col justify-between relative">
     <view class="i-material-symbols-light-close-rounded size-30px absolute top-60px left-14px" @click="emit('close')" />
+    <!-- <view class="absolute top-60px left-14px">
+      <wd-button size="small" type="info" :round="false" @click="emit('close')">
+        <wd-icon name="close" size="12px" />
+      </wd-button>
+    </view> -->
     <view class="relative flex-1 flex flex-col justify-between">
-      <view v-show="active === 'chat'" class="absolute top-6px right-0" @click="onEditChatList">
+      <view v-show="active === 'chat'" class="absolute top-6px right-0 z-99" @click="onEditChatList">
         <template v-if="chatStore.chats.length > 0">
           <wd-button v-if="!isEdit" type="text">
             编辑
@@ -63,7 +68,7 @@ onMounted(() => {
           </wd-button>
         </template>
       </view>
-      <wd-tabs v-model="active" custom-class="hi-tabs left-label" animated slidable="always" swipeable>
+      <wd-tabs v-model="active" custom-class="hi-tabs left-label" slidable="always">
         <wd-tab title="对话" name="chat">
           <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
         </wd-tab>
@@ -88,41 +93,6 @@ onMounted(() => {
           </view>
         </wd-tab>
       </wd-tabs>
-      <!-- <tabs v-model="active" custom-class="flex-1" :sticky="false" :custom-nav-class="cs.m('tab-nav')" :editable="active === 'chat'" @edit="onEditChatList">
-        <template #edit>
-          <template v-if="chatStore.chats.length > 0">
-            <wd-button v-if="!isEdit" type="text">
-              编辑
-            </wd-button>
-            <wd-button v-else type="primary" :round="false" size="small">
-              完成
-            </wd-button>
-          </template>
-        </template>
-        <tabs-item name="chat" label="对话">
-          <LayoutChatList :show-sidebar="model" :is-edit="isEdit" @change-chat="$emit('changeChat')" />
-        </tabs-item>
-        <tabs-item name="browse" label="发现">
-          <view class="flex flex-col gap-10px mt-10px">
-            <view class="text-34rpx font-bold text-h1-color">
-              热门
-            </view>
-            <view v-if="popularTags.length > 0" class="ml-10px">
-              <view v-for="item in popularTags" :key="item.id" class="py-6px text-26rpx text-h2-color" @click="onClickTag(item)">
-                {{ item.tagName }}
-              </view>
-            </view>
-            <view v-else>
-              <view class="text-26rpx color-gray-6">
-                暂无热门标签
-              </view>
-            </view>
-            <view class="text-34rpx font-bold text-h1-color" @click="gotoFollowPage">
-              关注
-            </view>
-          </view>
-        </tabs-item>
-      </tabs> -->
 
       <view :class="cs.m('bottom')">
         <view :class="cs.m('user')" @click="gotoUser">
