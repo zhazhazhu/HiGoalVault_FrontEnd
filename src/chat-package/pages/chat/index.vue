@@ -264,7 +264,7 @@ function onNavbarLeftClick() {
 }
 function onTabChange({ index }: { index: number }) {
   if (index === 1) {
-    uni.redirectTo({ url: '/pages/index/index' })
+    uni.reLaunch({ url: '/pages/index/index' })
   }
 }
 provide(messageInjectKey, {

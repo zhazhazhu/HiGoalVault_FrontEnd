@@ -158,6 +158,8 @@ function isPointInButton(x: number, y: number, buttonRect: UniApp.NodeInfo): boo
   return x >= left && x <= right && y >= top && y <= bottom
 }
 async function start() {
+  await globalStore.generateStsTempKey()
+
   const config: QCloudAIVoiceSpeechRecognizerManagerStartParams = {
     secretkey: globalStore.stsTempConfig?.tmpSecretKey || '',
     secretid: globalStore.stsTempConfig?.tmpSecretId || '',
