@@ -37,6 +37,12 @@ function createRequestPromiseFactory<T>(type: UniOptions['method'], url: string,
         success(res) {
           if (res.statusCode >= 400) {
             console.error('backend error status:', res.statusCode)
+            if (typeof res.data === 'object' && 'message' in res.data) {
+              uni.showToast({
+                title: `请求出错：${res.data?.message || res.statusCode}`,
+                icon: 'none',
+              })
+            }
             resolve(res.data as any)
           }
           else {
