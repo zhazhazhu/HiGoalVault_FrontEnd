@@ -59,6 +59,21 @@ defineExpose({
           :custom-class="voiceCs.m('textarea-container')"
           :placeholder-class="voiceCs.m('textarea-placeholder')"
         />
+        <view class="absolute bottom-10px right-10px">
+          <RecordWave
+            :visible="model"
+            :decibel="decibel"
+            :options="{
+              width: 24,
+              height: 15,
+              count: 4,
+              gap: 4,
+              radius: 0,
+              minHeight: 5,
+              maxHeight: 15,
+            }"
+          />
+        </view>
       </view>
 
       <view class="operate-container">
@@ -189,6 +204,8 @@ defineExpose({
   }
   &.text {
     width: 90vw;
+    padding-right: 40px;
+    position: relative;
     &::before {
       left: auto;
       right: 7vw;

@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { computed, getCurrentInstance, ref, toRefs, watch } from 'vue'
+import { getCurrentInstance, ref, toRefs, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
   visible: boolean
@@ -10,6 +10,8 @@ const props = withDefaults(defineProps<{
     gap: number
     count: number
     radius: number
+    minHeight: number
+    maxHeight: number
   }
 }>(), {
   options: () => ({
@@ -18,6 +20,8 @@ const props = withDefaults(defineProps<{
     gap: 6,
     count: 8,
     radius: 0,
+    minHeight: 10,
+    maxHeight: 30,
   }),
 })
 
@@ -30,8 +34,6 @@ const FPS = 10 // 目标帧率：每秒 10 帧
 const frameInterval = 1000 / FPS // 目标帧间隔时间 (1000ms / 10 = 100ms)
 let lastTime = 0 // 记录上次绘制的时间
 const { options } = toRefs(props)
-const minHeight = computed(() => options.value.height! * 0.2)
-const maxHeight = computed(() => options.value.height! * 0.6)
 
 function drawRoundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   const r_dpr = r * dpr.value
@@ -67,7 +69,7 @@ function drawWave() {
 
   const width = (options.value.width! / options.value.count!) - options.value.gap!
   const halfCanvasHeight = options.value.height! / 2 // 中心线Y坐标 (CSS尺寸)
-  const heightRange = maxHeight.value - minHeight.value // 最大有效高度
+  const heightRange = options.value.maxHeight! - options.value.minHeight! // 最大有效高度
 
   // 清空画布
   ctx.clearRect(0, 0, actualWidth, actualHeight)
@@ -85,7 +87,7 @@ function drawWave() {
   const normalizedDecibel = Math.pow(clampedDecibel, 2)
 
   // 基准高度：由标准化分贝值决定
-  const baseHeight = (normalizedDecibel * heightRange) + minHeight.value
+  const baseHeight = (normalizedDecibel * heightRange) + options.value.minHeight!
 
   // -------------------------------------------------------------------
 
@@ -105,7 +107,7 @@ function drawWave() {
     if (clampedDecibel === 0) {
       // 3. 静音状态：波形在最小高度附近微弱浮动，并受权重影响
       const minRandom = Math.random() * 0.5 * weight
-      height = minHeight.value + minRandom
+      height = options.value.minHeight! + minRandom
     }
     else {
       // 4. 声音激活状态：应用权重和随机浮动
@@ -118,8 +120,8 @@ function drawWave() {
       height = decayedBaseHeight * (1 + fluctuation)
 
       // 确保高度被限制在有效范围内
-      height = Math.max(height, minHeight.value)
-      height = Math.min(height, maxHeight.value)
+      height = Math.max(height, options.value.minHeight!)
+      height = Math.min(height, options.value.maxHeight!)
     }
 
     // --- 5. 绘制 ---
