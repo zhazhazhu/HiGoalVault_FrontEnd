@@ -1,6 +1,6 @@
 import { useChatStore, useGlobalStore, useUserStore } from '@/store'
 
-const navigateMethods = ['navigateTo', 'redirectTo', 'navigateBack', 'switchTab']
+const navigateMethods = ['navigateTo', 'redirectTo', 'navigateBack', 'switchTab', 'reLaunch']
 export function navigationInterceptor() {
   const userStore = useUserStore()
   const globalStore = useGlobalStore()

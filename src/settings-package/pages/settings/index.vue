@@ -43,6 +43,7 @@ function onChooseAvatar(e) {
 async function onConfirm(val: string) {
   if (val.trim() === '') {
     isUpdateNickname.value = false
+    userName.value = user.userInfo?.nickName || ''
     return
   }
   else if (val.trim().length > 10) {
