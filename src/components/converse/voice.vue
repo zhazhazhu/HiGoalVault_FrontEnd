@@ -185,6 +185,7 @@ function onCloseTextRecognition() {
   textRecognitionVisible.value = false
   isConnected.value = false
   speechText.value = ''
+  emit('done', speechText.value, false)
 }
 
 onLoad(async () => {
