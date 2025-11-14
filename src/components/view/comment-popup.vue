@@ -8,11 +8,9 @@ import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
 
-const props = defineProps<{ contentId: string, currentComment?: {
-  commentId: string
-  commentType: 1 | 2 | null
-}, isRefreshing?: boolean }>()
+const props = defineProps<{ contentId: string, isRefreshing?: boolean }>()
 const model = defineModel({ type: Boolean, default: false })
+const currentComment = defineModel('currentComment', { type: Object as () => { commentId: string, commentType: 1 | 2 | null } | undefined, default: undefined })
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 10,
@@ -28,13 +26,11 @@ const placeholder = ref('发表友善评论')
 const isFocus = ref(false)
 const userStore = useUserStore()
 const refreshing = ref(false)
-const currentCommentId = ref('')
 
 async function getCurrentCommentData() {
-  if (props.currentComment?.commentId && props.currentComment.commentType !== null) {
-    const commentRes = await api.getCommentOrReplyById(props.currentComment as any)
+  if (currentComment.value?.commentId && currentComment.value.commentType !== null) {
+    const commentRes = await api.getCommentOrReplyById(currentComment.value as any)
     if (commentRes.code === 200) {
-      currentCommentId.value = commentRes.result.comment.id
       data.value.unshift(commentRes.result)
     }
   }
@@ -46,7 +42,7 @@ async function getData() {
   })
   if (res.code === 200) {
     total.value = res.result.total
-    const list = res.result.records.filter(item => item.comment.id !== currentCommentId.value)
+    const list = res.result.records.filter(item => item.comment.id !== currentComment.value?.commentId)
     data.value.push(...list)
     isFinish.value = res.result.total <= data.value.length
   }
@@ -216,9 +212,15 @@ function onDeleteComment(index: number) {
   data.value.splice(index, 1)
   total.value--
 }
-function handleAfterLeave() {
+function handleInputBlur() {
   if (!commentContent.value) {
     resetComment()
+  }
+}
+function handleAfterLeave() {
+  currentComment.value = {
+    commentId: '',
+    commentType: null,
   }
 }
 
@@ -235,6 +237,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
     position="bottom"
     custom-class="rounded-t-32px"
     safe-area-inset-bottom
+    @after-leave="handleAfterLeave"
     @close="handleClose"
   >
     <view class="h-1000rpx p-32rpx relative pb-130rpx">
@@ -266,7 +269,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
           v-for="item, index in data"
           :id="item.comment.id"
           :key="item.comment.id"
-          :current-comment-id="currentCommentId"
+          :current-comment-id="currentComment?.commentId"
           :data="item"
           @update:data="(val) => data[index] = val"
           @reply-comment="onReplyComment($event, index)"
@@ -291,7 +294,7 @@ watch(() => [model.value, props.isRefreshing], ([model, isRefreshing]) => {
             :show-template-button="true"
             :textarea-options="{ adjustPosition: true }"
             @confirm="onConfirm"
-            @blur="handleAfterLeave"
+            @blur="handleInputBlur"
           />
         </view>
       </view>

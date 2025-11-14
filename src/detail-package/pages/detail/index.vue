@@ -123,7 +123,7 @@ onLoad((options) => {
 
 <template>
   <view>
-    <ViewCommentPopup v-if="data" v-model="commentVisible" :content-id="data.id" :current-comment="currentComment" :is-refreshing="isRefreshing" />
+    <ViewCommentPopup v-if="data" v-model="commentVisible" v-model:current-comment="currentComment" :content-id="data.id" :is-refreshing="isRefreshing" />
 
     <Navbar title="详情" enable-left-slot>
       <template #left>
