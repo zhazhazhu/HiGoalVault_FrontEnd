@@ -111,10 +111,6 @@ function loadFollowData() {
 }
 
 function onTabClick() {
-  if (!userStore.isLogin) {
-    globalStore.showLoginPopup = true
-    return false
-  }
   scrollTop.value += 0.0001
 }
 
@@ -126,6 +122,10 @@ function loadData() {
 }
 
 function onNavbarLeftClick() {
+  if (!userStore.isLogin) {
+    globalStore.showLoginPopup = true
+    return
+  }
   showSidebar.value = !showSidebar.value
 }
 function onChangeChat() {
@@ -190,6 +190,8 @@ onShow(() => {
 
 <template>
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
+    <LoginPopup v-model="globalStore.showLoginPopup" />
+
     <image src="@/static/home/image/home-background.png" class="absolute top-0 left-0 w-full" />
     <scroll-view
       class="bg-[var(--hi-bg-color)] h-100vh box-border"
@@ -219,9 +221,9 @@ onShow(() => {
               <view v-show="navbarOpacity === 1" class="menu-icon" @tap="onNavbarLeftClick" />
               <view v-show="navbarOpacity === 1" class="search-icon" @click="onClickSearch" />
             </view>
-            <wd-tabs v-model="active" custom-class="hi-tabs" animated>
+            <wd-tabs v-model="active" custom-class="hi-tabs" animated @change="onTabClick">
               <wd-tab title="发现" name="view" />
-              <wd-tab title="关注" name="follow" />
+              <wd-tab title="关注" name="follow" :disabled="!userStore.isLogin" />
             </wd-tabs>
             <view>
               <view v-show="navbarOpacity !== 1" class="search-icon float-right" @click="onClickSearch" />
