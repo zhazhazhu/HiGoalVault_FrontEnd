@@ -391,7 +391,7 @@ async function loadMoreData() {
 
 <template>
   <view class="stock-chart-container" :class="[preview && 'preview']">
-    <view v-if="!preview" class="text-13px color-#ff1e1e mb-10px">
+    <view v-if="!preview" class="text-13px color-[var(--hi-primary-color)] mb-10px">
       这是查询到的行情数据：
     </view>
     <!-- 股票基本信息 -->

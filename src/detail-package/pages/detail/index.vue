@@ -152,7 +152,7 @@ onLoad((options) => {
               {{ messageContent.query }}
             </view>
             <view class="bg-white flex items-center justify-center rounded-8px w-fit px-12px py-4px my-10px gap-2px" @click="onContinueTalk">
-              <view class="chat-star-icon" />
+              <view class="chat-star-icon size-22px" />
               <view class="text-14px color-#4362FF">
                 继续问
               </view>
