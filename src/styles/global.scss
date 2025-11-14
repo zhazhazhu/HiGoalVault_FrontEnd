@@ -47,6 +47,7 @@ page {
   max-height: 100px;
   --wot-textarea-fs: 16px;
   --wot-cell-line-height: 26px;
+  min-height: auto !important;
 }
 
 .hi-textarea-container {

@@ -352,7 +352,7 @@ function stopTextToSpeech() {
             <view class="flex-1" />
             <view :class="cs.e('icon-button')" @click="onFavorite">
               <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border icon" />
-              <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star icon color-[var(--hi-primary-color)]" />
+              <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star icon color-yellow-4" />
             </view>
             <view :class="cs.e('icon-button')" @click="onPublish">
               <view class="i-material-symbols-upload-rounded icon" />
