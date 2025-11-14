@@ -63,6 +63,7 @@ declare module 'vue' {
     WdSteps: typeof import('wot-design-uni/components/wd-steps/wd-steps.vue')['default']
     WdTab: typeof import('wot-design-uni/components/wd-tab/wd-tab.vue')['default']
     WdTabs: typeof import('wot-design-uni/components/wd-tabs/wd-tabs.vue')['default']
+    WdTag: typeof import('wot-design-uni/components/wd-tag/wd-tag.vue')['default']
     WdText: typeof import('wot-design-uni/components/wd-text/wd-text.vue')['default']
     WdTextarea: typeof import('wot-design-uni/components/wd-textarea/wd-textarea.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']

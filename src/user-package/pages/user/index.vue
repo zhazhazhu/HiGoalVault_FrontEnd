@@ -126,7 +126,7 @@ onLoad((options) => {
 </script>
 
 <template>
-  <view>
+  <view class="bg-[var(--hi-bg-color)] h-screen">
     <Navbar enable-left-slot>
       <template #left>
         <view class="flex items-center gap-20rpx" @click="gotoHome">
@@ -137,7 +137,7 @@ onLoad((options) => {
     </Navbar>
 
     <scroll-view
-      class="p-32rpx bg-[var(--hi-bg-color)] h-[calc(100vh-80px)] box-border"
+      class="h-[calc(100vh-90px)]"
       scroll-y
       enhanced
       :show-scrollbar="false"
@@ -147,83 +147,73 @@ onLoad((options) => {
       @scrolltolower="loadData"
       @refresherrefresh="refreshData"
     >
-      <view class="flex items-center justify-between gap-20rpx">
-        <view class="flex items-center gap-10rpx" @click="gotoSetting">
-          <wd-img :src="userInfo?.face" round :width="60" :height="60" mode="aspectFill" />
-          <view class="text-35rpx font-bold ml-10rpx">
-            {{ userInfo?.nickName }}
-          </view>
-        </view>
-
-        <view class="flex items-center gap-20rpx font-500">
-          <view class="flex flex-col items-center justify-center gap-5rpx">
-            <view class="text-32rpx">
-              {{ data?.totalLikeCount || 0 }}
-            </view>
-            <view class="color-#666 text-24rpx">
-              获赞
+      <view class="px-32rpx">
+        <view class="flex items-center justify-between gap-20rpx mb-20px">
+          <view class="flex items-center gap-10rpx" @click="gotoSetting">
+            <wd-img :src="userInfo?.face" round :width="60" :height="60" mode="aspectFill" />
+            <view class="text-35rpx font-bold ml-10rpx">
+              {{ userInfo?.nickName }}
             </view>
           </view>
 
-          <wd-divider vertical custom-style="--wot-divider-vertical-height: 36px" />
-
-          <view class="flex flex-col items-center justify-center gap-5rpx">
-            <view class="text-32rpx">
-              {{ data?.followerCount || 0 }}
-            </view>
-            <view class="color-#666 text-24rpx">
-              粉丝
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <view class="pt-45rpx">
-        <tabs
-          v-model="activeTab"
-          class="overflow-hidden"
-          custom-content-class="mt-10px"
-          editable
-          :custom-class="cs.m('tabs')"
-          :custom-nav-class="cs.m('tab-nav')"
-          @tab-change="onTabChange"
-        >
-          <template #edit>
-            <view class="flex items-center gap-30rpx">
-              <view class="user-search-icon" @click="gotoSearch" />
-              <view v-if="!userId" class="user-message-icon" @click="gotoMessage" />
-              <template v-else>
-                <wd-button v-if="!isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
-                  关注
-                </wd-button>
-                <wd-button v-else plain size="small" @click="onFollowUser('unfollow')">
-                  取消关注
-                </wd-button>
-              </template>
-            </view>
-          </template>
-          <tabs-item name="published" :label="`发布${data?.contentCount || 0}`">
-            <UserPublish ref="userPublish" :user-id="userId" />
-          </tabs-item>
-          <tabs-item v-if="!userId" name="commented" label="评论过">
-            <UserComment ref="userComment" :user-id="userId" />
-          </tabs-item>
-          <tabs-item v-if="!userId" name="interacted" label="互动过">
-            <view>
-              <view class="flex flex-wrap gap-12rpx mb-20rpx">
-                <Tag type="warning" :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
-                  赞过{{ userLike?.total }}
-                </Tag>
-                <Tag type="warning" :active="interactActiveTab === 'collected'" @tap="onClickInteractTab('collected')">
-                  收藏{{ userCollect?.total }}
-                </Tag>
+          <view class="flex items-center gap-20rpx font-500">
+            <view class="flex flex-col items-center justify-center gap-5rpx">
+              <view class="text-32rpx">
+                {{ data?.totalLikeCount || 0 }}
               </view>
-
-              <UserLike v-if="interactActiveTab === 'liked'" ref="userLike" />
-              <UserCollect v-if="interactActiveTab === 'collected'" ref="userCollect" />
+              <view class="color-#666 text-24rpx">
+                获赞
+              </view>
             </view>
-          </tabs-item>
-        </tabs>
+
+            <wd-divider vertical custom-style="--wot-divider-vertical-height: 36px" />
+
+            <view class="flex flex-col items-center justify-center gap-5rpx">
+              <view class="text-32rpx">
+                {{ data?.followerCount || 0 }}
+              </view>
+              <view class="color-#666 text-24rpx">
+                粉丝
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="sticky top-0 left-0 bg-[var(--hi-bg-color)] pb-6px z-9999">
+          <wd-tabs v-model="activeTab" custom-class="hi-tabs left-label" slidable="always" @change="onTabChange">
+            <wd-tab :title="`发布${data?.contentCount || 0}`" name="published" />
+            <wd-tab v-if="!userId" title="评论过" name="commented" />
+            <wd-tab v-if="!userId" title="互动过" name="interacted" />
+          </wd-tabs>
+          <view class="flex items-center gap-30rpx absolute top-10px right-0">
+            <view class="user-search-icon" @click="gotoSearch" />
+            <view v-if="!userId" class="user-message-icon" @click="gotoMessage" />
+            <template v-else>
+              <wd-button v-if="!isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
+                关注
+              </wd-button>
+              <wd-button v-else plain size="small" @click="onFollowUser('unfollow')">
+                取消关注
+              </wd-button>
+            </template>
+          </view>
+        </view>
+
+        <UserPublish v-if="activeTab === 'published'" ref="userPublish" :user-id="userId" />
+        <UserComment v-else-if="activeTab === 'commented'" ref="userComment" :user-id="userId" />
+        <view v-else>
+          <view class="flex flex-wrap gap-12rpx mb-20rpx">
+            <Tag :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
+              赞过{{ userLike?.total }}
+            </Tag>
+            <Tag :active="interactActiveTab === 'collected'" @tap="onClickInteractTab('collected')">
+              收藏{{ userCollect?.total }}
+            </Tag>
+          </view>
+
+          <UserLike v-if="interactActiveTab === 'liked'" ref="userLike" />
+          <UserCollect v-if="interactActiveTab === 'collected'" ref="userCollect" />
+        </view>
       </view>
     </scroll-view>
   </view>
