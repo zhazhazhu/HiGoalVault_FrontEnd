@@ -56,7 +56,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
             <template v-if="item.finished && !item.thinking?.trim()">
               <text>完成</text>
             </template>
-            <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.thinking || '')" />
+            <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.thinking || '')" container-style="overflow: hidden" />
           </template>
         </wd-step>
       </wd-steps>
@@ -66,7 +66,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
   <Stock v-if="data.stockParameter.code && visible" :data="data.stockData?.[0]?.data" :params="data.stockParameter" />
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e, 'response')">
-    <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" />
+    <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" container-style="overflow: hidden" />
   </view>
 
   <view v-if="data.label?.length && enableLabel" class="flex flex-row flex-wrap gap-10rpx">

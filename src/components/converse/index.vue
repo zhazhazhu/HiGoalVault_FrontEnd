@@ -10,6 +10,7 @@ import { useWebsocketStore } from '@/store/websocket'
 const props = withDefaults(defineProps<{
   placeholder?: string
   disabled?: boolean
+  plain?: boolean
 }>(), {
   placeholder: '你的金融助理，随便问我',
 })
@@ -187,7 +188,7 @@ defineExpose({
   <view :class="cs.m('wrapper')" :style="converseContainerStyle">
     <ConverseSourceAction v-model="sourceActionShow" />
 
-    <view :class="cs.m('container')">
+    <view :class="[cs.m('container'), cs.is('plain', plain)]">
       <view class="flex items-center w-full z-9">
         <view :class="cs.e('left')">
           <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
@@ -261,6 +262,9 @@ defineExpose({
   display: flex;
   align-items: center;
   position: relative;
+  &.is-plain::before {
+    background: black;
+  }
 
   // 创建渐变边框效果
   &::before {

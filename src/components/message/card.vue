@@ -135,15 +135,20 @@ function onRefresh() {
 }
 function onCopy() {
   let content = ''
+  const stepContent = currentAnswer.value.steps?.map(item => `${item.message}\n\n${markdownToPlainText(item.thinking || '')}`).join('\n') || ''
+  const responseContent = markdownToPlainText(currentAnswer.value.response || '')
   switch (currentLongPressType.value) {
     case 'response':
-      content = markdownToPlainText(currentAnswer.value.response || '')
+      content = stepContent
       break
     case 'step':
-      content = currentAnswer.value.steps?.map(item => `${item.message}\n\n${markdownToPlainText(item.thinking || '')}`).join('\n') || ''
+      content = responseContent
       break
     case 'user':
       content = message.value.query
+      break
+    default:
+      content = `${stepContent}\n\n${responseContent}`
       break
   }
   uni.setClipboardData({
@@ -331,7 +336,7 @@ function stopTextToSpeech() {
               <view class="i-mdi-refresh icon" />
             </view>
             <view :class="cs.e('icon-button')" @click="onCopy">
-              <view class="i-mingcute-copy-2-line icon" />
+              <view class="i-mingcute-copy-2-line icon size-20px!" />
             </view>
             <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
               <view class="size-26px flex items-center justify-center">
@@ -405,26 +410,26 @@ function stopTextToSpeech() {
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #f7f8f9;
 }
 .hi-message-card__reference-item {
   display: flex;
   align-items: center;
   padding: 10px;
-  background: rgba(102, 102, 102, 0.08);
-  border-radius: 8px;
+  background: #f7f8f9;
+  border-radius: 10px;
   margin-bottom: 10px;
   font-size: 14px;
   color: #333;
 }
 .hi-message-card__icon-button {
-  border: 1px solid #e4e4e4;
-  border-radius: 4px;
-  width: 28px;
-  height: 28px;
+  border: 1px solid #e5e5e7;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f5f7f9;
   .icon {
     font-size: 22px;
     width: 22px;

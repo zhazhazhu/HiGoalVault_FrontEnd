@@ -347,7 +347,7 @@ onShareAppMessage(async ({ from }) => {
         </view>
       </scroll-view>
 
-      <converse ref="converseInstance" :disabled="chatStore.isReplying" />
+      <converse ref="converseInstance" :disabled="chatStore.isReplying" plain />
     </container>
   </Layout>
 </template>
