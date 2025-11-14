@@ -32,7 +32,6 @@ const [page, resetPage] = useResetRef<Page>({
   sort: 'createTime',
 })
 const scrollTop = ref(0)
-const showSidebar = ref(false)
 const isFinish = ref(false)
 const websocketStore = useWebsocketStore()
 const messages = computed(() => chatStore.messages)
@@ -260,7 +259,7 @@ function onNavbarLeftClick() {
     share.value.isChecked = false
     return
   }
-  showSidebar.value = !showSidebar.value
+  chatStore.showSidebar = !chatStore.showSidebar
 }
 function onTabChange({ index }: { index: number }) {
   if (index === 1) {
@@ -304,7 +303,7 @@ onShareAppMessage(async ({ from }) => {
 </script>
 
 <template>
-  <Layout v-model="showSidebar" @change-chat="refreshMessage">
+  <Layout v-model="chatStore.showSidebar" @change-chat="refreshMessage">
     <SharePopup v-model="share.isChecked" />
 
     <navbar ref="navbarInstance" :left-text="share.isChecked && '取消'" @left-click="onNavbarLeftClick">

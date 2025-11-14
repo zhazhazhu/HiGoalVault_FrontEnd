@@ -21,6 +21,7 @@ interface State {
   currentTemporaryMessageId: Ref<string>
   isReplying: boolean
   waitingMessageTask: WaitingMessageTask | null
+  showSidebar: boolean
 }
 
 export interface ChatWithType {
@@ -39,6 +40,7 @@ export const useChatStore = defineStore('chat', {
     currentTemporaryMessageId: useStoreRef<string>('CURRENT_TEMPORARY_MESSAGE_ID', ''),
     isReplying: false,
     waitingMessageTask: null,
+    showSidebar: false,
   }),
   getters: {
     currentChat: (state) => {

@@ -49,14 +49,21 @@ async function getData() {
 function formatTime(time: string, type: keyof ChatWithType) {
   return type === 'today' ? dayjs(time).format('HH:mm') : dayjs(time).format('YY/MM/DD')
 }
-async function onCreateNewChat() {
+function handleReplying() {
   if (chatStore.isReplying) {
     uni.showToast({
       title: '回答生成中，请稍后再试',
       icon: 'none',
     })
-    return
+    chatStore.showSidebar = false
+    return true
   }
+  return false
+}
+async function onCreateNewChat() {
+  const replying = handleReplying()
+  if (replying)
+    return
   const data = await api.addChat()
   if (data.code === 200) {
     chatStore.currentChatId = data.result.chatId
@@ -112,13 +119,9 @@ function init() {
   getData()
 }
 function onClickChat(item: Chat) {
-  if (chatStore.isReplying) {
-    uni.showToast({
-      title: '回答生成中，请稍后再试',
-      icon: 'none',
-    })
+  const replying = handleReplying()
+  if (replying)
     return
-  }
   chatStore.currentChatId = item.chatId
   emit('changeChat')
 }
