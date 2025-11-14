@@ -1,5 +1,4 @@
 <script lang='ts' setup>
-import type { SearchTab } from '.'
 import type { GlobalSearchRequest, GlobalSearchResult, UserCenterSearchRequest } from '@/api'
 import { onLoad } from '@dcloudio/uni-app'
 import { onMounted, ref, watch } from 'vue'
@@ -36,7 +35,7 @@ watch(keyword, (val) => {
 async function getData() {
   page.value.keyword = keyword.value
   if (!userId.value) {
-    const res = await api.globalSearch({ ...page.value, searchSort: 'HOT' }).finally(() => {
+    const res = await api.globalSearch({ ...page.value }).finally(() => {
       isLoading.value = false
     })
     if (res.code === 200) {
@@ -53,7 +52,7 @@ async function getData() {
     }
   }
   else {
-    const res = await api.userCenterSearch({ ...page.value, searchSort: 'HOT', userId: userId.value }).finally(() => {
+    const res = await api.userCenterSearch({ ...page.value, searchActionRange: undefined, userId: userId.value }).finally(() => {
       isLoading.value = false
     })
     if (res.code === 200) {
@@ -133,12 +132,10 @@ onLoad((options) => {
 })
 
 onMounted(() => {
-  if (!userId.value) {
-    data.value = []
-    page.value.pageNumber = 1
-    page.value.pageSize = 10
-    getData()
-  }
+  data.value = []
+  page.value.pageNumber = 1
+  page.value.pageSize = 10
+  getData()
 })
 </script>
 
@@ -149,7 +146,7 @@ onMounted(() => {
     <view class="bg-[var(--hi-bg-color)]">
       <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
 
-      <Sort v-model="page" @change="changeSort" @send-message="handleSendMessage" />
+      <Sort v-model="page" disable-search-action-range @change="changeSort" @send-message="handleSendMessage" />
     </view>
 
     <scroll-view

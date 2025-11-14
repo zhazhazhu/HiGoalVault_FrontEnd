@@ -17,7 +17,7 @@ const transformData = computed(() => props.data.map((item) => {
     chatQueryAnswerVO: chatStore.transformAnswer(item.chatQueryAnswerVO),
     memberContentForClientVO: {
       ...item.memberContentForClientVO,
-      chatQueryAnswerVO: chatStore.transformAnswer(item.memberContentForClientVO.chatQueryAnswerVO),
+      chatQueryAnswerVO: chatStore.transformAnswer(item.memberContentForClientVO?.chatQueryAnswerVO),
     },
   }
 }))
