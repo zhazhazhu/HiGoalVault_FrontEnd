@@ -128,11 +128,14 @@ onLoad((option) => {
           </view>
         </view>
 
-        <wd-button v-if="checkFollowTag" type="primary" plain size="small" @click="followTag(false)">
-          取消关注
+        <wd-button v-if="checkFollowTag" size="small" type="info" :round="false" @click="followTag(false)">
+          已关注
         </wd-button>
-        <wd-button v-else type="primary" icon="add" size="small" @click="followTag(true)">
-          关注
+        <wd-button v-else size="small" :round="false" @click="followTag(true)">
+          <view class="flex items-center">
+            <view class="i-material-symbols-add text-14px" />
+            关注
+          </view>
         </wd-button>
       </view>
 

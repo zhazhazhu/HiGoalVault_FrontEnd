@@ -189,11 +189,14 @@ onLoad((options) => {
             <view class="user-search-icon" @click="gotoSearch" />
             <view v-if="!userId" class="user-message-icon" @click="gotoMessage" />
             <template v-else>
-              <wd-button v-if="!isFollowed" icon="add" size="small" @click="onFollowUser('follow')">
-                关注
+              <wd-button v-if="!isFollowed" size="small" :round="false" @click="onFollowUser('follow')">
+                <view class="flex items-center">
+                  <view class="i-material-symbols-add text-14px" />
+                  关注
+                </view>
               </wd-button>
-              <wd-button v-else plain size="small" @click="onFollowUser('unfollow')">
-                取消关注
+              <wd-button v-else size="small" type="info" :round="false" @click="onFollowUser('unfollow')">
+                已关注
               </wd-button>
             </template>
           </view>
