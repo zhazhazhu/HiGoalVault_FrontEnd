@@ -4,6 +4,9 @@ import type { GlobalSearchRequest, UserCenterSearchRequest } from '@/api'
 import { ref } from 'vue'
 import { SearchActionRangeEnum, SearchSortEnum, SearchTimeRangeEnum } from '@/api'
 
+defineProps<{
+  disableSearchActionRange?: boolean
+}>()
 const emit = defineEmits<{
   (e: 'change'): void
   (e: 'sendMessage'): void
@@ -86,7 +89,7 @@ function handleChangeSort<K extends 'searchSort' | 'searchTimeRange' | 'searchAc
           </view>
         </view>
 
-        <view class="flex items-center mt-12px">
+        <view v-if="!disableSearchActionRange" class="flex items-center mt-12px">
           <view class="mr-10px color-#8A8F99">
             范围
           </view>
