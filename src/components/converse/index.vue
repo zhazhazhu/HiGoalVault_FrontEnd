@@ -189,7 +189,7 @@ defineExpose({
     <ConverseSourceAction v-model="sourceActionShow" />
 
     <view :class="[cs.m('container'), cs.is('plain', plain)]">
-      <view class="flex items-center w-full z-9">
+      <view class="flex items-end w-full z-9">
         <view :class="cs.e('left')">
           <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
         </view>
