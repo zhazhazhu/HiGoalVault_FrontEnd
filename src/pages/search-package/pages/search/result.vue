@@ -146,7 +146,7 @@ onMounted(() => {
     <view class="bg-[var(--hi-bg-color)]">
       <SearchHead v-model="keyword" @confirm="onConfirm" @back="onGotoBack" />
 
-      <Sort v-model="page" disable-search-action-range @change="changeSort" @send-message="handleSendMessage" />
+      <Sort v-model="page" :disable-search-action-range="!!userId" @change="changeSort" @send-message="handleSendMessage" />
     </view>
 
     <scroll-view
