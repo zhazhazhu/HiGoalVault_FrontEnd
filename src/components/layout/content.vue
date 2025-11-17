@@ -31,14 +31,14 @@ function onEditChatList() {
   isEdit.value = !isEdit.value
 }
 function gotoSettings() {
-  uni.navigateTo({ url: '/settings-package/pages/settings/index' })
+  uni.navigateTo({ url: '/pages/settings-package/pages/settings/index' })
 }
 function gotoUser() {
   model.value = false
-  uni.navigateTo({ url: '/user-package/pages/user/index' })
+  uni.navigateTo({ url: '/pages/user-package/pages/user/index' })
 }
 function onClickTag(tag: Tag) {
-  uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${tag.id}` })
+  uni.navigateTo({ url: `/pages/tag-package/pages/tag/index?id=${tag.id}` })
 }
 function gotoFollowPage() {
   uni.redirectTo({ url: '/pages/index/index?active=follow' })

@@ -71,7 +71,7 @@ async function refreshData() {
 }
 function onGotoMessage(item: AnswerAfter) {
   chatStore.currentChatId = item.chatId
-  uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+  uni.navigateTo({ url: '/pages/chat-package/pages/chat/index' })
 }
 
 onMounted(() => {

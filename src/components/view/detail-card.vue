@@ -24,10 +24,10 @@ async function onFollowUser(followAction: 'follow' | 'unfollow') {
   }
 }
 function onClickTag({ id }: { id: string }) {
-  uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
+  uni.navigateTo({ url: `/pages/tag-package/pages/tag/index?id=${id}` })
 }
 function gotoUser() {
-  uni.navigateTo({ url: `/user-package/pages/user/index?id=${props.data!.memberId}` })
+  uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${props.data!.memberId}` })
 }
 
 watch(() => props.data, () => {

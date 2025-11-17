@@ -48,7 +48,7 @@ function gotoUser() {
   const pages = getCurrentPages()
   const currentPage = pages[pages.length - 1]
   if (currentPage.route !== 'user-package/pages/user/index') {
-    uni.navigateTo({ url: `/user-package/pages/user/index?id=${data.value.memberId}` })
+    uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${data.value.memberId}` })
   }
 }
 function onClickTag({ id }: { id: string }) {
@@ -59,9 +59,9 @@ function onClickTag({ id }: { id: string }) {
     return
   }
   if (currentPage.route === 'tag-package/pages/tag/index') {
-    uni.redirectTo({ url: `/tag-package/pages/tag/index?id=${id}` })
+    uni.redirectTo({ url: `/pages/tag-package/pages/tag/index?id=${id}` })
   }
-  uni.navigateTo({ url: `/tag-package/pages/tag/index?id=${id}` })
+  uni.navigateTo({ url: `/pages/tag-package/pages/tag/index?id=${id}` })
 }
 function onDelete() {
   message.confirm({

@@ -22,7 +22,7 @@
   ],
   "subpackages": [
     {
-      "root": "chat-package",
+      "root": "pages/chat-package",
       "pages": [
         {
           "path": "pages/chat/index",
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "root": "detail-package",
+      "root": "pages/detail-package",
       "pages": [
         {
           "path": "pages/detail/index",
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "root": "settings-package",
+      "root": "pages/settings-package",
       "pages": [
         {
           "path": "pages/settings/index",
@@ -65,7 +65,7 @@
       ]
     },
     {
-      "root": "user-package",
+      "root": "pages/user-package",
       "pages": [
         {
           "path": "pages/user/index",
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "root": "search-package",
+      "root": "pages/search-package",
       "pages": [
         {
           "path": "pages/search/index",
@@ -103,7 +103,7 @@
       ]
     },
     {
-      "root": "tag-package",
+      "root": "pages/tag-package",
       "pages": [
         {
           "path": "pages/tag/index",

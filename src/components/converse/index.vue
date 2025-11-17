@@ -64,7 +64,7 @@ async function waitConfirmMessage(text: string) {
     sendWaitingMessage()
   }
   else {
-    uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+    uni.navigateTo({ url: '/pages/chat-package/pages/chat/index' })
   }
 }
 

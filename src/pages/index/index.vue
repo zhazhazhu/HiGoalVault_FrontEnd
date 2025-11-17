@@ -130,14 +130,14 @@ function onNavbarLeftClick() {
 }
 function onChangeChat() {
   if (getCurrentPages().length > 9) {
-    uni.redirectTo({ url: '/chat-package/pages/chat/index' })
+    uni.redirectTo({ url: '/pages/chat-package/pages/chat/index' })
   }
   else {
-    uni.navigateTo({ url: '/chat-package/pages/chat/index' })
+    uni.navigateTo({ url: '/pages/chat-package/pages/chat/index' })
   }
 }
 function onClickSearch() {
-  uni.navigateTo({ url: '/search-package/pages/search/index' })
+  uni.navigateTo({ url: '/pages/search-package/pages/search/index' })
 }
 function onConverseTap() {
   if (!userStore.isLogin) {
@@ -150,7 +150,7 @@ onShareAppMessage(({ target, from }) => {
     const imageUrl = `${API.SCREEN_SHOT}?id=${target.dataset.id}`
     return {
       title: '我发布了最新的行情，快来看看吧',
-      path: `/detail-package/pages/detail/index?id=${target.dataset.id}`,
+      path: `/pages/detail-package/pages/detail/index?id=${target.dataset.id}`,
       imageUrl,
     }
   }
