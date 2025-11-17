@@ -50,4 +50,5 @@ export enum API {
   HAS_SENSITIVE_WORD = '/buyer/sensitiveWord/contains',
   SEARCH_SUGGEST = '/buyer/search/suggest',
   SCREEN_SHOT = 'https://higoall.com:8443/take-article',
+  GET_UPLOAD_URL = '/buyer/upload/fileUpload',
 }

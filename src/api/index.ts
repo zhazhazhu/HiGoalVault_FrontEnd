@@ -47,7 +47,7 @@ import type {
   UserCenterSearchRequest,
   UserInfo,
 } from './types'
-import { http } from './http'
+import { baseUrl, http } from './http'
 import { API } from './url'
 
 // 导出所有类型
@@ -291,6 +291,10 @@ function searchSuggest(prefix: string) {
   return http(`${API.SEARCH_SUGGEST}?prefix=${prefix}`, { retry: false }).get<string[]>()
 }
 
+function getUploadUrl() {
+  return baseUrl + API.GET_UPLOAD_URL
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -342,4 +346,5 @@ export const api = {
   getFinanceBasicInfo,
   hasSensitiveWord,
   searchSuggest,
+  getUploadUrl,
 }

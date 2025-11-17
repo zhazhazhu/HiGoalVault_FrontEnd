@@ -37,8 +37,39 @@ function openPrivacyPolicy() {
     },
   })
 }
-function onChooseAvatar(e) {
-  console.log(e)
+async function onChooseAvatar(e) {
+  const avatarUrl = e.detail.avatarUrl
+  uni.uploadFile({
+    url: api.getUploadUrl(),
+    filePath: avatarUrl,
+    name: 'file',
+    header: {
+      'Content-Type': 'multipart/form-data',
+      'AccessToken': user.accessToken,
+    },
+    success: async (res) => {
+      const data = JSON.parse(res.data)
+      console.log(data)
+      if (data.code === 200) {
+        const res2 = await api.updateUserInfo({ nickName: data.result.originalUrl }).finally(() => {
+          isUpdateNickname.value = false
+        })
+        if (res2.code === 200) {
+          user.userInfo!.face = data.result.url
+          uni.showToast({
+            title: '上传头像成功',
+            icon: 'none',
+          })
+        }
+      }
+      else {
+        uni.showToast({
+          title: '上传头像失败',
+          icon: 'none',
+        })
+      }
+    },
+  })
 }
 async function onConfirm(val: string) {
   if (val.trim() === '') {
