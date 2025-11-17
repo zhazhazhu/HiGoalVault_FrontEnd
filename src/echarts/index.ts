@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import type { ChatMessageStockData } from '@/api'
+import type { ChatMessageStockData, GetFinanceDataRequest } from '@/api'
 import dayjs from 'dayjs'
 import { computed, reactive, ref, toValue, watch } from 'vue'
 import { api, TimeGranularity } from '@/api'
@@ -53,7 +53,7 @@ export interface UseStockChartOptions {
 }
 
 function isMinutesGranularity(type: TimeGranularity) {
-  return type === TimeGranularity['1MINS'] || type === TimeGranularity['5MINS']
+  return type === TimeGranularity['1MINS'] || type === TimeGranularity['5MINS'] || type === TimeGranularity['30MINS'] || type === TimeGranularity['1HOUR']
 }
 
 export function useStockChart(options: UseStockChartOptions) {
@@ -154,120 +154,33 @@ interface UseLoadStockDataOptions {
 }
 
 export function useLoadStockData(options: UseLoadStockDataOptions) {
-  const [page, reset] = useResetRef({
+  const [page, reset] = useResetRef<GetFinanceDataRequest>({
     pageNumber: 1,
     pageSize: 200,
+    order: 'desc',
+    startDateTime: dayjs('1970-01-01').format('YYYY-MM-DD HH:mm:ss'),
+    endDateTime: dayjs(options.date).format('YYYY-MM-DD HH:mm:ss'),
+    transCode: '',
+    timeGranularity: toValue(options.type),
   })
-  const result = ref<ChatMessageStockData[]>([])
-  // 通过 Promise.race 与外部触发的 abort 信号结合，实现“立刻中断等待”
-  const ABORTED = Symbol('ABORTED')
-  let triggerAbort: (() => void) | null = null
 
-  function abort() {
-    // 触发当前等待中的 abortPromise，使 load 立刻结束并返回空数组
-    if (triggerAbort) {
-      const fn = triggerAbort
-      triggerAbort = null
-      fn()
-    }
-  }
   async function load(code: string) {
     if (!code)
-      return []
-    // 迭代请求，直到累计数据条数 >= pageSize 或无更多数据
-    while (result.value.length < page.value.pageSize) {
-      const [start, end] = updateDate(page.value, toValue(options.type), options.date)
-      // 构造一个 abortPromise，外部调用 abort() 时立即 resolve，为了不抛错用特殊标记值
-      const abortPromise = new Promise<any>((resolve) => {
-        triggerAbort = () => resolve(ABORTED)
-      })
-      const res = await Promise.race([
-        api.getFinanceData({
-          startDateTime: start.format('YYYY-MM-DD HH:mm:ss'),
-          endDateTime: end.format('YYYY-MM-DD HH:mm:ss'),
-          transCode: code,
-          timeGranularity: toValue(options.type),
-        }),
-        abortPromise,
-      ])
+      return { data: [], total: 0 } as const
+    page.value.transCode = code
+    page.value.timeGranularity = toValue(options.type)
+    page.value.sort = isMinutesGranularity(toValue(options.type)) ? 'trade_time' : 'trade_date'
+    const res = await api.getFinanceData(page.value)
+    const data: ChatMessageStockData[] = Array.isArray(res.result?.records) ? res.result.records : []
+    page.value.pageNumber!++
 
-      // 若被中断，清理并返回空数据（避免外层出现“加载失败”的错误提示）
-      if (res === ABORTED) {
-        result.value = []
-        triggerAbort = null
-        return []
-      }
-
-      if (res.code !== 200)
-        break
-
-      const records: ChatMessageStockData[] = Array.isArray(res.result?.records) ? res.result.records : []
-      if (records.length === 0)
-        break
-      result.value.unshift(...records)
-      page.value.pageNumber++
-    }
-
-    const _result = result.value.slice()
-    result.value = []
-    triggerAbort = null
-    return _result
+    return { data: data.reverse(), total: res.result.total || 0 } as const
   }
 
   return {
     load,
     reset,
-    abort,
   }
-}
-
-function updateDate(page: { pageNumber: number, pageSize: number }, type: TimeGranularity, date: string) {
-  const baseDate = dayjs(date)
-  const now = dayjs()
-  const dateRange = [now, now] // [startDate, endDate]
-
-  switch (type) {
-    case TimeGranularity['1MINS']:
-      // 结束时间 = 基准时间 - (pageNumber - 1) * pageSize 分钟
-      dateRange[1] = now.isSame(baseDate, 'day') ? now.subtract((page.pageNumber - 1) * page.pageSize, 'minute') : baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'minute')
-      // 开始时间 = 结束时间 - pageSize 分钟
-      dateRange[0] = dateRange[1].subtract(page.pageSize, 'minute')
-      break
-    case TimeGranularity['5MINS']:
-      dateRange[1] = now.isSame(baseDate, 'day') ? now.subtract((page.pageNumber - 1) * page.pageSize * 5, 'minute') : baseDate.subtract((page.pageNumber - 1) * page.pageSize * 5, 'minute')
-      dateRange[0] = dateRange[1].subtract(page.pageSize * 5, 'minute')
-      break
-    case TimeGranularity['30MINS']:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 30, 'minute')
-      dateRange[0] = dateRange[1].subtract(page.pageSize * 30, 'minute')
-      break
-    case TimeGranularity['1HOUR']:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'hour')
-      dateRange[0] = dateRange[1].subtract(page.pageSize, 'hour')
-      break
-    case TimeGranularity.DAILY:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'day')
-      dateRange[0] = dateRange[1].subtract(page.pageSize, 'day')
-      break
-    case TimeGranularity['5DAILY']:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize * 5, 'day')
-      dateRange[0] = dateRange[1].subtract(page.pageSize * 5, 'day')
-      break
-    case TimeGranularity.WEEKLY:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'week')
-      dateRange[0] = dateRange[1].subtract(page.pageSize, 'week')
-      break
-    case TimeGranularity.MONTHLY:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'month')
-      dateRange[0] = dateRange[1].subtract(page.pageSize, 'month')
-      break
-    case TimeGranularity.YEAR:
-      dateRange[1] = baseDate.subtract((page.pageNumber - 1) * page.pageSize, 'year')
-      dateRange[0] = dateRange[1].subtract(page.pageSize, 'year')
-      break
-  }
-
-  return dateRange
 }
 
 export interface UsePollingStockDataOptions {

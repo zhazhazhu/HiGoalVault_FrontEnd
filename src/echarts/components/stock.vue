@@ -54,7 +54,7 @@ const { store, config, stockInfo, resetConfigData } = useStockChart({
 const enablePolling = computed(() => {
   return dayjs(props.params.todate).isSame(dayjs(), 'day') && props.preview !== true
 })
-const { load, reset, abort } = useLoadStockData({
+const { load, reset } = useLoadStockData({
   date: enablePolling.value ? dayjs().format('YYYY-MM-DD HH:mm:ss') : props.params.todate,
   type: computed(() => currentTimeGranularity.value.key),
 })
@@ -79,8 +79,6 @@ onUnmounted(() => {
 watch(currentTimeGranularity, async () => {
   if (props.preview)
     return
-  // 中止之前的加载
-  abort()
   // 若上一轮尚在 finally 阶段，等待其结束以清理 isLoadingMore/hideLoading
   if (isLoadingMore.value) {
     await new Promise<void>((resolve) => {
@@ -368,9 +366,9 @@ async function loadMoreData() {
   isLoadingMore.value = true
   chartCanvasInstance.value?.chart?.showLoading()
   try {
-    const data = await load(props.params.code)
+    const { data, total } = await load(props.params.code)
     // 判断是否真实为空数据（仅当返回数组且长度为 0）
-    if (Array.isArray(data) && data.length === 0) {
+    if (stockData.value.length + data.length >= total) {
       // 没有更多数据了
       hasMoreData.value = false
       uni.showToast({ title: '没有更早的数据了', icon: 'none' })
