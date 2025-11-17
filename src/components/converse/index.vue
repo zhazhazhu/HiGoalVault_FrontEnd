@@ -189,12 +189,12 @@ defineExpose({
     <ConverseSourceAction v-model="sourceActionShow" />
 
     <view :class="[cs.m('container'), cs.is('plain', plain)]">
-      <view class="flex items-end w-full z-9">
+      <view class="flex w-full z-9 py-5px">
         <view :class="cs.e('left')">
           <!-- <view :class="[cs.e('icon'), messageType === 'text' ? 'i-weui-voice-outlined' : 'i-weui-keyboard-outlined']" @click="onMessageTypeChange" /> -->
         </view>
 
-        <view v-show="messageType === 'text'" :class="cs.e('input')">
+        <view :class="[cs.e('input'), messageType === 'text' && 'show']">
           <wd-textarea
             v-model="model"
             no-border
@@ -217,7 +217,7 @@ defineExpose({
           />
         </view>
 
-        <view v-show="messageType === 'voice'" :class="cs.m('voice')">
+        <view :class="[cs.m('voice'), messageType === 'voice' && 'show']">
           <ConverseVoice @done="onVoiceDone" />
         </view>
 
@@ -295,17 +295,21 @@ defineExpose({
 
 .hi-converse__right {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 .hi-converse__input,
 .hi-converse--voice {
+  &.show {
+    display: flex;
+  }
+  display: none;
+  align-items: center;
   flex: 1;
-  padding: 0 20rpx;
+  padding: 0 20px;
 }
 .hi-converse__icon {
-  width: 56rpx;
-  height: 56rpx;
-  margin: 5px 0;
+  width: 52rpx;
+  height: 52rpx;
   & + & {
     margin-left: 20rpx;
   }
