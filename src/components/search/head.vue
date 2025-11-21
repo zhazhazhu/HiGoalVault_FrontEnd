@@ -58,7 +58,7 @@ function onClickSuggest(item: string) {
           @confirm="onConfirm"
         />
       </view>
-      <view class="text-15px font-500 color-#1A1F28">
+      <view class="text-15px font-500 color-#1A1F28" @click="onConfirm">
         搜索
       </view>
     </view>
