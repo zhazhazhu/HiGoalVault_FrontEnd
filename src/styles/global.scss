@@ -46,8 +46,8 @@ page {
 
 .hi-textarea {
   max-height: 100px;
-  --wot-textarea-fs: 32rpx;
-  --wot-cell-line-height: 52rpx;
+  --wot-textarea-fs: 30rpx;
+  --wot-cell-line-height: 50rpx;
   min-height: auto !important;
 }
 
@@ -59,8 +59,8 @@ page {
 
 .hi-textarea-placeholder {
   color: #9ca3af;
-  font-size: 32rpx;
-  line-height: 52rpx;
+  font-size: 30rpx;
+  line-height: 50rpx;
 }
 
 .hi-message-card--checkbox-text .wd-checkbox__txt {
