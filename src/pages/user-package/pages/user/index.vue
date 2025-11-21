@@ -214,8 +214,8 @@ onLoad((options) => {
             </Tag>
           </view>
 
-          <UserLike v-if="interactActiveTab === 'liked'" ref="userLike" />
-          <UserCollect v-if="interactActiveTab === 'collected'" ref="userCollect" />
+          <UserLike v-show="interactActiveTab === 'liked'" ref="userLike" />
+          <UserCollect v-show="interactActiveTab === 'collected'" ref="userCollect" />
         </view>
       </view>
     </scroll-view>
