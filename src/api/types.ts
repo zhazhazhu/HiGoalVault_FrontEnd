@@ -520,6 +520,7 @@ export interface MyCommentedRepliedListResponse {
   likeCount: number // 点赞数量
   title: string // 帖子标题
   createTime: string // 创建时间
+  contentAuthorId: string // 帖子作者id
 }
 
 export interface Tag {

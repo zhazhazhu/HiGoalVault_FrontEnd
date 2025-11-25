@@ -106,7 +106,7 @@ onMounted(() => {
                   <view class="text-14px color-#333 font-500">
                     {{ item.nickName }}
                   </view>
-                  <wd-tag type="primary" mark plain>
+                  <wd-tag v-if="item.contentAuthorId === item.commenterId" type="primary" mark plain>
                     作者
                   </wd-tag>
                 </view>
