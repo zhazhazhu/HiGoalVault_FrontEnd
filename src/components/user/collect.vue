@@ -1,11 +1,10 @@
 <script lang='ts' setup>
-import type { AnswerAfter, ChatSteps, Page } from '@/api'
+import type { AnswerAfter, Page } from '@/api'
 import { onMounted, ref } from 'vue'
 import { api, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useChatStore, useUserStore } from '@/store'
-import { useJsonParse } from '@/utils'
 
 const isLoading = ref(false)
 const isFinish = ref(false)
@@ -29,11 +28,11 @@ async function getData() {
   })
   if (res.code === 200) {
     data.value.push(...res.result.records.map((item) => {
-      const data = useJsonParse<AnswerAfter['data']>(item.data || '{}')
-      const stockData = useJsonParse(data?.analysis_data || '[]')
-      const steps = useJsonParse<ChatSteps[]>(item.steps || '[]') || []
-      const label = useJsonParse<string[]>(item.label || '[]')
-      return { ...item, steps, isCollect: Truth.TRUE, data, isLoading: false, reference: JSON.parse(item.reference) || [], stockData, showSteps: false, label } as AnswerAfter
+      const result = chatStore.transformAnswer(item)
+      return {
+        ...result,
+        isCollect: Truth.TRUE,
+      }
     }))
     total.value = res.result.total
     isLoading.value = false
@@ -94,8 +93,11 @@ defineExpose({
           <view class="text-24rpx font-500 color-#666" @click.stop="collect(item.queryId, index)">
             {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
           </view>
-          <button open-type="share" class="share-btn contents" :data-id="item.queryId">
-            <view class="wechat-icon size-22px" />
+          <button class="share-to-wechat" open-type="share" :data-id="item.queryId" @tap.stop>
+            <view class="wechat-icon size-18px" />
+            <text class="share-text">
+              分享
+            </text>
           </button>
         </view>
       </template>
@@ -109,3 +111,29 @@ defineExpose({
     </view>
   </view>
 </template>
+
+<style lang="scss" scoped>
+.share-to-wechat {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f5f7f9;
+  border-radius: 20px;
+  border: none;
+  font-size: 14px;
+  color: #222222;
+  font-weight: 500;
+  overflow: hidden;
+  &::after {
+    display: none;
+  }
+
+  .share-text {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: #222222;
+    font-weight: 500;
+  }
+}
+</style>

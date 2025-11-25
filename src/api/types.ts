@@ -69,6 +69,11 @@ export interface AnswerBefore {
   summary: string
   label: string | null // 标签
   isPaused: boolean // 是否暂停
+  collectTime: string | null // 收藏时间
+  id: string // 回答id
+  nickName?: string // 用户昵称
+  face?: string // 用户头像
+
 }
 
 export interface AnswerAfter extends Omit<AnswerBefore, 'reference' | 'data' | 'steps' | 'label'> {

@@ -6,10 +6,8 @@ import { cloneDeep } from 'lodash-es'
 import { ref } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
-import { useClassesName } from '@/composables'
 import { useUserStore } from '@/store'
 
-const cs = useClassesName('user')
 const userStore = useUserStore()
 const activeTab = ref<'published' | 'commented' | 'interacted'>('published')
 const data = ref<ProfileStatistics>({} as ProfileStatistics)
