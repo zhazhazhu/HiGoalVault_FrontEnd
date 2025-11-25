@@ -364,7 +364,10 @@ async function loadMoreData() {
     return
 
   isLoadingMore.value = true
-  chartCanvasInstance.value?.chart?.showLoading()
+  if (stockData.value.length === 0) {
+    // 初次加载时显示 loading
+    chartCanvasInstance.value?.chart?.showLoading()
+  }
   try {
     const { data, total } = await load(props.params.code)
     // 判断是否真实为空数据（仅当返回数组且长度为 0）
@@ -465,7 +468,8 @@ async function loadMoreData() {
   width: 100%;
   overflow: hidden;
   position: relative;
-  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
 }
 
 .period-selector {

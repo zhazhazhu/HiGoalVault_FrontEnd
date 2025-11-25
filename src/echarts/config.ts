@@ -133,6 +133,7 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
   const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
   return {
+    animation: false,
     tooltip: {
       show: true,
       trigger: 'axis',
@@ -341,6 +342,7 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
   const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
   return {
+    animation: false,
     tooltip: {
       show: true,
       trigger: 'axis',
