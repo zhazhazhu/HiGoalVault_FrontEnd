@@ -263,6 +263,13 @@ function onNavbarLeftClick() {
 }
 function onTabChange({ index }: { index: number }) {
   if (index === 1) {
+    if (chatStore.isReplying) {
+      uni.showToast({
+        title: '回答生成中，请稍后再试',
+        icon: 'none',
+      })
+      return
+    }
     uni.reLaunch({ url: '/pages/index/index' })
   }
 }
@@ -310,7 +317,7 @@ onShareAppMessage(async ({ from }) => {
       <template #title>
         <wd-tabs custom-class="hi-tabs" @change="onTabChange">
           <wd-tab title="黑狗" />
-          <wd-tab title="发现" />
+          <wd-tab title="发现" :disabled="chatStore.isReplying" />
         </wd-tabs>
       </template>
     </navbar>
