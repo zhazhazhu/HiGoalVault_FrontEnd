@@ -9,7 +9,14 @@ export function useCharQueue(speed?: number) {
   let callback: (char: string) => void
 
   function pushQueue(message: string) {
-    charQueue.value.push(...message.split(''))
+    const chars = message.split('')
+    const chunks: string[] = []
+
+    for (let i = 0; i < chars.length; i += 6) {
+      chunks.push(chars.slice(i, i + 6).join(''))
+    }
+
+    charQueue.value.push(...chunks)
     isTyping.value = true
     if (timer.value) {
       clearInterval(timer.value)
