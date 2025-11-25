@@ -95,7 +95,7 @@ defineExpose({
             {{ item.isCollect === Truth.TRUE ? '取消收藏' : '收藏' }}
           </view>
           <button open-type="share" class="share-btn contents" :data-id="item.queryId">
-            <view class="wechat-icon size-54rpx" />
+            <view class="wechat-icon size-22px" />
           </button>
         </view>
       </template>
