@@ -52,9 +52,6 @@ const responseContent = computed(() => renderMarkdown(`${props.data?.response?.s
           </view>
         </view>
       </view>
-      <view>
-        <wd-text :text="data.title" color="#121212" size="32rpx" bold />
-      </view>
 
       <view :id="parseSectionId" class="min-h-20px">
         <template v-if="visible">
@@ -64,17 +61,21 @@ const responseContent = computed(() => renderMarkdown(`${props.data?.response?.s
     </view>
 
     <!-- 标签区域 - 超出一行隐藏 -->
-    <view v-if="data.label.length" class="flex flex-row gap-20rpx overflow-hidden">
+    <!-- <view v-if="data.label.length" class="flex flex-row gap-20rpx overflow-hidden">
       <Tag v-for="item, index in data?.label.slice(0, 3)" :key="index" class="flex-shrink-0">
         #{{ item }}
       </Tag>
-    </view>
+    </view> -->
 
     <slot name="actions" />
   </view>
 </template>
 
 <style lang='css' scoped>
+.shadow-button {
+  box-shadow: 0px -13px 20px 10px white;
+}
+
 .content {
   overflow: hidden;
   text-overflow: ellipsis;

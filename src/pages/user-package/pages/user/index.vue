@@ -135,7 +135,7 @@ onLoad((options) => {
     </Navbar>
 
     <scroll-view
-      class="h-[calc(100vh-90px)]"
+      class="h-[calc(100vh-110px)]"
       scroll-y
       enhanced
       :show-scrollbar="false"
