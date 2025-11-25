@@ -8,7 +8,10 @@ export function navigationInterceptor() {
 
   navigateMethods.forEach((method) => {
     uni.addInterceptor(method, {
-      invoke: () => {
+      invoke: (res) => {
+        if (res.url !== '/pages/index/index') {
+          return true
+        }
         if (!userStore.isLogin) {
           globalStore.showLoginPopup = true
         }
