@@ -153,33 +153,83 @@ interface UseLoadStockDataOptions {
   type: MaybeRefOrGetter<TimeGranularity>
 }
 
+const timeGapDays = {
+  [TimeGranularity['1MINS']]: 15,
+  [TimeGranularity['5MINS']]: 15,
+  [TimeGranularity['15MINS']]: 30,
+  [TimeGranularity['30MINS']]: 100,
+  [TimeGranularity['1HOUR']]: 200,
+  [TimeGranularity.DAILY]: 365,
+  [TimeGranularity['5DAYS']]: 365,
+  [TimeGranularity.WEEKLY]: 365 * 5,
+  [TimeGranularity.MONTHLY]: 365 * 10,
+  [TimeGranularity.YEAR]: 365 * 200,
+}
+
+/**
+ * 开始时间计算公式
+ * 1min: start = end - 15day
+ * 5min: start = end - 15day
+ * 15min: start = end - 30day
+ * 30min: start = end- 100day
+ * 1hour: start = end - 200day
+ * daily: start = end - 1year
+ * 5day: start = end - 1year
+ * weekly: start = end - 5year
+ * monthly: start = end - 10year
+ * year: start = end - 200year
+ */
 export function useLoadStockData(options: UseLoadStockDataOptions) {
   const [page, reset] = useResetRef<GetFinanceDataRequest>({
     pageNumber: 1,
     pageSize: 200,
     order: 'desc',
-    startDateTime: dayjs('1970-01-01').format('YYYY-MM-DD HH:mm:ss'),
-    endDateTime: dayjs(options.date).format('YYYY-MM-DD HH:mm:ss'),
+    startDateTime: '',
+    endDateTime: '',
     transCode: '',
     timeGranularity: toValue(options.type),
   })
 
+  // 用于存储当前的结束时间
+  let currentEndDateTime = dayjs(options.date)
+
   async function load(code: string) {
     if (!code)
       return { data: [], total: 0 } as const
+
     page.value.transCode = code
     page.value.timeGranularity = toValue(options.type)
     page.value.sort = isMinutesGranularity(toValue(options.type)) ? 'trade_time' : 'trade_date'
-    const res = await api.getFinanceData(page.value)
-    const data: ChatMessageStockData[] = Array.isArray(res.result?.records) ? res.result.records : []
-    page.value.pageNumber!++
 
-    return { data: data.reverse(), total: res.result.total || 0 } as const
+    // 计算时间范围
+    const timeGranularity = toValue(options.type)
+    const gapDays = timeGapDays[timeGranularity] || 365
+    const startDateTime = currentEndDateTime.subtract(gapDays, 'day')
+
+    page.value.endDateTime = currentEndDateTime.format('YYYY-MM-DD HH:mm:ss')
+    page.value.startDateTime = startDateTime.format('YYYY-MM-DD HH:mm:ss')
+
+    const res = await api.getFinanceData(page.value)
+    const data: ChatMessageStockData[] = Array.isArray(res.result?.records) ? res.result.records.reverse() : []
+
+    // 如果有数据,更新结束时间为返回数据的第一项
+    if (data.length > 0) {
+      const firstItem = data[0]
+      const dateField = isMinutesGranularity(toValue(options.type)) ? firstItem.trade_time : firstItem.trade_date
+      currentEndDateTime = dayjs(dateField)
+    }
+
+    return { data, total: res.result.total || 0 } as const
+  }
+
+  function resetLoad() {
+    currentEndDateTime = dayjs(options.date)
+    reset()
   }
 
   return {
     load,
-    reset,
+    reset: resetLoad,
   }
 }
 
