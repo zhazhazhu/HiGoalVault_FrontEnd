@@ -54,6 +54,8 @@ const touchState = ref({
   lastTime: 0,
   velocityX: 0,
   isInertiaScrolling: false,
+  direction: null as 'horizontal' | 'vertical' | null, // 滑动方向
+  isDirectionLocked: false, // 是否已锁定方向
 })
 let inertiaAnimationId: number | null = null
 
@@ -316,6 +318,8 @@ function handleLongPress(params: any) {
 }
 
 function handleZRMouseMove(params: ElementEvent) {
+  params.event.stopPropagation && params.event.stopPropagation()
+  params.event.preventDefault && params.event.preventDefault()
   if (!isCrossDragActive.value || props.preview)
     return
 
@@ -428,6 +432,8 @@ function handleTouchStart(e: any) {
     lastTime: Date.now(),
     velocityX: 0,
     isInertiaScrolling: false,
+    direction: null,
+    isDirectionLocked: false,
   }
 }
 
@@ -438,6 +444,42 @@ function handleTouchMove(e: any) {
   const touch = e.touches[0]
   const now = Date.now()
   const deltaTime = now - touchState.value.lastTime
+
+  // 如果还没有锁定方向，先判断滑动方向
+  if (!touchState.value.isDirectionLocked) {
+    const deltaX = Math.abs(touch.clientX - touchState.value.startX)
+    const deltaY = Math.abs(touch.clientY - touchState.value.startY)
+
+    // 只有当移动距离超过阈值才判断方向
+    if (deltaX > 5 || deltaY > 5) {
+      if (deltaX > deltaY * 1.5) {
+        // 横向滑动，阈值为1.5倍，确保明确的横向意图
+        touchState.value.direction = 'horizontal'
+        touchState.value.isDirectionLocked = true
+      }
+      else if (deltaY > deltaX * 1.5) {
+        // 纵向滑动
+        touchState.value.direction = 'vertical'
+        touchState.value.isDirectionLocked = true
+      }
+    }
+  }
+
+  // 如果是横向滑动，阻止默认行为（防止页面滚动）
+  if (touchState.value.direction === 'horizontal') {
+    e.preventDefault && e.preventDefault()
+    e.stopPropagation && e.stopPropagation()
+  }
+  // 如果是纵向滑动，不处理echarts滑动，让页面自然滚动
+  else if (touchState.value.direction === 'vertical') {
+    chartCanvasInstance.value?.setOption({
+      dataZoom: [
+        { disabled: true },
+        { disabled: true },
+      ],
+    })
+    return
+  }
 
   // 只在有足够时间间隔时更新速度，避免异常值
   if (deltaTime > 10) {
@@ -632,6 +674,7 @@ onUnmounted(() => {
   overflow: hidden;
   position: relative;
   touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 }
 
 .period-selector {

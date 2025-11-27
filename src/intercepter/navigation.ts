@@ -9,7 +9,7 @@ export function navigationInterceptor() {
   navigateMethods.forEach((method) => {
     uni.addInterceptor(method, {
       invoke: (res) => {
-        if (res.url !== '/pages/index/index') {
+        if (res.url === '/pages/index/index') {
           return true
         }
         if (!userStore.isLogin) {
