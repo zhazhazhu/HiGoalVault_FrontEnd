@@ -222,3 +222,66 @@ export function formatSeconds(seconds: number) {
 
   return `${hours}小时${remainingMinutes}分${finalSeconds}秒`
 }
+
+export function encodeToBase64(text: string): string {
+  // 将字符串转换为 UTF-8 字节数组
+  function stringToUtf8Bytes(str: string): number[] {
+    const bytes: number[] = []
+    for (let i = 0; i < str.length; i++) {
+      let charCode = str.charCodeAt(i)
+
+      if (charCode < 0x80) {
+        // 单字节字符 (0x00-0x7F)
+        bytes.push(charCode)
+      }
+      else if (charCode < 0x800) {
+        // 双字节字符 (0x80-0x7FF)
+        bytes.push(0xC0 | (charCode >> 6))
+        bytes.push(0x80 | (charCode & 0x3F))
+      }
+      else if (charCode < 0xD800 || charCode >= 0xE000) {
+        // 三字节字符 (0x800-0xFFFF, 排除代理对)
+        bytes.push(0xE0 | (charCode >> 12))
+        bytes.push(0x80 | ((charCode >> 6) & 0x3F))
+        bytes.push(0x80 | (charCode & 0x3F))
+      }
+      else {
+        // 四字节字符 (代理对)
+        i++
+        charCode = 0x10000 + (((charCode & 0x3FF) << 10) | (str.charCodeAt(i) & 0x3FF))
+        bytes.push(0xF0 | (charCode >> 18))
+        bytes.push(0x80 | ((charCode >> 12) & 0x3F))
+        bytes.push(0x80 | ((charCode >> 6) & 0x3F))
+        bytes.push(0x80 | (charCode & 0x3F))
+      }
+    }
+    return bytes
+  }
+
+  // 将字节数组转换为 Base64
+  function bytesToBase64(bytes: number[]): string {
+    const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    let result = ''
+
+    for (let i = 0; i < bytes.length; i += 3) {
+      const byte1 = bytes[i]
+      const byte2 = i + 1 < bytes.length ? bytes[i + 1] : 0
+      const byte3 = i + 2 < bytes.length ? bytes[i + 2] : 0
+
+      const encoded1 = byte1 >> 2
+      const encoded2 = ((byte1 & 0x3) << 4) | (byte2 >> 4)
+      const encoded3 = ((byte2 & 0xF) << 2) | (byte3 >> 6)
+      const encoded4 = byte3 & 0x3F
+
+      result += base64Chars[encoded1]
+      result += base64Chars[encoded2]
+      result += i + 1 < bytes.length ? base64Chars[encoded3] : '='
+      result += i + 2 < bytes.length ? base64Chars[encoded4] : '='
+    }
+
+    return result
+  }
+
+  const utf8Bytes = stringToUtf8Bytes(text)
+  return bytesToBase64(utf8Bytes)
+}
