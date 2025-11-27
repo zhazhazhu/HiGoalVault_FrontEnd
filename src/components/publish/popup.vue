@@ -5,6 +5,7 @@ import { api, PublishContentType, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useGlobalStore } from '@/store'
+import { encodeToBase64 } from '@/utils'
 
 const props = defineProps<{
   message: AnswerAfter
@@ -26,7 +27,7 @@ async function onPublish() {
   form.value.queryId = props.message.queryId
   form.value.title = props.message.query
   try {
-    const data = await api.addPublishMessage(form.value)
+    const data = await api.addPublishMessage({ ...form.value, content: encodeURI(form.value.content) })
     if (data.code === 200) {
       model.value = false
       reset()

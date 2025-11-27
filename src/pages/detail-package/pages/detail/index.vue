@@ -54,7 +54,7 @@ async function onConfirm() {
     })
     return
   }
-  const res = await api.addComment({ commentContent: commentContent.value, contentId: data.value!.id })
+  const res = await api.addComment({ commentContent: encodeURI(commentContent.value), contentId: data.value!.id })
   if (res.code === 200) {
     commentContent.value = ''
     data.value!.commentCount++

@@ -149,7 +149,7 @@ async function onConfirm() {
     return
   try {
     if (currentOperating.value === null) {
-      const res = await api.addComment({ commentContent: content, contentId: props.contentId })
+      const res = await api.addComment({ commentContent: encodeURI(content), contentId: props.contentId })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
       }
@@ -157,7 +157,7 @@ async function onConfirm() {
     else if (currentReplying.value.type === 'comment') {
       const res = await api.addCommentReply({
         commentId: currentReplying.value.comment!.id,
-        replyContent: content,
+        replyContent: encodeURI(content),
         replyToUserId: currentReplying.value.comment!.commenterId,
       })
       if (res.code === 200) {
@@ -167,7 +167,7 @@ async function onConfirm() {
     else if (currentReplying.value.type === 'reply') {
       const res = await api.addCommentReply({
         commentId: data.value[currentOperating.value].comment.id,
-        replyContent: content,
+        replyContent: encodeURI(content),
         replyToUserId: currentReplying.value.reply!.replierId,
         parentReplyId: currentReplying.value.reply!.id,
       })
