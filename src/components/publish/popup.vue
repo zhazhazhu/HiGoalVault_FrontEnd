@@ -5,7 +5,6 @@ import { api, PublishContentType, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useGlobalStore } from '@/store'
-import { encodeToBase64 } from '@/utils'
 
 const props = defineProps<{
   message: AnswerAfter
