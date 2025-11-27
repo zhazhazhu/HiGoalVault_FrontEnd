@@ -225,7 +225,12 @@ function showCrossAtSelected() {
   try {
     chart.dispatchAction({
       type: 'showTip',
-      seriesIndex: [0, 5],
+      seriesIndex: 0,
+      dataIndex: idx,
+    })
+    chart.dispatchAction({
+      type: 'showTip',
+      seriesIndex: 5,
       dataIndex: idx,
     })
   }
@@ -349,6 +354,7 @@ function handleZRMouseMove(params: ElementEvent) {
     try {
       stockInfo.value = getStockInfo(store.value.originalStockChartData, idx)
       chart?.dispatchAction({ type: 'showTip', seriesIndex: 0, dataIndex: idx })
+      chart?.dispatchAction({ type: 'showTip', seriesIndex: 5, dataIndex: idx })
     }
     catch {
       // ignore

@@ -143,17 +143,19 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
 
   return {
     animation: false,
+    axisPointer: {
+      link: [{ xAxisIndex: 'all' }],
+    },
     tooltip: {
-      triggerOn: 'click',
       trigger: 'axis',
-      // 仅显示十字线，不显示默认浮层内容
+      triggerOn: 'none',
       showContent: false,
       axisPointer: {
         type: 'cross',
         snap: true,
         label: {
           show: true,
-          backgroundColor: '#616c7b',
+          backgroundColor: '#616c7b8c',
         },
         crossStyle: {
           color: '#8392A5',
