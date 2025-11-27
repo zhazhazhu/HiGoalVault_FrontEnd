@@ -55,7 +55,8 @@ const responseContent = computed(() => renderMarkdown(`${props.data?.response?.s
 
       <view :id="parseSectionId" class="min-h-20px">
         <template v-if="visible">
-          <UvParse class="markdown-body" :content="responseContent" />
+          <Stock v-if="data?.stockParameter?.code" :data="data?.stockData?.[0]?.data" :params="data?.stockParameter" preview />
+          <UvParse v-else class="markdown-body" :content="responseContent" />
         </template>
       </view>
     </view>
