@@ -626,7 +626,7 @@ onUnmounted(() => {
       </view>
     </view>
 
-    <view v-if="!preview" class="flex gap-12px text-8px my-8px" @click="hideCross">
+    <view v-if="!preview && stockData.length" class="flex gap-12px text-8px my-8px" @click="hideCross">
       <text :style="{ color: StockChartStyleConfig.MA5_COLOR }">
         MA5: {{ formatMA(displayedMA.ma5) }}
       </text>
@@ -642,10 +642,10 @@ onUnmounted(() => {
     </view>
 
     <!-- 图表容器 -->
-    <view class="chart-wrapper">
+    <view class="chart-wrapper" :class="[(!stockData.length && !isLoadingMore) && 'hidden']">
       <uni-echarts
         ref="chartCanvasInstance"
-        :custom-class="preview ? 'h-200px' : 'h-320px'"
+        :custom-class="(!stockData.length && !isLoadingMore) ? 'hidden' : (preview ? 'h-200px' : 'h-320px')"
         :option="config"
         @zr:click="handleZRClick"
         @zr:mousemove="handleZRMouseMove"
