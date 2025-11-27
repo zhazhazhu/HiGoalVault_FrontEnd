@@ -4,8 +4,8 @@ import type { UniEchartsInst } from 'uni-echarts/shared'
 import type { ChatMessageStockData, DateParameterOfStock } from '@/api'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import dayjs from 'dayjs'
-import { CandlestickChart, LineChart } from 'echarts/charts'
-import { AxisPointerComponent, DatasetComponent, DataZoomComponent, GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
+import { BarChart, CandlestickChart, LineChart } from 'echarts/charts'
+import { AxisPointerComponent, DatasetComponent, DataZoomComponent, GridComponent, LegendComponent, TooltipComponent, VisualMapComponent } from 'echarts/components'
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
@@ -23,12 +23,14 @@ const props = defineProps<{
 provideEcharts(echarts)
 
 echarts.use([
+  VisualMapComponent,
   DatasetComponent,
   GridComponent,
   LegendComponent,
   CanvasRenderer,
   DataZoomComponent,
   LineChart,
+  BarChart,
   CandlestickChart,
   AxisPointerComponent,
   TooltipComponent,
@@ -223,7 +225,7 @@ function showCrossAtSelected() {
   try {
     chart.dispatchAction({
       type: 'showTip',
-      seriesIndex: 0,
+      seriesIndex: [0, 5],
       dataIndex: idx,
     })
   }
@@ -318,8 +320,6 @@ function handleLongPress(params: any) {
 }
 
 function handleZRMouseMove(params: ElementEvent) {
-  params.event.stopPropagation && params.event.stopPropagation()
-  params.event.preventDefault && params.event.preventDefault()
   if (!isCrossDragActive.value || props.preview)
     return
 
@@ -329,25 +329,25 @@ function handleZRMouseMove(params: ElementEvent) {
   const ev: any = (params as any).event ?? params
   const x: number | undefined = ev?.zrX ?? ev?.offsetX
   const y: number | undefined = ev?.zrY ?? ev?.offsetY
-  if (x != null && y != null && chart?.containPixel({ gridIndex: 0 }, [x, y] as any)) {
-    try {
-      chart?.dispatchAction({
-        type: 'updateAxisPointer',
-        currTrigger: 'mousemove',
-        position: {
-          x,
-          y,
-        },
-      })
-    }
-    catch {
-      // ignore
-    }
+  try {
+    chart?.dispatchAction({
+      type: 'updateAxisPointer',
+      currTrigger: 'mousemove',
+      position: {
+        x,
+        y,
+      },
+    })
   }
+  catch {
+    // ignore
+  }
+
   if (idx !== null) {
+    uni.vibrateShort()
     selectedIndex.value = idx
-    stockInfo.value = getStockInfo(store.value.originalStockChartData, idx)
     try {
+      stockInfo.value = getStockInfo(store.value.originalStockChartData, idx)
       chart?.dispatchAction({ type: 'showTip', seriesIndex: 0, dataIndex: idx })
     }
     catch {
@@ -638,7 +638,7 @@ onUnmounted(() => {
     <view class="chart-wrapper">
       <uni-echarts
         ref="chartCanvasInstance"
-        :custom-class="preview ? 'h-200px' : 'h-280px'"
+        :custom-class="preview ? 'h-200px' : 'h-360px'"
         :option="config"
         @zr:click="handleZRClick"
         @zr:mousemove="handleZRMouseMove"
@@ -669,7 +669,7 @@ onUnmounted(() => {
 }
 
 .chart-wrapper {
-  height: 280px;
+  height: 360px;
   width: 100%;
   overflow: hidden;
   position: relative;

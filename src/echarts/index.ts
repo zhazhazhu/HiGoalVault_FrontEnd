@@ -41,6 +41,7 @@ export interface StockChartStore {
   ma10: Array<number | null>
   ma20: Array<number | null>
   ma30: Array<number | null>
+  volumes: Array<[number, number, 1 | -1]>
 }
 
 export interface UseStockChartOptions {
@@ -73,6 +74,11 @@ export function useStockChart(options: UseStockChartOptions) {
       ma10: calculateMA(10, stockChartData),
       ma20: calculateMA(20, stockChartData),
       ma30: calculateMA(30, stockChartData),
+      volumes: toValue(options.stockData).map((item, index) => {
+        const vol = item.vol || 0
+        const isUp = item.close >= item.open
+        return [index, vol, isUp ? 1 : -1]
+      }) as [number, number, 1 | -1][],
     }
   })
 
@@ -98,7 +104,14 @@ export function useStockChart(options: UseStockChartOptions) {
       const categoryData = newPushStockData.map((item) => {
         return dayjs(isMinutesGranularity(toValue(options.timeGranularity)) ? item.trade_time : item.trade_date).format('YYYY-MM-DD HH:mm:ss')
       })
+      const volumes = newPushStockData.map((item, index) => {
+        const vol = item.vol || 0
+        const isUp = item.close >= item.open
+        return [index, vol, isUp ? 1 : -1]
+      }) as [number, number, 1 | -1][]
+
       config.value.xAxis[0].data.unshift(...categoryData)
+      config.value.xAxis[1].data.unshift(...categoryData)
       if (toValue(options.timeGranularity) === '1MINS') {
         config.value.series[0].data.unshift(...(stockChartData.map(item => item[1])) as any)
       }
@@ -108,6 +121,7 @@ export function useStockChart(options: UseStockChartOptions) {
         config.value.series[2].data = calculateMA(10, allStockChartData)
         config.value.series[3].data = calculateMA(20, allStockChartData)
         config.value.series[4].data = calculateMA(30, allStockChartData)
+        config.value.series[5].data.unshift(...(volumes as any))
       }
 
       const delta = stockChartData.length

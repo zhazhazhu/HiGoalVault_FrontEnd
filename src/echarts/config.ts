@@ -76,23 +76,32 @@ export const otherTimeGranularityOptions: OtherTimeGranularityOptions = {
   },
 }
 
-// eslint-disable-next-line unused-imports/no-unused-vars
+let lastPassedIndex = -1
+
 function xAxisInterval(index: number, value: string, categoryData: string[], timeGranularity: TimeGranularity) {
   if (index === 0 || index === categoryData.length - 1)
     return true
-  const prev = categoryData[index - 1]
+  const prev = categoryData[lastPassedIndex === -1 ? 0 : lastPassedIndex]
   if (timeGranularity === '1MINS')
-    return dayjs(value).hour() - dayjs(prev).hour() >= 2
+    return dayjs(value).diff(dayjs(prev), 'minute') >= 2
+  else if (timeGranularity === '5MINS')
+    return dayjs(value).diff(dayjs(prev), 'hour') >= 4
+  else if (timeGranularity === '30MINS')
+    return dayjs(value).diff(dayjs(prev), 'day') >= 2
+  else if (timeGranularity === '1HOUR')
+    return dayjs(value).diff(dayjs(prev), 'day') >= 3
   else if (timeGranularity === 'DAILY')
-    return dayjs(value).month() - dayjs(prev).month() >= 1
+    return dayjs(value).diff(dayjs(prev), 'day') >= 20
+  else if (timeGranularity === '5DAILY')
+    return dayjs(value).diff(dayjs(prev), 'month') >= 1
   else if (timeGranularity === 'WEEKLY')
-    return dayjs(value).month() - dayjs(prev).month() >= 3
+    return dayjs(value).diff(dayjs(prev), 'month') >= 3
   else if (timeGranularity === 'MONTHLY')
-    return dayjs(value).month() - dayjs(prev).month() >= 6
+    return dayjs(value).diff(dayjs(prev), 'month') >= 6
   else if (timeGranularity === 'YEAR')
-    return dayjs(value).year() - dayjs(prev).year() >= 30
+    return dayjs(value).diff(dayjs(prev), 'year') >= 30
   else
-    return dayjs(value).month() - dayjs(prev).month() >= 1
+    return dayjs(value).diff(dayjs(prev), 'month') >= 1
 }
 
 export function xAxisFormat(value: string, timeGranularity: TimeGranularity) {
@@ -128,19 +137,17 @@ export function generateStockChartConfig(store: Ref<StockChartStore>, options: U
 }
 
 export function generateKLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
-  const { categoryData, stockChartData, ma5, ma10, ma20, ma30 } = store.value
+  const { categoryData, stockChartData, ma5, ma10, ma20, ma30, volumes } = store.value
   const endValue = Math.max(0, stockChartData.length - 1)
   const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
   return {
     animation: false,
     tooltip: {
-      show: true,
+      triggerOn: 'click',
       trigger: 'axis',
       // 仅显示十字线，不显示默认浮层内容
       showContent: false,
-      // 由我们通过 dispatchAction 主动控制显示/隐藏
-      triggerOn: 'none',
       axisPointer: {
         type: 'cross',
         snap: true,
@@ -154,68 +161,103 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
           type: 'dashed',
         },
       },
+      borderWidth: 1,
+      borderColor: '#ccc',
+      padding: 10,
+      textStyle: {
+        color: '#000',
+      },
     },
-    grid: {
-      left: 10,
-      right: 10,
-      top: 0,
-      bottom: options.preview ? 10 : 60,
-      outerBoundsContain: 'all',
-    },
+    grid: [
+      {
+        left: 10,
+        right: 10,
+        top: 0,
+        bottom: options.preview ? 10 : 60,
+        outerBoundsContain: 'all',
+        height: 280,
+      },
+      {
+        left: 10,
+        right: 10,
+        top: 300,
+        height: 60,
+      },
+    ],
     xAxis: [
       {
         type: 'category',
         data: categoryData,
-        axisLine: { lineStyle: { color: '#8392A5' } },
+        boundaryGap: false,
+        axisLine: { onZero: false, lineStyle: { color: '#8392A5', opacity: 0.7 } },
+        min: 'dataMin',
+        max: 'dataMax',
         axisLabel: {
           formatter: (value: string) => xAxisFormat(value, toValue(options.timeGranularity)),
-          // interval: (index: number, value: string) => {
-          //   return xAxisInterval(index, value, categoryData, timeGranularity)
-          // },
         },
-        // axisPointer: {
-        //   label: {
-        //     show: true,
-        //     formatter: (params: any) => {
-        //       const gran = toValue(options.timeGranularity)
-        //       const val = typeof params?.value === 'string'
-        //         ? params.value
-        //         : categoryData[Math.round(params?.value ?? 0)] ?? ''
-        //       return xAxisFormat(val, gran)
-        //     },
-        //   },
-        // },
-        // axisTick: {
-        //   show: true,
-        //   interval: (index: number, value: string) => xAxisInterval(index, value, categoryData, timeGranularity),
-        // },
+      },
+      {
+        type: 'category',
+        gridIndex: 1,
+        data: categoryData,
+        boundaryGap: false,
+        axisLine: { onZero: false },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        min: 'dataMin',
+        max: 'dataMax',
       },
     ],
-    yAxis: {
-      scale: true,
-      splitNumber: 4,
-      axisLine: { lineStyle: { color: '#8392A5' } },
-      axisLabel: {
-        align: 'right', // 文本右对齐
-        margin: 20, // 可根据实际情况调整的右边距
-        inside: true,
-        color: '#616c7b79',
-        formatter: (value: number, index: number) => {
-          if (index === 0) {
-            return ''
-          }
-          return value
+    yAxis: [
+      {
+        scale: true,
+        splitNumber: 4,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        axisLabel: {
+          align: 'right', // 文本右对齐
+          margin: 20, // 可根据实际情况调整的右边距
+          inside: true,
+          color: '#616c7b79',
+          formatter: (value: number, index: number) => {
+            if (index === 0) {
+              return ''
+            }
+            return value
+          },
         },
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: '#8392A5',
-          opacity: 0.2,
-          type: 'dashed',
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: '#8392A5',
+            opacity: 0.2,
+            type: 'dashed',
+          },
         },
+        boundaryGap: [0, 0],
       },
-      boundaryGap: [0, 0],
+      {
+        scale: true,
+        gridIndex: 1,
+        axisLabel: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false },
+      },
+    ],
+    visualMap: {
+      show: false,
+      seriesIndex: 5,
+      dimension: 2,
+      pieces: [
+        {
+          value: 1,
+          color: StockChartStyleConfig.UP_COLOR,
+        },
+        {
+          value: -1,
+          color: StockChartStyleConfig.DOWN_COLOR,
+        },
+      ],
     },
     dataZoom: [
       {
@@ -224,6 +266,7 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         xAxisIndex: [0, 1],
         startValue,
         endValue,
+        zoomLock: true,
         zoomOnMouseWheel: !options.preview,
         moveOnMouseMove: !options.preview,
         moveOnMouseWheel: !options.preview,
@@ -231,14 +274,12 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
       },
       {
         id: 'dataZoomSlider',
-        show: !options.preview,
+        show: false,
         type: 'slider',
         xAxisIndex: [0, 1],
         startValue,
         endValue,
         zoomLock: true,
-        height: 20,
-        bottom: 10,
         borderColor: '#ccc',
         fillerColor: 'rgba(17, 100, 210, 0.2)',
         handleStyle: {
@@ -248,9 +289,6 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         textStyle: {
           color: '#999',
         },
-        showDetail: false,
-        showDataShadow: true,
-        realtime: true,
         filterMode: 'filter',
       },
     ],
@@ -259,10 +297,10 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         name: '日K',
         type: 'candlestick',
         data: stockChartData,
-        barMinWith: 3,
-        barMaxWith: 10,
+        barWidth: 4,
+        barMaxWidth: 8,
         itemStyle: {
-          color: 'transparent',
+          color: undefined,
           color0: StockChartStyleConfig.DOWN_COLOR,
           borderColor: StockChartStyleConfig.UP_COLOR,
         },
@@ -315,23 +353,18 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         },
         symbol: 'none',
       },
-      // {
-      //   name: '成交量',
-      //   type: 'bar',
-      //   xAxisIndex: 1,
-      //   yAxisIndex: 1,
-      //   barWidth: 10,
-      //   data: stockChartData.map((item) => {
-      //     const isUp = item[1] >= item[0]
-      //     return {
-      //       value: item[3],
-      //       itemStyle: {
-      //         color: isUp ? StockChartStyleConfig.UP_COLOR : StockChartStyleConfig.DOWN_COLOR,
-      //         opacity: 1,
-      //       },
-      //     }
-      //   }),
-      // },
+      {
+        name: 'Volume',
+        type: 'bar',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        barWidth: 4,
+        barMaxWidth: 8,
+        data: volumes,
+        itemStyle: {
+          opacity: 0.7,
+        },
+      },
     ],
   }
 }

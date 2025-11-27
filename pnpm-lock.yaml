@@ -65,6 +65,9 @@ importers:
       dompurify:
         specifier: ^3.2.6
         version: 3.2.6
+      echarts:
+        specifier: ^6.0.0
+        version: 6.0.0
       highlight.js:
         specifier: ^11.11.1
         version: 11.11.1
@@ -171,9 +174,6 @@ importers:
       conventional-changelog-angular:
         specifier: ^8.1.0
         version: 8.1.0
-      echarts:
-        specifier: ^6.0.0
-        version: 6.0.0
       eslint:
         specifier: ^9.35.0
         version: 9.35.0(jiti@2.5.1)
