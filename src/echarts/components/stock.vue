@@ -43,6 +43,20 @@ const zoomStart = ref<number | null>(null)
 const zoomEnd = ref<number | null>(null)
 const selectedIndex = ref<number | null>(null)
 const isCrossDragActive = ref(false) // 长按后拖动十字光标的状态
+
+// 惯性滑动相关状态
+const touchState = ref({
+  startX: 0,
+  startY: 0,
+  lastX: 0,
+  lastY: 0,
+  startTime: 0,
+  lastTime: 0,
+  velocityX: 0,
+  isInertiaScrolling: false,
+})
+let inertiaAnimationId: number | null = null
+
 const { store, config, stockInfo, resetConfigData } = useStockChart({
   stockData: computed(() => stockData.value),
   timeGranularity: computed(() => currentTimeGranularity.value.key),
@@ -388,6 +402,140 @@ async function loadMoreData() {
     chartCanvasInstance.value?.chart?.hideLoading()
   }
 }
+
+// 惯性滑动处理函数
+function handleTouchStart(e: any) {
+  const canvas = (chartCanvasInstance.value?.getDom() as any).canvasNode
+
+  if (props.preview || isCrossDragActive.value)
+    return
+
+  // 停止正在进行的惯性滚动
+  if (inertiaAnimationId) {
+    canvas.cancelAnimationFrame(inertiaAnimationId)
+    inertiaAnimationId = null
+  }
+
+  const touch = e.touches[0]
+  touchState.value = {
+    startX: touch.clientX,
+    startY: touch.clientY,
+    lastX: touch.clientX,
+    lastY: touch.clientY,
+    startTime: Date.now(),
+    lastTime: Date.now(),
+    velocityX: 0,
+    isInertiaScrolling: false,
+  }
+}
+
+function handleTouchMove(e: any) {
+  if (props.preview || isCrossDragActive.value || touchState.value.isInertiaScrolling)
+    return
+
+  const touch = e.touches[0]
+  const now = Date.now()
+  const deltaTime = now - touchState.value.lastTime
+
+  if (deltaTime > 0) {
+    const deltaX = touch.clientX - touchState.value.lastX
+    touchState.value.velocityX = deltaX / deltaTime
+  }
+
+  touchState.value.lastX = touch.clientX
+  touchState.value.lastY = touch.clientY
+  touchState.value.lastTime = now
+}
+
+function handleTouchEnd() {
+  if (props.preview || isCrossDragActive.value)
+    return
+
+  const chart = chartCanvasInstance.value?.chart
+  if (!chart)
+    return
+
+  const velocity = touchState.value.velocityX
+  const absVelocity = Math.abs(velocity)
+
+  // 只有速度超过阈值才启动惯性滚动
+  if (absVelocity < 0.5) {
+    return
+  }
+
+  touchState.value.isInertiaScrolling = true
+
+  // 获取当前的 dataZoom 状态
+  const option = chart.getOption() as any
+  const dataZoom = option?.dataZoom?.[0]
+  if (!dataZoom)
+    return
+
+  let currentStart = dataZoom.start ?? 0
+  let currentEnd = dataZoom.end ?? 100
+
+  // 惯性滚动动画
+  const friction = 0.95 // 摩擦系数，越小减速越快
+  let currentVelocity = velocity * 3 // 放大速度影响
+  const canvas = (chartCanvasInstance.value?.getDom() as any).canvasNode
+
+  function animate() {
+    if (Math.abs(currentVelocity) < 0.1) {
+      touchState.value.isInertiaScrolling = false
+      inertiaAnimationId = null
+      return
+    }
+
+    // 应用摩擦力
+    currentVelocity *= friction
+
+    // 更新 dataZoom 范围
+    const shift = currentVelocity * 0.5 // 调整滑动灵敏度
+    currentStart -= shift
+    currentEnd -= shift
+
+    // 边界检查
+    if (currentStart < 0) {
+      currentStart = 0
+      currentEnd = Math.min(100, currentEnd - currentStart)
+      currentVelocity = 0
+    }
+    if (currentEnd > 100) {
+      const overflow = currentEnd - 100
+      currentEnd = 100
+      currentStart = Math.max(0, currentStart - overflow)
+      currentVelocity = 0
+    }
+
+    // 更新图表
+    try {
+      chart?.dispatchAction({
+        type: 'dataZoom',
+        start: currentStart,
+        end: currentEnd,
+        dataZoomIndex: 0,
+      })
+    }
+    catch (error) {
+      console.error('惯性滚动更新失败:', error)
+      touchState.value.isInertiaScrolling = false
+      inertiaAnimationId = null
+      return
+    }
+
+    inertiaAnimationId = canvas.requestAnimationFrame(animate)
+  }
+
+  inertiaAnimationId = canvas.requestAnimationFrame(animate)
+}
+
+// 组件卸载时清理动画
+onUnmounted(() => {
+  if (inertiaAnimationId) {
+    cancelAnimationFrame(inertiaAnimationId)
+    inertiaAnimationId = null
+  }
+})
 </script>
 
 <template>
@@ -443,6 +591,9 @@ async function loadMoreData() {
         @zr:mouseup="handleZRMouseUp"
         @datazoom="handleDataZoom"
         @native:longpress="handleLongPress"
+        @native:touchstart="handleTouchStart"
+        @native:touchmove="handleTouchMove"
+        @native:touchend="handleTouchEnd"
       />
     </view>
   </view>
@@ -468,7 +619,6 @@ async function loadMoreData() {
   width: 100%;
   overflow: hidden;
   position: relative;
-  -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
 }
 
