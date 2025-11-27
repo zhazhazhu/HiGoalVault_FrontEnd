@@ -405,18 +405,20 @@ async function loadMoreData() {
 
 // 惯性滑动处理函数
 function handleTouchStart(e: any) {
-  const canvas = (chartCanvasInstance.value?.getDom() as any).canvasNode
-
   if (props.preview || isCrossDragActive.value)
     return
 
   // 停止正在进行的惯性滚动
   if (inertiaAnimationId) {
-    canvas.cancelAnimationFrame(inertiaAnimationId)
+    const canvas = (chartCanvasInstance.value?.getDom() as any)?.canvasNode
+    if (canvas) {
+      canvas.cancelAnimationFrame(inertiaAnimationId)
+    }
     inertiaAnimationId = null
   }
 
   const touch = e.touches[0]
+  // 完全重置状态，确保不会有速度累积
   touchState.value = {
     startX: touch.clientX,
     startY: touch.clientY,
@@ -437,9 +439,12 @@ function handleTouchMove(e: any) {
   const now = Date.now()
   const deltaTime = now - touchState.value.lastTime
 
-  if (deltaTime > 0) {
+  // 只在有足够时间间隔时更新速度，避免异常值
+  if (deltaTime > 10) {
     const deltaX = touch.clientX - touchState.value.lastX
-    touchState.value.velocityX = deltaX / deltaTime
+    // 使用滑动平均来平滑速度计算
+    const newVelocity = deltaX / deltaTime
+    touchState.value.velocityX = touchState.value.velocityX * 0.7 + newVelocity * 0.3
   }
 
   touchState.value.lastX = touch.clientX
@@ -455,12 +460,19 @@ function handleTouchEnd() {
   if (!chart)
     return
 
-  const velocity = touchState.value.velocityX
+  let velocity = touchState.value.velocityX
   const absVelocity = Math.abs(velocity)
 
   // 只有速度超过阈值才启动惯性滚动
-  if (absVelocity < 0.5) {
+  if (absVelocity < 0.3) {
+    touchState.value.velocityX = 0
     return
+  }
+
+  // 限制最大速度，避免过快滚动
+  const maxVelocity = 2.0
+  if (absVelocity > maxVelocity) {
+    velocity = Math.sign(velocity) * maxVelocity
   }
 
   touchState.value.isInertiaScrolling = true
@@ -475,8 +487,8 @@ function handleTouchEnd() {
   let currentEnd = dataZoom.end ?? 100
 
   // 惯性滚动动画
-  const friction = 0.95 // 摩擦系数，越小减速越快
-  let currentVelocity = velocity * 3 // 放大速度影响
+  const friction = 0.9 // 摩擦系数，越小减速越快
+  let currentVelocity = velocity * 3 // 调整速度影响系数
   const canvas = (chartCanvasInstance.value?.getDom() as any).canvasNode
 
   function animate() {
