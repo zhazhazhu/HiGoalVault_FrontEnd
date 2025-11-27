@@ -42,6 +42,8 @@ export interface StockChartStore {
   ma20: Array<number | null>
   ma30: Array<number | null>
   volumes: Array<[number, number, 1 | -1]>
+  volumeMA5: Array<number | null>
+  volumeMA10: Array<number | null>
 }
 
 export interface UseStockChartOptions {
@@ -64,6 +66,9 @@ export function useStockChart(options: UseStockChartOptions) {
     const stockChartData = toValue(options.stockData).map((item) => {
       return [item.open, item.close, item.low, item.high]
     })
+    const volumeData = toValue(options.stockData).map((item) => {
+      return [item.vol || 0]
+    })
     return {
       categoryData: toValue(options.stockData).map((item) => {
         return dayjs(isMinutesGranularity(toValue(options.timeGranularity)) ? item.trade_time : item.trade_date).format('YYYY-MM-DD HH:mm:ss')
@@ -79,6 +84,8 @@ export function useStockChart(options: UseStockChartOptions) {
         const isUp = item.close >= item.open
         return [index, vol, isUp ? 1 : -1]
       }) as [number, number, 1 | -1][],
+      volumeMA5: calculateMA(5, volumeData),
+      volumeMA10: calculateMA(10, volumeData),
     }
   })
 
@@ -110,10 +117,14 @@ export function useStockChart(options: UseStockChartOptions) {
         return [index, vol, isUp ? 1 : -1]
       }) as [number, number, 1 | -1][]
 
-      config.value.xAxis[0].data.unshift(...categoryData)
-      config.value.xAxis[1].data.unshift(...categoryData)
+      config.value.xAxis.forEach((xAxis) => {
+        xAxis.data.unshift(...categoryData)
+      })
       if (toValue(options.timeGranularity) === '1MINS') {
         config.value.series[0].data.unshift(...(stockChartData.map(item => item[1])) as any)
+        // config.value.series[1].data.unshift(...(volumes as any))
+        // config.value.series[2].data = calculateMA(5, volumes)
+        // config.value.series[3].data = calculateMA(10, volumes)
       }
       else {
         config.value.series[0].data.unshift(...(stockChartData as any))
@@ -122,6 +133,8 @@ export function useStockChart(options: UseStockChartOptions) {
         config.value.series[3].data = calculateMA(20, allStockChartData)
         config.value.series[4].data = calculateMA(30, allStockChartData)
         config.value.series[5].data.unshift(...(volumes as any))
+        config.value.series[6].data = calculateMA(5, volumes)
+        config.value.series[7].data = calculateMA(10, volumes)
       }
 
       const delta = stockChartData.length

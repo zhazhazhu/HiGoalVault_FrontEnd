@@ -137,7 +137,7 @@ export function generateStockChartConfig(store: Ref<StockChartStore>, options: U
 }
 
 export function generateKLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
-  const { categoryData, stockChartData, ma5, ma10, ma20, ma30, volumes } = store.value
+  const { categoryData, stockChartData, ma5, ma10, ma20, ma30, volumes, volumeMA5, volumeMA10 } = store.value
   const endValue = Math.max(0, stockChartData.length - 1)
   const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
@@ -177,13 +177,26 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         top: 0,
         bottom: options.preview ? 10 : 60,
         outerBoundsContain: 'all',
-        height: 280,
+        height: 240,
       },
       {
         left: 10,
         right: 10,
-        top: 300,
+        top: 260,
         height: 60,
+      },
+    ],
+    title: [
+      {
+        text: '成交额',
+        left: 0,
+        top: 260,
+        coordinateSystem: 'cartesian2d',
+        textStyle: {
+          color: '#616c7b',
+          fontSize: 10,
+          fontWeight: 'normal',
+        },
       },
     ],
     xAxis: [
@@ -367,30 +380,58 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
           opacity: 0.7,
         },
       },
+      {
+        name: 'VolumeMA5',
+        type: 'line',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        data: volumeMA5,
+        smooth: true,
+        lineStyle: {
+          opacity: 0.8,
+          width: 1,
+          color: StockChartStyleConfig.MA5_COLOR,
+        },
+        symbol: 'none',
+      },
+      {
+        name: 'VolumeMA10',
+        type: 'line',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        data: volumeMA10,
+        smooth: true,
+        lineStyle: {
+          opacity: 0.8,
+          width: 1,
+          color: StockChartStyleConfig.MA10_COLOR,
+        },
+        symbol: 'none',
+      },
     ],
   }
 }
 
 export function generateLineConfig(store: Ref<StockChartStore>, options: UseStockChartOptions) {
-  const { categoryData, stockChartData } = store.value
+  const { categoryData, stockChartData, volumes, volumeMA5, volumeMA10 } = store.value
   const endValue = Math.max(0, stockChartData.length - 1)
   const startValue = options.preview ? 0 : Math.max(0, endValue - 50)
 
   return {
     animation: false,
+    axisPointer: {
+      link: [{ xAxisIndex: 'all' }],
+    },
     tooltip: {
-      show: true,
       trigger: 'axis',
-      // 仅显示十字线，不显示默认浮层内容
-      showContent: false,
-      // 由我们通过 dispatchAction 主动控制显示/隐藏
       triggerOn: 'none',
+      showContent: false,
       axisPointer: {
         type: 'cross',
         snap: true,
         label: {
           show: true,
-          backgroundColor: '#616c7b',
+          backgroundColor: '#616c7b8c',
         },
         crossStyle: {
           color: '#8392A5',
@@ -398,50 +439,64 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
           type: 'dashed',
         },
       },
+      borderWidth: 1,
+      borderColor: '#ccc',
+      padding: 10,
+      textStyle: {
+        color: '#000',
+      },
     },
-    grid: {
-      left: 10,
-      right: 10,
-      top: 0,
-      bottom: 60,
-      outerBoundsContain: 'all',
-    },
+    grid: [
+      {
+        left: 10,
+        right: 10,
+        top: 0,
+        bottom: options.preview ? 10 : 60,
+        outerBoundsContain: 'all',
+        height: 320,
+      },
+    ],
     xAxis: [
       {
         type: 'category',
         data: categoryData,
-        axisLine: { lineStyle: { color: '#8392A5' } },
+        boundaryGap: false,
+        axisLine: { onZero: false, lineStyle: { color: '#8392A5', opacity: 0.7 } },
+        min: 'dataMin',
+        max: 'dataMax',
         axisLabel: {
           formatter: (value: string) => xAxisFormat(value, toValue(options.timeGranularity)),
         },
       },
     ],
-    yAxis: {
-      scale: true,
-      splitNumber: 4,
-      axisLine: { lineStyle: { color: '#8392A5' } },
-      axisLabel: {
-        align: 'right', // 文本右对齐
-        margin: 20, // 可根据实际情况调整的右边距
-        inside: true,
-        color: '#616c7b79',
-        formatter: (value: number, index: number) => {
-          if (index === 0) {
-            return ''
-          }
-          return value
+    yAxis: [
+      {
+        scale: true,
+        splitNumber: 4,
+        axisLine: { lineStyle: { color: '#8392A5' } },
+        axisLabel: {
+          align: 'right', // 文本右对齐
+          margin: 20, // 可根据实际情况调整的右边距
+          inside: true,
+          color: '#616c7b79',
+          formatter: (value: number, index: number) => {
+            if (index === 0) {
+              return ''
+            }
+            return value
+          },
         },
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: '#8392A5',
-          opacity: 0.2,
-          type: 'dashed',
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: '#8392A5',
+            opacity: 0.2,
+            type: 'dashed',
+          },
         },
+        boundaryGap: [0, 0],
       },
-      boundaryGap: [0, 0],
-    },
+    ],
     dataZoom: [
       {
         id: 'dataZoomInside',
@@ -449,6 +504,7 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
         xAxisIndex: [0, 1],
         startValue,
         endValue,
+        zoomLock: true,
         zoomOnMouseWheel: !options.preview,
         moveOnMouseMove: !options.preview,
         moveOnMouseWheel: !options.preview,
@@ -456,14 +512,12 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
       },
       {
         id: 'dataZoomSlider',
-        show: !options.preview,
+        show: false,
         type: 'slider',
         xAxisIndex: [0, 1],
         startValue,
         endValue,
         zoomLock: true,
-        height: 20,
-        bottom: 10,
         borderColor: '#ccc',
         fillerColor: 'rgba(17, 100, 210, 0.2)',
         handleStyle: {
@@ -473,9 +527,6 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
         textStyle: {
           color: '#999',
         },
-        showDetail: false,
-        showDataShadow: true,
-        realtime: true,
         filterMode: 'filter',
       },
     ],
@@ -490,6 +541,46 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
           width: 1,
         },
       },
+      // {
+      //   name: 'Volume',
+      //   type: 'bar',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   barWidth: 4,
+      //   barMaxWidth: 8,
+      //   data: volumes,
+      //   itemStyle: {
+      //     opacity: 0.7,
+      //   },
+      // },
+      // {
+      //   name: 'VolumeMA5',
+      //   type: 'line',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   data: volumeMA5,
+      //   smooth: true,
+      //   lineStyle: {
+      //     opacity: 0.8,
+      //     width: 1,
+      //     color: StockChartStyleConfig.MA5_COLOR,
+      //   },
+      //   symbol: 'none',
+      // },
+      // {
+      //   name: 'VolumeMA10',
+      //   type: 'line',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   data: volumeMA10,
+      //   smooth: true,
+      //   lineStyle: {
+      //     opacity: 0.8,
+      //     width: 1,
+      //     color: StockChartStyleConfig.MA10_COLOR,
+      //   },
+      //   symbol: 'none',
+      // },
     ],
   }
 }
