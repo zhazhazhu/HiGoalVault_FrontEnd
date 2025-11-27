@@ -25,6 +25,15 @@ const [form, reset] = useResetRef<PublishMessageRequest>({
 async function onPublish() {
   form.value.queryId = props.message.queryId
   form.value.title = props.message.query
+  // 检查是否包含敏感词
+  const hasSensitive = await api.hasSensitiveWord(form.value.content)
+  if (hasSensitive.result) {
+    uni.showToast({
+      title: '包含敏感词，无法发送',
+      icon: 'none',
+    })
+    return
+  }
   try {
     const data = await api.addPublishMessage({ ...form.value, content: encodeURI(form.value.content) })
     if (data.code === 200) {
