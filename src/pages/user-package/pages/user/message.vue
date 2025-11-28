@@ -61,7 +61,9 @@ function gotoUser(id: string) {
   uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${id}` })
 }
 function gotoContentComment(item: MyCommentedRepliedListResponse) {
-  uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
+  if (item.commentStatus) {
+    uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
+  }
 }
 function gotoBack() {
   uni.navigateBack()

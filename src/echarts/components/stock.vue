@@ -396,7 +396,7 @@ async function loadMoreData() {
   try {
     const { data, total } = await load(props.params.code)
     // 判断是否真实为空数据（仅当返回数组且长度为 0）
-    if (stockData.value.length + data.length >= total) {
+    if (stockData.value.length >= total) {
       // 没有更多数据了
       hasMoreData.value = false
       uni.showToast({ title: '没有更早的数据了', icon: 'none' })
