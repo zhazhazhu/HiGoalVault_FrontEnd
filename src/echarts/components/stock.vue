@@ -355,7 +355,7 @@ function handleZRMouseMove(params: ElementEvent) {
     try {
       stockInfo.value = getStockInfo(store.value.originalStockChartData, idx)
       chart?.dispatchAction({ type: 'showTip', seriesIndex: 0, dataIndex: idx })
-      chart?.dispatchAction({ type: 'showTip', seriesIndex: 5, dataIndex: idx })
+      // chart?.dispatchAction({ type: 'showTip', seriesIndex: 5, dataIndex: idx })
     }
     catch {
       // ignore
@@ -645,7 +645,7 @@ onUnmounted(() => {
     <view class="chart-wrapper" :class="[(!stockData.length && !isLoadingMore) && 'hidden']">
       <uni-echarts
         ref="chartCanvasInstance"
-        :custom-class="(!stockData.length && !isLoadingMore) ? 'hidden' : (preview ? 'h-200px' : 'h-320px')"
+        :custom-class="(!stockData.length && !isLoadingMore) ? 'hidden' : (preview ? 'h-200px' : 'h-240px')"
         :option="config"
         @zr:click="handleZRClick"
         @zr:mousemove="handleZRMouseMove"
@@ -676,7 +676,7 @@ onUnmounted(() => {
 }
 
 .chart-wrapper {
-  height: 320px;
+  height: 240px;
   width: 100%;
   overflow: hidden;
   position: relative;

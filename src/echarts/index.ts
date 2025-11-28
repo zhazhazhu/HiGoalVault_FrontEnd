@@ -132,9 +132,9 @@ export function useStockChart(options: UseStockChartOptions) {
         config.value.series[2].data = calculateMA(10, allStockChartData)
         config.value.series[3].data = calculateMA(20, allStockChartData)
         config.value.series[4].data = calculateMA(30, allStockChartData)
-        config.value.series[5].data.unshift(...(volumes as any))
-        config.value.series[6].data = calculateMA(5, volumes)
-        config.value.series[7].data = calculateMA(10, volumes)
+        // config.value.series[5].data.unshift(...(volumes as any))
+        // config.value.series[6].data = calculateMA(5, volumes)
+        // config.value.series[7].data = calculateMA(10, volumes)
       }
 
       const delta = stockChartData.length

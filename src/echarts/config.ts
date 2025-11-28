@@ -143,9 +143,9 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
 
   return {
     animation: false,
-    axisPointer: {
-      link: [{ xAxisIndex: 'all' }],
-    },
+    // axisPointer: {
+    //   link: [{ xAxisIndex: 'all' }],
+    // },
     tooltip: {
       trigger: 'axis',
       triggerOn: 'none',
@@ -177,28 +177,28 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         top: 0,
         bottom: options.preview ? 10 : 60,
         outerBoundsContain: 'all',
-        height: 240,
+        height: 260,
       },
-      {
-        left: 10,
-        right: 10,
-        top: 260,
-        height: 60,
-      },
+      // {
+      //   left: 10,
+      //   right: 10,
+      //   top: 260,
+      //   height: 60,
+      // },
     ],
-    title: [
-      {
-        text: '成交额',
-        left: 0,
-        top: 260,
-        coordinateSystem: 'cartesian2d',
-        textStyle: {
-          color: '#616c7b',
-          fontSize: 10,
-          fontWeight: 'normal',
-        },
-      },
-    ],
+    // title: [
+    //   {
+    //     text: '成交额',
+    //     left: 0,
+    //     top: 260,
+    //     coordinateSystem: 'cartesian2d',
+    //     textStyle: {
+    //       color: '#616c7b',
+    //       fontSize: 10,
+    //       fontWeight: 'normal',
+    //     },
+    //   },
+    // ],
     xAxis: [
       {
         type: 'category',
@@ -211,17 +211,17 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
           formatter: (value: string) => xAxisFormat(value, toValue(options.timeGranularity)),
         },
       },
-      {
-        type: 'category',
-        gridIndex: 1,
-        data: categoryData,
-        boundaryGap: false,
-        axisLine: { onZero: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-        min: 'dataMin',
-        max: 'dataMax',
-      },
+      // {
+      //   type: 'category',
+      //   gridIndex: 1,
+      //   data: categoryData,
+      //   boundaryGap: false,
+      //   axisLine: { onZero: false },
+      //   axisTick: { show: false },
+      //   axisLabel: { show: false },
+      //   min: 'dataMin',
+      //   max: 'dataMax',
+      // },
     ],
     yAxis: [
       {
@@ -250,30 +250,30 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         },
         boundaryGap: [0, 0],
       },
-      {
-        scale: true,
-        gridIndex: 1,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { show: false },
-      },
+      // {
+      //   scale: true,
+      //   gridIndex: 1,
+      //   axisLabel: { show: false },
+      //   axisLine: { show: false },
+      //   axisTick: { show: false },
+      //   splitLine: { show: false },
+      // },
     ],
-    visualMap: {
-      show: false,
-      seriesIndex: 5,
-      dimension: 2,
-      pieces: [
-        {
-          value: 1,
-          color: StockChartStyleConfig.UP_COLOR,
-        },
-        {
-          value: -1,
-          color: StockChartStyleConfig.DOWN_COLOR,
-        },
-      ],
-    },
+    // visualMap: {
+    //   show: false,
+    //   seriesIndex: 5,
+    //   dimension: 2,
+    //   pieces: [
+    //     {
+    //       value: 1,
+    //       color: StockChartStyleConfig.UP_COLOR,
+    //     },
+    //     {
+    //       value: -1,
+    //       color: StockChartStyleConfig.DOWN_COLOR,
+    //     },
+    //   ],
+    // },
     dataZoom: [
       {
         id: 'dataZoomInside',
@@ -368,46 +368,46 @@ export function generateKLineConfig(store: Ref<StockChartStore>, options: UseSto
         },
         symbol: 'none',
       },
-      {
-        name: 'Volume',
-        type: 'bar',
-        xAxisIndex: 1,
-        yAxisIndex: 1,
-        barWidth: 4,
-        barMaxWidth: 8,
-        data: volumes,
-        itemStyle: {
-          opacity: 0.7,
-        },
-      },
-      {
-        name: 'VolumeMA5',
-        type: 'line',
-        xAxisIndex: 1,
-        yAxisIndex: 1,
-        data: volumeMA5,
-        smooth: true,
-        lineStyle: {
-          opacity: 0.8,
-          width: 1,
-          color: StockChartStyleConfig.MA5_COLOR,
-        },
-        symbol: 'none',
-      },
-      {
-        name: 'VolumeMA10',
-        type: 'line',
-        xAxisIndex: 1,
-        yAxisIndex: 1,
-        data: volumeMA10,
-        smooth: true,
-        lineStyle: {
-          opacity: 0.8,
-          width: 1,
-          color: StockChartStyleConfig.MA10_COLOR,
-        },
-        symbol: 'none',
-      },
+      // {
+      //   name: 'Volume',
+      //   type: 'bar',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   barWidth: 4,
+      //   barMaxWidth: 8,
+      //   data: volumes,
+      //   itemStyle: {
+      //     opacity: 0.7,
+      //   },
+      // },
+      // {
+      //   name: 'VolumeMA5',
+      //   type: 'line',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   data: volumeMA5,
+      //   smooth: true,
+      //   lineStyle: {
+      //     opacity: 0.8,
+      //     width: 1,
+      //     color: StockChartStyleConfig.MA5_COLOR,
+      //   },
+      //   symbol: 'none',
+      // },
+      // {
+      //   name: 'VolumeMA10',
+      //   type: 'line',
+      //   xAxisIndex: 1,
+      //   yAxisIndex: 1,
+      //   data: volumeMA10,
+      //   smooth: true,
+      //   lineStyle: {
+      //     opacity: 0.8,
+      //     width: 1,
+      //     color: StockChartStyleConfig.MA10_COLOR,
+      //   },
+      //   symbol: 'none',
+      // },
     ],
   }
 }
@@ -453,7 +453,7 @@ export function generateLineConfig(store: Ref<StockChartStore>, options: UseStoc
         top: 0,
         bottom: options.preview ? 10 : 60,
         outerBoundsContain: 'all',
-        height: 320,
+        height: 260,
       },
     ],
     xAxis: [
