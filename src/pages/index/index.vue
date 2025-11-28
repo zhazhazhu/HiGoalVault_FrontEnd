@@ -44,9 +44,11 @@ const userStore = useUserStore()
 const chatStore = useChatStore()
 const globalStore = useGlobalStore()
 const navbarOpacity = ref(0)
+const scrollTopThreshold = ref(0)
 
 function onScroll(event: any) {
   const scrollTop = event.detail.scrollTop
+  scrollTopThreshold.value = scrollTop
   const statusBarHeight = globalStore.windowInfo?.statusBarHeight || 0
 
   // 当滚动距离超过状态栏高度时开始显示背景
@@ -192,51 +194,53 @@ onShow(() => {
   <Layout v-model="showSidebar" @change-chat="onChangeChat">
     <LoginPopup v-model="globalStore.showLoginPopup" />
 
-    <image src="@/static/home/image/home-background.png" class="absolute top-0 left-0 w-full" />
-    <scroll-view
-      class="bg-[var(--hi-bg-color)] h-100vh box-border"
-      scroll-y
-      enhanced
-      scroll-with-animation
-      :scroll-top="scrollTop"
-      :show-scrollbar="false"
-      :refresher-enabled="true"
-      :refresher-triggered="refreshing"
-      @scrolltolower="loadData"
-      @scroll="onScroll"
-      @refresherrefresh="refreshData"
-    >
-      <view>
-        <view class="h-90rpx" />
+    <view class="h-100vh">
+      <image src="@/static/home/image/home-background.png" class="absolute top-0 left-0 w-full" />
+      <div class="bg-#F2F2F2 relative z-1" :style="{ height: `${globalStore.windowInfo?.statusBarHeight}px`, opacity: navbarOpacity }" />
 
-        <view class="navbar sticky top-0 left-0 z-9999">
+      <scroll-view
+        class="bg-[var(--hi-bg-color)] h-[calc(100vh-100px)]"
+        :scroll-y="true"
+        enhanced
+        scroll-with-animation
+        :scroll-top="scrollTop"
+        :show-scrollbar="false"
+        :refresher-enabled="true"
+        :refresher-triggered="refreshing"
+        @scrolltolower="loadData"
+        @scroll="onScroll"
+        @refresherrefresh="refreshData"
+      >
+        <view>
           <view class="bg-#F2F2F2" :style="{ height: `${globalStore.windowInfo?.statusBarHeight}px`, opacity: navbarOpacity }" />
 
-          <view class="grid grid-cols-3 items-center relative pb-8px px-20rpx">
-            <view class="bg-#F2F2F2 absolute w-full h-full top-0 left-0 " :style="{ opacity: navbarOpacity }" />
-            <view class="flex items-center gap-15px z-9">
-              <view v-show="navbarOpacity !== 1" class="bg-#ffffff69 p-4px rounded-8px b-1px b-solid b-#ffffffe0" @tap="onNavbarLeftClick">
-                <view class="menu-icon" />
+          <view class="navbar sticky top-0 left-0 z-9999">
+            <view class="grid grid-cols-3 items-center relative pb-8px px-20rpx">
+              <view class="bg-#F2F2F2 absolute w-full h-full top-0 left-0 " :style="{ opacity: navbarOpacity }" />
+              <view class="flex items-center gap-15px z-9">
+                <view v-show="navbarOpacity !== 1" class="bg-#ffffff69 p-4px rounded-8px b-1px b-solid b-#ffffffe0" @tap="onNavbarLeftClick">
+                  <view class="menu-icon" />
+                </view>
+                <view v-show="navbarOpacity === 1" class="menu-icon" @tap="onNavbarLeftClick" />
+                <view v-show="navbarOpacity === 1" class="search-icon" @click="onClickSearch" />
               </view>
-              <view v-show="navbarOpacity === 1" class="menu-icon" @tap="onNavbarLeftClick" />
-              <view v-show="navbarOpacity === 1" class="search-icon" @click="onClickSearch" />
-            </view>
-            <wd-tabs v-model="active" custom-class="hi-tabs" animated @change="onTabClick">
-              <wd-tab title="发现" name="view" />
-              <wd-tab title="关注" name="follow" :disabled="!userStore.isLogin" />
-            </wd-tabs>
-            <view>
-              <view v-show="navbarOpacity !== 1" class="search-icon float-right" @click="onClickSearch" />
+              <wd-tabs v-model="active" custom-class="hi-tabs" animated @change="onTabClick">
+                <wd-tab title="发现" name="view" />
+                <wd-tab title="关注" name="follow" :disabled="!userStore.isLogin" />
+              </wd-tabs>
+              <view>
+                <view v-show="navbarOpacity !== 1" class="search-icon float-right" @click="onClickSearch" />
+              </view>
             </view>
           </view>
-        </view>
 
-        <view class="px-20rpx ">
-          <ViewList v-show="active === 'view'" v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
-          <ViewList v-show="active === 'follow'" v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
+          <view class="px-20rpx ">
+            <ViewList v-show="active === 'view'" v-model:data="data.view.data" :is-loading="data.view.isLoading" :is-finish="data.view.isFinish" />
+            <ViewList v-show="active === 'follow'" v-model:data="data.follow.data" :is-loading="data.follow.isLoading" :is-finish="data.follow.isFinish" />
+          </view>
         </view>
-      </view>
-    </scroll-view>
+      </scroll-view>
+    </view>
 
     <view class="fixed w-full bottom-0 left-0 bg-[var(--hi-bg-color)]">
       <Converse :disabled="!userStore.isLogin" @tap="onConverseTap" />
