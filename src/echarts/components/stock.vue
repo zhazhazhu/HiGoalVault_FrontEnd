@@ -5,7 +5,7 @@ import type { ChatMessageStockData, DateParameterOfStock } from '@/api'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import dayjs from 'dayjs'
 import { BarChart, CandlestickChart, LineChart } from 'echarts/charts'
-import { AxisPointerComponent, DatasetComponent, DataZoomComponent, GridComponent, LegendComponent, TitleComponent, TooltipComponent, VisualMapComponent } from 'echarts/components'
+import { AxisPointerComponent, DatasetComponent, DataZoomComponent, GridComponent, LegendComponent, TooltipComponent, VisualMapComponent } from 'echarts/components'
 import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
@@ -23,7 +23,6 @@ const props = defineProps<{
 provideEcharts(echarts)
 
 echarts.use([
-  TitleComponent,
   VisualMapComponent,
   DatasetComponent,
   GridComponent,
