@@ -32,6 +32,7 @@ async function getCurrentCommentData() {
     const commentRes = await api.getCommentOrReplyById(currentComment.value as any)
     if (commentRes.code === 200) {
       data.value.unshift(commentRes.result)
+      currentComment.value.commentId = commentRes.result.comment.id
     }
   }
 }

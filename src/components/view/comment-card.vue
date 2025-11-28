@@ -52,7 +52,7 @@ function commentIdCounter() {
   if (data.value.comment.id === commentId.value) {
     setTimeout(() => {
       commentId.value = ''
-    }, 500)
+    }, 1000)
   }
 }
 function onDeleteComment() {
