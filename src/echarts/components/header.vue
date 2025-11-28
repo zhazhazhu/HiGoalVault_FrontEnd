@@ -10,16 +10,6 @@ const props = defineProps<{
 const isUp = computed(() => {
   return props.stockInfo.close > props.stockInfo.pre_close
 })
-const formattedChange = computed(() => {
-  if (props.stockInfo?.close == null || props.stockInfo?.pre_close == null)
-    return '-'
-  return (props.stockInfo.close - props.stockInfo.pre_close).toFixed(2).replace(/\.?0+$/, '')
-})
-const formattedChangePercent = computed(() => {
-  if (props.stockInfo?.close == null || props.stockInfo?.pre_close == null)
-    return '-'
-  return ((props.stockInfo.close / props.stockInfo.pre_close) * 100).toFixed(2)
-})
 // 如果金额是百亿级别就返回亿，如果是万级别就返回万，否则返回原始金额
 function formatAmount(v: number | null) {
   if (v == null)
@@ -58,10 +48,10 @@ onMounted(async () => {
         </view>
         <view class="flex justify-end gap-6px">
           <view class="text-13px">
-            {{ formattedChange }}
+            {{ stockInfo.change }}
           </view>
           <view class="text-13px">
-            {{ formattedChangePercent }}%
+            {{ stockInfo.pct_chg }}%
           </view>
         </view>
       </view>

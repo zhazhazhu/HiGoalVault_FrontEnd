@@ -233,6 +233,10 @@ export interface ChatMessageStockData {
   turnover_rate: number | null
   /** 振幅率 */
   price_swing: number | null
+  /** 涨幅率 */
+  pct_chg: number
+  /** 涨幅 */
+  change: number
 }
 
 export interface ChatMessageReference {
