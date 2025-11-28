@@ -680,7 +680,7 @@ onUnmounted(() => {
   width: 100%;
   overflow: hidden;
   position: relative;
-  touch-action: pan-x;
+  touch-action: pan-x pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
