@@ -132,7 +132,7 @@ function onDelete() {
         </view> -->
       </view>
 
-      <view :id="parseSectionId" class="min-h-20px">
+      <view :id="parseSectionId" class="min-h-20px max-h-300px overflow-hidden">
         <template v-if="visible">
           <Stock v-if="data.chatQueryAnswerVO?.stockParameter?.code" :data="data.chatQueryAnswerVO?.stockData?.[0]?.data" :params="data.chatQueryAnswerVO?.stockParameter" preview />
           <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="responseContent" />
