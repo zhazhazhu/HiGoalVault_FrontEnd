@@ -5,9 +5,10 @@ import type { NavbarInstance } from '@/components/navbar'
 import type { Share } from '@/composables/inject'
 import type { WsMessageResponse } from '@/store/websocket'
 import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
-import { computed, onUnmounted, provide, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onUnmounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
-import { useClassesName } from '@/composables'
+import MessageCard from '@/components/message/card.vue'
+import { useClassesName, useUUID } from '@/composables'
 import { messageInjectKey } from '@/composables/inject'
 import { useCharQueue } from '@/composables/useChatQueue'
 import { useResetRef } from '@/composables/useResetRef'
@@ -31,7 +32,7 @@ const [page, resetPage] = useResetRef<Page>({
   pageSize: 20,
   sort: 'createTime',
 })
-const scrollTop = ref(0)
+const scrollTop = ref(0.001)
 const isFinish = ref(false)
 const websocketStore = useWebsocketStore()
 const messages = computed(() => chatStore.messages)
@@ -41,6 +42,8 @@ const { start, reset, onChange } = useTimeCount()
 const status = ref<'thinking' | 'response' | null>(null)
 const currentThinkingIndex = ref(0)
 const { charQueue, pushQueue: pushCharQueue, onTyping: onCharTyping, pushFullQueue } = useCharQueue()
+const messageCardInstance = ref<Array<InstanceType<typeof MessageCard>>>([])
+const converseHeight = ref(0)
 
 onChange((count) => {
   if (!chatStore.currentAnswer)
@@ -222,6 +225,14 @@ watch(() => share.value.isChecked, (newVal) => {
 function scrollToTop() {
   scrollTop.value += 0.001
 }
+
+const instance = getCurrentInstance()
+const query = uni.createSelectorQuery().in(instance)
+function scrollToElement(id: string) {
+  query.select(`#message-${id}`).boundingClientRect((rect) => {
+    scrollTop.value = ((rect as UniApp.NodeInfo).height || 0)
+  }).exec()
+}
 const loading = ref(false)
 
 async function getMessage() {
@@ -233,10 +244,14 @@ async function getMessage() {
     chatStore.messages.push(..._messages)
     isFinish.value = data.result.total <= chatStore.messages.length
     loading.value = false
+    // setTimeout(() => {
+    //   _messages.length && scrollToElement(_messages[0]?.msgId || '')
+    // }, 500)
   }
 }
 function refreshMessage() {
   chatStore.messages = []
+  scrollTop.value = 0.001
   if (chatStore.isReplying) {
     chatStore.isReplying = false
     reset()
@@ -281,6 +296,7 @@ onShow(() => {
   websocketStore.onClose = websocketClose
   websocketStore.onError = websocketError
   chatStore.messages = []
+  scrollTop.value = 0.001
   getMessage()
   // uni.navigateTo({ url: '/pages/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
@@ -336,7 +352,7 @@ onShareAppMessage(async ({ from }) => {
         @scrolltolower="loadMessage"
       >
         <view v-if="messages.length > 0" class="w-full">
-          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" :key="`message-${item.msgId}`" :message="item" />
+          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" ref="messageCardInstance" :key="`message-${useUUID(16)}-${item.msgId}`" :message="item" />
 
           <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
             <wd-loading color="#FC6146FF" :size="20" />
@@ -351,7 +367,7 @@ onShareAppMessage(async ({ from }) => {
         </view>
       </scroll-view>
 
-      <converse ref="converseInstance" :disabled="chatStore.isReplying" plain />
+      <converse ref="converseInstance" :disabled="chatStore.isReplying" plain @resize="converseHeight = $event" />
     </container>
   </Layout>
 </template>

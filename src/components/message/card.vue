@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import type { ChatMessageAfter, ChatMessageReference } from '@/api'
 import type { MessageToolOperateType } from '@/types'
-import { computed, ref, watch } from 'vue'
+import { computed, getCurrentInstance, ref, watch } from 'vue'
 import { useCountDown } from 'wot-design-uni'
 import { useMessage } from 'wot-design-uni/components/wd-message-box'
 import { api, Truth } from '@/api'
@@ -44,6 +44,9 @@ const { start, reset } = useCountDown({
 })
 const messageBox = useMessage()
 const currentLongPressType = ref<'response' | 'step' | 'user'>()
+const id = `message-${message.value.msgId}`
+const instance = getCurrentInstance()
+const query = uni.createSelectorQuery().in(instance)
 
 innerAudioContext.onPlay(() => {
   console.log('音频开始播放')
@@ -280,6 +283,11 @@ function stopTextToSpeech() {
   reset()
   messageTextToSpeaking.value = false
 }
+
+defineExpose({
+  query,
+  id,
+})
 </script>
 
 <template>

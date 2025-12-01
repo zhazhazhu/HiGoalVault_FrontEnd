@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { CSSProperties } from 'vue'
-import { computed } from 'vue'
+import { computed, getCurrentInstance, nextTick, ref } from 'vue'
 import { useGlobalStore, useUserStore } from '@/store'
 
 interface Props {
@@ -23,6 +23,15 @@ const slots = defineSlots<{
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
+const instance = getCurrentInstance()
+const query = uni.createSelectorQuery().in(instance)
+const navbarHeight = ref(0)
+
+nextTick(() => {
+  query.select('.navbar__container').boundingClientRect((rect) => {
+    navbarHeight.value = (rect as any)?.height || 0
+  }).exec()
+})
 
 const navbarStyle = computed<CSSProperties>(() => ({
   '--bg-color': props.bgColor,
@@ -37,6 +46,7 @@ function handleClick() {
 
 defineExpose({
   changeBgColor,
+  navbarHeight,
 })
 </script>
 

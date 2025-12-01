@@ -109,11 +109,7 @@ export const useChatStore = defineStore('chat', {
       }
       if (answer.data) {
         data = useJsonParse(answer.data) || { analysis_data: '', resolved_params: { parameters: [] } }
-        console.log(data)
-
         stockData = useJsonParse(data.analysis_data) || []
-        console.log(stockData)
-
         const dateList = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
         const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value
         if (dateList) {

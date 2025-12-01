@@ -49,7 +49,6 @@ async function onChooseAvatar(e) {
     },
     success: async (res) => {
       const data = JSON.parse(res.data)
-      console.log(data)
       if (data.code === 200) {
         const res2 = await api.updateUserInfo({ face: data.result.originalUrl }).finally(() => {
           isUpdateNickname.value = false
