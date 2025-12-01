@@ -37,7 +37,7 @@ echarts.use([
 ])
 
 const currentTimeGranularity = ref(timeGranularityOptions.DAILY)
-const stockData = ref<ChatMessageStockData[]>(props.preview ? [...(props.data || [])] : [])
+const stockData = ref<ChatMessageStockData[]>([])
 const chartCanvasInstance = shallowRef<UniEchartsInst | null>(null)
 const isLoadingMore = ref(false) // 加载更多数据的标志
 const hasMoreData = ref(true) // 是否还有更早的数据
@@ -123,8 +123,6 @@ onUnmounted(() => {
 })
 
 watch(currentTimeGranularity, async () => {
-  if (props.preview)
-    return
   // 若上一轮尚在 finally 阶段，等待其结束以清理 isLoadingMore/hideLoading
   if (isLoadingMore.value) {
     await new Promise<void>((resolve) => {
