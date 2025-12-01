@@ -217,7 +217,7 @@ onShow(() => {
     <!-- <div class="bg-#F2F2F2 relative z-1" :style="{ height: `${globalStore.windowInfo?.statusBarHeight}px`, opacity: navbarOpacity }" /> -->
 
     <scroll-view
-      class="bg-[var(--hi-bg-color)] h-[calc(100vh-130px)]"
+      class="bg-[var(--hi-bg-color)] h-[calc(100vh-170px)]"
       enhanced
       scroll-with-animation
       scroll-anchoring
