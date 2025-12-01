@@ -39,10 +39,10 @@ pnpm run build:mp-weixin
 
 - 页面与包：
   - `src/pages/index/` 首页列表页（发现/关注/分享）
-  - `src/chat-package/pages/chat/` 消息列表页（AI 对话、消息相关能力）
-  - `src/search-package/pages/search/` 搜索页
-  - `src/detail-package/pages/detail/` 帖子详情页
-  - `src/user-package/pages/` 个人主页相关页面
+  - `src/pages/chat-package/pages/` 消息列表页（AI 对话、消息相关能力）
+  - `src/pages/search-package/pages/` 搜索页
+  - `src/pages/detail-package/pages/` 帖子详情页
+  - `src/pages/user-package/pages/` 个人主页相关页面
 - 组件与能力：
   - `src/components/` 各种 UI 组件（对话、布局、输入、点赞、标签等）
   - `src/echarts/` 图表（K 线图、股票数据加载逻辑）
@@ -81,8 +81,8 @@ pnpm run build:mp-weixin
   - 分享卡片图：直接设置 `imageUrl` 指向截图接口地址：
     - `imageUrl = screenShotBaseUrl + API.SCREEN_SHOT + '?id=' + <消息/帖子ID>`
   - 相关常量：`screenShotBaseUrl`（`src/api/http.ts`）、`API.SCREEN_SHOT`（`src/api/url.ts`）。
-  - 分享落地页：`chat-package/pages/chat/share.vue`，渲染所选消息（`MessageCard` 只读模式），底部按钮“开始对话”跳转至聊天页。
-  - 聊天页分享：`chat-package/pages/chat/index.vue` 中 `onShareAppMessage` 支持从按钮分享所选消息 `queryIds`，生成 `shareId` 并跳转至上述落地页。
+  - 分享落地页：`/pages/chat-package/pages/chat/share.vue`，渲染所选消息（`MessageCard` 只读模式），底部按钮“开始对话”跳转至聊天页。
+  - 聊天页分享：`/pages/chat-package/pages/chat/index.vue` 中 `onShareAppMessage` 支持从按钮分享所选消息 `queryIds`，生成 `shareId` 并跳转至上述落地页。
 
 ### 3. 个人主页
 
@@ -90,10 +90,10 @@ pnpm run build:mp-weixin
 - 互动过的帖子列表：展示用户点赞/收藏/分享过的帖子。
 - 评论过的帖子列表：展示用户参与过的评论及其上下文。
 - 发布过的帖子列表：展示用户发布的所有帖子，支持跳转详情与管理。
-- 页面位置：`src/user-package/pages/`，具体页面按业务拆分为列表和详情。
+- 页面位置：`src/pages/user-package/pages/`，具体页面按业务拆分为列表和详情。
 - 数据来源：`src/api/index.ts` 中的用户相关接口（示例：消息/帖子列表、互动记录等）。
 - 常用页面：
-  - 我的互动：`src/user-package/pages/user/message.vue`（收到的评论和@，支持点赞、跳转到帖子详情）。
+  - 我的互动：`src/pages/user-package/pages/user/message.vue`（收到的评论和@，支持点赞、跳转到帖子详情）。
   - 我的评论：`src/components/user/comment.vue`（按页拉取、刷新、上拉加载）。
   - 用户中心搜索：`api.userCenterSearch` 用于用户维度检索内容。
 
