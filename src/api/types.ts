@@ -100,8 +100,7 @@ export interface ResolvedParam {
 export interface DateParameterOfStock {
   fromdate: string
   todate: string
-  name: string
-  code: string
+  code: string[]
 }
 
 export interface ChatSteps {
@@ -574,6 +573,7 @@ export interface GetFinanceDataRequest extends Page {
 export enum TimeGranularity {
   '1MINS' = '1MINS',
   '5MINS' = '5MINS',
+  '15MINS' = '15MINS',
   '30MINS' = '30MINS',
   '1HOUR' = '1HOUR',
   'DAILY' = 'DAILY',

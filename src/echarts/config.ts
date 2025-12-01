@@ -14,7 +14,7 @@ export enum StockChartStyleConfig {
   TIME_SERIES_COLOR = '#2c2c2cff',
 }
 
-type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '5MINS' | '30MINS' | '1HOUR' | '50MINS' | 'YEAR'>, { key: TimeGranularity, value: string }>
+type TimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '5MINS' | '15MINS' | '30MINS' | '1HOUR' | '50MINS' | 'YEAR'>, { key: TimeGranularity, value: string }>
 
 type OtherTimeGranularityOptions = Record<Exclude<keyof typeof TimeGranularity, '1MINS' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | '5DAILY'>, { key: TimeGranularity, value: string }>
 
@@ -61,6 +61,10 @@ export const otherTimeGranularityOptions: OtherTimeGranularityOptions = {
   [TimeGranularity['5MINS']]: {
     key: TimeGranularity['5MINS'],
     value: '5分',
+  },
+  [TimeGranularity['15MINS']]: {
+    key: TimeGranularity['15MINS'],
+    value: '15分',
   },
   [TimeGranularity['30MINS']]: {
     key: TimeGranularity['30MINS'],

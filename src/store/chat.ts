@@ -105,21 +105,23 @@ export const useChatStore = defineStore('chat', {
       const stockParameter: DateParameterOfStock = {
         fromdate: '',
         todate: '',
-        name: '',
-        code: '',
+        code: [],
       }
       if (answer.data) {
         data = useJsonParse(answer.data) || { analysis_data: '', resolved_params: { parameters: [] } }
+        console.log(data)
+
         stockData = useJsonParse(data.analysis_data) || []
+        console.log(stockData)
+
         const dateList = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
-        const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value?.[0]
+        const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value
         if (dateList) {
           stockParameter.fromdate = dateList.fromdate
           stockParameter.todate = dateList.todate
         }
         if (code) {
           stockParameter.code = code
-          stockParameter.name = code
         }
       }
       if (answer.reference) {
@@ -158,9 +160,10 @@ export const useChatStore = defineStore('chat', {
         msgId: id,
         chatQueryAnswerList: [
           {
+            id: '',
             message: '',
             data: { analysis_data: '', resolved_params: { parameters: [] } },
-            stockParameter: { fromdate: '', todate: '', name: '', code: '' },
+            stockParameter: { fromdate: '', todate: '', code: [] },
             steps: [],
             reference: [],
             response: '',
@@ -177,6 +180,7 @@ export const useChatStore = defineStore('chat', {
             showSteps: false,
             label: [],
             isPaused: false,
+            collectTime: '',
           },
         ],
         ...message,
@@ -187,8 +191,9 @@ export const useChatStore = defineStore('chat', {
     },
     pushTemporaryMessage(msgId?: string) {
       const answer: AnswerAfter = {
+        id: '',
         data: { analysis_data: '', resolved_params: { parameters: [] } },
-        stockParameter: { fromdate: '', todate: '', name: '', code: '' },
+        stockParameter: { fromdate: '', todate: '', code: [] },
         stockData: [],
         steps: [],
         reference: [],
@@ -206,6 +211,7 @@ export const useChatStore = defineStore('chat', {
         showSteps: false,
         label: [],
         isPaused: false,
+        collectTime: '',
       }
 
       this.messages.find(item => item.msgId === (msgId || this.currentTemporaryMessageId))?.chatQueryAnswerList.push(answer)

@@ -182,20 +182,18 @@ function websocketMessage(data: WsMessageResponse) {
       const stockParameter: DateParameterOfStock = {
         fromdate: '',
         todate: '',
-        name: '',
-        code: '',
+        code: [],
       }
       const stockData = useJsonParse<[ChatMessageStock]>(currentAnswer.data.analysis_data) || []
       const data = currentAnswer.data
       const dateList = data.resolved_params.parameters.find(item => item.name === 'date_list')?.value?.[0]
-      const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value?.[0]
+      const code = data.resolved_params.parameters.find(item => (item.name === 'future_symbol' || item.name === 'stock_symbol'))?.value
       if (dateList) {
         stockParameter.fromdate = dateList.fromdate
         stockParameter.todate = dateList.todate
       }
       if (code) {
         stockParameter.code = code
-        stockParameter.name = code
       }
       currentAnswer.stockData = stockData
       currentAnswer.stockParameter = stockParameter

@@ -45,6 +45,7 @@ const zoomStart = ref<number | null>(null)
 const zoomEnd = ref<number | null>(null)
 const selectedIndex = ref<number | null>(null)
 const isCrossDragActive = ref(false) // 长按后拖动十字光标的状态
+const currentCodeIndex = ref(0)
 
 // 惯性滑动相关状态
 const touchState = ref({
@@ -66,7 +67,7 @@ const { store, config, stockInfo, resetConfigData } = useStockChart({
   timeGranularity: computed(() => currentTimeGranularity.value.key),
   zoomStart: computed(() => zoomStart.value),
   zoomEnd: computed(() => zoomEnd.value),
-  code: props.params.code,
+  code: props.params.code[currentCodeIndex.value],
   preview: props.preview,
 })
 const enablePolling = computed(() => {
@@ -77,10 +78,11 @@ const { load, reset } = useLoadStockData({
   type: computed(() => currentTimeGranularity.value.key),
 })
 const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({
-  code: computed(() => props.params.code),
+  code: computed(() => props.params.code[currentCodeIndex.value]),
   timeGranularity: computed(() => currentTimeGranularity.value.key),
 })
 const showOtherPeriod = ref(false)
+const loadCount = ref(0)
 
 /**
  * @function: 获取实时更新数据
@@ -122,7 +124,7 @@ onUnmounted(() => {
   stopPolling()
 })
 
-watch(currentTimeGranularity, async () => {
+async function updateData() {
   // 若上一轮尚在 finally 阶段，等待其结束以清理 isLoadingMore/hideLoading
   if (isLoadingMore.value) {
     await new Promise<void>((resolve) => {
@@ -136,19 +138,29 @@ watch(currentTimeGranularity, async () => {
     })
   }
   // 重置状态后重新加载新周期数据
+  loadCount.value = 0
   stockData.value = []
+  stopPolling()
   reset()
   hasMoreData.value = true
   zoomStart.value = null
   zoomEnd.value = null
   resetConfigData()
-  await loadMoreData()
+  loadMoreData()
   if (enablePolling.value) {
     startPolling()
   }
   else {
     stopPolling()
   }
+}
+
+watch(currentCodeIndex, () => {
+  updateData()
+})
+
+watch(currentTimeGranularity, () => {
+  updateData()
 }, { immediate: true })
 
 function handleSegmentChange(option, showOther = true) {
@@ -407,7 +419,6 @@ function handleOtherPeriodChange() {
     return
   showOtherPeriod.value = !showOtherPeriod.value
 }
-
 // 加载更多历史数据
 async function loadMoreData() {
   if (isLoadingMore.value || !hasMoreData.value)
@@ -419,12 +430,12 @@ async function loadMoreData() {
     chartCanvasInstance.value?.chart?.showLoading()
   }
   try {
-    const { data, total } = await load(props.params.code)
+    const { data, total } = await load(props.params.code[currentCodeIndex.value])
     // 判断是否真实为空数据（仅当返回数组且长度为 0）
     if (stockData.value.length >= total) {
       // 没有更多数据了
       hasMoreData.value = false
-      uni.showToast({ title: '没有更早的数据了', icon: 'none' })
+      loadCount.value > 0 && uni.showToast({ title: '没有更早的数据了', icon: 'none' })
       return
     }
     stockData.value.unshift(...data)
@@ -434,6 +445,7 @@ async function loadMoreData() {
     uni.showToast({ title: '加载失败', icon: 'none' })
   }
   finally {
+    loadCount.value++
     isLoadingMore.value = false
     chartCanvasInstance.value?.chart?.hideLoading()
   }
@@ -631,7 +643,7 @@ onUnmounted(() => {
     </view>
     <!-- 股票基本信息 -->
     <view class="my-10px">
-      <StockHeader v-if="stockInfo" :stock-info="stockInfo" :preview="preview" />
+      <StockHeader v-model="currentCodeIndex" :code="params.code" :stock-info="stockInfo" :preview="preview" />
     </view>
 
     <!-- 时间周期选择器 -->

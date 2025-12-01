@@ -48,7 +48,7 @@ export interface StockChartStore {
 
 export interface UseStockChartOptions {
   stockData: MaybeRefOrGetter<ChatMessageStockData[]>
-  code: string
+  code: MaybeRefOrGetter<string>
   timeGranularity: MaybeRefOrGetter<TimeGranularity>
   zoomStart: MaybeRefOrGetter<number | null>
   zoomEnd: MaybeRefOrGetter<number | null>
@@ -98,9 +98,7 @@ export function useStockChart(options: UseStockChartOptions) {
   watch<ChatMessageStockData[]>(
     () => toValue(options.stockData).slice(),
     (newStockData, oldStockData) => {
-      if (!stockInfo.value) {
-        stockInfo.value = getStockInfo(newStockData)
-      }
+      stockInfo.value = getStockInfo(newStockData)
       const newPushStockData = newStockData.slice(oldStockData.length)
       const stockChartData = newPushStockData.map((item) => {
         return [item.open, item.close, item.low, item.high]
@@ -270,16 +268,16 @@ const inlineDefaultOptions = {
 } as const
 
 const inlinePollingInterval = {
-  '1MINS': 15 * 1000,
-  '5MINS': 30 * 1000,
-  '15MINS': 60 * 1000,
-  '30MINS': 2 * 60 * 1000,
-  '1HOUR': 5 * 60 * 1000,
-  'DAILY': 10 * 60 * 1000,
-  '5DAYS': 15 * 60 * 1000,
-  'WEEKLY': 30 * 60 * 1000,
-  'MONTHLY': 60 * 60 * 1000,
-  'YEAR': 2 * 60 * 60 * 1000,
+  [TimeGranularity['1MINS']]: 15 * 1000,
+  [TimeGranularity['5MINS']]: 30 * 1000,
+  [TimeGranularity['15MINS']]: 60 * 1000,
+  [TimeGranularity['30MINS']]: 2 * 60 * 1000,
+  [TimeGranularity['1HOUR']]: 5 * 60 * 1000,
+  [TimeGranularity.DAILY]: 10 * 60 * 1000,
+  [TimeGranularity['5DAILY']]: 15 * 60 * 1000,
+  [TimeGranularity.WEEKLY]: 30 * 60 * 1000,
+  [TimeGranularity.MONTHLY]: 60 * 60 * 1000,
+  [TimeGranularity.YEAR]: 2 * 60 * 60 * 1000,
 }
 
 export function usePollingStockDataService(options?: UsePollingStockDataOptions) {

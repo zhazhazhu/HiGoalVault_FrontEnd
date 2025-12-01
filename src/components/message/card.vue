@@ -19,8 +19,6 @@ const props = withDefaults(defineProps<{
   readonly: false,
 })
 const message = defineModel('message', { type: Object as PropType<ChatMessageAfter & Record<string, any>>, required: true })
-console.log('message', message.value)
-
 const messageInject = useMessageInject()
 const cs = useClassesName('message-card')
 const currentAnswerIndex = ref(message.value.chatQueryAnswerList.length)

@@ -63,7 +63,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
     </wd-transition>
   </view>
 
-  <Stock v-if="data.stockParameter.code && visible" :data="data.stockData?.[0]?.data" :params="data.stockParameter" />
+  <Stock v-if="data.stockParameter.code.length && visible" :params="data.stockParameter" />
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e, 'response')">
     <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" container-style="overflow: hidden" />

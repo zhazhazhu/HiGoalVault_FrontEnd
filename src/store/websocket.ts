@@ -163,8 +163,12 @@ export const useWebsocketStore = defineStore('websocket', {
         this.onError && this.onError()
       })
 
-      this.websocket.onClose(() => {
-        console.log('WebSocket connection closed.')
+      this.websocket.onClose((e) => {
+        console.log('WebSocket connection closed.', e)
+        uni.showToast({
+          title: '连接错误，请联系管理员',
+          icon: 'none',
+        })
         this.isSocketOpen = false
         this.websocket = null
         this.onClose && this.onClose()
