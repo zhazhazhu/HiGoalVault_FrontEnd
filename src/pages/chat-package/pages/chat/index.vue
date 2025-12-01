@@ -220,7 +220,7 @@ watch(() => share.value.isChecked, (newVal) => {
 })
 
 function scrollToTop() {
-  scrollTop.value = 0
+  scrollTop.value += 0.001
 }
 const loading = ref(false)
 
