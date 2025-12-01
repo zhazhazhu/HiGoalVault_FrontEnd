@@ -10,7 +10,7 @@ import * as echarts from 'echarts/core?async'
 import { CanvasRenderer } from 'echarts/renderers'
 import { provideEcharts } from 'uni-echarts/shared'
 import { computed, onUnmounted, ref, shallowRef, watch } from 'vue'
-import { getStockInfo, useLoadStockData, usePollingStockDataService, useStockChart } from '@/echarts'
+import { getStockInfo, isMinutesGranularity, useLoadStockData, usePollingStockDataService, useStockChart } from '@/echarts'
 import { otherTimeGranularityOptions, StockChartStyleConfig, timeGranularityOptions } from '@/echarts/config'
 import StockHeader from './header.vue'
 
@@ -76,11 +76,39 @@ const { load, reset } = useLoadStockData({
   date: enablePolling.value ? dayjs().format('YYYY-MM-DD HH:mm:ss') : props.params.todate,
   type: computed(() => currentTimeGranularity.value.key),
 })
-const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({ code: props.params.code })
+const { startPolling, stopPolling, onUpdateData } = usePollingStockDataService({
+  code: computed(() => props.params.code),
+  timeGranularity: computed(() => currentTimeGranularity.value.key),
+})
 const showOtherPeriod = ref(false)
 
+/**
+ * @function: 获取实时更新数据
+ * 循环data,如果 stockData 中已经存在对应日期的数据,则更新该数据,否则添加新数据
+ * 使用isMinutesGranularity函数判断取值是trade_time ｜ trade_date
+ * 优化:只在末尾查找,因为新数据都是最新的
+ */
 onUpdateData((data) => {
-  stockData.value.push(...data)
+  const isMinutes = isMinutesGranularity(currentTimeGranularity.value.key)
+  const key = isMinutes ? 'trade_time' : 'trade_date'
+  const dataLen = stockData.value.length
+  const searchRange = Math.min(data.length * 2, dataLen) // 只搜索最后 data.length*2 条记录
+
+  data.forEach((newItem) => {
+    let found = false
+    // 从后往前搜索最后几项
+    for (let i = dataLen - 1; i >= Math.max(0, dataLen - searchRange); i--) {
+      if (stockData.value[i][key] === newItem[key]) {
+        stockData.value[i] = newItem
+        found = true
+        break
+      }
+    }
+    if (!found) {
+      // 添加新数据
+      stockData.value.push(newItem)
+    }
+  })
 })
 onShow(() => {
   if (enablePolling.value) {

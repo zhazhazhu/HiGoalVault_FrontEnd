@@ -55,7 +55,7 @@ export interface UseStockChartOptions {
   preview: boolean
 }
 
-function isMinutesGranularity(type: TimeGranularity) {
+export function isMinutesGranularity(type: TimeGranularity) {
   return type === TimeGranularity['1MINS'] || type === TimeGranularity['5MINS'] || type === TimeGranularity['30MINS'] || type === TimeGranularity['1HOUR']
 }
 
@@ -262,14 +262,25 @@ export function useLoadStockData(options: UseLoadStockDataOptions) {
 
 export interface UsePollingStockDataOptions {
   timeGranularity?: MaybeRefOrGetter<TimeGranularity>
-  interval?: number
   code?: MaybeRefOrGetter<string>
 }
 
 const inlineDefaultOptions = {
-  timeGranularity: TimeGranularity['5MINS'],
-  interval: 3 * 1000,
+  timeGranularity: TimeGranularity.DAILY,
 } as const
+
+const inlinePollingInterval = {
+  '1MINS': 15 * 1000,
+  '5MINS': 30 * 1000,
+  '15MINS': 60 * 1000,
+  '30MINS': 2 * 60 * 1000,
+  '1HOUR': 5 * 60 * 1000,
+  'DAILY': 10 * 60 * 1000,
+  '5DAYS': 15 * 60 * 1000,
+  'WEEKLY': 30 * 60 * 1000,
+  'MONTHLY': 60 * 60 * 1000,
+  'YEAR': 2 * 60 * 60 * 1000,
+}
 
 export function usePollingStockDataService(options?: UsePollingStockDataOptions) {
   const opts = { ...inlineDefaultOptions, ...options }
@@ -314,7 +325,7 @@ export function usePollingStockDataService(options?: UsePollingStockDataOptions)
     timer = setInterval(() => {
       updateDateRange()
       fetchData(symbol)
-    }, opts.interval)
+    }, inlinePollingInterval[toValue(opts.timeGranularity)])
   }
 
   async function fetchData(symbol: string) {
@@ -336,9 +347,17 @@ export function usePollingStockDataService(options?: UsePollingStockDataOptions)
     timer = null
   }
 
-  function onUpdateData(callback: (data: ChatMessageStockData[]) => void) {
-    callback(data.value)
+  async function onUpdateData(callback: (data: ChatMessageStockData[]) => void) {
+    await callback(data.value)
+    data.value = []
   }
+
+  watch(() => [toValue(opts.code), toValue(opts.timeGranularity)], ([newCode]) => {
+    stopPolling()
+    if (newCode) {
+      startPolling()
+    }
+  }, { immediate: true })
 
   return {
     startPolling,
