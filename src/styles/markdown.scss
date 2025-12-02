@@ -157,17 +157,10 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.markdown-body .md-thead {
-  background-color: #f9fafb;
-}
-
-.markdown-body .md-tbody .md-tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
 .markdown-body .md-th,
 .markdown-body .md-td {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #bebebe;
+  background-color: #ffffff;
   padding: 8px 12px;
   text-align: left;
   white-space: nowrap;
@@ -175,6 +168,7 @@
 }
 
 .markdown-body .md-th {
+  background-color: #cacccd;
   font-weight: 600;
   color: #111827;
 }
