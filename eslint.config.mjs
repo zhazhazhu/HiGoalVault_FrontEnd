@@ -9,10 +9,13 @@ export default antfu({
     'ts/no-empty-object-type': 'off',
     'no-console': 'off',
     'ts/ban-ts-comment': 'off',
+    'unused-imports/no-unused-vars': 'warn',
+    'unused-imports/no-unused-imports': 'warn',
   },
   ignores: [
     '**/node_modules/**',
     '**/dist/**',
     'src/wxcomponents/**',
+    'src/components/uv-parse/**',
   ],
 })
