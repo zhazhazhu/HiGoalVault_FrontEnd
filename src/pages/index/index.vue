@@ -190,9 +190,9 @@ onShow(async () => {
     globalStore.shouldReloadAtHomePage = false
   }
   // 检查是否有需要更新的内容
-  if (globalStore.needUpdateContentIds.size > 0) {
-    const idsToUpdate = Array.from(globalStore.needUpdateContentIds)
-    globalStore.needUpdateContentIds.clear()
+  if (globalStore.needUpdateContentOperations.size > 0) {
+    const idsToUpdate = Array.from(globalStore.needUpdateContentOperations.keys())
+    globalStore.needUpdateContentOperations.clear()
 
     // 更新view列表中的数据
     for (const id of idsToUpdate) {

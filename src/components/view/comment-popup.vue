@@ -154,7 +154,10 @@ async function onConfirm() {
       const res = await api.addComment({ commentContent: encodeURI(content), contentId: props.contentId })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
-        globalStore.needUpdateContentIds.add(props.contentId)
+        globalStore.needUpdateContentOperations.set(props.contentId, {
+          type: 'add',
+          operate: 'comment',
+        })
       }
     }
     else if (currentReplying.value.type === 'comment') {
@@ -165,7 +168,10 @@ async function onConfirm() {
       })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
-        globalStore.needUpdateContentIds.add(props.contentId)
+        globalStore.needUpdateContentOperations.set(props.contentId, {
+          type: 'add',
+          operate: 'comment',
+        })
       }
     }
     else if (currentReplying.value.type === 'reply') {
@@ -177,7 +183,10 @@ async function onConfirm() {
       })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
-        globalStore.needUpdateContentIds.add(props.contentId)
+        globalStore.needUpdateContentOperations.set(props.contentId, {
+          type: 'add',
+          operate: 'comment',
+        })
       }
     }
   }

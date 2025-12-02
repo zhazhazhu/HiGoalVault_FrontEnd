@@ -49,16 +49,29 @@ async function refreshData() {
   isRefreshing.value = false
 }
 
-async function updateContentById(id: string) {
+async function updateContentById(id: string, type: 'add' | 'remove' | 'update') {
+  const res = await api.getPublicMessageDetail({ contentId: id })
   const viewIndex = data.value.findIndex(item => item.id === id)
-  if (viewIndex !== -1) {
-    const res = await api.getPublicMessageDetail({ contentId: id })
-    if (res.code === 200) {
-      data.value[viewIndex] = {
+  switch (type) {
+    case 'update':
+      if (viewIndex !== -1) {
+        data.value[viewIndex] = {
+          ...res.result,
+          chatQueryAnswerVO: chatStore.transformAnswer(res.result.chatQueryAnswerVO),
+        }
+      }
+      break
+    case 'remove':
+      if (viewIndex !== -1) {
+        data.value.splice(viewIndex, 1)
+      }
+      break
+    case 'add':
+      data.value.unshift({
         ...res.result,
         chatQueryAnswerVO: chatStore.transformAnswer(res.result.chatQueryAnswerVO),
-      }
-    }
+      })
+      break
   }
 }
 

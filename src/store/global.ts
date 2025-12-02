@@ -5,6 +5,11 @@ import { api } from '@/api'
 import { useStoreRef } from '@/composables'
 import { isTokenExpired } from '@/utils'
 
+export interface NeedUpdateContentOperation {
+  type: 'add' | 'update' | 'remove'
+  operate: 'like' | 'comment' | 'share'
+}
+
 interface Status {
   windowInfo: UniApp.GetWindowInfoResult | null
   hasKeyboard: boolean
@@ -12,7 +17,7 @@ interface Status {
   stsTempConfig: Ref<GenerateStsTempKeyResponse | null>
   showLoginPopup: boolean
   shouldReloadAtHomePage: boolean
-  needUpdateContentIds: Set<string>
+  needUpdateContentOperations: Map<string, NeedUpdateContentOperation>
 }
 
 export const useGlobalStore = defineStore('global', {
@@ -23,7 +28,7 @@ export const useGlobalStore = defineStore('global', {
     stsTempConfig: useStoreRef('Q_CLOUD_AI_VOICE', null),
     showLoginPopup: false,
     shouldReloadAtHomePage: false,
-    needUpdateContentIds: new Set<string>(),
+    needUpdateContentOperations: new Map<string, NeedUpdateContentOperation>(),
   }),
   actions: {
     syncStatusBarHeight() {

@@ -1,9 +1,9 @@
 <script lang='ts' setup>
 import type { ProfileStatistics, UserInfo } from '@/api'
 import type { UserCollectInstance, UserCommentInstance, UserLikeInstance, UserPublishInstance } from '@/components/user'
-import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { cloneDeep } from 'lodash-es'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
 import { useGlobalStore, useUserStore } from '@/store'
@@ -124,21 +124,20 @@ onLoad((options) => {
 
 const globalStore = useGlobalStore()
 
-onShow(async () => {
-  // 检查是否有需要更新的内容
-  if (globalStore.needUpdateContentIds.size > 0) {
-    const idsToUpdate = Array.from(globalStore.needUpdateContentIds)
-    globalStore.needUpdateContentIds.clear()
+watch(() => globalStore.needUpdateContentOperations, () => {
+  if (globalStore.needUpdateContentOperations.size > 0) {
+    globalStore.needUpdateContentOperations.forEach((operate, id) => {
+      console.log('需要更新的内容ID:', id, '操作:', operate)
+      userPublish.value?.updateContentById(id)
+      userComment.value?.updateContentById(id)
 
-    // 更新各个列表中的数据
-    for (const id of idsToUpdate) {
-      await userPublish.value?.updateContentById?.(id)
-      await userComment.value?.updateContentById?.(id)
-      await userLike.value?.updateContentById?.(id)
-      await userCollect.value?.updateContentById?.(id)
-    }
+      if (operate.operate === 'like') {
+        userLike.value?.updateContentById(id, operate.type)
+      }
+    })
+    globalStore.needUpdateContentOperations.clear()
   }
-})
+}, { deep: true })
 </script>
 
 <template>

@@ -60,7 +60,10 @@ async function onConfirm() {
     commentContent.value = ''
     data.value!.commentCount++
     // 记录需要更新的内容ID
-    globalStore.needUpdateContentIds.add(data.value!.id)
+    globalStore.needUpdateContentOperations.set(data.value!.id, {
+      type: 'add',
+      operate: 'comment',
+    })
   }
 }
 function openCommentPopup() {
@@ -78,7 +81,10 @@ async function onThumbsUp() {
     data.value!.isLike = !data.value!.isLike
     data.value!.likeCount = data.value!.isLike ? data.value!.likeCount + 1 : data.value!.likeCount - 1
     // 记录需要更新的内容ID
-    globalStore.needUpdateContentIds.add(data.value!.id)
+    globalStore.needUpdateContentOperations.set(data.value!.id, {
+      type: data.value!.isLike ? 'add' : 'remove',
+      operate: 'like',
+    })
   }
 }
 async function refreshData() {
