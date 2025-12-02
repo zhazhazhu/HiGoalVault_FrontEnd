@@ -12,6 +12,7 @@ interface Status {
   stsTempConfig: Ref<GenerateStsTempKeyResponse | null>
   showLoginPopup: boolean
   shouldReloadAtHomePage: boolean
+  needUpdateContentIds: Set<string>
 }
 
 export const useGlobalStore = defineStore('global', {
@@ -22,6 +23,7 @@ export const useGlobalStore = defineStore('global', {
     stsTempConfig: useStoreRef('Q_CLOUD_AI_VOICE', null),
     showLoginPopup: false,
     shouldReloadAtHomePage: false,
+    needUpdateContentIds: new Set<string>(),
   }),
   actions: {
     syncStatusBarHeight() {

@@ -73,6 +73,11 @@ function onGotoMessage(item: AnswerAfter) {
   uni.navigateTo({ url: '/pages/chat-package/pages/chat/index' })
 }
 
+async function updateContentById(id: string) {
+  // Collect组件使用的是AnswerAfter类型，没有contentId，无需更新
+  // 此方法仅为了保持接口一致性
+}
+
 onMounted(() => {
   resetPage()
   getData()
@@ -82,6 +87,7 @@ defineExpose({
   total,
   loadData,
   refreshData,
+  updateContentById,
 })
 </script>
 

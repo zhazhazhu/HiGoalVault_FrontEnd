@@ -1,12 +1,12 @@
 <script lang='ts' setup>
 import type { ProfileStatistics, UserInfo } from '@/api'
 import type { UserCollectInstance, UserCommentInstance, UserLikeInstance, UserPublishInstance } from '@/components/user'
-import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { cloneDeep } from 'lodash-es'
 import { ref } from 'vue'
 import { api } from '@/api'
 import { API } from '@/api/url'
-import { useUserStore } from '@/store'
+import { useGlobalStore, useUserStore } from '@/store'
 
 const userStore = useUserStore()
 const activeTab = ref<'published' | 'commented' | 'interacted'>('published')
@@ -121,6 +121,24 @@ onLoad((options) => {
   checkFollowUser()
   getData()
 })
+
+const globalStore = useGlobalStore()
+
+onShow(async () => {
+  // 检查是否有需要更新的内容
+  if (globalStore.needUpdateContentIds.size > 0) {
+    const idsToUpdate = Array.from(globalStore.needUpdateContentIds)
+    globalStore.needUpdateContentIds.clear()
+
+    // 更新各个列表中的数据
+    for (const id of idsToUpdate) {
+      await userPublish.value?.updateContentById?.(id)
+      await userComment.value?.updateContentById?.(id)
+      await userLike.value?.updateContentById?.(id)
+      await userCollect.value?.updateContentById?.(id)
+    }
+  }
+})
 </script>
 
 <template>
@@ -200,9 +218,9 @@ onLoad((options) => {
           </view>
         </view>
 
-        <UserPublish v-if="activeTab === 'published'" ref="userPublish" :user-id="userId" />
-        <UserComment v-else-if="activeTab === 'commented'" ref="userComment" :user-id="userId" />
-        <view v-else>
+        <UserPublish v-show="activeTab === 'published'" ref="userPublish" :user-id="userId" />
+        <UserComment v-show="activeTab === 'commented'" ref="userComment" :user-id="userId" />
+        <view v-show="activeTab === 'interacted'">
           <view class="flex flex-wrap gap-12rpx mb-20rpx">
             <Tag :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
               赞过{{ userLike?.total }}

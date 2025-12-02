@@ -5,7 +5,7 @@ import { ref, watch } from 'vue'
 import { api } from '@/api'
 import { useClassesName, useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { useUserStore } from '@/store'
+import { useGlobalStore, useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
 
 const props = defineProps<{ contentId: string, isRefreshing?: boolean }>()
@@ -26,6 +26,7 @@ const placeholder = ref('发表友善评论')
 const isFocus = ref(false)
 const userStore = useUserStore()
 const refreshing = ref(false)
+const globalStore = useGlobalStore()
 
 async function getCurrentCommentData() {
   if (currentComment.value?.commentId && currentComment.value.commentType !== null) {
@@ -153,6 +154,7 @@ async function onConfirm() {
       const res = await api.addComment({ commentContent: encodeURI(content), contentId: props.contentId })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
+        globalStore.needUpdateContentIds.add(props.contentId)
       }
     }
     else if (currentReplying.value.type === 'comment') {
@@ -163,6 +165,7 @@ async function onConfirm() {
       })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
+        globalStore.needUpdateContentIds.add(props.contentId)
       }
     }
     else if (currentReplying.value.type === 'reply') {
@@ -174,6 +177,7 @@ async function onConfirm() {
       })
       if (res.code === 200) {
         putTemporaryComment(res.result.id)
+        globalStore.needUpdateContentIds.add(props.contentId)
       }
     }
   }

@@ -39,6 +39,7 @@ async function onThumbsUp() {
   if (res.code === 200) {
     data.value.isLike = !data.value.isLike
     data.value.likeCount = data.value.isLike ? data.value.likeCount + 1 : data.value.likeCount - 1
+    globalStore.needUpdateContentIds.add(data.value.id)
   }
 }
 function gotoUser() {

@@ -6,7 +6,7 @@ import { api } from '@/api'
 import { API } from '@/api/url'
 import { useUUID } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
-import { useChatStore, useUserStore } from '@/store'
+import { useChatStore, useGlobalStore, useUserStore } from '@/store'
 import { formatCommentOrThumbUpCount } from '@/utils'
 
 const data = ref<PublishMessageListResponse | null>(null)
@@ -14,6 +14,7 @@ const commentContent = ref('')
 const messageContent = ref<AnswerAfter | null>(null)
 const commentVisible = ref(false)
 const userStore = useUserStore()
+const globalStore = useGlobalStore()
 const contentId = ref('')
 const isRefreshing = ref(false)
 const [currentComment, resetCurrentComment] = useResetRef<{ commentId: string, commentType: 1 | 2 | null }>({
@@ -58,6 +59,8 @@ async function onConfirm() {
   if (res.code === 200) {
     commentContent.value = ''
     data.value!.commentCount++
+    // 记录需要更新的内容ID
+    globalStore.needUpdateContentIds.add(data.value!.id)
   }
 }
 function openCommentPopup() {
@@ -74,6 +77,8 @@ async function onThumbsUp() {
   if (res.code === 200) {
     data.value!.isLike = !data.value!.isLike
     data.value!.likeCount = data.value!.isLike ? data.value!.likeCount + 1 : data.value!.likeCount - 1
+    // 记录需要更新的内容ID
+    globalStore.needUpdateContentIds.add(data.value!.id)
   }
 }
 async function refreshData() {

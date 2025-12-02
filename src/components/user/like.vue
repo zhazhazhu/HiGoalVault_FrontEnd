@@ -49,6 +49,19 @@ async function refreshData() {
   isRefreshing.value = false
 }
 
+async function updateContentById(id: string) {
+  const viewIndex = data.value.findIndex(item => item.id === id)
+  if (viewIndex !== -1) {
+    const res = await api.getPublicMessageDetail({ contentId: id })
+    if (res.code === 200) {
+      data.value[viewIndex] = {
+        ...res.result,
+        chatQueryAnswerVO: chatStore.transformAnswer(res.result.chatQueryAnswerVO),
+      }
+    }
+  }
+}
+
 onMounted(() => {
   resetPage()
   getData()
@@ -58,6 +71,7 @@ defineExpose({
   total,
   loadData,
   refreshData,
+  updateContentById,
 })
 </script>
 

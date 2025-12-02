@@ -182,12 +182,43 @@ onLoad((options) => {
   }
 })
 
-onShow(() => {
+onShow(async () => {
   chatStore.currentChatId = ''
   if (globalStore.shouldReloadAtHomePage) {
     resetData()
     getData()
     globalStore.shouldReloadAtHomePage = false
+  }
+  // 检查是否有需要更新的内容
+  if (globalStore.needUpdateContentIds.size > 0) {
+    const idsToUpdate = Array.from(globalStore.needUpdateContentIds)
+    globalStore.needUpdateContentIds.clear()
+
+    // 更新view列表中的数据
+    for (const id of idsToUpdate) {
+      const viewIndex = data.value.view.data.findIndex(item => item.id === id)
+      if (viewIndex !== -1) {
+        const res = await api.getPublicMessageDetail({ contentId: id })
+        if (res.code === 200) {
+          data.value.view.data[viewIndex] = {
+            ...res.result,
+            chatQueryAnswerVO: chatStore.transformAnswer(res.result.chatQueryAnswerVO),
+          }
+        }
+      }
+
+      // 更新follow列表中的数据
+      const followIndex = data.value.follow.data.findIndex(item => item.id === id)
+      if (followIndex !== -1) {
+        const res = await api.getPublicMessageDetail({ contentId: id })
+        if (res.code === 200) {
+          data.value.follow.data[followIndex] = {
+            ...res.result,
+            chatQueryAnswerVO: chatStore.transformAnswer(res.result.chatQueryAnswerVO),
+          }
+        }
+      }
+    }
   }
 })
 </script>
