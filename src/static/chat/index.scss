@@ -7,127 +7,6 @@
   background-repeat: no-repeat;
 }
 
-.refresh-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-刷薪.svg');
-  mask-image: url('/static/chat/svg/icon-刷薪.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.copy-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-复制.svg');
-  mask-image: url('/static/chat/svg/icon-复制.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.copy-alt-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-复制(1).svg');
-  mask-image: url('/static/chat/svg/icon-复制(1).svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.record-send-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-录发送.svg');
-  mask-image: url('/static/chat/svg/icon-录发送.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.record-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-录音.svg');
-  mask-image: url('/static/chat/svg/icon-录音.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.favorite-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-收藏.svg');
-  mask-image: url('/static/chat/svg/icon-收藏.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.add-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-添加.svg');
-  mask-image: url('/static/chat/svg/icon-添加.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.like-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-点赞.svg');
-  mask-image: url('/static/chat/svg/icon-点赞.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.voice-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-语音.svg');
-  mask-image: url('/static/chat/svg/icon-语音.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.expand-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/展开.svg');
-  mask-image: url('/static/chat/svg/展开.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.collapse-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/未展开.svg');
-  mask-image: url('/static/chat/svg/未展开.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
 .publish-icon {
   width: 48rpx;
   height: 48rpx;
@@ -161,28 +40,6 @@
   mask-position: center;
 }
 
-.edit-chat-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-编辑对话列表.svg');
-  mask-image: url('/static/chat/svg/icon-编辑对话列表.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.delete-chat-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-删除对话列表.svg');
-  mask-image: url('/static/chat/svg/icon-删除对话列表.svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
 .delete-float-menu-icon {
   width: 48rpx;
   height: 48rpx;
@@ -211,17 +68,6 @@
   background-color: #333;
   -webkit-mask-image: url('/static/chat/svg/Frame 2090056626 (1).svg');
   mask-image: url('/static/chat/svg/Frame 2090056626 (1).svg');
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-}
-
-.speaker-float-menu-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background-color: #333;
-  -webkit-mask-image: url('/static/chat/svg/icon-外放悬浮菜单.svg');
-  mask-image: url('/static/chat/svg/icon-外放悬浮菜单.svg');
   mask-repeat: no-repeat;
   mask-size: contain;
   mask-position: center;
