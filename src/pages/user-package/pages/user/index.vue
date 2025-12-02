@@ -217,9 +217,9 @@ watch(() => globalStore.needUpdateContentOperations, () => {
           </view>
         </view>
 
-        <UserPublish v-show="activeTab === 'published'" ref="userPublish" :user-id="userId" />
-        <UserComment v-show="activeTab === 'commented'" ref="userComment" :user-id="userId" />
-        <view v-show="activeTab === 'interacted'">
+        <UserPublish v-if="activeTab === 'published'" ref="userPublish" :user-id="userId" />
+        <UserComment v-else-if="activeTab === 'commented'" ref="userComment" :user-id="userId" />
+        <view v-else>
           <view class="flex flex-wrap gap-12rpx mb-20rpx">
             <Tag :active="interactActiveTab === 'liked'" @tap="onClickInteractTab('liked')">
               赞过{{ userLike?.total }}

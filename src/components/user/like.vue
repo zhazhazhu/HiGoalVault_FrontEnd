@@ -64,6 +64,7 @@ async function updateContentById(id: string, type: 'add' | 'remove' | 'update') 
     case 'remove':
       if (viewIndex !== -1) {
         data.value.splice(viewIndex, 1)
+        total.value--
       }
       break
     case 'add':
@@ -71,6 +72,7 @@ async function updateContentById(id: string, type: 'add' | 'remove' | 'update') 
         ...res.result,
         chatQueryAnswerVO: chatStore.transformAnswer(res.result.chatQueryAnswerVO),
       })
+      total.value++
       break
   }
 }
