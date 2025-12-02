@@ -93,7 +93,6 @@ function handleClose() {
           no-border
           show-word-limit
           hold-keyboard
-          auto-focus
           placeholder="说些什么..."
           focus-when-clear
           :auto-height="true"
