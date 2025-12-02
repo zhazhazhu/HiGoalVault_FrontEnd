@@ -112,16 +112,17 @@ function onDelete() {
 
     <view class="bg-#F5F7F9 p-15px rounded-10px relative min-h-130px">
       <view class="absolute z-99 top-0 left-0 w-full h-full flex items-end justify-center">
-        <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-94% h-42px mb-16px shadow-button">
+        <view class="flex items-center justify-between b-1 b-solid b-#D9D9D9 rounded-8px p-6px bg-#fff w-94% h-42px mb-16px shadow-button font-500">
           <view class="text-14px flex items-center">
             <view class="star-info-icon mr-3px size-40rpx" />
-            <text>智能投资助</text>
-            <text class="color-#4362FF">
-              手建议
+            <text class="gradient-text">
+              智能投资助手建议
             </text>
           </view>
           <view class="text-13px color-#4362FF flex items-center">
-            <text>查看完整内容</text>
+            <text>
+              查看完整内容
+            </text>
             <view class="i-material-symbols-arrow-forward-ios-rounded" />
           </view>
         </view>
@@ -213,5 +214,13 @@ function onDelete() {
     color: #222222;
     font-weight: 500;
   }
+}
+
+.gradient-text {
+  font-weight: 500;
+  background: linear-gradient(91deg, #333 53.16%, #1864eb 88.45%, #fcdec0 97.38%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 </style>
