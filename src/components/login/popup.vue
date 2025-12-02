@@ -139,7 +139,7 @@ function handleAgreePrivacyAuthorization() {
 
 <style lang='scss' scoped>
 .header {
-  background: linear-gradient(180deg, #ffefee 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #d8dff7 0%, #ffffff 100%);
   padding: 32rpx;
 }
 .content {
