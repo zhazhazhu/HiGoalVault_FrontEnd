@@ -1,5 +1,6 @@
 <script lang='ts' setup>
 import type { AnswerAfter, PublishMessageRequest } from '@/api'
+import { ref, watch } from 'vue'
 import { useToast } from 'wot-design-uni'
 import { api, PublishContentType, Truth } from '@/api'
 import { useClassesName } from '@/composables'
@@ -13,6 +14,7 @@ const model = defineModel({ type: Boolean, default: false })
 const cs = useClassesName('publish-popup')
 const toast = useToast()
 const globalStore = useGlobalStore()
+const isFocus = ref(false)
 
 const [form, reset] = useResetRef<PublishMessageRequest>({
   queryId: '',
@@ -20,6 +22,17 @@ const [form, reset] = useResetRef<PublishMessageRequest>({
   content: '',
   privacy: Truth.FALSE,
   contentType: PublishContentType.Text,
+})
+
+watch(() => model.value, (newVal) => {
+  if (newVal) {
+    setTimeout(() => {
+      isFocus.value = true
+    }, 300)
+  }
+  else {
+    isFocus.value = false
+  }
 })
 
 async function onPublish() {
@@ -80,8 +93,11 @@ function handleClose() {
           no-border
           show-word-limit
           hold-keyboard
+          auto-focus
           placeholder="说些什么..."
+          focus-when-clear
           :auto-height="true"
+          :focus="isFocus"
           :cursor-spacing="120"
           :maxlength="100"
           :show-confirm-bar="false"
@@ -92,9 +108,9 @@ function handleClose() {
       </view>
 
       <view class="flex items-center justify-between">
-        <!-- <wd-checkbox v-model="form.privacy" :true-value="Truth.TRUE" :false-value="Truth.FALSE">
+        <wd-checkbox v-model="form.privacy" :true-value="Truth.TRUE" :false-value="Truth.FALSE">
           仅自己可见
-        </wd-checkbox> -->
+        </wd-checkbox>
         <view class="flex-1" />
 
         <wd-button type="primary" :round="false" :disabled="!form.content" @click="onPublish">
