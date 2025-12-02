@@ -40,6 +40,28 @@
   mask-position: center;
 }
 
+.edit-chat-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-编辑对话列表.svg');
+  mask-image: url('/static/chat/svg/icon-编辑对话列表.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
+.delete-chat-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: #333;
+  -webkit-mask-image: url('/static/chat/svg/icon-删除对话列表.svg');
+  mask-image: url('/static/chat/svg/icon-删除对话列表.svg');
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+}
+
 .delete-float-menu-icon {
   width: 48rpx;
   height: 48rpx;
