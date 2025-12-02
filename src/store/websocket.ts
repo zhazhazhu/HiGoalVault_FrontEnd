@@ -13,6 +13,9 @@ interface Status {
   connecting: boolean
   disconnecting: boolean
   isSocketOpen: boolean
+  heartbeatTimer: number | null
+  pongTimer: number | null
+  lastPongTime: number
 }
 
 export enum ClientType {
@@ -96,8 +99,80 @@ export const useWebsocketStore = defineStore('websocket', {
     onError: null,
     onOpen: null,
     isSocketOpen: false,
+    heartbeatTimer: null,
+    pongTimer: null,
+    lastPongTime: 0,
   }),
   actions: {
+    // 清除心跳定时器
+    clearHeartbeat() {
+      if (this.heartbeatTimer) {
+        clearInterval(this.heartbeatTimer)
+        this.heartbeatTimer = null
+      }
+      if (this.pongTimer) {
+        clearTimeout(this.pongTimer)
+        this.pongTimer = null
+      }
+    },
+
+    // 发送 ping 消息
+    sendPing() {
+      if (!this.websocket || !this.isSocketOpen) {
+        console.warn('WebSocket not open, skip ping')
+        return
+      }
+
+      this.websocket.send({
+        data: 'ping',
+        success: () => {
+          // 启动 pong 超时检测（10秒）
+          this.pongTimer = setTimeout(() => {
+            console.error('Pong timeout, reconnecting...')
+            this.handleHeartbeatTimeout()
+          }, 10000) as unknown as number
+        },
+        fail: (err) => {
+          console.error('Ping failed:', err)
+          this.handleHeartbeatTimeout()
+        },
+      })
+    },
+
+    // 处理心跳超时
+    handleHeartbeatTimeout() {
+      this.clearHeartbeat()
+      this.disconnectWebSocket().then(() => {
+        console.log('Reconnecting due to heartbeat timeout...')
+        this.connectWebSocket()
+      })
+    },
+
+    // 启动心跳
+    startHeartbeat() {
+      this.clearHeartbeat()
+      this.lastPongTime = Date.now()
+
+      // 每30秒发送一次 ping
+      this.heartbeatTimer = setInterval(() => {
+        this.sendPing()
+      }, 30000) as unknown as number
+
+      // 立即发送一次 ping
+      this.sendPing()
+    },
+
+    // 处理 pong 消息
+    handlePong() {
+      this.lastPongTime = Date.now()
+
+      // 清除 pong 超时定时器
+      if (this.pongTimer) {
+        clearTimeout(this.pongTimer)
+        this.pongTimer = null
+      }
+    },
+
     // 等待连接打开（带超时）
     waitUntilOpen(timeoutMs = 8000) {
       return new Promise<void>((resolve, reject) => {
@@ -154,31 +229,43 @@ export const useWebsocketStore = defineStore('websocket', {
       this.websocket.onOpen(() => {
         console.log('WebSocket connection opened.')
         this.isSocketOpen = true
+        this.startHeartbeat()
         this.onOpen && this.onOpen()
       })
 
       this.websocket.onError((err) => {
         console.error('WebSocket error:', err)
+        uni.showToast({
+          title: '连接错误，请联系管理员',
+          icon: 'none',
+        })
         this.isSocketOpen = false
         this.onError && this.onError()
       })
 
       this.websocket.onClose((e) => {
         console.log('WebSocket connection closed.', e)
-        uni.showToast({
-          title: '连接错误，请联系管理员',
-          icon: 'none',
-        })
         this.isSocketOpen = false
         this.websocket = null
+        this.clearHeartbeat()
         this.onClose && this.onClose()
       })
 
       // 设置消息监听器，处理所有回调
       this.websocket.onMessage((res) => {
-        if (this.onMessage) {
-          try {
-            const data = JSON.parse(res.data) as WsMessageResponseBefore
+        // 检查是否是 pong 消息
+        if (res.data === 'pong') {
+          this.handlePong()
+          return
+        }
+
+        try {
+          const data = JSON.parse(res.data) as WsMessageResponseBefore
+          if (data.body.code !== '100008') {
+            console.warn('Received non-chat message:', data)
+            return
+          }
+          if (this.onMessage) {
             const messageData = (data.body.data.sseMsgType === 'stream-end' ? data.body.data.data as any : JSON.parse(data.body.data.data!) as AnswerAfter)
 
             const response: WsMessageResponse = {
@@ -190,9 +277,9 @@ export const useWebsocketStore = defineStore('websocket', {
 
             this.onMessage(response)
           }
-          catch (error) {
-            console.error('Error parsing WebSocket message:', error)
-          }
+        }
+        catch (error) {
+          console.error('Error parsing WebSocket message:', error)
         }
       })
     },
@@ -316,6 +403,7 @@ export const useWebsocketStore = defineStore('websocket', {
     // 关闭连接
     disconnectWebSocket() {
       return new Promise((resolve) => {
+        this.clearHeartbeat()
         if (this.websocket && !this.connecting && !this.disconnecting) {
           this.disconnecting = true
           this.websocket.close({
@@ -331,6 +419,9 @@ export const useWebsocketStore = defineStore('websocket', {
               resolve(true)
             },
           })
+        }
+        else {
+          resolve(true)
         }
       })
     },
