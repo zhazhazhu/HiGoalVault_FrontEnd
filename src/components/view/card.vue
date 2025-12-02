@@ -23,7 +23,7 @@ const data = defineModel('data', { type: Object as () => AfterPublishMessageList
 const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const message = useMessage()
-const responseContent = computed(() => renderMarkdown(`${data.value.chatQueryAnswerVO?.response?.substring(0, 200) || ''}...`))
+const responseContent = computed(() => renderMarkdown(`${data.value.chatQueryAnswerVO?.response?.substring(0, 140) || ''}...`))
 const parseSectionId = `view-card-parse-${useUUID(32)}-${data.value.id}`
 const visible = useIntersectionObserver(`#${parseSectionId}`)
 

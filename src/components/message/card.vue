@@ -99,9 +99,9 @@ const showMessageButtons = computed(() => !messageInject.share.value.isChecked &
 
 function changeCheckbox({ value }: { value: boolean }) {
   if (value)
-    messageInject.share.value.ids.push(currentAnswer.value.queryId)
+    messageInject.share.value.ids.add(currentAnswer.value.queryId)
   else
-    messageInject.share.value.ids = messageInject.share.value.ids.filter(item => item !== currentAnswer.value.queryId)
+    messageInject.share.value.ids.delete(currentAnswer.value.queryId)
 }
 
 watch(() => messageInject.share.value.isChecked, (val) => {
@@ -159,6 +159,8 @@ function onCopy() {
 }
 
 function openSharePopup() {
+  check.value = true
+  messageInject.share.value.ids.add(currentAnswer.value.queryId)
   messageInject.share.value.isChecked = true
 }
 function onPublish() {
@@ -230,8 +232,6 @@ async function onMessageToolOperate(type: MessageToolOperateType) {
       onPublish()
       break
     case 'share':
-      check.value = true
-      messageInject.share.value.ids.push(currentAnswer.value.queryId)
       openSharePopup()
       break
     default:
@@ -338,32 +338,32 @@ defineExpose({
 
           <view :class="cs.e('operations')" class="flex items-center gap-14px">
             <!-- <view v-show="!messageTextToSpeaking" class="wave-icon size-28px bg-#00bf00" @click="stopTextToSpeech" /> -->
-            <view :class="cs.e('icon-button')" @click="onRefresh">
+            <view :class="cs.e('icon-button')" @tap.stop="onRefresh">
               <view class="i-mdi-refresh icon" />
             </view>
-            <view :class="cs.e('icon-button')" @click="onCopy">
+            <view :class="cs.e('icon-button')" @tap.stop="onCopy">
               <view class="i-mingcute-copy-2-line icon size-20px!" />
             </view>
             <view v-show="message.chatQueryAnswerList.length > 1" class="flex items-center text-14px gap-8px">
               <view class="size-26px flex items-center justify-center">
-                <view class="i-material-symbols-arrow-back-ios-rounded text-16px" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @click="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
+                <view class="i-material-symbols-arrow-back-ios-rounded text-16px" :class="[{ 'opacity-30': currentAnswerIndex === 1 }]" @tap.stop="currentAnswerIndex = currentAnswerIndex > 1 ? currentAnswerIndex -= 1 : 1" />
               </view>
               <view>
                 {{ currentAnswerIndex }}/{{ message.chatQueryAnswerList.length }}
               </view>
               <view class="size-26px flex items-center justify-center">
-                <view class="i-material-symbols-arrow-forward-ios-rounded text-16px" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @click="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
+                <view class="i-material-symbols-arrow-forward-ios-rounded text-16px" :class="[{ 'opacity-30': currentAnswerIndex === message.chatQueryAnswerList.length }]" @tap.stop="currentAnswerIndex = currentAnswerIndex < message.chatQueryAnswerList.length ? currentAnswerIndex += 1 : message.chatQueryAnswerList.length" />
               </view>
             </view>
             <view class="flex-1" />
-            <view :class="cs.e('icon-button')" @click="onFavorite">
+            <view :class="cs.e('icon-button')" @tap.stop="onFavorite">
               <view v-show="currentAnswer.isCollect === Truth.FALSE" class="i-ic-round-star-border icon" />
               <view v-show="currentAnswer.isCollect === Truth.TRUE" class="i-ic-round-star icon color-yellow-4" />
             </view>
-            <view :class="cs.e('icon-button')" @click="onPublish">
+            <view :class="cs.e('icon-button')" @tap.stop="onPublish">
               <view class="i-material-symbols-upload-rounded icon" />
             </view>
-            <view :class="cs.e('icon-button')" @click="openSharePopup">
+            <view :class="cs.e('icon-button')" @tap.stop="openSharePopup">
               <view class="wechat-icon icon" />
             </view>
           </view>

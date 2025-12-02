@@ -2,7 +2,7 @@ import type { InjectionKey, Ref } from 'vue'
 import { inject, ref } from 'vue'
 
 export interface Share {
-  ids: string[]
+  ids: Set<string>
   isChecked: boolean
 }
 
@@ -18,7 +18,7 @@ export function useMessageInject() {
   if (!context) {
     console.error('useMessageInject must be used within a MessageProvider')
     return {
-      share: ref({ ids: [], isChecked: false }),
+      share: ref({ ids: new Set<string>(), isChecked: false }),
       currentToolMessageId: ref(null),
       scrollToTop: () => {},
     } as ChatInject

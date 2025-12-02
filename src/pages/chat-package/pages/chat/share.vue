@@ -46,7 +46,7 @@ onLoad((options) => {
       </template>
     </Navbar>
 
-    <Container custom-class="px-24rpx relative">
+    <Container custom-class="relative">
       <scroll-view
         id="scroll-view"
         class="h-[calc(100vh-100px)] pt-10px pb-20px"

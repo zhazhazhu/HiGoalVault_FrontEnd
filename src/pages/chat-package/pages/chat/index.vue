@@ -8,7 +8,7 @@ import { onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import { computed, getCurrentInstance, onUnmounted, provide, ref, watch } from 'vue'
 import { api } from '@/api'
 import MessageCard from '@/components/message/card.vue'
-import { useClassesName, useUUID } from '@/composables'
+import { useClassesName } from '@/composables'
 import { messageInjectKey } from '@/composables/inject'
 import { useCharQueue } from '@/composables/useChatQueue'
 import { useResetRef } from '@/composables/useResetRef'
@@ -23,7 +23,7 @@ const navbarInstance = ref<NavbarInstance>()
 const cs = useClassesName('messages')
 const userStore = useUserStore()
 const share = ref<Share>({
-  ids: [],
+  ids: new Set<string>(),
   isChecked: false,
 })
 const chatStore = useChatStore()
@@ -218,7 +218,7 @@ function websocketMessage(data: WsMessageResponse) {
 
 watch(() => share.value.isChecked, (newVal) => {
   if (!newVal) {
-    share.value.ids = []
+    share.value.ids.clear()
   }
 })
 
@@ -315,9 +315,9 @@ onShareAppMessage(async ({ from }) => {
   }
   if (from === 'button') {
     share.value.isChecked = false
-    const data = await api.shareMessage({ queryIds: share.value.ids, userId: userStore.userInfo!.id })
+    const data = await api.shareMessage({ queryIds: Array.from(share.value.ids), userId: userStore.userInfo!.id })
     result.path = `/pages/chat-package/pages/chat/share?id=${data.result.shareId}`
-    share.value.ids = []
+    share.value.ids.clear()
   }
   return result
 })
@@ -348,11 +348,11 @@ onShareAppMessage(async ({ from }) => {
         :show-scrollbar="false"
         :lower-threshold="50"
         :scroll-top="scrollTop"
-        :class="cs.m('scroll-view')"
+        :class="[cs.m('scroll-view'), share.isChecked && 'pt-100px']"
         @scrolltolower="loadMessage"
       >
         <view v-if="messages.length > 0" class="w-full">
-          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" ref="messageCardInstance" :key="`message-${useUUID(16)}-${item.msgId}`" :message="item" />
+          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" ref="messageCardInstance" :key="`message-${item.msgId}`" :message="item" />
 
           <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
             <wd-loading color="#FC6146FF" :size="20" />
