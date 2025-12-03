@@ -12,8 +12,8 @@ const cs = useClassesName('settings')
 const message = useMessage()
 const showSexOptions = ref(false)
 const actions = [
-  { name: '男', value: 1 },
-  { name: '女', value: 0 },
+  { name: '男', value: 1, icon: 'i-material-symbols-male' },
+  { name: '女', value: 0, icon: 'i-material-symbols-female' },
 ]
 const datePickerInstance = ref<DatetimePickerInstance>()
 const birthday = ref(dayjs(user.userInfo?.birthday || '').valueOf())
@@ -79,6 +79,7 @@ function gotoChangeUsername() {
   uni.navigateTo({ url: '/pages/settings-package/pages/settings/username' })
 }
 async function handleSexSelect({ item }) {
+  showSexOptions.value = false
   const res = await api.updateUserInfo({ sex: item.value })
   if (res.code === 200) {
     user.userInfo!.sex = item.value
@@ -104,7 +105,19 @@ function handleConfirmBirthday({ value }) {
 <template>
   <wd-root-portal>
     <wd-message-box />
-    <wd-action-sheet v-model="showSexOptions" custom-style="margin: 10px" :actions="actions" @select="handleSexSelect" />
+    <wd-popup v-model="showSexOptions" custom-class="rounded-t-32rpx" position="bottom">
+      <view class="p-20px pb-40px">
+        <view
+          v-for="(action, index) in actions"
+          :key="index"
+          class="py-15px text-center text-28rpx color-#333 border-b border-#e5e5e5 last:border-0 flex items-center justify-center gap-10rpx"
+          @click="handleSexSelect({ item: action })"
+        >
+          <view :class="[action.icon, action.value === 0 ? 'color-rose' : 'color-blue']" class="text-20px" />
+          <view>{{ action.name }}</view>
+        </view>
+      </view>
+    </wd-popup>
     <wd-datetime-picker ref="datePickerInstance" v-model="birthday" type="date" :with-cell="false" :min-date="dayjs('1900-1-1').valueOf()" @confirm="handleConfirmBirthday" />
   </wd-root-portal>
   <view>
