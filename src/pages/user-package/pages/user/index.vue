@@ -21,6 +21,7 @@ const userCollect = ref<UserCollectInstance>()
 const interactActiveTab = ref<'liked' | 'collected'>('liked')
 const isRefreshing = ref(false)
 const scrollTop = ref(0.001)
+const showOption = ref(false)
 
 async function getData() {
   if (userId.value) {
@@ -95,6 +96,13 @@ function onTabChange() {
 onShareAppMessage(({ target, from }) => {
   const imageUrl = `${API.SCREEN_SHOT}?id=${target.dataset.id}`
   if (from === 'button') {
+    if (target.dataset.user) {
+      return {
+        title: `快来看看${userInfo.value?.nickName}的个人主页～`,
+        path: `/pages/user-package/pages/user/index?id=${userInfo.value?.id}`,
+      }
+    }
+
     return {
       title: '快来看看我聊了啥～',
       path: `/pages/chat-package/pages/chat/index?id=${target.dataset.id}`,
@@ -141,6 +149,20 @@ watch(() => globalStore.needUpdateContentOperations, () => {
 </script>
 
 <template>
+  <wd-root-portal>
+    <wd-popup v-model="showOption" position="bottom" custom-class="rounded-t-32px">
+      <view class="p-20px pb-40px">
+        <button open-type="share" class="cell-item" data-user @click="showOption = false">
+          <view class="wechat-icon icon" />
+          <text>分享</text>
+        </button>
+        <view v-if="userId" class="cell-item warning">
+          <view class="i-ic-baseline-warning-amber icon" />
+          <text>举报用户</text>
+        </view>
+      </view>
+    </wd-popup>
+  </wd-root-portal>
   <view class="bg-[var(--hi-bg-color)] h-screen">
     <Navbar enable-left-slot>
       <template #left>
@@ -214,6 +236,9 @@ watch(() => globalStore.needUpdateContentOperations, () => {
                 已关注
               </wd-button>
             </template>
+            <wd-button size="small" type="info" :round="false" @click="showOption = true">
+              <view class="i-ri-more-fill text-14px" />
+            </wd-button>
           </view>
         </view>
 
@@ -237,4 +262,27 @@ watch(() => globalStore.needUpdateContentOperations, () => {
   </view>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.cell-item {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  font-size: 14px;
+  &::after {
+    display: none;
+  }
+  &.warning {
+    color: #ff4d4f;
+  }
+  .icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+  text {
+    font-size: 14px;
+  }
+}
+</style>
