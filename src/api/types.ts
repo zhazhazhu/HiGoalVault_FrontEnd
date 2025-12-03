@@ -315,6 +315,7 @@ export interface PublishMessageListResponse {
   tags: Array<Tag>
   chatQueryAnswerVO: AnswerBefore // 问题回答
   isFollowed: boolean // 是否关注
+  auditStatus: ContentAuditStatusEnum
 }
 
 export interface AfterPublishMessageListResponse extends Omit<PublishMessageListResponse, 'chatQueryAnswerVO'> {
@@ -593,4 +594,18 @@ export interface GetFinanceBasicInfoResponse {
   symbol: string
   name: string
   dataType: 'FUTURES' | 'STOCK'
+}
+
+export enum ContentAuditStatusEnum {
+  PENDING = 0,
+  APPROVED = 1,
+  REJECTED = 2,
+  UNDER_REVIEW = 3,
+}
+
+export enum ContentAuditStatusZhEnum {
+  待审核 = 0,
+  已通过 = 1,
+  已拒绝 = 2,
+  待复核 = 3,
 }

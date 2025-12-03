@@ -80,7 +80,7 @@ defineExpose({
 </script>
 
 <template>
-  <ViewList :data="data" :is-loading="isLoading" :is-finish="isFinish" :enable-delete="!userId" />
+  <ViewList :data="data" :is-loading="isLoading" :is-finish="isFinish" :enable-delete="!userId" :enable-status="!userId" />
 </template>
 
 <style lang='css' scoped></style>

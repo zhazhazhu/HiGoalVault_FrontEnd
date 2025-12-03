@@ -2,7 +2,7 @@
 import type { AfterPublishMessageListResponse } from '@/api'
 import { computed } from 'vue'
 import { useMessage } from 'wot-design-uni'
-import { api } from '@/api'
+import { api, ContentAuditStatusEnum, ContentAuditStatusZhEnum, Truth } from '@/api'
 import { useClassesName, useIntersectionObserver, useUUID } from '@/composables'
 import Stock from '@/echarts/components/stock.vue?async'
 import { renderMarkdown } from '@/modules'
@@ -12,6 +12,7 @@ import { formatCommentDate, formatCommentOrThumbUpCount } from '@/utils'
 const props = defineProps<{
   disableToUser?: boolean
   enableDelete?: boolean
+  enableStatus?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -94,9 +95,12 @@ function onDelete() {
     <view class="flex items-center justify-between text-26rpx color-#8E8E93">
       <view class="flex items-center" @click.stop="gotoUser">
         <wd-img width="40rpx" height="40rpx" round mode="aspectFill" :src="data.face" />
-        <text class="ml-16rpx color-#585858">
+        <text class="ml-16rpx color-#585858 mr-10px">
           {{ data.nickName }}
         </text>
+        <wd-tag v-if="data.auditStatus !== ContentAuditStatusEnum.APPROVED && enableStatus" plain :type="data.auditStatus === ContentAuditStatusEnum.PENDING ? 'warning' : 'danger'" mark>
+          {{ ContentAuditStatusZhEnum[data.auditStatus] }}
+        </wd-tag>
       </view>
 
       <view class="flex items-center gap-16rpx">
@@ -104,6 +108,13 @@ function onDelete() {
         <view v-if="enableDelete" class="flex items-center justify-center color-#ff756d w-30px h-24px bg-#fff0f0 rounded-4px" @click.stop="onDelete">
           <view class="i-material-symbols-delete-outline-rounded text-30rpx" />
         </view>
+      </view>
+    </view>
+
+    <view v-if="enableStatus && data.privacy === Truth.TRUE" class="flex items-center text-22rpx color-#8E8E93 gap-10px">
+      <view class="flex items-center gap-4px">
+        <view class="i-ion-eye-off-outline" />
+        <text>仅自己可见</text>
       </view>
     </view>
 

@@ -6,6 +6,7 @@ defineProps<{
   isLoading: boolean
   isFinish: boolean
   enableDelete?: boolean
+  enableStatus?: boolean
 }>()
 const data = defineModel('data', { type: Array as () => AfterPublishMessageListResponse[], required: true })
 const cs = useClassesName('view')
@@ -23,7 +24,7 @@ function onDelete(index: number) {
 <template>
   <view>
     <view v-for="item, index in data" :id="`view-${item.id}`" :key="index" :class="cs.m('card')" @click="gotoDetail(item)">
-      <ViewCard :data="item" :enable-delete="enableDelete" @update:data="(newData) => data[index] = newData" @delete="onDelete(index)" />
+      <ViewCard :data="item" :enable-delete="enableDelete" :enable-status="enableStatus" @update:data="(newData) => data[index] = newData" @delete="onDelete(index)" />
     </view>
 
     <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
