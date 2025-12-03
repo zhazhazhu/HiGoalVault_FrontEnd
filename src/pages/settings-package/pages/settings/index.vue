@@ -1,5 +1,7 @@
 <script lang='ts' setup>
+import type { DatetimePickerInstance } from 'wot-design-uni/components/wd-datetime-picker/types'
 import dayjs from 'dayjs'
+import { ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -8,6 +10,13 @@ import { useUserStore } from '@/store'
 const user = useUserStore()
 const cs = useClassesName('settings')
 const message = useMessage()
+const showSexOptions = ref(false)
+const actions = [
+  { name: '男', value: 1 },
+  { name: '女', value: 0 },
+]
+const datePickerInstance = ref<DatetimePickerInstance>()
+const birthday = ref(dayjs(user.userInfo?.birthday || '').valueOf())
 
 function gotoHome() {
   uni.navigateBack()
@@ -69,12 +78,36 @@ async function onChooseAvatar(e) {
 function gotoChangeUsername() {
   uni.navigateTo({ url: '/pages/settings-package/pages/settings/username' })
 }
+async function handleSexSelect({ item }) {
+  const res = await api.updateUserInfo({ sex: item.value })
+  if (res.code === 200) {
+    user.userInfo!.sex = item.value
+    uni.showToast({
+      title: '修改性别成功',
+      icon: 'none',
+    })
+  }
+}
+function handleConfirmBirthday({ value }) {
+  api.updateUserInfo({ birthday: dayjs(value).format('YYYY-MM-DD') }).then((res) => {
+    if (res.code === 200) {
+      user.userInfo!.birthday = dayjs(value).format('YYYY-MM-DD')
+      uni.showToast({
+        title: '修改生日成功',
+        icon: 'none',
+      })
+    }
+  })
+}
 </script>
 
 <template>
-  <view>
+  <wd-root-portal>
     <wd-message-box />
-
+    <wd-action-sheet v-model="showSexOptions" custom-style="margin: 10px" :actions="actions" @select="handleSexSelect" />
+    <wd-datetime-picker ref="datePickerInstance" v-model="birthday" type="date" :with-cell="false" :min-date="dayjs('1900-1-1').valueOf()" @confirm="handleConfirmBirthday" />
+  </wd-root-portal>
+  <view>
     <Navbar enable-left-slot title="个人信息">
       <template #left>
         <view class="flex items-center gap-20rpx" @click="gotoHome">
@@ -88,7 +121,6 @@ function gotoChangeUsername() {
         scroll-y
         enhanced
         :show-scrollbar="false"
-        :refresher-enabled="true"
         class="h-full overflow-y-auto pb-20px"
       >
         <view class="flex items-center flex-col mb-10px">
@@ -125,26 +157,35 @@ function gotoChangeUsername() {
           </view>
           <view :class="cs.m('btn')" class="disabled">
             <view>手机号</view>
-            <view>{{ user.userInfo?.mobile }}</view>
+            <view class="value">
+              {{ user.userInfo?.mobile }}
+            </view>
           </view>
           <view :class="cs.m('btn')" class="disabled">
             <view>UID</view>
-            <view>{{ user.userInfo?.userUid }}</view>
+            <view class="value">
+              {{ user.userInfo?.userUid }}
+            </view>
           </view>
-          <view :class="cs.m('btn')">
+          <view :class="cs.m('btn')" @click="showSexOptions = true">
             <view>性别</view>
             <view class="flex items-center gap-6px">
               <view>{{ user.userInfo?.sex === 0 ? '女' : '男' }}</view>
               <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
             </view>
           </view>
-          <view :class="cs.m('btn')">
+          <view :class="cs.m('btn')" @click="datePickerInstance?.open()">
             <view>生日</view>
-            <view>{{ user.userInfo?.birthday || '-' }}</view>
+            <view class="flex items-center gap-6px">
+              <view>{{ user.userInfo?.birthday || '-' }}</view>
+              <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
+            </view>
           </view>
           <view :class="cs.m('btn')" class="disabled">
             <view>注册时间</view>
-            <view>{{ dayjs(user.userInfo?.createTime).format('YYYY-MM-DD') }}</view>
+            <view class="value">
+              {{ dayjs(user.userInfo?.createTime).format('YYYY-MM-DD') }}
+            </view>
           </view>
         </view>
 
@@ -191,9 +232,9 @@ function gotoChangeUsername() {
   & + & {
     border-top: 1px solid #e5e5e5;
   }
-  &.disabled {
+  &.disabled .value {
     pointer-events: none;
-    // color: #999;
+    color: #999;
   }
 }
 .hi-settings--icon-btn {
