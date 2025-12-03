@@ -61,6 +61,13 @@
             "navigationBarTitleText": "设置",
             "disableScroll": true
           }
+        },
+        {
+          "path": "pages/settings/username",
+          "style": {
+            "navigationBarTitleText": "修改用户名",
+            "disableScroll": true
+          }
         }
       ]
     },

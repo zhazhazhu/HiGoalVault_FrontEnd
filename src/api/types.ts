@@ -18,6 +18,8 @@ export interface UserInfo {
   nickName: string
   mobile: string
   username: string
+  userUid: string
+  createTime: string
 }
 
 export interface Page {

@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { ref } from 'vue'
+import dayjs from 'dayjs'
 import { useMessage } from 'wot-design-uni'
 import { api } from '@/api'
 import { useClassesName } from '@/composables'
@@ -8,8 +8,6 @@ import { useUserStore } from '@/store'
 const user = useUserStore()
 const cs = useClassesName('settings')
 const message = useMessage()
-const userName = ref(user.userInfo?.nickName || '')
-const isUpdateNickname = ref(false)
 
 function gotoHome() {
   uni.navigateBack()
@@ -50,9 +48,7 @@ async function onChooseAvatar(e) {
     success: async (res) => {
       const data = JSON.parse(res.data)
       if (data.code === 200) {
-        const res2 = await api.updateUserInfo({ face: data.result.originalUrl }).finally(() => {
-          isUpdateNickname.value = false
-        })
+        const res2 = await api.updateUserInfo({ face: data.result.originalUrl })
         if (res2.code === 200) {
           user.userInfo!.face = data.result.url
           uni.showToast({
@@ -70,46 +66,8 @@ async function onChooseAvatar(e) {
     },
   })
 }
-async function onConfirm(val: string) {
-  if (val.trim() === '') {
-    isUpdateNickname.value = false
-    userName.value = user.userInfo?.nickName || ''
-    return
-  }
-  else if (val.trim().length > 10) {
-    uni.showToast({
-      title: '昵称不能超过10个字符',
-      icon: 'none',
-    })
-    isUpdateNickname.value = false
-    return
-  }
-  else if (/[^\u4E00-\u9FA5a-z0-9]/i.test(val.trim())) {
-    uni.showToast({
-      title: '昵称只能包含中文、字母和数字',
-      icon: 'none',
-    })
-    isUpdateNickname.value = false
-    return
-  }
-  else if (val.trim() === user.userInfo?.nickName) {
-    isUpdateNickname.value = false
-    return
-  }
-  const res = await api.updateUserInfo({ nickName: val }).finally(() => {
-    isUpdateNickname.value = false
-  })
-  if (res.code === 200) {
-    userName.value = val
-    user.userInfo!.nickName = val
-    uni.showToast({
-      title: '修改昵称成功',
-      icon: 'none',
-    })
-  }
-}
-function onUpdateNickname() {
-  isUpdateNickname.value = true
+function gotoChangeUsername() {
+  uni.navigateTo({ url: '/pages/settings-package/pages/settings/username' })
 }
 </script>
 
@@ -117,7 +75,7 @@ function onUpdateNickname() {
   <view>
     <wd-message-box />
 
-    <Navbar enable-left-slot>
+    <Navbar enable-left-slot title="个人信息">
       <template #left>
         <view class="flex items-center gap-20rpx" @click="gotoHome">
           <view class="i-material-symbols-arrow-back-ios-new-rounded text-44rpx" />
@@ -125,17 +83,25 @@ function onUpdateNickname() {
       </template>
     </Navbar>
 
-    <Container custom-class="px-32rpx flex flex-col gap-60rpx">
-      <view class="flex items-center flex-col">
-        <view class="relative w-200rpx h-200rpx">
-          <wd-img round mode="aspectFill" :src="user.userInfo?.face" width="200rpx" height="200rpx" />
-          <view class="absolute top-0 left-0 w-100% h-100% bg-black opacity-50 rounded-full flex items-center justify-center">
-            <button :class="cs.m('icon-btn')" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-              <view class="i-material-symbols-landscape-2-edit-rounded text-60rpx color-white" />
-            </button>
-          </view>
-        </view>
-        <view class="flex items-center">
+    <Container custom-class="px-32rpx flex flex-col">
+      <scroll-view
+        scroll-y
+        enhanced
+        :show-scrollbar="false"
+        :refresher-enabled="true"
+        class="h-full overflow-y-auto pb-20px"
+      >
+        <view class="flex items-center flex-col mb-10px">
+          <button :class="cs.m('icon-btn')" open-type="chooseAvatar" class="relative w-100px h-100px" @chooseavatar="onChooseAvatar">
+            <wd-img round mode="aspectFill" :src="user.userInfo?.face" width="100px" height="100px" />
+            <view class="absolute bottom-0 right-0 rounded-full bg-#007eff w-24px h-24px flex items-center justify-center">
+              <view class="i-material-symbols-android-camera text-14px color-white" />
+            </view>
+          </button>
+          <text class="text-12px color-#989898 my-10px">
+            点击更换头像
+          </text>
+        <!-- <view class="flex items-center">
           <view class=" mt-20rpx flex items-center gap-10rpx">
             <wd-input v-if="isUpdateNickname" v-model="userName" custom-class="hi-custom-input" :focus="isUpdateNickname" no-border :autofocus="true" type="nickname" confirm-type="done" @update:model-value="onConfirm(userName)" @blur="onConfirm(userName)" />
             <view v-else class="color-#333 text-32rpx font-bold" @click="onUpdateNickname">
@@ -143,29 +109,66 @@ function onUpdateNickname() {
             </view>
             <view v-if="!isUpdateNickname" class="i-tabler-pencil-minus color-#333 text-36rpx" @click="onUpdateNickname" />
           </view>
+        </view> -->
         </view>
-      </view>
 
-      <view class="flex flex-col px-24px rounded-20rpx bg-white">
-        <button open-type="contact" :class="cs.m('btn')">
-          联系我们
-          <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
-        </button>
-        <button :class="cs.m('btn')" @click="openPrivacyPolicy">
-          隐私协议
-          <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
-        </button>
-        <button open-type="feedback" :class="cs.m('btn')">
-          投诉建议
-          <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
-        </button>
-      </view>
+        <view class="text-12px color-#989898 my-10px mx-20px">
+          基本信息
+        </view>
+        <view class="flex flex-col px-24px rounded-20rpx bg-white">
+          <view :class="cs.m('btn')" @click="gotoChangeUsername">
+            <view>用户名</view>
+            <view class="flex items-center gap-6px">
+              <view>{{ user.userInfo?.nickName }}</view>
+              <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
+            </view>
+          </view>
+          <view :class="cs.m('btn')" class="disabled">
+            <view>手机号</view>
+            <view>{{ user.userInfo?.mobile }}</view>
+          </view>
+          <view :class="cs.m('btn')" class="disabled">
+            <view>UID</view>
+            <view>{{ user.userInfo?.userUid }}</view>
+          </view>
+          <view :class="cs.m('btn')">
+            <view>性别</view>
+            <view class="flex items-center gap-6px">
+              <view>{{ user.userInfo?.sex === 0 ? '女' : '男' }}</view>
+              <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
+            </view>
+          </view>
+          <view :class="cs.m('btn')">
+            <view>生日</view>
+            <view>{{ user.userInfo?.birthday || '-' }}</view>
+          </view>
+          <view :class="cs.m('btn')" class="disabled">
+            <view>注册时间</view>
+            <view>{{ dayjs(user.userInfo?.createTime).format('YYYY-MM-DD') }}</view>
+          </view>
+        </view>
 
-      <view>
-        <wd-button type="primary" block :round="false" size="large" @click="onLogout">
-          退出登录
-        </wd-button>
-      </view>
+        <view class="flex flex-col px-24px rounded-20rpx bg-white mt-10px">
+          <button open-type="contact" :class="cs.m('btn')">
+            联系我们
+            <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
+          </button>
+          <button :class="cs.m('btn')" @click="openPrivacyPolicy">
+            隐私协议
+            <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
+          </button>
+          <button open-type="feedback" :class="cs.m('btn')">
+            投诉建议
+            <view class="i-material-symbols-arrow-forward-ios-rounded color-gray-4" />
+          </button>
+        </view>
+
+        <view class="mt-10px">
+          <wd-button type="info" block :round="false" size="large" @click="onLogout">
+            退出登录
+          </wd-button>
+        </view>
+      </scroll-view>
     </Container>
   </view>
 </template>
@@ -181,11 +184,16 @@ function onUpdateNickname() {
   background-color: transparent;
   font-size: 26rpx;
   color: var(--hi-h2-color);
+  height: 50px;
   &::after {
     display: none;
   }
   & + & {
     border-top: 1px solid #e5e5e5;
+  }
+  &.disabled {
+    pointer-events: none;
+    // color: #999;
   }
 }
 .hi-settings--icon-btn {
