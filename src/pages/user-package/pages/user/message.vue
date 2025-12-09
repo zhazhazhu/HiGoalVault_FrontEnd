@@ -1,14 +1,14 @@
 <script lang='ts' setup>
-import type { MyCommentedRepliedListResponse, Page } from '@/api'
+import type { MessageNotify, MyCommentedRepliedListResponse, Page } from '@/api'
 import { onMounted, ref } from 'vue'
-import { api } from '@/api'
+import { api, MessageTypeEnum, MessageTypeZhEnum, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 
 const cs = useClassesName('user-message')
-const data = ref<MyCommentedRepliedListResponse[]>([])
+const data = ref<MessageNotify[]>([])
 const isLoading = ref(false)
 const isFinish = ref(false)
 const [page, reset] = useResetRef<Page>({
@@ -19,7 +19,7 @@ const userStore = useUserStore()
 const isRefreshing = ref(false)
 
 async function getData() {
-  const res = await api.getMyCommentedRepliedList({ ...page.value }).finally(() => {
+  const res = await api.getMessageNotify({ ...page.value }).finally(() => {
     isLoading.value = false
   })
   if (res.code === 200) {
@@ -41,30 +41,38 @@ async function load() {
   page.value.pageNumber!++
   await getData()
 }
-async function onThumbsUp(item: MyCommentedRepliedListResponse, index: number) {
-  if (!userStore.isLogin) {
-    return
+// async function onThumbsUp(item: MyCommentedRepliedListResponse, index: number) {
+//   if (!userStore.isLogin) {
+//     return
+//   }
+//   const res = await api.thumbsUp({
+//     contentId: item.contentId,
+//     likeAction: !item.isLike,
+//   })
+//   if (res.code === 200) {
+//     data.value[index].isLike = !item.isLike
+//     data.value[index].likeCount = data.value[index].isLike ? data.value[index].likeCount + 1 : data.value[index].likeCount - 1
+//   }
+// }
+function gotoContentDetail(item: MessageNotify) {
+  switch (item.messageType) {
+    case MessageTypeEnum.Comment:
+    case MessageTypeEnum.ReplyComment:
+    // uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
+      break
+    default:
+      uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.objectId}` })
+      break
   }
-  const res = await api.thumbsUp({
-    contentId: item.contentId,
-    likeAction: !item.isLike,
-  })
-  if (res.code === 200) {
-    data.value[index].isLike = !item.isLike
-    data.value[index].likeCount = data.value[index].isLike ? data.value[index].likeCount + 1 : data.value[index].likeCount - 1
-  }
-}
-function gotoContentDetail(item: MyCommentedRepliedListResponse) {
-  uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}` })
 }
 function gotoUser(id: string) {
   uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${id}` })
 }
-function gotoContentComment(item: MyCommentedRepliedListResponse) {
-  if (item.commentStatus) {
-    uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
-  }
-}
+// function gotoContentComment(item: MessageNotify) {
+//   if (item.commentStatus) {
+//     uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
+//   }
+// }
 function gotoBack() {
   uni.navigateBack()
 }
@@ -77,7 +85,7 @@ onMounted(() => {
 
 <template>
   <view class="h-screen">
-    <Navbar title="收到的评论和@">
+    <Navbar title="消息通知">
       <template #left>
         <view class="flex items-center gap-20rpx" @click="gotoBack">
           <view class="i-material-symbols-arrow-back-ios-new-rounded text-44rpx" />
@@ -100,29 +108,30 @@ onMounted(() => {
         @refresherrefresh="refreshData"
       >
         <view class="flex flex-col gap-20rpx py-32rpx">
-          <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click.stop="gotoContentComment(item)">
+          <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx text-12px">
-              <wd-img :src="item.face" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.commenterId)" />
+              <wd-img :src="item.fromUserFace" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.fromUserId)" />
               <view class="flex flex-col gap-4px">
-                <view class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.commenterId)">
-                  <view class="text-14px color-#333 font-500">
-                    {{ item.nickName }}
+                <view class="flex items-center justify-between">
+                  <view class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.fromUserId)">
+                    <view class="text-14px color-#333 font-500">
+                      {{ item.fromUserNickName }}
+                    </view>
+                    <wd-tag v-if="item.fromAuthor === Truth.TRUE" type="primary" mark plain>
+                      作者
+                    </wd-tag>
                   </view>
-                  <wd-tag v-if="item.contentAuthorId === item.commenterId" type="primary" mark plain>
-                    作者
-                  </wd-tag>
+                  <view class="text-12px color-#999">
+                    {{ formatCommentDate(item.createTime) }}
+                  </view>
                 </view>
-                <view class="text-10px color-#2d2d2d">
-                  {{ item.commentType === 1 ? '评论了你的内容' : '回复了你的评论' }} {{ formatCommentDate(item.createTime) }}
-                </view>
-
-                <view class="color-black" :class="{ 'line-through color-#666666!': !item.commentStatus }">
-                  回复：{{ item.commentContent }}
+                <view class="text-14px color-#333">
+                  {{ MessageTypeZhEnum[item.messageType] }}: {{ item.messageContent }}
                 </view>
               </view>
             </view>
 
-            <template v-if="item.commentStatus">
+            <!-- <template v-if="item.commentStatus">
               <view class="text-14px font-500 color-black">
                 {{ item.content }}
               </view>
@@ -142,7 +151,7 @@ onMounted(() => {
                   </view>
                 </view>
               </view>
-            </template>
+            </template> -->
           </view>
         </view>
 

@@ -611,3 +611,107 @@ export enum ContentAuditStatusZhEnum {
   已拒绝 = 2,
   待复核 = 3,
 }
+
+export interface MessageNotifyRequest extends Page {}
+
+export interface MessageNotifyResponse extends PageResult {
+  records: MessageNotify[]
+}
+
+export interface MessageNotify {
+  id: string
+  deleteFlag: boolean
+  createTime: string
+  followStatus: Truth
+  fromAuthor: Truth
+  fromUserFace: string
+  fromUserId: string
+  fromUserNickName: string
+  fromUserUserType: UserTypeEnum
+  linkObjectContent: string
+  linkObjectId: string
+  linkType: MessageObjectTypeEnum
+  messageContent: string
+  messageModule: MessageModuleEnum // 0-其他，1-系统通知，2-互动通知
+  messageTitle: string
+  messageType: MessageTypeEnum // 0-其他，10-审核结果，11-内容下架，12-举报反馈，13-处罚通知，20-评论，21-回复评论，22-关注，23-点赞内容，24-点赞评论，25-点赞回复
+  objectId: string
+  objectType: MessageObjectTypeEnum
+  readFlag: Truth
+  toAuthor: Truth
+  toUserFace: string
+  toUserId: string
+  toUserNickName: string
+  toUserUserType: UserTypeEnum
+}
+
+export enum MessageObjectTypeEnum {
+  Other = 0,
+  User = 1,
+  Content = 2,
+  Comment = 3,
+  Reply = 4,
+  FAQ = 5,
+  Follow = 6,
+  ThumbsUpContent = 7,
+  ThumbsUpComment = 8,
+  ThumbsUpReply = 9,
+}
+
+export enum MessageModuleEnum {
+  Other = 0,
+  SystemNotify = 1,
+  InteractionNotify = 2,
+}
+
+export enum MessageModuleZhEnum {
+  其他 = 0,
+  系统通知 = 1,
+  互动通知 = 2,
+}
+
+export enum MessageObjectTypeZhEnum {
+  其他 = 0,
+  用户 = 1,
+  内容 = 2,
+  评论 = 3,
+  回复 = 4,
+  常见问题 = 5,
+  关注 = 6,
+  内容点赞 = 7,
+  评论点赞 = 8,
+  回复点赞 = 9,
+}
+
+export enum MessageTypeEnum {
+  Other = 0,
+  AuditResult = 10,
+  ContentOffShelf = 11,
+  ReportFeedback = 12,
+  PunishmentNotify = 13,
+  Comment = 20,
+  ReplyComment = 21,
+  Follow = 22,
+  ThumbsUpContent = 23,
+  ThumbsUpComment = 24,
+  ThumbsUpReply = 25,
+}
+
+export enum MessageTypeZhEnum {
+  其他 = 0,
+  审核结果 = 10,
+  内容下架 = 11,
+  举报反馈 = 12,
+  处罚通知 = 13,
+  评论你的作品 = 20,
+  回复了你的评论 = 21,
+  关注了你 = 22,
+  点赞了你的内容 = 23,
+  点赞了你的评论 = 24,
+  点赞了你的回复 = 25,
+}
+
+export enum UserTypeEnum {
+  C = 'C',
+  A = 'A',
+}

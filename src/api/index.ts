@@ -29,6 +29,8 @@ import type {
   LikeContentRequest,
   LikeReplyRequest,
   LoginResult,
+  MessageNotifyRequest,
+  MessageNotifyResponse,
   MyCommentedRepliedListRequest,
   MyCommentedRepliedListResponseWithPage,
   Page,
@@ -295,6 +297,11 @@ function getUploadUrl() {
   return baseUrl + API.GET_UPLOAD_URL
 }
 
+// 获取消息通知
+function getMessageNotify(query: MessageNotifyRequest) {
+  return http(API.GET_MESSAGE_NOTIFY).post<MessageNotifyResponse>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -347,4 +354,5 @@ export const api = {
   hasSensitiveWord,
   searchSuggest,
   getUploadUrl,
+  getMessageNotify,
 }

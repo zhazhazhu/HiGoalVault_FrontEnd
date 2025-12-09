@@ -51,4 +51,5 @@ export enum API {
   SEARCH_SUGGEST = '/buyer/search/suggest',
   SCREEN_SHOT = 'https://higoall.com:8443/take-article',
   GET_UPLOAD_URL = '/buyer/upload/fileUpload',
+  GET_MESSAGE_NOTIFY = '/buyer/message/notice/getMessageNoticeVOByPage',
 }
