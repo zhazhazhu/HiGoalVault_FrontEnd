@@ -344,6 +344,7 @@ onShareAppMessage(async ({ from }) => {
         enhanced
         enable-passive
         enable-flex
+        scroll-with-animation
         :scroll-y="true"
         :show-scrollbar="false"
         :lower-threshold="50"
@@ -366,6 +367,14 @@ onShareAppMessage(async ({ from }) => {
           <Start :disabled="chatStore.isReplying" @question="(val) => converseInstance?.confirmMessage(val)" />
         </view>
       </scroll-view>
+
+      <wd-fab position="bottom-center" direction="bottom" :gap="{ bottom: 100 }">
+        <template #trigger>
+          <wd-button type="info" round size="small" @click="scrollToTop()">
+            <wd-icon name="arrow-down" size="22px" />
+          </wd-button>
+        </template>
+      </wd-fab>
 
       <converse ref="converseInstance" :disabled="chatStore.isReplying" plain @resize="converseHeight = $event" />
     </container>
