@@ -22,6 +22,7 @@ interface State {
   isReplying: boolean
   waitingMessageTask: WaitingMessageTask | null
   showSidebar: boolean
+  isResetScroll: boolean
 }
 
 export interface ChatWithType {
@@ -41,6 +42,7 @@ export const useChatStore = defineStore('chat', {
     isReplying: false,
     waitingMessageTask: null,
     showSidebar: false,
+    isResetScroll: false,
   }),
   getters: {
     currentChat: (state) => {
@@ -149,6 +151,7 @@ export const useChatStore = defineStore('chat', {
       }
     },
     createTemporaryMessage(message?: Partial<ChatMessageAfter>): ChatMessageAfter {
+      this.isResetScroll = false
       const id = useUUID(32)
       const temp = {
         chatId: this.currentChatId || '',
@@ -181,7 +184,7 @@ export const useChatStore = defineStore('chat', {
         ],
         ...message,
       } satisfies ChatMessageAfter
-      this.messages.unshift(temp)
+      this.messages.push(temp)
       this.currentTemporaryMessageId = temp.msgId
       return temp
     },

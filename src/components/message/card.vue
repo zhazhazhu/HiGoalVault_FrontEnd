@@ -385,8 +385,8 @@ defineExpose({
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  transform: scaleY(-1);
-  -webkit-transform: scaleY(-1);
+  // transform: scaleY(-1);
+  // -webkit-transform: scaleY(-1);
   padding: 0 32rpx;
   width: 100%;
 }

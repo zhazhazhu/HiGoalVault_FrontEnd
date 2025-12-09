@@ -34,6 +34,7 @@ const [page, resetPage] = useResetRef<Page>({
 })
 const scrollTop = ref(0.001)
 const isFinish = ref(false)
+const showScrollButton = ref(false)
 const websocketStore = useWebsocketStore()
 const messages = computed(() => chatStore.messages)
 const converseInstance = ref<InstanceType<typeof Converse>>()
@@ -214,6 +215,9 @@ function websocketMessage(data: WsMessageResponse) {
     chatStore.isReplying = false
     console.log('chatStore', chatStore.messages)
   }
+  // if (!chatStore.isResetScroll) {
+  //   scrollToButton()
+  // }
 }
 
 watch(() => share.value.isChecked, (newVal) => {
@@ -225,12 +229,27 @@ watch(() => share.value.isChecked, (newVal) => {
 function scrollToTop() {
   scrollTop.value += 0.001
 }
-
 const instance = getCurrentInstance()
 const query = uni.createSelectorQuery().in(instance)
+const intoViewId = ref('')
+
+function onScroll(e: any) {
+  const scrollTop = e.detail.scrollTop
+  const scrollHeight = e.detail.scrollHeight
+  showScrollButton.value = scrollHeight - scrollTop > 800
+}
+
+function scrollToButton() {
+  query.select('#scroll-view').scrollOffset((rect) => {
+    scrollTop.value < ((rect as UniApp.NodeInfo).scrollHeight || 0) ? scrollTop.value = ((rect as UniApp.NodeInfo).scrollHeight || 0) : scrollTop.value += 1
+  }).exec()
+}
+
 function scrollToElement(id: string) {
-  query.select(`#message-${id}`).boundingClientRect((rect) => {
-    scrollTop.value = ((rect as UniApp.NodeInfo).height || 0)
+  query.select(`#message-${id}`).boundingClientRect(() => {
+    setTimeout(() => {
+      intoViewId.value = `message-${chatStore.messages[chatStore.messages.length - 1]?.msgId || ''}`
+    }, 300)
   }).exec()
 }
 const loading = ref(false)
@@ -241,12 +260,12 @@ async function getMessage() {
   const data = await api.getMessageList({ userId: userStore.userInfo!.id, chatId: chatStore.currentChatId, ...page.value })
   if (data.code === 200) {
     const _messages = data.result.records.map(chatStore.transformMessage)
-    chatStore.messages.push(..._messages)
+    chatStore.messages.push(..._messages.reverse())
     isFinish.value = data.result.total <= chatStore.messages.length
     loading.value = false
-    // setTimeout(() => {
-    //   _messages.length && scrollToElement(_messages[0]?.msgId || '')
-    // }, 500)
+    setTimeout(() => {
+      _messages.length && scrollToElement(_messages[0]?.msgId || '')
+    }, 200)
   }
 }
 function refreshMessage() {
@@ -289,6 +308,7 @@ function onTabChange({ index }: { index: number }) {
 provide(messageInjectKey, {
   share,
   scrollToTop,
+  scrollToElement,
 })
 
 onShow(() => {
@@ -296,7 +316,6 @@ onShow(() => {
   websocketStore.onClose = websocketClose
   websocketStore.onError = websocketError
   chatStore.messages = []
-  scrollTop.value = 0.001
   getMessage()
   // uni.navigateTo({ url: '/pages/chat-package/pages/chat/share?id=6abaa512-ec2e-4c36-9500-4111dae4856d' })
 })
@@ -339,38 +358,41 @@ onShareAppMessage(async ({ from }) => {
     <container>
       <scroll-view
         id="scroll-view"
-        class="flex flex-1 h-full overflow-y-auto [scrollbar-width:none] transform"
+        class="h-full overflow-y-auto [scrollbar-width:none]"
         scroll-into-view-alignment="end"
         enhanced
         enable-passive
         enable-flex
         scroll-with-animation
+        :scroll-into-view="intoViewId"
         :scroll-y="true"
         :show-scrollbar="false"
         :lower-threshold="50"
         :scroll-top="scrollTop"
         :class="[cs.m('scroll-view'), share.isChecked && 'pt-100px']"
+        @scroll="onScroll"
         @scrolltolower="loadMessage"
       >
-        <view v-if="messages.length > 0" class="w-full">
-          <MessageCard v-for="item in messages" :id="`message-${item.msgId}`" ref="messageCardInstance" :key="`message-${item.msgId}`" :message="item" />
+        <template v-if="messages.length > 0">
+          <view v-for="item in messages" :id="`message-${item.msgId}`" :key="`message-${item.msgId}`" class="w-full">
+            <MessageCard ref="messageCardInstance" :message="item" />
 
-          <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
-            <wd-loading color="#FC6146FF" :size="20" />
-            <text class="ml-20rpx text-24rpx">
-              加载中...
-            </text>
+            <view v-show="loading" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
+              <wd-loading color="#FC6146FF" :size="20" />
+              <text class="ml-20rpx text-24rpx">
+                加载中...
+              </text>
+            </view>
           </view>
-        </view>
-
+        </template>
         <view v-else :class="cs.m('wrapper')">
           <Start :disabled="chatStore.isReplying" @question="(val) => converseInstance?.confirmMessage(val)" />
         </view>
       </scroll-view>
 
-      <wd-fab position="bottom-center" direction="bottom" :gap="{ bottom: 100 }">
+      <wd-fab v-show="showScrollButton" position="bottom-center" direction="bottom" :gap="{ bottom: 80 }">
         <template #trigger>
-          <wd-button type="info" round size="small" @click="scrollToTop()">
+          <wd-button type="info" round size="small" @click="scrollToButton()">
             <wd-icon name="arrow-down" size="22px" />
           </wd-button>
         </template>
@@ -382,20 +404,10 @@ onShareAppMessage(async ({ from }) => {
 </template>
 
 <style lang='scss' scoped>
-.hi-messages--scroll-view {
-  transform: scaleY(-1);
-  -webkit-transform: scaleY(-1);
-}
 .hi-messages--wrapper {
   display: flex;
   flex-direction: column;
-  transform: scaleY(-1);
-  -webkit-transform: scaleY(-1);
   padding: 0 20rpx;
   width: 100%;
-}
-.hi-messages--loading {
-  transform: scaleY(-1);
-  -webkit-transform: scaleY(-1);
 }
 </style>

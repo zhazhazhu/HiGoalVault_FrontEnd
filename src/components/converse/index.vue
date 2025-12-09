@@ -74,11 +74,11 @@ function sendWaitingMessage() {
 
   websocketStore.sendMessage(chatStore.waitingMessageTask).then(() => {
     chatStore.isReplying = true
-    chatStore.createTemporaryMessage({
+    const temp = chatStore.createTemporaryMessage({
       query: chatStore.waitingMessageTask!.query,
       chatId: chatStore.waitingMessageTask!.chatId,
     })
-    messageInject?.scrollToTop()
+    messageInject?.scrollToElement(`message-${temp.msgId}`)
   }).catch((err) => {
     console.log(err)
   }).finally(() => {
@@ -124,11 +124,11 @@ async function confirmMessage(content?: string) {
 
   websocketStore.sendMessage(messageContent).then(() => {
     chatStore.currentRunId = currentRunId
-    chatStore.createTemporaryMessage({
+    const temp = chatStore.createTemporaryMessage({
       query: text,
       chatId: chatStore.currentChatId,
     })
-    messageInject?.scrollToTop()
+    messageInject?.scrollToElement(`message-${temp.msgId}`)
   }).finally(() => {
     isSending.value = false
   })

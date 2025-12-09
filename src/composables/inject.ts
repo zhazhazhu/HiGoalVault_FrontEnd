@@ -9,6 +9,7 @@ export interface Share {
 export interface ChatInject {
   share: Ref<Share>
   scrollToTop: () => void
+  scrollToElement: (id: string) => void
 }
 
 export const messageInjectKey = Symbol('message') as InjectionKey<ChatInject>
@@ -21,6 +22,7 @@ export function useMessageInject() {
       share: ref({ ids: new Set<string>(), isChecked: false }),
       currentToolMessageId: ref(null),
       scrollToTop: () => {},
+      scrollToElement: (id: string) => {},
     } as ChatInject
   }
   return context
