@@ -53,4 +53,5 @@ export enum API {
   GET_UPLOAD_URL = '/buyer/upload/fileUpload',
   GET_MESSAGE_NOTIFY = '/buyer/message/notice/getMessageNoticeVOByPage',
   GET_COMPLAINT_LIST = '/buyer/audit/complaintType/getComplaintTypeVOByList',
+  SUBMIT_COMPLAINT = '/manager/audit/complaintRecord/complaintRecordCreate',
 }

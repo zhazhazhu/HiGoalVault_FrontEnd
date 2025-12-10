@@ -74,6 +74,10 @@ function handleDeleteOption() {
   showOption.value = false
   onDeleteReply(data.value)
 }
+function gotoReport() {
+  showOption.value = false
+  uni.navigateTo({ url: `/pages/report-package/pages/index?type=5&objectId=${data.value.id}` })
+}
 </script>
 
 <template>
@@ -92,7 +96,7 @@ function handleDeleteOption() {
           <view class="i-material-symbols-delete-outline-rounded icon" />
           <text>删除</text>
         </view>
-        <view class="cell-item warning">
+        <view class="cell-item warning" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报该评论</text>
         </view>

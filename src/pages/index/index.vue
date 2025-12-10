@@ -174,6 +174,7 @@ onShareTimeline(() => {
 onMounted(() => {
   resetData()
   getData()
+  // uni.navigateTo({ url: '/pages/report-package/pages/index?type=1&objectId=1996152126228865026' })
 })
 
 onLoad((options) => {

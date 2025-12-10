@@ -307,6 +307,11 @@ function getComplaintList(query: any) {
   return http(API.GET_COMPLAINT_LIST).post<any>(query)
 }
 
+// 提交投诉
+function submitComplaint(query: any) {
+  return http(API.SUBMIT_COMPLAINT).post<any>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -361,4 +366,5 @@ export const api = {
   getUploadUrl,
   getMessageNotify,
   getComplaintList,
+  submitComplaint,
 }

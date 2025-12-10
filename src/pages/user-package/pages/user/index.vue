@@ -146,6 +146,13 @@ watch(() => globalStore.needUpdateContentOperations, () => {
     globalStore.needUpdateContentOperations.clear()
   }
 }, { deep: true })
+
+function gotoReport() {
+  showOption.value = false
+  if (userId.value) {
+    uni.navigateTo({ url: `/pages/report-package/pages/index?type=3&objectId=${userId.value}` })
+  }
+}
 </script>
 
 <template>
@@ -156,7 +163,7 @@ watch(() => globalStore.needUpdateContentOperations, () => {
           <view class="wechat-icon icon" />
           <text>分享</text>
         </button>
-        <view v-if="userId" class="cell-item warning">
+        <view v-if="userId" class="cell-item warning" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报用户</text>
         </view>

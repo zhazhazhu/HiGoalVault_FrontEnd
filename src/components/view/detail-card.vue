@@ -34,7 +34,8 @@ function handleShare() {
   showOption.value = false
 }
 function gotoReport() {
-  uni.navigateTo({ url: `/pages/report-package/pages/index?type=content&sourceId=${props.data!.id}` })
+  showOption.value = false
+  uni.navigateTo({ url: `/pages/report-package/pages/index?type=1&objectId=${props.data!.id}` })
 }
 
 watch(() => props.data, () => {

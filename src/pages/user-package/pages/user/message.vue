@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { MessageNotify, Page } from '@/api'
 import { onMounted, ref } from 'vue'
-import { api, MessageTypeEnum, MessageTypeZhEnum, Truth } from '@/api'
+import { api, MessageTypeEnum, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
