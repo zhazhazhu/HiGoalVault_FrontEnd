@@ -612,7 +612,9 @@ export enum ContentAuditStatusZhEnum {
   待复核 = 3,
 }
 
-export interface MessageNotifyRequest extends Page {}
+export interface MessageNotifyRequest extends Page {
+  messageModule?: MessageModuleEnum
+}
 
 export interface MessageNotifyResponse extends PageResult {
   records: MessageNotify[]
@@ -643,6 +645,7 @@ export interface MessageNotify {
   toUserId: string
   toUserNickName: string
   toUserUserType: UserTypeEnum
+  contentId: string
 }
 
 export enum MessageObjectTypeEnum {

@@ -87,6 +87,13 @@
             "navigationBarTitleText": "用户消息",
             "disableScroll": true
           }
+        },
+        {
+          "path": "pages/user/system-message",
+          "style": {
+            "navigationBarTitleText": "系统消息",
+            "disableScroll": true
+          }
         }
       ]
     },

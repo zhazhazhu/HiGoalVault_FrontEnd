@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { MessageNotify, Page } from '@/api'
 import { onMounted, ref } from 'vue'
-import { api, MessageTypeEnum, Truth } from '@/api'
+import { api, MessageModuleEnum, MessageTypeEnum, Truth } from '@/api'
 import { useClassesName } from '@/composables'
 import { useResetRef } from '@/composables/useResetRef'
 import { useUserStore } from '@/store'
@@ -56,11 +56,19 @@ async function load() {
 //   }
 // }
 function gotoContentDetail(item: MessageNotify) {
+  if (item.messageModule === MessageModuleEnum.SystemNotify) {
+    uni.navigateTo({ url: '/pages/user-package/pages/user/system-message' })
+    return
+  }
   switch (item.messageType) {
-    // case MessageTypeEnum.Comment:
-    // case MessageTypeEnum.ReplyComment:
-    // uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
-    //   break
+    case MessageTypeEnum.Comment:
+      // 评论跳转内容详情
+      uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.objectId}&commentType=1` })
+      break
+    case MessageTypeEnum.ReplyComment:
+      // 回复跳转评论详情
+      uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.objectId}&commentType=2` })
+      break
     case MessageTypeEnum.Follow:
       // 关注跳转用户主页
       uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${item.objectId}` })
@@ -124,10 +132,13 @@ onMounted(() => {
         <view class="flex flex-col gap-20rpx py-32rpx">
           <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx text-12px">
-              <wd-img :src="item.fromUserFace" mode="aspectFill" round width="80rpx" height="80rpx" @click.stop="gotoUser(item.fromUserId)" />
-              <view class="flex flex-col gap-4px flex-1">
+              <wd-img v-if="item.messageModule === MessageModuleEnum.InteractionNotify" :src="item.fromUserFace" mode="aspectFill" round width="80rpx" height="80rpx" @click.stop="gotoUser(item.fromUserId)" />
+              <view v-else class="w-80rpx h-80rpx rounded-full bg-white b-1px b-solid b-#cacaca flex items-center justify-center">
+                <view class="i-material-symbols-volume-up color-blue-6 text-25px" />
+              </view>
+              <view class="flex flex-col gap-4px flex-1 w-80%">
                 <view class="flex items-center justify-between">
-                  <view class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.fromUserId)">
+                  <view v-if="item.messageModule === MessageModuleEnum.InteractionNotify" class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.fromUserId)">
                     <view class="text-14px color-#333 font-500">
                       {{ item.fromUserNickName }}
                     </view>
@@ -135,12 +146,15 @@ onMounted(() => {
                       作者
                     </wd-tag>
                   </view>
+                  <view v-else class="text-14px color-#333 font-500">
+                    系统通知
+                  </view>
                   <view class="text-12px color-#333">
                     {{ formatCommentDate(item.createTime) }}
                   </view>
                 </view>
                 <view class="flex items-center justify-between">
-                  <view class="text-13px color-#333">
+                  <view class="text-13px color-#333 truncate flex-1 mr-10rpx">
                     {{ item.messageContent }}
                   </view>
                   <view v-if="item.messageType === MessageTypeEnum.Follow" class="text-12px" :class="[item.followStatus === Truth.TRUE ? 'color-#999' : 'color-blue']" @click.stop="onFollowUser(item)">
@@ -175,7 +189,7 @@ onMounted(() => {
         </view>
 
         <view v-show="isLoading || isFinish" class="flex items-center justify-center py-20rpx loading-wrapper" :class="cs.m('loading')">
-          <wd-loading v-if="!isFinish" color="#FC6146FF" :size="20" />
+          <wd-loading v-if="!isFinish" :size="20" />
           <text class="ml-20rpx text-24rpx">
             {{ isFinish ? '没有更多了' : '加载中...' }}
           </text>
