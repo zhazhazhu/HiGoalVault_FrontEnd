@@ -55,17 +55,15 @@ watch(() => props.data, () => {
 <template>
   <wd-root-portal>
     <wd-popup v-model="showOption" position="bottom" custom-class="rounded-t-32px">
-      <view class="p-20px pb-40px">
+      <view class="p-20px pb-70px">
         <button open-type="share" class="cell-item" @click="handleShare">
           <view class="wechat-icon icon" />
           <text>分享</text>
         </button>
-
         <view v-if="data?.memberId === userStore.userInfo?.id" class="cell-item" @click="handlePrivacy">
           <view class="icon" :class="[data.privacy === Truth.TRUE ? 'i-ion-eye-off-outline' : 'i-ion-eye-outline']" />
           <text>{{ data?.privacy === Truth.TRUE ? '改为公开' : '改为仅自己可见' }}</text>
         </view>
-
         <view class="cell-item warning" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报内容</text>

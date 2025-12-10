@@ -113,7 +113,9 @@ function handleSubmitReport() {
         title: '举报提交成功，我们会尽快处理',
         icon: 'none',
       })
-      uni.navigateBack()
+      setTimeout(() => {
+        uni.navigateBack()
+      }, 1000)
     }
   }).catch(() => {
   })
@@ -149,7 +151,7 @@ onLoad((options) => {
         :lower-threshold="50"
         :refresher-enabled="true"
       >
-        <view class="p-32rpx">
+        <view class="p-32rpx pb-40px">
           <view class="report-card">
             <view class="title">
               举报内容
