@@ -1,7 +1,7 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
 import { ref, watch } from 'vue'
-import { api } from '@/api'
+import { api, Truth } from '@/api'
 import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
 
@@ -37,6 +37,15 @@ function gotoReport() {
   showOption.value = false
   uni.navigateTo({ url: `/pages/report-package/pages/index?type=1&objectId=${props.data!.id}` })
 }
+function handlePrivacy() {
+  showOption.value = false
+  const newPrivacy = props.data!.privacy === Truth.TRUE ? 0 : 1
+  api.updateContentPrivacy({ id: props.data!.id, privacy: newPrivacy }).then((res) => {
+    if (res.code === 200) {
+      props.data!.privacy = newPrivacy === 1 ? Truth.TRUE : Truth.FALSE
+    }
+  })
+}
 
 watch(() => props.data, () => {
   checkFollowUser()
@@ -51,6 +60,12 @@ watch(() => props.data, () => {
           <view class="wechat-icon icon" />
           <text>分享</text>
         </button>
+
+        <view v-if="data?.memberId === userStore.userInfo?.id" class="cell-item" @click="handlePrivacy">
+          <view class="icon" :class="[data.privacy === Truth.TRUE ? 'i-ion-eye-off-outline' : 'i-ion-eye-outline']" />
+          <text>{{ data?.privacy === Truth.TRUE ? '改为公开' : '改为仅自己可见' }}</text>
+        </view>
+
         <view class="cell-item warning" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报内容</text>
@@ -87,6 +102,13 @@ watch(() => props.data, () => {
         <wd-button size="small" type="info" :round="false" @click="showOption = true">
           <view class="i-ri-more-fill text-14px" />
         </wd-button>
+      </view>
+    </view>
+
+    <view v-if="data.privacy === Truth.TRUE" class="flex items-center text-22rpx color-#8E8E93 gap-10px">
+      <view class="flex items-center gap-4px">
+        <view class="i-ion-eye-off-outline" />
+        <text>仅自己可见</text>
       </view>
     </view>
 

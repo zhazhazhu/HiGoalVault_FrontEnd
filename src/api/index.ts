@@ -320,6 +320,11 @@ function getReplyById(query: { replyId: string }) {
   return http(API.GET_REPLY_BY_ID).post<CommentResponse>(query)
 }
 
+// 0 全部公开，1 仅自己可见
+function updateContentPrivacy(query: { id: string, privacy: 0 | 1 }) {
+  return http(API.UPDATE_CONTENT_PRIVACY).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -377,4 +382,5 @@ export const api = {
   submitComplaint,
   getCommentById,
   getReplyById,
+  updateContentPrivacy,
 }

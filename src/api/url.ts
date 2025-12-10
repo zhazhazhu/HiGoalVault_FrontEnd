@@ -56,4 +56,5 @@ export enum API {
   SUBMIT_COMPLAINT = '/buyer/audit/complaintRecord/complaintRecordCreate',
   GET_COMMENT_BY_ID = '/buyer/content/comment/comments/getCommentVOByCommentId',
   GET_REPLY_BY_ID = '/buyer/content/comment/reply/getReplyVOByReplyId',
+  UPDATE_CONTENT_PRIVACY = '/buyer/content/publish/updateMemberContentPrivacy',
 }
