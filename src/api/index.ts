@@ -312,6 +312,14 @@ function submitComplaint(query: any) {
   return http(API.SUBMIT_COMPLAINT).post<any>(query)
 }
 
+function getCommentById(query: { commentId: string }) {
+  return http(API.GET_COMMENT_BY_ID).post<CommentResponse>(query)
+}
+
+function getReplyById(query: { replyId: string }) {
+  return http(API.GET_REPLY_BY_ID).post<CommentResponse>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -367,4 +375,6 @@ export const api = {
   getMessageNotify,
   getComplaintList,
   submitComplaint,
+  getCommentById,
+  getReplyById,
 }

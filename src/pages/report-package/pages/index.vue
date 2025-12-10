@@ -24,6 +24,8 @@ const showDescription = computed(() => {
 })
 const contentData = ref<any>(null)
 const userData = ref<any>(null)
+const commentData = ref<any>(null)
+const replyData = ref<any>(null)
 
 watch(() => firstViolationModule.value, (violationModule) => {
   if (!violationModule) {
@@ -42,13 +44,22 @@ watch(() => firstViolationModule.value, (violationModule) => {
   }
   else if (violationModule === 4) {
     arr.push({ label: '评论举报', value: 4 })
+    api.getCommentById({ commentId: formData.value.objectId as string }).then((res) => {
+      if (res.code === 200) {
+        commentData.value = res.result
+      }
+    })
   }
   else if (violationModule === 5) {
     arr.push({ label: '评论举报', value: 5 })
+    api.getReplyById({ replyId: formData.value.objectId as string }).then((res) => {
+      if (res.code === 200) {
+        replyData.value = res.result
+      }
+    })
   }
   else {
     api.getUserInfo(formData.value.objectId as string).then((res) => {
-      debugger
       if (res.code === 200) {
         userData.value = res.result
       }
@@ -160,7 +171,15 @@ onLoad((options) => {
           </view>
 
           <view class="report-card">
-            <template v-if="formData.violationModule === 3">
+            <template v-if="formData.violationModule === 1">
+              <view class="title">
+                举报内容
+              </view>
+              <view class="description">
+                {{ contentData?.nickName }}： {{ contentData?.content }}
+              </view>
+            </template>
+            <template v-else-if="formData.violationModule === 3">
               <view class="title">
                 举报用户
               </view>
@@ -175,7 +194,7 @@ onLoad((options) => {
                   </view>
                 </view>
               </view>
-              <view v-else class="flex items-center gap-20rpx">
+              <view v-else-if="firstViolationModule === 3" class="flex items-center gap-20rpx">
                 <wd-img width="80rpx" height="80rpx" round mode="aspectFill" :src="userData?.face" />
                 <view class="flex flex-col gap-10rpx">
                   <view class="text-14px font-500">
@@ -186,18 +205,43 @@ onLoad((options) => {
                   </view>
                 </view>
               </view>
-            </template>
-            <template v-else-if="formData.violationModule === 1">
-              <view class="title">
-                举报内容
+              <view v-else-if="firstViolationModule === 4" class="flex items-center gap-20rpx">
+                <wd-img width="80rpx" height="80rpx" round mode="aspectFill" :src="commentData?.face" />
+                <view class="flex flex-col gap-10rpx">
+                  <view class="text-14px font-500">
+                    {{ commentData?.nickName }}
+                  </view>
+                  <view class="text-12px color-#666">
+                    uid: {{ commentData?.commenterUId }}
+                  </view>
+                </view>
               </view>
-              <view class="description">
-                {{ contentData?.nickName }}： {{ contentData?.content }}
+              <view v-else-if="firstViolationModule === 5" class="flex items-center gap-20rpx">
+                <wd-img width="80rpx" height="80rpx" round mode="aspectFill" :src="replyData?.face" />
+                <view class="flex flex-col gap-10rpx">
+                  <view class="text-14px font-500">
+                    {{ replyData?.nickName }}
+                  </view>
+                  <view class="text-12px color-#666">
+                    uid: {{ replyData?.replierUserUid }}
+                  </view>
+                </view>
               </view>
             </template>
-            <template v-else-if="formData.violationModule === 4 || formData.violationModule === 5">
+            <template v-else-if="formData.violationModule === 4">
               <view class="title">
                 举报评论
+              </view>
+              <view class="description">
+                {{ commentData?.nickName }}： {{ commentData?.commentContent }}
+              </view>
+            </template>
+            <template v-else-if="formData.violationModule === 5">
+              <view class="title">
+                举报评论
+              </view>
+              <view class="description">
+                {{ replyData?.nickName }}： {{ replyData?.replyContent }}
               </view>
             </template>
           </view>
