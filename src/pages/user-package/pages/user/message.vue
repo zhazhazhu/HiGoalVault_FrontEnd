@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import type { MessageNotify, MyCommentedRepliedListResponse, Page } from '@/api'
+import type { MessageNotify, Page } from '@/api'
 import { onMounted, ref } from 'vue'
 import { api, MessageTypeEnum, MessageTypeZhEnum, Truth } from '@/api'
 import { useClassesName } from '@/composables'
@@ -14,6 +14,7 @@ const isFinish = ref(false)
 const [page, reset] = useResetRef<Page>({
   pageNumber: 1,
   pageSize: 20,
+  sort: 'createTime',
 })
 const userStore = useUserStore()
 const isRefreshing = ref(false)
@@ -56,17 +57,30 @@ async function load() {
 // }
 function gotoContentDetail(item: MessageNotify) {
   switch (item.messageType) {
-    case MessageTypeEnum.Comment:
-    case MessageTypeEnum.ReplyComment:
+    // case MessageTypeEnum.Comment:
+    // case MessageTypeEnum.ReplyComment:
     // uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.contentId}&commentId=${item.commentId}&commentType=${item.commentType}` })
+    //   break
+    case MessageTypeEnum.Follow:
+      // 关注跳转用户主页
+      uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${item.objectId}` })
+      break
+    case MessageTypeEnum.ThumbsUpContent:
+      // 点赞跳转内容详情
+      uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.objectId}` })
       break
     default:
-      uni.navigateTo({ url: `/pages/detail-package/pages/detail/index?id=${item.objectId}` })
       break
   }
 }
 function gotoUser(id: string) {
   uni.navigateTo({ url: `/pages/user-package/pages/user/index?id=${id}` })
+}
+async function onFollowUser(data: MessageNotify) {
+  const res = await api.followUser({ followAction: data.followStatus !== Truth.TRUE, followeeId: data.fromUserId, followerId: userStore.userInfo!.id })
+  if (res.code === 200) {
+    data.followStatus = data.followStatus === Truth.TRUE ? Truth.FALSE : Truth.TRUE
+  }
 }
 // function gotoContentComment(item: MessageNotify) {
 //   if (item.commentStatus) {
@@ -110,8 +124,8 @@ onMounted(() => {
         <view class="flex flex-col gap-20rpx py-32rpx">
           <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx text-12px">
-              <wd-img :src="item.fromUserFace" mode="aspectFill" round width="64rpx" height="64rpx" @click.stop="gotoUser(item.fromUserId)" />
-              <view class="flex flex-col gap-4px">
+              <wd-img :src="item.fromUserFace" mode="aspectFill" round width="80rpx" height="80rpx" @click.stop="gotoUser(item.fromUserId)" />
+              <view class="flex flex-col gap-4px flex-1">
                 <view class="flex items-center justify-between">
                   <view class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.fromUserId)">
                     <view class="text-14px color-#333 font-500">
@@ -121,12 +135,17 @@ onMounted(() => {
                       作者
                     </wd-tag>
                   </view>
-                  <view class="text-12px color-#999">
+                  <view class="text-12px color-#333">
                     {{ formatCommentDate(item.createTime) }}
                   </view>
                 </view>
-                <view class="text-14px color-#333">
-                  {{ MessageTypeZhEnum[item.messageType] }}: {{ item.messageContent }}
+                <view class="flex items-center justify-between">
+                  <view class="text-13px color-#333">
+                    {{ item.messageContent }}
+                  </view>
+                  <view v-if="item.messageType === MessageTypeEnum.Follow" class="text-12px" :class="[item.followStatus === Truth.TRUE ? 'color-#999' : 'color-blue']" @click.stop="onFollowUser(item)">
+                    {{ item.followStatus === Truth.TRUE ? '已关注' : '回关' }}
+                  </view>
                 </view>
               </view>
             </view>
