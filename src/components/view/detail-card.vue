@@ -33,6 +33,9 @@ function gotoUser() {
 function handleShare() {
   showOption.value = false
 }
+function gotoReport() {
+  uni.navigateTo({ url: `/pages/report-package/pages/index?type=content&sourceId=${props.data!.id}` })
+}
 
 watch(() => props.data, () => {
   checkFollowUser()
@@ -47,7 +50,7 @@ watch(() => props.data, () => {
           <view class="wechat-icon icon" />
           <text>分享</text>
         </button>
-        <view class="cell-item warning">
+        <view class="cell-item warning" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报内容</text>
         </view>

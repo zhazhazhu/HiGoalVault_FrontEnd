@@ -120,6 +120,18 @@
           }
         }
       ]
+    },
+    {
+      "root": "pages/report-package",
+      "pages": [
+        {
+          "path": "pages/index",
+          "style": {
+            "navigationBarTitleText": "举报",
+            "disableScroll": true
+          }
+        }
+      ]
     }
   ]
 }

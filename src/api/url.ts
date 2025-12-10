@@ -52,4 +52,5 @@ export enum API {
   SCREEN_SHOT = 'https://higoall.com:8443/take-article',
   GET_UPLOAD_URL = '/buyer/upload/fileUpload',
   GET_MESSAGE_NOTIFY = '/buyer/message/notice/getMessageNoticeVOByPage',
+  GET_COMPLAINT_LIST = '/buyer/audit/complaintType/getComplaintTypeVOByList',
 }
