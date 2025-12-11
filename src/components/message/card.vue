@@ -370,12 +370,12 @@ defineExpose({
         </template>
       </view>
 
-      <view :class="cs.m('reference')">
+      <!-- <view :class="cs.m('reference')">
         <view v-for="item, index in currentAnswer.reference" :key="index" :class="cs.e('reference-item')" @click="onReference(item)">
           <view class="next-level-icon size-16px mr-6px" />
           <text>{{ item.name }}</text>
         </view>
-      </view>
+      </view> -->
     </wd-checkbox>
   </view>
 </template>
