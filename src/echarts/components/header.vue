@@ -38,7 +38,7 @@ function formatAmount(v: number | null) {
 
 const basicInfo = ref<GetFinanceBasicInfoResponse>()
 const currentCode = computed(() => props.code[model.value])
-const showToggle = computed(() => props.code.length > 1)
+const showToggle = computed(() => props.code.length > 1 && !props.preview)
 
 function handlePrev() {
   if (model.value > 0) {
