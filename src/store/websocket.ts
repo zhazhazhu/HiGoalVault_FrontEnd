@@ -229,7 +229,7 @@ export const useWebsocketStore = defineStore('websocket', {
       this.websocket.onOpen(() => {
         console.log('WebSocket connection opened.')
         this.isSocketOpen = true
-        this.startHeartbeat()
+        // this.startHeartbeat()
         this.onOpen && this.onOpen()
       })
 
