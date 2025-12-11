@@ -1,7 +1,32 @@
 import { marked } from 'marked'
 import { hljs } from './highlight'
 
+// 自定义扩展：匹配 [[index]] 格式
+const referenceExtension = {
+  name: 'reference',
+  level: 'inline',
+  start(src: string) {
+    return src.match(/\[\[/)?.index
+  },
+  tokenizer(src: string) {
+    const rule = /^\[\[(\d+)\]\]/
+    const match = rule.exec(src)
+    if (match) {
+      return {
+        type: 'reference',
+        raw: match[0],
+        index: match[1],
+      }
+    }
+  },
+  renderer(token: any) {
+    const index = token.index
+    return `<a class="md-reference" data-index="${index}" data-action="copy-reference">[${index}]</a>`
+  },
+}
+
 marked.use({
+  extensions: [referenceExtension],
   highlight: (code, lang) => {
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -94,7 +119,7 @@ export const testContent = `
 
 1. list item 1
 2. list item 2
-3. list item 3
+3. list item 3[[1]]
 
 \`\`\`javascript
 function test() {

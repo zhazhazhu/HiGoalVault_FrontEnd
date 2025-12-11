@@ -18,6 +18,30 @@ const emit = defineEmits<{
 const cs = useClassesName('message-card')
 const instanceId = `response-card-${useUUID()}-${props.data.queryId}`
 const visible = useIntersectionObserver(`#${instanceId}`)
+
+function handleLinkTap(attrs: any) {
+  // 检查是否是引用链接
+  if (attrs['data-action'] === 'copy-reference') {
+    const index = attrs['data-index']
+    const url = props.data.reference?.[index]?.url
+    if (!url) {
+      uni.showToast({
+        title: `链接不存在`,
+        icon: 'none',
+      })
+      return
+    }
+    uni.setClipboardData({
+      data: props.data.reference?.[index]?.url,
+      success: () => {
+        uni.showToast({
+          title: `已复制链接`,
+          icon: 'none',
+        })
+      },
+    })
+  }
+}
 </script>
 
 <template>
@@ -56,7 +80,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
             <template v-if="item.finished && !item.thinking?.trim()">
               <text>完成</text>
             </template>
-            <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.thinking || '')" container-style="overflow: hidden" />
+            <UvParse v-else class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(item.thinking || '')" container-style="overflow: hidden" @linktap="handleLinkTap" />
           </template>
         </wd-step>
       </wd-steps>
@@ -66,7 +90,7 @@ const visible = useIntersectionObserver(`#${instanceId}`)
   <Stock v-if="data.stockParameter.code.length && visible" :params="data.stockParameter" />
 
   <view class="prose" :class="cs.m('response')" @longpress="(e) => emit('longPressContent', e, 'response')">
-    <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" container-style="overflow: hidden" />
+    <UvParse class="markdown-body" :class="cs.e('rich-text')" :content="renderMarkdown(data.response)" container-style="overflow: hidden" @linktap="handleLinkTap" />
   </view>
 
   <view v-if="data.label?.length && enableLabel" class="flex flex-row flex-wrap gap-10rpx">
