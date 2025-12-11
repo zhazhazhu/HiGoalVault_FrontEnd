@@ -45,6 +45,7 @@ const currentThinkingIndex = ref(0)
 const { charQueue, pushQueue: pushCharQueue, onTyping: onCharTyping, pushFullQueue } = useCharQueue()
 const messageCardInstance = ref<Array<InstanceType<typeof MessageCard>>>([])
 const converseHeight = ref(0)
+const enableAutoScrollToButton = ref(true)
 
 onChange((count) => {
   if (!chatStore.currentAnswer)
@@ -215,9 +216,9 @@ function websocketMessage(data: WsMessageResponse) {
     chatStore.isReplying = false
     console.log('chatStore', chatStore.messages)
   }
-  // if (!chatStore.isResetScroll) {
-  //   scrollToButton()
-  // }
+  if (enableAutoScrollToButton.value) {
+    scrollToButton()
+  }
 }
 
 watch(() => share.value.isChecked, (newVal) => {
@@ -237,6 +238,9 @@ function onScroll(e: any) {
   const scrollTop = e.detail.scrollTop
   const scrollHeight = e.detail.scrollHeight
   showScrollButton.value = scrollHeight - scrollTop > 800
+  if (showScrollButton.value) {
+    enableAutoScrollToButton.value = false
+  }
 }
 
 function scrollToButton() {
@@ -326,6 +330,9 @@ onUnmounted(() => {
     websocketStore.stopMessage({ runId: chatStore.currentRunId, queryId: chatStore.currentAnswer?.queryId })
   }
 })
+function handleScrolltolower() {
+  enableAutoScrollToButton.value = true
+}
 
 onShareAppMessage(async ({ from }) => {
   const result = {
@@ -369,9 +376,10 @@ onShareAppMessage(async ({ from }) => {
         :show-scrollbar="false"
         :lower-threshold="50"
         :scroll-top="scrollTop"
-        :class="[cs.m('scroll-view'), share.isChecked && 'pt-100px']"
+        :class="[cs.m('scroll-view'), share.isChecked && 'pb-100px']"
         @scroll="onScroll"
-        @scrolltolower="loadMessage"
+        @scrolltoupper="loadMessage"
+        @scrolltolower="handleScrolltolower"
       >
         <template v-if="messages.length > 0">
           <view v-for="item in messages" :id="`message-${item.msgId}`" :key="`message-${item.msgId}`" class="w-full">
