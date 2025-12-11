@@ -44,6 +44,7 @@ import type {
   ReplyListResponse,
   ShareMessageRequest,
   Tag,
+  Truth,
   UpdateChat,
   UpdateUserInfoRequest,
   UserCenterSearchRequest,
@@ -325,6 +326,10 @@ function updateContentPrivacy(query: { id: string, privacy: 0 | 1 }) {
   return http(API.UPDATE_CONTENT_PRIVACY).post<boolean>(query)
 }
 
+function updateMessageNotifyStatus(query: { id: string, readFlag: Truth }) {
+  return http(API.UPDATE_MESSAGE_NOTIFY_STATUS).post<boolean>(query)
+}
+
 // 创建 API 实例对象，保持向后兼容
 export const api = {
   autoLoginByPhone,
@@ -383,4 +388,5 @@ export const api = {
   getCommentById,
   getReplyById,
   updateContentPrivacy,
+  updateMessageNotifyStatus,
 }

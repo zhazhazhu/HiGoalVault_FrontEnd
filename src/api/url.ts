@@ -57,4 +57,5 @@ export enum API {
   GET_COMMENT_BY_ID = '/buyer/content/comment/comments/getCommentVOByCommentId',
   GET_REPLY_BY_ID = '/buyer/content/comment/reply/getReplyVOByReplyId',
   UPDATE_CONTENT_PRIVACY = '/buyer/content/publish/updateMemberContentPrivacy',
+  UPDATE_MESSAGE_NOTIFY_STATUS = '/buyer/message/notice/updateMessageNoticeUpdateReadFlag',
 }

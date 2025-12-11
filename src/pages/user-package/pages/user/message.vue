@@ -56,6 +56,8 @@ async function load() {
 //   }
 // }
 function gotoContentDetail(item: MessageNotify) {
+  item.readFlag = Truth.TRUE
+  api.updateMessageNotifyStatus({ id: item.id, readFlag: Truth.TRUE })
   if (item.messageModule === MessageModuleEnum.SystemNotify) {
     uni.navigateTo({ url: '/pages/user-package/pages/user/system-message' })
     return
@@ -132,10 +134,12 @@ onMounted(() => {
         <view class="flex flex-col gap-20rpx py-32rpx">
           <view v-for="item, index in data" :key="index" class="flex flex-col gap-20rpx mx-32rpx py-20rpx border-b-2 border-gray-2 border-solid" @click="gotoContentDetail(item)">
             <view class="flex gap-10rpx text-12px">
-              <wd-img v-if="item.messageModule === MessageModuleEnum.InteractionNotify" :src="item.fromUserFace" mode="aspectFill" round width="80rpx" height="80rpx" @click.stop="gotoUser(item.fromUserId)" />
-              <view v-else class="w-80rpx h-80rpx rounded-full bg-white b-1px b-solid b-#cacaca flex items-center justify-center">
-                <view class="i-material-symbols-volume-up color-blue-6 text-25px" />
-              </view>
+              <wd-badge is-dot :hidden="item.readFlag === Truth.TRUE" :top="5" :right="5">
+                <wd-img v-if="item.messageModule === MessageModuleEnum.InteractionNotify" :src="item.fromUserFace" mode="aspectFill" round width="80rpx" height="80rpx" @click.stop="gotoUser(item.fromUserId)" />
+                <view v-else class="w-80rpx h-80rpx rounded-full bg-white b-1px b-solid b-#cacaca flex items-center justify-center">
+                  <view class="i-material-symbols-volume-up color-blue-6 text-25px" />
+                </view>
+              </wd-badge>
               <view class="flex flex-col gap-4px flex-1 w-80%">
                 <view class="flex items-center justify-between">
                   <view v-if="item.messageModule === MessageModuleEnum.InteractionNotify" class="flex items-baseline gap-10rpx" @click.stop="gotoUser(item.fromUserId)">
