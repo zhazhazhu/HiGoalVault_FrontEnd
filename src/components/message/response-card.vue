@@ -23,7 +23,7 @@ function handleLinkTap(attrs: any) {
   // 检查是否是引用链接
   if (attrs['data-action'] === 'copy-reference') {
     const index = attrs['data-index']
-    const url = props.data.reference?.[index]?.url
+    const url = props.data.reference?.[index - 1]?.url
     if (!url) {
       uni.showToast({
         title: `链接不存在`,
@@ -32,7 +32,7 @@ function handleLinkTap(attrs: any) {
       return
     }
     uni.setClipboardData({
-      data: props.data.reference?.[index]?.url,
+      data: url,
       success: () => {
         uni.showToast({
           title: `已复制链接`,
