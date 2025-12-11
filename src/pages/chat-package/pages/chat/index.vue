@@ -47,6 +47,10 @@ const messageCardInstance = ref<Array<InstanceType<typeof MessageCard>>>([])
 const converseHeight = ref(0)
 const enableAutoScrollToButton = ref(true)
 
+watch(() => chatStore.currentChatId, () => {
+  showScrollButton.value = false
+}, { immediate: true })
+
 onChange((count) => {
   if (!chatStore.currentAnswer)
     return
