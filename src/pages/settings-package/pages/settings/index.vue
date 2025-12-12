@@ -118,7 +118,7 @@ function handleConfirmBirthday({ value }) {
         </view>
       </view>
     </wd-popup>
-    <wd-datetime-picker ref="datePickerInstance" v-model="birthday" type="date" :with-cell="false" :min-date="dayjs('1900-1-1').valueOf()" @confirm="handleConfirmBirthday" />
+    <wd-datetime-picker ref="datePickerInstance" v-model="birthday" type="date" :with-cell="false" :min-date="dayjs('1900-1-1').valueOf()" :max-date="dayjs().valueOf()" @confirm="handleConfirmBirthday" />
   </wd-root-portal>
   <view>
     <Navbar enable-left-slot title="个人信息">
