@@ -154,14 +154,14 @@ onMounted(() => {
       scroll-y
       enhanced
       enable-passive
-      class="bg-[var(--hi-bg-color)] h-[calc(100vh-93px)] box-border"
+      class="bg-[var(--hi-bg-color)] h-[calc(100vh-170px)] box-border"
       :show-scrollbar="false"
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @scrolltolower="loadData"
       @refresherrefresh="refreshData"
     >
-      <view class="px-32rpx pt-10px">
+      <view class="px-32rpx pt-10px pb-30px">
         <ResultList :data="data" :is-loading="isLoading" :is-finish="isFinish" />
       </view>
     </scroll-view>

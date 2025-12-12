@@ -163,7 +163,7 @@ function gotoReport() {
           <view class="wechat-icon icon" />
           <text>分享</text>
         </button>
-        <view v-if="userId" class="cell-item warning" @click="gotoReport">
+        <view v-if="userId" class="cell-item" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报用户</text>
         </view>
@@ -277,6 +277,7 @@ function gotoReport() {
   gap: 12px;
   padding: 12px 0;
   font-size: 14px;
+  height: 44px;
   &::after {
     display: none;
   }

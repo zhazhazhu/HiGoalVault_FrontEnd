@@ -64,7 +64,7 @@ watch(() => props.data, () => {
           <view class="icon" :class="[data.privacy === Truth.TRUE ? 'i-ion-eye-off-outline' : 'i-ion-eye-outline']" />
           <text>{{ data?.privacy === Truth.TRUE ? '改为公开' : '改为仅自己可见' }}</text>
         </view>
-        <view class="cell-item warning" @click="gotoReport">
+        <view class="cell-item" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报内容</text>
         </view>
@@ -130,6 +130,7 @@ watch(() => props.data, () => {
   gap: 12px;
   padding: 12px 0;
   font-size: 14px;
+  height: 44px;
   &::after {
     display: none;
   }

@@ -92,11 +92,11 @@ function gotoReport() {
           <view class="i-material-symbols-content-copy-outline-rounded icon" />
           <text>复制</text>
         </view>
-        <view v-if="isSelf" class="cell-item warning" @click="handleDeleteOption">
+        <view v-if="isSelf" class="cell-item" @click="handleDeleteOption">
           <view class="i-material-symbols-delete-outline-rounded icon" />
           <text>删除</text>
         </view>
-        <view class="cell-item warning" @click="gotoReport">
+        <view class="cell-item" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报该评论</text>
         </view>
@@ -141,7 +141,7 @@ function gotoReport() {
               </view>
             </view>
             <view>
-              <view class="i-ri-more-fill size-18px color-#919499" @click="handleOptions" />
+              <!-- <view class="i-ri-more-fill size-18px color-#919499" @click="handleOptions" /> -->
             </view>
           </view>
         </view>
@@ -157,6 +157,7 @@ function gotoReport() {
   gap: 12px;
   padding: 12px 0;
   font-size: 14px;
+  height: 44px;
   &.warning {
     color: #ff4d4f;
   }
