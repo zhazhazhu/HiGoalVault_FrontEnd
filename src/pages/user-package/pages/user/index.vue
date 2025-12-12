@@ -67,6 +67,11 @@ function onClickInteractTab(tab: 'liked' | 'collected') {
 }
 
 function gotoHome() {
+  const pages = getCurrentPages()
+  if (pages.length <= 1) {
+    uni.redirectTo({ url: '/pages/index/index' })
+    return
+  }
   uni.navigateBack()
 }
 async function checkFollowUser() {
