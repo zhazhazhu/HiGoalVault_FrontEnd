@@ -1,6 +1,6 @@
 <script lang='ts' setup>
 import type { PublishMessageListResponse } from '@/api'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { api, Truth } from '@/api'
 import { useUserStore } from '@/store'
 import { formatCommentDate } from '@/utils'
@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const userStore = useUserStore()
 const showOption = ref(false)
+const isSelf = computed(() => userStore.userInfo?.id === props.data.memberId)
 
 async function checkFollowUser() {
   const res = await api.checkFollowUser(props.data!.memberId)
@@ -103,7 +104,7 @@ watch(() => props.data, () => {
       </view>
     </view>
 
-    <view v-if="data.privacy === Truth.TRUE" class="flex items-center text-22rpx color-#8E8E93 gap-10px">
+    <view v-if="data.privacy === Truth.TRUE && isSelf" class="flex items-center text-22rpx color-#8E8E93 gap-10px">
       <view class="flex items-center gap-4px">
         <view class="i-ion-eye-off-outline" />
         <text>仅自己可见</text>

@@ -27,6 +27,7 @@ const message = useMessage()
 const responseContent = computed(() => renderMarkdown(`${data.value.chatQueryAnswerVO?.response?.substring(0, 140) || ''}...`))
 const parseSectionId = `view-card-parse-${useUUID(32)}-${data.value.id}`
 const visible = useIntersectionObserver(`#${parseSectionId}`)
+const isSelf = computed(() => userStore.userInfo?.id === data.value.memberId)
 
 async function onThumbsUp() {
   if (!userStore.isLogin) {
@@ -98,7 +99,7 @@ function onDelete() {
         <text class="ml-16rpx color-#585858 mr-10px">
           {{ data.nickName }}
         </text>
-        <wd-tag v-if="data.auditStatus !== ContentAuditStatusEnum.APPROVED && enableStatus" plain :type="data.auditStatus === ContentAuditStatusEnum.PENDING ? 'warning' : 'danger'" mark>
+        <wd-tag v-if="data.auditStatus !== ContentAuditStatusEnum.APPROVED && enableStatus && isSelf" plain :type="data.auditStatus === ContentAuditStatusEnum.PENDING ? 'warning' : 'danger'" mark>
           {{ ContentAuditStatusZhEnum[data.auditStatus] }}
         </wd-tag>
       </view>
@@ -111,7 +112,7 @@ function onDelete() {
       </view>
     </view>
 
-    <view v-if="enableStatus && data.privacy === Truth.TRUE" class="flex items-center text-22rpx color-#8E8E93 gap-10px">
+    <view v-if="enableStatus && data.privacy === Truth.TRUE && isSelf" class="flex items-center text-22rpx color-#8E8E93 gap-10px">
       <view class="flex items-center gap-4px">
         <view class="i-ion-eye-off-outline" />
         <text>仅自己可见</text>
