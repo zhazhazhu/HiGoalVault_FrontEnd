@@ -96,7 +96,7 @@ function gotoReport() {
           <view class="i-material-symbols-delete-outline-rounded icon" />
           <text>删除</text>
         </view>
-        <view class="cell-item" @click="gotoReport">
+        <view v-if="!isSelf" class="cell-item" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报该评论</text>
         </view>

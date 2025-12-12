@@ -65,7 +65,7 @@ watch(() => props.data, () => {
           <view class="icon" :class="[data.privacy === Truth.TRUE ? 'i-ion-eye-off-outline' : 'i-ion-eye-outline']" />
           <text>{{ data?.privacy === Truth.TRUE ? '改为公开' : '改为仅自己可见' }}</text>
         </view>
-        <view class="cell-item" @click="gotoReport">
+        <view v-if="!isSelf" class="cell-item" @click="gotoReport">
           <view class="i-ic-baseline-warning-amber icon" />
           <text>举报内容</text>
         </view>
