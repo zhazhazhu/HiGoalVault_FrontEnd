@@ -276,7 +276,7 @@ onLoad((options) => {
               <wd-textarea
                 v-model="formData.violationDesc"
                 no-border
-                placeholder="请详细描述您的举报内容，便于我们更好地处理"
+                placeholder="请详细描述您的问题，便于我们更好地处理"
                 auto-height
                 show-word-limit
                 required
